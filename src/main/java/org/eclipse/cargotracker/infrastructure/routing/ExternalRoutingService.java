@@ -36,8 +36,10 @@ public class ExternalRoutingService implements RoutingService {
 
   private final Client jaxrsClient = ClientBuilder.newClient();
   @Inject private Logger logger;
+
   @Resource(lookup = "java:app/configuration/GraphTraversalUrl")
   private String graphTraversalUrl;
+
   private WebTarget graphTraversalResource;
 
   @Inject private LocationRepository locationRepository;
