@@ -1,15 +1,14 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
-import java.io.Serializable;
-import java.util.List;
+import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidate;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidate;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Handles itinerary selection. Operates against a dedicated service facade, and could easily be
@@ -26,11 +25,9 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidate;
 public class ItinerarySelection implements Serializable {
 
   private static final long serialVersionUID = 1L;
-
+  List<RouteCandidate> routeCandidates;
   private String trackingId;
   private CargoRoute cargo;
-  List<RouteCandidate> routeCandidates;
-
   @Inject private BookingServiceFacade bookingServiceFacade;
 
   public List<RouteCandidate> getRouteCandidates() {

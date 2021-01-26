@@ -1,9 +1,8 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.Location;
+import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -11,13 +10,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.flow.FlowScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.Location;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
-import org.primefaces.PrimeFaces;
+import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named
 @FlowScoped("booking")
@@ -26,16 +23,17 @@ public class Booking implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private static final long MIN_JOURNEY_DURATION = 1; // Journey should be 1 day minimum.
-  private static final long GRACE_PERIOD = DateTimeConstants.MILLIS_PER_HOUR * 4;
+  private static final long SECONDS_PER_HOUR = 3600;
+  private static final long GRACE_PERIOD = SECONDS_PER_HOUR * 4;
 
-  private Date today = null;
+  private LocalDate today = null;
   private List<Location> locations;
 
   private String originUnlocode;
   private String originName;
   private String destinationName;
   private String destinationUnlocode;
-  private Date arrivalDeadline;
+  private LocalDate arrivalDeadline;
 
   private boolean bookable = false;
   private long duration = -1;
@@ -44,7 +42,7 @@ public class Booking implements Serializable {
 
   @PostConstruct
   public void init() {
-    today = LocalDate.now().toDate();
+    today = LocalDate.now();
     locations = bookingServiceFacade.listShippingLocations();
   }
 
@@ -105,16 +103,16 @@ public class Booking implements Serializable {
     return destinationName;
   }
 
-  public Date getArrivalDeadline() {
+  public LocalDate getToday() {
+    return today;
+  }
+
+  public LocalDate getArrivalDeadline() {
     return arrivalDeadline;
   }
 
-  public void setArrivalDeadline(Date arrivalDeadline) {
+  public void setArrivalDeadline(LocalDate arrivalDeadline) {
     this.arrivalDeadline = arrivalDeadline;
-  }
-
-  public Date getToday() {
-    return today;
   }
 
   public long getDuration() {
@@ -128,9 +126,7 @@ public class Booking implements Serializable {
   public void deadlineUpdated() {
     // TODO [Jakarta EE 8] Use Date-Time API instead.
     duration =
-        new Interval(today.getTime(), arrivalDeadline.getTime() + GRACE_PERIOD)
-            .toDuration()
-            .getStandardDays();
+        Duration.between(today, arrivalDeadline.atStartOfDay().plusSeconds(GRACE_PERIOD)).toDays();
 
     if (duration >= MIN_JOURNEY_DURATION) {
       bookable = true;

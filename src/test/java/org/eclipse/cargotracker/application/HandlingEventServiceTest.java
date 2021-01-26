@@ -1,7 +1,5 @@
 package org.eclipse.cargotracker.application;
 
-import java.util.Date;
-
 import org.eclipse.cargotracker.application.internal.DefaultHandlingEventService;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
@@ -9,6 +7,9 @@ import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class HandlingEventServiceTest {
 
@@ -21,7 +22,7 @@ public class HandlingEventServiceTest {
   private Cargo cargo =
       new Cargo(
           new TrackingId("ABC"),
-          new RouteSpecification(SampleLocations.HAMBURG, SampleLocations.TOKYO, new Date()));
+          new RouteSpecification(SampleLocations.HAMBURG, SampleLocations.TOKYO, LocalDate.now()));
 
   protected void setUp() throws Exception {
     //        cargoRepository = createMock(CargoRepository.class);
@@ -52,7 +53,7 @@ public class HandlingEventServiceTest {
     //                locationRepository, applicationEvents);
 
     service.registerHandlingEvent(
-        new Date(),
+        LocalDateTime.now(),
         cargo.getTrackingId(),
         SampleVoyages.CM001.getVoyageNumber(),
         SampleLocations.STOCKHOLM.getUnLocode(),

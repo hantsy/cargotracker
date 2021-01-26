@@ -1,19 +1,18 @@
 package org.eclipse.cargotracker.infrastructure.messaging.jms;
 
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.eclipse.cargotracker.application.ApplicationEvents;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
+import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.jms.Destination;
 import javax.jms.JMSContext;
-
-import org.eclipse.cargotracker.application.ApplicationEvents;
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
-import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @ApplicationScoped
 public class JmsApplicationEvents implements ApplicationEvents, Serializable {

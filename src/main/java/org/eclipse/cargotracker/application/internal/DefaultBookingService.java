@@ -1,24 +1,19 @@
 package org.eclipse.cargotracker.application.internal;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import org.eclipse.cargotracker.application.BookingService;
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
-import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
-import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
-import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
+import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.LocationRepository;
 import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.service.RoutingService;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // TODO [Jakarta EE 8] Adopt the Date-Time API.
 @Stateless
@@ -31,7 +26,7 @@ public class DefaultBookingService implements BookingService {
 
   @Override
   public TrackingId bookNewCargo(
-      UnLocode originUnLocode, UnLocode destinationUnLocode, Date arrivalDeadline) {
+      UnLocode originUnLocode, UnLocode destinationUnLocode, LocalDate arrivalDeadline) {
     TrackingId trackingId = cargoRepository.nextTrackingId();
     Location origin = locationRepository.find(originUnLocode);
     Location destination = locationRepository.find(destinationUnLocode);
@@ -87,7 +82,7 @@ public class DefaultBookingService implements BookingService {
   }
 
   @Override
-  public void changeDeadline(TrackingId trackingId, Date newDeadline) {
+  public void changeDeadline(TrackingId trackingId, LocalDate newDeadline) {
     Cargo cargo = cargoRepository.find(trackingId);
 
     RouteSpecification routeSpecification =

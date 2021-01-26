@@ -1,8 +1,8 @@
 package org.eclipse.cargotracker.application;
 
-import javax.validation.constraints.NotNull;
-
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
+
+import javax.validation.constraints.NotNull;
 
 public interface CargoInspectionService {
 

@@ -1,15 +1,14 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
-import java.io.Serializable;
-import java.util.List;
+import org.eclipse.cargotracker.domain.model.voyage.Voyage;
+import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
+import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.eclipse.cargotracker.domain.model.voyage.Voyage;
-import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
-import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
+import java.io.Serializable;
+import java.util.List;
 
 @ApplicationScoped
 public class JpaVoyageRepository implements VoyageRepository, Serializable {

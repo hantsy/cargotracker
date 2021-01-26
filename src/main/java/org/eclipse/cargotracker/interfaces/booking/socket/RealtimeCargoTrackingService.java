@@ -1,12 +1,7 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 
 import javax.ejb.Singleton;
 import javax.enterprise.event.Observes;
@@ -17,18 +12,21 @@ import javax.websocket.OnClose;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /** WebSocket service for tracking all cargoes in real time. */
 @Singleton
 @ServerEndpoint("/tracking")
 public class RealtimeCargoTrackingService {
 
-  @Inject private Logger logger;
-
   private final Set<Session> sessions = new HashSet<>();
+  @Inject private Logger logger;
 
   @OnOpen
   public void onOpen(final Session session) {

@@ -1,7 +1,7 @@
 package org.eclipse.cargotracker.infrastructure.messaging.jms;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.eclipse.cargotracker.application.CargoInspectionService;
+import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
@@ -10,9 +10,8 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-
-import org.eclipse.cargotracker.application.CargoInspectionService;
-import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Consumes JMS messages and delegates notification of misdirected cargo to the tracking service.

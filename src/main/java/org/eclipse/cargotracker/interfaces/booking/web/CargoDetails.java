@@ -1,11 +1,11 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
+import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
 
 /**
  * Handles viewing cargo details. Operates against a dedicated service facade, and could easily be

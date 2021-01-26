@@ -1,20 +1,21 @@
 package org.eclipse.cargotracker.interfaces.tracking.web;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.Delivery;
 import org.eclipse.cargotracker.domain.model.cargo.HandlingActivity;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /** View adapter for displaying a cargo in a tracking context. */
 public class CargoTrackingViewAdapter {
 
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
+  public static final String DT_PATTERN = "MM/dd/yyyy hh:mm a z";
+  // private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DT_PATTERN);
 
   private final Cargo cargo;
   private final List<HandlingEventViewAdapter> events;
@@ -99,12 +100,12 @@ public class CargoTrackingViewAdapter {
   }
 
   public String getEta() {
-    Date eta = cargo.getDelivery().getEstimatedTimeOfArrival();
+    LocalDateTime eta = cargo.getDelivery().getEstimatedTimeOfArrival();
 
     if (eta == null) {
       return "?";
     } else {
-      return DATE_FORMAT.format(eta);
+      return eta.format(DateTimeFormatter.ofPattern(DT_PATTERN));
     }
   }
 
@@ -153,7 +154,7 @@ public class CargoTrackingViewAdapter {
 
     /** @return the date in the format MM/dd/yyyy hh:mm a z */
     public String getTime() {
-      return DATE_FORMAT.format(handlingEvent.getCompletionTime());
+      return handlingEvent.getCompletionTime().format(DateTimeFormatter.ofPattern(DT_PATTERN));
     }
 
     public boolean isExpected() {

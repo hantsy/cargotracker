@@ -1,22 +1,5 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -25,6 +8,11 @@ import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * A HandlingEvent is used to register the event when, for instance, a cargo is unloaded from a
@@ -63,15 +51,15 @@ public class HandlingEvent implements Serializable {
   @NotNull
   private Location location;
 
-  @Temporal(TemporalType.DATE)
+  // @Temporal(TemporalType.DATE)
   @NotNull
   @Column(name = "completionTime")
-  private Date completionTime;
+  private LocalDateTime completionTime;
 
-  @Temporal(TemporalType.DATE)
+  // @Temporal(TemporalType.DATE)
   @NotNull
   @Column(name = "registration")
-  private Date registrationTime;
+  private LocalDateTime registrationTime;
 
   @ManyToOne
   @JoinColumn(name = "cargo_id")
@@ -79,49 +67,6 @@ public class HandlingEvent implements Serializable {
   private Cargo cargo;
 
   @Transient private String summary;
-
-  /**
-   * Handling event type. Either requires or prohibits a carrier movement association, it's never
-   * optional.
-   */
-  public enum Type {
-
-    // Loaded onto voyage from port location.
-    LOAD(true),
-    // Unloaded from voyage to port location
-    UNLOAD(true),
-    // Received by carrier
-    RECEIVE(false),
-    // Cargo claimed by recepient
-    CLAIM(false),
-    // Cargo went through customs
-    CUSTOMS(false);
-
-    private final boolean voyageRequired;
-
-    /**
-     * Private enum constructor.
-     *
-     * @param voyageRequired whether or not a voyage is associated with this event type
-     */
-    private Type(boolean voyageRequired) {
-      this.voyageRequired = voyageRequired;
-    }
-
-    /** @return True if a voyage association is required for this event type. */
-    public boolean requiresVoyage() {
-      return voyageRequired;
-    }
-
-    /** @return True if a voyage association is prohibited for this event type. */
-    public boolean prohibitsVoyage() {
-      return !requiresVoyage();
-    }
-
-    public boolean sameValueAs(Type other) {
-      return other != null && this.equals(other);
-    }
-  }
 
   public HandlingEvent() {
     // Nothing to initialize.
@@ -138,8 +83,8 @@ public class HandlingEvent implements Serializable {
    */
   public HandlingEvent(
       Cargo cargo,
-      Date completionTime,
-      Date registrationTime,
+      LocalDateTime completionTime,
+      LocalDateTime registrationTime,
       Type type,
       Location location,
       Voyage voyage) {
@@ -155,8 +100,8 @@ public class HandlingEvent implements Serializable {
     }
 
     this.voyage = voyage;
-    this.completionTime = (Date) completionTime.clone();
-    this.registrationTime = (Date) registrationTime.clone();
+    this.completionTime = completionTime;
+    this.registrationTime = registrationTime;
     this.type = type;
     this.location = location;
     this.cargo = cargo;
@@ -171,7 +116,11 @@ public class HandlingEvent implements Serializable {
    * @param location where the event took place
    */
   public HandlingEvent(
-      Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
+      Cargo cargo,
+      LocalDateTime completionTime,
+      LocalDateTime registrationTime,
+      Type type,
+      Location location) {
     Validate.notNull(cargo, "Cargo is required");
     Validate.notNull(completionTime, "Completion time is required");
     Validate.notNull(registrationTime, "Registration time is required");
@@ -182,8 +131,8 @@ public class HandlingEvent implements Serializable {
       throw new IllegalArgumentException("Voyage is required for event type " + type);
     }
 
-    this.completionTime = (Date) completionTime.clone();
-    this.registrationTime = (Date) registrationTime.clone();
+    this.completionTime = completionTime;
+    this.registrationTime = registrationTime;
     this.type = type;
     this.location = location;
     this.cargo = cargo;
@@ -198,12 +147,12 @@ public class HandlingEvent implements Serializable {
     return DomainObjectUtils.nullSafe(this.voyage, Voyage.NONE);
   }
 
-  public Date getCompletionTime() {
-    return new Date(this.completionTime.getTime());
+  public LocalDateTime getCompletionTime() {
+    return completionTime;
   }
 
-  public Date getRegistrationTime() {
-    return new Date(this.registrationTime.getTime());
+  public LocalDateTime getRegistrationTime() {
+    return registrationTime;
   }
 
   public Location getLocation() {
@@ -294,5 +243,48 @@ public class HandlingEvent implements Serializable {
     }
 
     return builder.toString();
+  }
+
+  /**
+   * Handling event type. Either requires or prohibits a carrier movement association, it's never
+   * optional.
+   */
+  public enum Type {
+
+    // Loaded onto voyage from port location.
+    LOAD(true),
+    // Unloaded from voyage to port location
+    UNLOAD(true),
+    // Received by carrier
+    RECEIVE(false),
+    // Cargo claimed by recepient
+    CLAIM(false),
+    // Cargo went through customs
+    CUSTOMS(false);
+
+    private final boolean voyageRequired;
+
+    /**
+     * Private enum constructor.
+     *
+     * @param voyageRequired whether or not a voyage is associated with this event type
+     */
+    private Type(boolean voyageRequired) {
+      this.voyageRequired = voyageRequired;
+    }
+
+    /** @return True if a voyage association is required for this event type. */
+    public boolean requiresVoyage() {
+      return voyageRequired;
+    }
+
+    /** @return True if a voyage association is prohibited for this event type. */
+    public boolean prohibitsVoyage() {
+      return !requiresVoyage();
+    }
+
+    public boolean sameValueAs(Type other) {
+      return other != null && this.equals(other);
+    }
   }
 }

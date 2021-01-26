@@ -1,37 +1,27 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.validation.constraints.Size;
-
 import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.persistence.annotations.PrivateOwned;
+
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Embeddable
 public class Itinerary implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-
-  private static final Date END_OF_DAYS = new Date(Long.MAX_VALUE);
   // Null object pattern.
   public static final Itinerary EMPTY_ITINERARY = new Itinerary();
-
+  private static final long serialVersionUID = 1L;
   // TODO [Clean Code] Look into why cascade delete doesn't work.
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "cargo_id")
   // TODO [Clean Code] Index this is in leg_index
   @OrderBy("loadTime")
-  @PrivateOwned
   @Size(min = 1)
   private List<Leg> legs = Collections.emptyList();
 
@@ -61,33 +51,27 @@ public class Itinerary implements Serializable {
         {
           // Check that the first leg's origin is the event's location
           Leg leg = legs.get(0);
-          return (leg.getLoadLocation().equals(event.getLocation()));
+          return leg.getLoadLocation().equals(event.getLocation());
         }
 
       case LOAD:
         {
-          for (Leg leg : legs) {
-            if (leg.getLoadLocation().equals(event.getLocation())
-                && leg.getVoyage().equals(event.getVoyage())) {
-              return true;
-            }
-          }
-
-          return false;
+          return legs.stream()
+              .anyMatch(
+                  leg ->
+                      leg.getLoadLocation().equals(event.getLocation())
+                          && leg.getVoyage().equals(event.getVoyage()));
         }
 
       case UNLOAD:
         {
           // Check that the there is one leg with same unload location and
           // voyage
-          for (Leg leg : legs) {
-            if (leg.getUnloadLocation().equals(event.getLocation())
-                && leg.getVoyage().equals(event.getVoyage())) {
-              return true;
-            }
-          }
-
-          return false;
+          return legs.stream()
+              .anyMatch(
+                  leg ->
+                      leg.getUnloadLocation().equals(event.getLocation())
+                          && leg.getVoyage().equals(event.getVoyage()));
         }
 
       case CLAIM:
@@ -96,7 +80,7 @@ public class Itinerary implements Serializable {
           // location
           Leg leg = getLastLeg();
 
-          return (leg.getUnloadLocation().equals(event.getLocation()));
+          return leg.getUnloadLocation().equals(event.getLocation());
         }
 
       case CUSTOMS:
@@ -126,13 +110,13 @@ public class Itinerary implements Serializable {
   }
 
   /** @return Date when cargo arrives at final destination. */
-  Date getFinalArrivalDate() {
+  LocalDateTime getFinalArrivalDate() {
     Leg lastLeg = getLastLeg();
 
     if (lastLeg == null) {
-      return new Date(END_OF_DAYS.getTime());
+      return LocalDateTime.MAX;
     } else {
-      return new Date(lastLeg.getUnloadTime().getTime());
+      return lastLeg.getUnloadTime();
     }
   }
 

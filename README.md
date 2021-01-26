@@ -1,55 +1,79 @@
 # Eclipse Cargo Tracker - Applied Domain-Driven Design Blueprints for Jakarta EE
 
+![compile and build](https://github.com/hantsy/cargo-tracker/workflows/build/badge.svg)
+![Integration Test with Arquillian Payara Managed Container](https://github.com/hantsy/cargo-tracker/workflows/it-with-arq-payara-managed/badge.svg)
+![Integration Test with Arquillian Payara Micro Container](https://github.com/hantsy/cargo-tracker/workflows/it-with-arq-payara-micro/badge.svg)
+
 ## Overview
 
-The project demonstrates how you can develop applications with Jakarta EE using widely adopted architectural best practices like Domain-Driven 
-Design (DDD). The project is directly based on the well known 
-original [Java DDD sample application](http://dddsample.sourceforge.net) 
-developed by DDD pioneer Eric Evans' company Domain Language and the Swedish 
-software consulting company Citerus. The cargo example actually comes from 
-Eric Evans' seminal book on DDD. The original application is written in Spring,
-Hibernate and Jetty whereas the application is built on Jakarta EE.
+The project demonstrates how you can develop applications with Jakarta EE using widely adopted architectural best practices like Domain-Driven Design (DDD). The project is directly based on the well known original [ DDD book sample codes](https://github.com/citerus/dddsample-core) developed by DDD pioneer Eric Evans' company Domain Language and the Swedish software consulting company Citerus. The cargo example actually comes from Eric Evans' seminal book on DDD. The original application is written in Spring, Hibernate and Jetty whereas the application is built on Jakarta EE.
 
-The application is an end-to-end system for keeping track of shipping cargo. It 
-has several interfaces described in the following sections.
+The application is an end-to-end system for keeping track of shipping cargo. It has several interfaces described in the following sections.
 
 For further details on the project, please visit: https://eclipse-ee4j.github.io/cargotracker/.
 
 ![Cargo Tracker cover](cargo_tracker_cover.png)
- 
+
 ## Getting Started
 
 The [project website](https://eclipse-ee4j.github.io/cargotracker/) has detailed information on how to get started.
 
-The simplest steps are the following (no IDE required):
+ ### Prerequisites 
+
+* Java 8 or 11 
+* The latest Apache Maven 3.6.x
+* Git
+* Docker
+* [Payara 5](https://www.payara.fish/downloads/) 
+
+###  Prepare a running database
+
+In this project, we use Postgres as an example. 
+
+There is a *docker-compose.yaml* file in project source codes. Switch to the project root folder, and simply type the following command to start a Postgres instance in docker container.
+
+```bash
+docker-compose up postgres
+```
+
+### Run the application without IDEs
 
 * Get the project source code.
-* Ensure you are running Java SE 8. The project by default uses Payara 4.1, which supports Java SE 8.
+* Ensure you are running Java SE 8 or 11. The project by default uses Payara 5, which supports Java SE 8+.
 * Make sure JAVA_HOME is set.
-* As long as you have Maven set up properly, navigate to the project source root and 
-  type: `mvn package cargo:run`
+* As long as you have Maven set up properly, navigate to the project source root and type:
+  
+   ```bash
+   mvn clean package cargo:run
+   ```
 * Go to http://localhost:8080/cargo-tracker
 
-To set up in Eclipse, follow these steps:
+### Set up in Eclipse IDE
 
-* Set up [Java SE 8](https://www.azul.com/downloads/zulu-community/?version=java-8-lts), [the 2020-06 release of Eclipse for Enterprise Java Developers](https://www.eclipse.org/downloads/packages/release/2020-06/r/eclipse-ide-enterprise-java-developers) (this is the latest Eclipse IDE version that supports Java SE 8) and [Payara 4.1](https://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip) (Payara 5 is not supported yet. Payara 4.1 only supports Java SE 8). You will also need to set up [Payara Tools](https://marketplace.eclipse.org/content/payara-tools) in Eclipse.
+* Set up [Java SE 11](https://www.azul.com/downloads/zulu-community/?version=java-11-lts), [the 2020-06 release of Eclipse for Enterprise Java Developers](https://www.eclipse.org/downloads/packages/release/2020-06/r/eclipse-ide-enterprise-java-developers) (this is the latest Eclipse IDE version that supports Java SE 8) and [Payara 5](https://www.payara.fish/downloads/) . You will also need to set up [Payara Tools](https://marketplace.eclipse.org/content/payara-tools) in Eclipse.
 * Import this code in Eclipse as a Maven project, 
   Eclipse will do the rest for you. Proceed with clean/building the application.
 * After the project is built (which will take a while the very first time as 
-  Maven downloads dependencies), simply run it via Payara 4.
+  Maven downloads dependencies), simply run it via Payara server.
+
+### Set up in Apache NetBeans IDE
+
+* Set up [Java SE 11](https://www.azul.com/downloads/zulu-community/?version=java-11-lts),  [NetBeans](http://netbeans.apache.org) and  [Payara 5](https://www.payara.fish/downloads/),  and configure [Payara in NetBeans](https://blog.payara.fish/adding-payara-server-to-netbeans).
+* Open the project from NetBeans directly. NetBeans recognizes Maven projects automatically.
+* From the project context menu, simply run it via Payara server.  
 
 ## Exploring the Application
 
 After the application runs, it will be available at: 
 http://localhost:8080/cargo-tracker/. Under the hood, the application uses a 
-number of Jakarta EE (Java EE 7) features including JSF, CDI, EJB, JPA, JAX-RS, WebSocket, JSON Processing, Bean Validation and JMS.
+number of Jakarta EE 8 features including JSF, CDI, EJB, JPA, JAX-RS, WebSocket, JSON Processing, Bean Validation and JMS.
 
 There are several web interfaces, REST interfaces and a file system scanning
 interface. It's probably best to start exploring the interfaces in the rough
 order below.
 
 The tracking interface let's you track the status of cargo and is
-intended for the general public. Try entering a tracking ID like ABC123 (the 
+intended for the general public. Try entering a tracking ID like **ABC123** (the 
 application is pre-populated with some sample data).
 
 The administrative interface is intended for the shipping company that manages
@@ -76,17 +100,16 @@ handy. You can access the itinerary for registered cargo via the admin interface
 and unload events require as associated voyage.
 
 You should also explore the file system based bulk event registration interface. 
-It reads files under /tmp/uploads. The files are just CSV files. A sample CSV
-file is available under [src/test/resources/handling_events.csv](src/test/resources/handling_events.csv). The sample is already set up to match the remaining itinerary events for cargo ABC123. Just make sure to update the times in the first column of the sample CSV file to match the itinerary as well.
+It reads files under */tmp/uploads*. The files are just CSV files. A sample CSV
+file is available under [*src/test/resources/handling_events.csv*](src/test/resources/handling_events.csv). The sample is already set up to match the remaining itinerary events for cargo ABC123. Just make sure to update the times in the first column of the sample CSV file to match the itinerary as well.
 
-Sucessfully processed entries are archived under /tmp/archive. Any failed records are 
-archived under /tmp/failed.
+Successfully processed entries are archived under */tmp/archive*. Any failed records are 
+archived under */tmp/failed*.
 
 Don't worry about making mistakes. The application is intended to be fairly 
 error tolerant. If you do come across issues, you should [report them](https://github.com/eclipse-ee4j/cargotracker/issues).
 
-*All data entered is wiped upon application restart, so you can start from 
-a blank slate easily if needed.*
+> All data entered is wiped upon application restart, so you can start from a blank slate easily if needed.
 
 You can also use the soapUI scripts included in the source code to explore the 
 REST interfaces as well as the numerous unit tests covering the code base 
@@ -115,17 +138,17 @@ by simply digging into the code to see how things are implemented.
 
 ## Exploring the Tests
 
-Cargo Tracker's testing is done using JUnit and Arquillian. The Arquillian configuration
-uses a [remote container](http://arquillian.org/arquillian-core/#_containers) (Payara 4.1). Therefore, to perform a test you will need to make sure
+Cargo Tracker's testing is done using JUnit and [Arquillian](http://arquillian.org/). The Arquillian configuration
+uses a [remote container](http://arquillian.org/arquillian-core/#_containers) (Payara 5). Therefore, to perform a test you will need to make sure
 to have a container running. 
 
 ## Testing Locally with Payara
-For testing locally you will first need to run a Payara 4.1 server.
+For testing locally you will first need to run a Payara 5 server.
 
 You can do that with the following script:
 ```shell script
-wget https://repo1.maven.org/maven2/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip
-unzip payara-4.1.2.181.zip && cd payara41/bin
+wget https://repo1.maven.org/maven2/fish/payara/distributions/payara/5.2020.7/payara-5.2020.7.zip
+unzip payara-5.2020.7.zip && cd payara5/bin
 ./asadmin start-domain
 ```
 
@@ -133,9 +156,6 @@ Now for running the tests:
 ```shell script
 mvn -Ppayara -DskipTests=false test
 ```
-
-## Contributing
-This project complies with the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html). You can use the [google-java-format](https://github.com/google/google-java-format) tool to help you comply with the Google Java Style Guide. You can use the tool with most major IDEs such as Eclipse and IntelliJ.
 
 ## Known Issues
 * If you are running older versions of Payara, you will get a log message stating that SSL certificates have expired. This won't get in the way of functionality, but it will
@@ -146,5 +166,5 @@ This project complies with the [Google Java Style Guide](https://google.github.i
 * Sometimes when the server is not shut down correctly or there is a locking/permissions issue, the Derby database that 
   the application uses get's corrupted, resulting in strange database errors. If 
   this occurs, you will need to stop the application and clean the database. You 
-  can do this by simply removing \tmp\cargo-tracker-database from the file 
+  can do this by simply removing *\tmp\cargo-tracker-database* from the file 
   system and restarting the application.

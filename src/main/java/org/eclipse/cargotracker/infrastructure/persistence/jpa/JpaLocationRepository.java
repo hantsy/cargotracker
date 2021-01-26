@@ -1,15 +1,14 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
-import java.io.Serializable;
-import java.util.List;
+import org.eclipse.cargotracker.domain.model.location.Location;
+import org.eclipse.cargotracker.domain.model.location.LocationRepository;
+import org.eclipse.cargotracker.domain.model.location.UnLocode;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.cargotracker.domain.model.location.LocationRepository;
-import org.eclipse.cargotracker.domain.model.location.UnLocode;
+import java.io.Serializable;
+import java.util.List;
 
 @ApplicationScoped
 public class JpaLocationRepository implements LocationRepository, Serializable {

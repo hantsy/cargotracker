@@ -1,6 +1,7 @@
 package org.eclipse.cargotracker.interfaces.booking.rest;
 
-import java.util.List;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,9 +13,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
+import java.util.List;
 
 @Stateless
 @Path("/cargo")
@@ -31,9 +30,7 @@ public class CargoMonitoringService {
 
     JsonArrayBuilder builder = Json.createArrayBuilder();
 
-    for (Cargo cargo : cargos) {
-      builder.add(cargoToJson(cargo));
-    }
+    cargos.stream().map(this::cargoToJson).forEach(builder::add);
 
     return builder.build();
   }

@@ -1,5 +1,9 @@
 package org.eclipse.cargotracker.infrastructure.messaging.jms;
 
+import org.eclipse.cargotracker.application.HandlingEventService;
+import org.eclipse.cargotracker.domain.model.handling.CannotCreateHandlingEventException;
+import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.inject.Inject;
@@ -7,10 +11,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
-
-import org.eclipse.cargotracker.application.HandlingEventService;
-import org.eclipse.cargotracker.domain.model.handling.CannotCreateHandlingEventException;
-import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
 /** Consumes handling event registration attempt messages and delegates to proper registration. */
 @MessageDriven(

@@ -1,10 +1,9 @@
 package org.eclipse.pathfinder.api;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class TransitPath implements Serializable {

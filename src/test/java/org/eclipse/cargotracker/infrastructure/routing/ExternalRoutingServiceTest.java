@@ -1,20 +1,14 @@
 package org.eclipse.cargotracker.infrastructure.routing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Date;
-import java.util.List;
-
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
-import org.eclipse.cargotracker.domain.model.cargo.Leg;
-import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
-import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
+import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.junit.Assert;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ExternalRoutingServiceTest {
 
@@ -46,7 +40,7 @@ public class ExternalRoutingServiceTest {
   public void testCalculatePossibleRoutes() {
     TrackingId trackingId = new TrackingId("ABC");
     RouteSpecification routeSpecification =
-        new RouteSpecification(SampleLocations.HONGKONG, SampleLocations.HELSINKI, new Date());
+        new RouteSpecification(SampleLocations.HONGKONG, SampleLocations.HELSINKI, LocalDate.now());
     Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     //

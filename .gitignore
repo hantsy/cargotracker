@@ -2,4 +2,7 @@ target
 .settings
 .metadata
 /.classpath
-/.project
+/.project.idea
+*.iml
+.idea/
+nb*
