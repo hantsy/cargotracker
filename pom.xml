@@ -354,9 +354,9 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>${maven-failsafe-plugin.version}</version>
                         <configuration>
-                            <environmentVariables>
-                                <GLASSFISH_HOME>${project.build.directory}/payara5</GLASSFISH_HOME>
-                            </environmentVariables>
+                            <systemPropertyVariables>
+                                <payara.home>${project.build.directory}/payara5</payara.home>
+                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -448,11 +448,8 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>${maven-failsafe-plugin.version}</version>
                         <configuration>
-                            <environmentVariables>
-                                <MICRO_JAR>${project.build.directory}/payara-micro.jar</MICRO_JAR>
-                            </environmentVariables>
                             <systemPropertyVariables>
-                                <!--<payara.microJar>${project.build.directory}/payara-micro.jar</payara.microJar>-->
+                                <payara.microJar>${project.build.directory}/payara-micro.jar</payara.microJar>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
