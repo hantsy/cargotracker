@@ -29,7 +29,7 @@ jobs:
       - uses: axel-op/googlejavaformat-action@v3
         with:
           args: "--aosp  --skip-sorting-imports --replace"
-#          version: 1.9
+          #  version: 1.9
           # Recommended if you use MacOS:
           # githubToken: ${{ secrets.GITHUB_TOKEN }}
           # set dry-run and will not commit by default

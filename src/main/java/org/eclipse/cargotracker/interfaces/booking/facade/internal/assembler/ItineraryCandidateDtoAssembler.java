@@ -19,50 +19,52 @@ import java.util.stream.Collectors;
 // TODO [Clean Code] Could this be a CDI singleton?
 public class ItineraryCandidateDtoAssembler {
 
-  public static final String DT_PATTERN = "MM/dd/yyyy hh:mm a z";
-  // private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DT_PATTERN);
+    public static final String DT_PATTERN = "MM/dd/yyyy hh:mm a z";
+    // private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DT_PATTERN);
 
-  public RouteCandidate toDto(Itinerary itinerary) {
-    List<org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg> legDTOs =
-        itinerary.getLegs().stream().map(this::toLegDTO).collect(Collectors.toList());
-    return new RouteCandidate(legDTOs);
-  }
-
-  protected org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg toLegDTO(Leg leg) {
-    VoyageNumber voyageNumber = leg.getVoyage().getVoyageNumber();
-    return new org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg(
-        voyageNumber.getIdString(),
-        leg.getLoadLocation().getUnLocode().getIdString(),
-        leg.getLoadLocation().getName(),
-        leg.getUnloadLocation().getUnLocode().getIdString(),
-        leg.getUnloadLocation().getName(),
-        leg.getLoadTime(),
-        leg.getUnloadTime());
-  }
-
-  public Itinerary fromDTO(
-      RouteCandidate routeCandidateDTO,
-      VoyageRepository voyageRepository,
-      LocationRepository locationRepository) {
-    List<Leg> legs = new ArrayList<>(routeCandidateDTO.getLegs().size());
-
-    for (org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg legDTO :
-        routeCandidateDTO.getLegs()) {
-      VoyageNumber voyageNumber = new VoyageNumber(legDTO.getVoyageNumber());
-      Voyage voyage = voyageRepository.find(voyageNumber);
-      Location from = locationRepository.find(new UnLocode(legDTO.getFromUnLocode()));
-      Location to = locationRepository.find(new UnLocode(legDTO.getToUnLocode()));
-
-      legs.add(
-          new Leg(
-              voyage,
-              from,
-              to,
-              LocalDateTime.parse(legDTO.getLoadTime(), DateTimeFormatter.ofPattern(DT_PATTERN)),
-              LocalDateTime.parse(
-                  legDTO.getUnloadTime(), DateTimeFormatter.ofPattern(DT_PATTERN))));
+    public RouteCandidate toDto(Itinerary itinerary) {
+        List<org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg> legDTOs =
+                itinerary.getLegs().stream().map(this::toLegDTO).collect(Collectors.toList());
+        return new RouteCandidate(legDTOs);
     }
 
-    return new Itinerary(legs);
-  }
+    protected org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg toLegDTO(Leg leg) {
+        VoyageNumber voyageNumber = leg.getVoyage().getVoyageNumber();
+        return new org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg(
+                voyageNumber.getIdString(),
+                leg.getLoadLocation().getUnLocode().getIdString(),
+                leg.getLoadLocation().getName(),
+                leg.getUnloadLocation().getUnLocode().getIdString(),
+                leg.getUnloadLocation().getName(),
+                leg.getLoadTime(),
+                leg.getUnloadTime());
+    }
+
+    public Itinerary fromDTO(
+            RouteCandidate routeCandidateDTO,
+            VoyageRepository voyageRepository,
+            LocationRepository locationRepository) {
+        List<Leg> legs = new ArrayList<>(routeCandidateDTO.getLegs().size());
+
+        for (org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg legDTO :
+                routeCandidateDTO.getLegs()) {
+            VoyageNumber voyageNumber = new VoyageNumber(legDTO.getVoyageNumber());
+            Voyage voyage = voyageRepository.find(voyageNumber);
+            Location from = locationRepository.find(new UnLocode(legDTO.getFromUnLocode()));
+            Location to = locationRepository.find(new UnLocode(legDTO.getToUnLocode()));
+
+            legs.add(
+                    new Leg(
+                            voyage,
+                            from,
+                            to,
+                            LocalDateTime.parse(
+                                    legDTO.getLoadTime(), DateTimeFormatter.ofPattern(DT_PATTERN)),
+                            LocalDateTime.parse(
+                                    legDTO.getUnloadTime(),
+                                    DateTimeFormatter.ofPattern(DT_PATTERN))));
+        }
+
+        return new Itinerary(legs);
+    }
 }

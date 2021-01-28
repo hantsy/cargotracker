@@ -10,47 +10,47 @@ import java.io.Serializable;
 @Embeddable
 public class TrackingId implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Column(name = "tracking_id", unique = true, updatable = false)
-  private String id;
+    @Column(name = "tracking_id", unique = true, updatable = false)
+    private String id;
 
-  public TrackingId() {}
+    public TrackingId() {}
 
-  public TrackingId(String id) {
-    Validate.notNull(id);
-    this.id = id;
-  }
-
-  public String getIdString() {
-    return id;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+    public TrackingId(String id) {
+        Validate.notNull(id);
+        this.id = id;
     }
 
-    TrackingId other = (TrackingId) o;
+    public String getIdString() {
+        return id;
+    }
 
-    return sameValueAs(other);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-  @Override
-  public int hashCode() {
-    return id.hashCode();
-  }
+        TrackingId other = (TrackingId) o;
 
-  boolean sameValueAs(TrackingId other) {
-    return other != null && this.id.equals(other.id);
-  }
+        return sameValueAs(other);
+    }
 
-  @Override
-  public String toString() {
-    return id;
-  }
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    boolean sameValueAs(TrackingId other) {
+        return other != null && this.id.equals(other.id);
+    }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }

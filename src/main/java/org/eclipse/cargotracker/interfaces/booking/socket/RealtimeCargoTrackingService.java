@@ -25,43 +25,45 @@ import java.util.logging.Logger;
 @ServerEndpoint("/tracking")
 public class RealtimeCargoTrackingService {
 
-  private final Set<Session> sessions = new HashSet<>();
-  @Inject private Logger logger;
+    private final Set<Session> sessions = new HashSet<>();
+    @Inject private Logger logger;
 
-  @OnOpen
-  public void onOpen(final Session session) {
-    // Infinite by default on GlassFish. We need this principally for WebLogic.
-    session.setMaxIdleTimeout(5 * 60 * 1000);
-    sessions.add(session);
-  }
-
-  @OnClose
-  public void onClose(final Session session) {
-    sessions.remove(session);
-  }
-
-  public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
-    Writer writer = new StringWriter();
-
-    try (JsonGenerator generator = Json.createGenerator(writer)) {
-      generator
-          .writeStartObject()
-          .write("trackingId", cargo.getTrackingId().getIdString())
-          .write("origin", cargo.getOrigin().getName())
-          .write("destination", cargo.getRouteSpecification().getDestination().getName())
-          .write("lastKnownLocation", cargo.getDelivery().getLastKnownLocation().getName())
-          .write("transportStatus", cargo.getDelivery().getTransportStatus().toString())
-          .writeEnd();
+    @OnOpen
+    public void onOpen(final Session session) {
+        // Infinite by default on GlassFish. We need this principally for WebLogic.
+        session.setMaxIdleTimeout(5 * 60 * 1000);
+        sessions.add(session);
     }
 
-    String jsonValue = writer.toString();
-
-    for (Session session : sessions) {
-      try {
-        session.getBasicRemote().sendText(jsonValue);
-      } catch (IOException ex) {
-        logger.log(Level.WARNING, "Unable to publish WebSocket message", ex);
-      }
+    @OnClose
+    public void onClose(final Session session) {
+        sessions.remove(session);
     }
-  }
+
+    public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
+        Writer writer = new StringWriter();
+
+        try (JsonGenerator generator = Json.createGenerator(writer)) {
+            generator
+                    .writeStartObject()
+                    .write("trackingId", cargo.getTrackingId().getIdString())
+                    .write("origin", cargo.getOrigin().getName())
+                    .write("destination", cargo.getRouteSpecification().getDestination().getName())
+                    .write(
+                            "lastKnownLocation",
+                            cargo.getDelivery().getLastKnownLocation().getName())
+                    .write("transportStatus", cargo.getDelivery().getTransportStatus().toString())
+                    .writeEnd();
+        }
+
+        String jsonValue = writer.toString();
+
+        for (Session session : sessions) {
+            try {
+                session.getBasicRemote().sendText(jsonValue);
+            } catch (IOException ex) {
+                logger.log(Level.WARNING, "Unable to publish WebSocket message", ex);
+            }
+        }
+    }
 }

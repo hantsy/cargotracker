@@ -19,40 +19,40 @@ import java.util.logging.Logger;
 @Stateless
 public class DefaultHandlingEventService implements HandlingEventService {
 
-  @Inject private ApplicationEvents applicationEvents;
-  @Inject private HandlingEventRepository handlingEventRepository;
-  @Inject private HandlingEventFactory handlingEventFactory;
-  @Inject private Logger logger;
+    @Inject private ApplicationEvents applicationEvents;
+    @Inject private HandlingEventRepository handlingEventRepository;
+    @Inject private HandlingEventFactory handlingEventFactory;
+    @Inject private Logger logger;
 
-  @Override
-  public void registerHandlingEvent(
-      LocalDateTime completionTime,
-      TrackingId trackingId,
-      VoyageNumber voyageNumber,
-      UnLocode unLocode,
-      HandlingEvent.Type type)
-      throws CannotCreateHandlingEventException {
-    LocalDateTime registrationTime = LocalDateTime.now();
+    @Override
+    public void registerHandlingEvent(
+            LocalDateTime completionTime,
+            TrackingId trackingId,
+            VoyageNumber voyageNumber,
+            UnLocode unLocode,
+            HandlingEvent.Type type)
+            throws CannotCreateHandlingEventException {
+        LocalDateTime registrationTime = LocalDateTime.now();
 
-    /*
-     * Using a factory to create a HandlingEvent (aggregate). This is where it is
-     * determined wether the incoming data, the attempt, actually is capable of
-     * representing a real handling event.
-     */
-    HandlingEvent event =
-        handlingEventFactory.createHandlingEvent(
-            registrationTime, completionTime, trackingId, voyageNumber, unLocode, type);
+        /*
+         * Using a factory to create a HandlingEvent (aggregate). This is where it is
+         * determined wether the incoming data, the attempt, actually is capable of
+         * representing a real handling event.
+         */
+        HandlingEvent event =
+                handlingEventFactory.createHandlingEvent(
+                        registrationTime, completionTime, trackingId, voyageNumber, unLocode, type);
 
-    /*
-     * Store the new handling event, which updates the persistent state of the
-     * handling event aggregate (but not the cargo aggregate - that happens
-     * asynchronously!)
-     */
-    handlingEventRepository.store(event);
+        /*
+         * Store the new handling event, which updates the persistent state of the
+         * handling event aggregate (but not the cargo aggregate - that happens
+         * asynchronously!)
+         */
+        handlingEventRepository.store(event);
 
-    /* Publish an event stating that a cargo has been handled. */
-    applicationEvents.cargoWasHandled(event);
+        /* Publish an event stating that a cargo has been handled. */
+        applicationEvents.cargoWasHandled(event);
 
-    logger.info("Registered handling event");
-  }
+        logger.info("Registered handling event");
+    }
 }

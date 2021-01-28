@@ -15,42 +15,42 @@ import java.util.logging.Logger;
 //
 // @JMSDestinationDefinition is not repeatable.
 @JMSDestinationDefinitions({
-  @JMSDestinationDefinition(
-      name = "java:app/jms/CargoHandledQueue",
-      // resourceAdapter = "jmsra",
-      interfaceName = "javax.jms.Queue",
-      destinationName = "CargoHandledQueue"),
-  @JMSDestinationDefinition(
-      name = "java:app/jms/MisdirectedCargoQueue",
-      // resourceAdapter = "jmsra",
-      interfaceName = "javax.jms.Queue",
-      destinationName = "MisdirectedCargoQueue"),
-  @JMSDestinationDefinition(
-      name = "java:app/jms/DeliveredCargoQueue",
-      // resourceAdapter = "jmsra",
-      interfaceName = "javax.jms.Queue",
-      destinationName = "DeliveredCargoQueue"),
-  @JMSDestinationDefinition(
-      name = "java:app/jms/RejectedRegistrationAttemptsQueue",
-      // resourceAdapter = "jmsra",
-      interfaceName = "javax.jms.Queue",
-      destinationName = "RejectedRegistrationAttemptsQueue"),
-  @JMSDestinationDefinition(
-      name = "java:app/jms/HandlingEventRegistrationAttemptQueue",
-      // resourceAdapter = "jmsra",
-      interfaceName = "javax.jms.Queue",
-      destinationName = "HandlingEventRegistrationAttemptQueue")
+    @JMSDestinationDefinition(
+            name = "java:app/jms/CargoHandledQueue",
+            // resourceAdapter = "jmsra",
+            interfaceName = "javax.jms.Queue",
+            destinationName = "CargoHandledQueue"),
+    @JMSDestinationDefinition(
+            name = "java:app/jms/MisdirectedCargoQueue",
+            // resourceAdapter = "jmsra",
+            interfaceName = "javax.jms.Queue",
+            destinationName = "MisdirectedCargoQueue"),
+    @JMSDestinationDefinition(
+            name = "java:app/jms/DeliveredCargoQueue",
+            // resourceAdapter = "jmsra",
+            interfaceName = "javax.jms.Queue",
+            destinationName = "DeliveredCargoQueue"),
+    @JMSDestinationDefinition(
+            name = "java:app/jms/RejectedRegistrationAttemptsQueue",
+            // resourceAdapter = "jmsra",
+            interfaceName = "javax.jms.Queue",
+            destinationName = "RejectedRegistrationAttemptsQueue"),
+    @JMSDestinationDefinition(
+            name = "java:app/jms/HandlingEventRegistrationAttemptQueue",
+            // resourceAdapter = "jmsra",
+            interfaceName = "javax.jms.Queue",
+            destinationName = "HandlingEventRegistrationAttemptQueue")
 })
 @Startup
 @Singleton
 public class JMSResourcesSetup {
-  private static final Logger LOGGER = Logger.getLogger(JMSResourcesSetup.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JMSResourcesSetup.class.getName());
 
-  @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
-  private ConnectionFactory connectionFactory;
+    @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
+    private ConnectionFactory connectionFactory;
 
-  @PostConstruct
-  public void init() {
-    LOGGER.log(Level.INFO, "JMS connectionFactory : {0} ", connectionFactory != null);
-  }
+    @PostConstruct
+    public void init() {
+        LOGGER.log(Level.INFO, "JMS connectionFactory : {0} ", connectionFactory != null);
+    }
 }
