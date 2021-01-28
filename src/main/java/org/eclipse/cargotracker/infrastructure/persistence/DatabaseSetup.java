@@ -19,31 +19,33 @@ import java.util.logging.Logger;
 //        url = "jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE"
 // )
 @DataSourceDefinition(
-    name = "java:app/jdbc/CargoTrackerDatabase",
-    className = "org.postgresql.xa.PGXADataSource",
-    url = "jdbc:postgresql://localhost:5432/cargotracker",
-    user = "user",
-    password = "password")
+        name = "java:app/jdbc/CargoTrackerDatabase",
+        className = "org.postgresql.xa.PGXADataSource",
+        url = "jdbc:postgresql://localhost:5432/cargotracker",
+        user = "user",
+        password = "password")
 @Singleton
 @Startup
 public class DatabaseSetup {
-  private static final Logger LOGGER = Logger.getLogger(DatabaseSetup.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DatabaseSetup.class.getName());
 
-  @Resource(lookup = "java:app/jdbc/CargoTrackerDatabase")
-  DataSource dataSource;
+    @Resource(lookup = "java:app/jdbc/CargoTrackerDatabase")
+    DataSource dataSource;
 
-  @PostConstruct
-  public void init() {
-    LOGGER.info("calling DatabaseSetup...");
-    LOGGER.log(Level.INFO, "dataSource is not null: {0}", dataSource != null);
+    @PostConstruct
+    public void init() {
+        LOGGER.info("calling DatabaseSetup...");
+        LOGGER.log(Level.INFO, "dataSource is not null: {0}", dataSource != null);
 
-    try (Connection connection = dataSource.getConnection()) {
-      LOGGER.log(
-          Level.INFO,
-          "connect to: {0}",
-          connection.getMetaData().getDatabaseProductName() + "-" + connection.getCatalog());
-    } catch (SQLException e) {
-      e.printStackTrace();
+        try (Connection connection = dataSource.getConnection()) {
+            LOGGER.log(
+                    Level.INFO,
+                    "connect to: {0}",
+                    connection.getMetaData().getDatabaseProductName()
+                            + "-"
+                            + connection.getCatalog());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-  }
 }

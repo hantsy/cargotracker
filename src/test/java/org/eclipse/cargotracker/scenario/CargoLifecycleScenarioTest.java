@@ -185,7 +185,8 @@ public class CargoLifecycleScenarioTest {
                     noSuchUnLocode,
                     HandlingEvent.Type.LOAD);
             org.junit.Assert.fail(
-                    "Should not be able to register a handling event with invalid location and voyage");
+                    "Should not be able to register a handling event with invalid location and"
+                        + " voyage");
         } catch (CannotCreateHandlingEventException expected) {
         }
 
