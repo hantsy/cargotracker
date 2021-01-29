@@ -2,6 +2,7 @@
 
 ![compile and build](https://github.com/hantsy/cargotracker/workflows/build/badge.svg)
 ![Integration Test with Arquillian Payara Managed Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-payara-managed/badge.svg)
+![Integration Test with Arquillian Payara Embedded Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-payara-embedded/badge.svg)
 ![Integration Test with Arquillian Payara Micro Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-payara-micro/badge.svg)
 ![Integration Test with Arquillian WildFly Managed Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-wildfly-managed/badge.svg)
 ![Integration Test with Arquillian WildFly Embedded Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-wildfly-embedded/badge.svg)
