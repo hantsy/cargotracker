@@ -2,6 +2,7 @@ package org.eclipse.cargotracker.application;
 
 import org.eclipse.cargotracker.IntegrationTests;
 import org.eclipse.cargotracker.application.internal.DefaultBookingService;
+import org.eclipse.cargotracker.application.util.RestConfiguration;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -93,7 +94,7 @@ public class BookingServiceTest {
                 .addClass(BookingServiceTestDataGenerator.class)
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)
-                .addClass(TestRestConfiguration.class)
+                .addClass(RestConfiguration.class)
 
                 // add persistence unit descriptor
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
@@ -261,19 +262,5 @@ public class BookingServiceTest {
         assertFalse(cargo.getDelivery().isUnloadedAtDestination());
         assertEquals(RoutingStatus.MISROUTED, cargo.getDelivery().getRoutingStatus());
     }
-
-    /** JAX-RS configuration. */
-    @ApplicationPath("rest")
-    public static class TestRestConfiguration extends Application {
-
-        //    public BookingServiceTestRestConfiguration() {
-        //        // Resources
-        //        packages(new String[]{GraphTraversalService.class.getPackage().getName()});
-        //        // Providers - JSON.
-        //        register(new MoxyJsonFeature());
-        //        register(new JsonMoxyConfigurationContextResolver()); // TODO [Jakarta EE 8] See
-        // if
-        // this can be removed.
-        //    }
-    }
+    
 }
