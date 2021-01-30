@@ -31,8 +31,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
@@ -262,5 +260,4 @@ public class BookingServiceTest {
         assertFalse(cargo.getDelivery().isUnloadedAtDestination());
         assertEquals(RoutingStatus.MISROUTED, cargo.getDelivery().getRoutingStatus());
     }
-    
 }
