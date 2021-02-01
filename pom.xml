@@ -50,7 +50,9 @@
         <!-- Test Utilities -->
         <junit.version>4.13.1</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
+        <mockito.version>3.7.7</mockito.version>
         <assertj.version>3.19.0</assertj.version>
+        <json-path.version>2.5.0</json-path.version>
         <!-- By default, skip tests -->
         <skipTests>true</skipTests>
 
@@ -119,7 +121,23 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.7.7</version>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- JSON path -->
+            <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${json-path.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path-assert -->
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path-assert</artifactId>
+                <version>${json-path.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -223,6 +241,16 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

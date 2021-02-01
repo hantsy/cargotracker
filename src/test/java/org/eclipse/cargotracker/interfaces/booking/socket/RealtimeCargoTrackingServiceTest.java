@@ -1,5 +1,23 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.cargotracker.Deployments.addApplicationBase;
+import static org.eclipse.cargotracker.Deployments.addDomainModels;
+import static org.eclipse.cargotracker.Deployments.addExtraJars;
+import static org.eclipse.cargotracker.Deployments.addInfraBase;
+
+import com.jayway.jsonpath.JsonPath;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
+import javax.websocket.Session;
 import org.eclipse.cargotracker.IntegrationTests;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
@@ -11,21 +29,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
-import javax.websocket.Session;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
 
 @RunWith(Arquillian.class)
 @Category(IntegrationTests.class)
@@ -71,7 +74,9 @@ public class RealtimeCargoTrackingServiceTest {
         assertThat(session).isNotNull();
         TestClient.latch.await(5, TimeUnit.SECONDS);
         assertThat(TestClient.response).isNotNull();
-        // assert json data.
+        var json = JsonPath.parse(TestClient.response);
+        LOGGER.log(Level.INFO, "response json string: {0}", json);
+        assertThat(json.read("$.trackingId", String.class)).isEqualTo("AAA");
     }
 
     public Session connectToServer() throws DeploymentException, IOException, URISyntaxException {
