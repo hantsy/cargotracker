@@ -261,10 +261,11 @@ public class CargoRepositoryTest {
     @Test
     @InSequence(7)
     public void testSpecifyNewRoute() throws Exception {
+        LOGGER.log(Level.INFO, "run test :: testSpecifyNewRoute");
         startTransaction();
         var trackingId = new TrackingId("AAA");
         Cargo cargo = cargoRepository.find(trackingId);
-
+        LOGGER.log(Level.INFO, "retrieved cargo: {0}", cargo.toString(true));
         assertThat(cargo).isNotNull();
 
         Location origin = locationRepository.find(SampleLocations.NEWYORK.getUnLocode());
@@ -273,9 +274,11 @@ public class CargoRepositoryTest {
         cargo.specifyNewRoute(new RouteSpecification(origin, destination, LocalDate.now()));
 
         cargoRepository.store(cargo);
+        LOGGER.log(Level.INFO, "saved cargo: {0}", cargo.toString(true));
         commitTransaction();
 
         // verify in the new tx
+        LOGGER.log(Level.INFO, "run test :: verify cargo state");
         startTransaction();
         var result =
                 this.entityManager
@@ -283,7 +286,10 @@ public class CargoRepositoryTest {
                                 "select c from Cargo c where c.trackingId=:trackingId", Cargo.class)
                         .setParameter("trackingId", trackingId)
                         .getSingleResult();
-
+        LOGGER.log(
+                Level.INFO,
+                "query cargo by tracking id: {0}, \n result: {1}",
+                new Object[] {trackingId, result.toString(true)});
         assertThat(result.getTrackingId()).isEqualTo(trackingId);
         assertThat(result.getRouteSpecification().getOrigin()).isEqualTo(origin);
         assertThat(result.getRouteSpecification().getDestination()).isEqualTo(destination);

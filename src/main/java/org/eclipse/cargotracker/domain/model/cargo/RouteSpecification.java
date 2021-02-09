@@ -25,7 +25,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     // private static final Logger LOGGER = Logger.getLogger(RouteSpecification.class.getName());
 
     @ManyToOne
-    @JoinColumn(name = "spec_origin_id", updatable = false)
+    @JoinColumn(name = "spec_origin_id")
     private Location origin;
 
     @ManyToOne

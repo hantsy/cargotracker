@@ -1,6 +1,8 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -184,6 +186,12 @@ public class Cargo implements Serializable {
     @Override
     public String toString() {
         return trackingId.toString();
+    }
+
+    public String toString(boolean verbose) {
+        return verbose
+                ? ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE)
+                : trackingId.toString();
     }
 
     public boolean isNew() {
