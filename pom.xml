@@ -58,7 +58,7 @@
 
         <!-- Payara server -->
         <payara.version>5.2021.1</payara.version>
-        <arquillian-payara.version>2.3.3</arquillian-payara.version>
+        <arquillian-payara.version>2.4-SNAPSHOT</arquillian-payara.version>
 
         <!-- Wildfly server -->
         <wildfly.version>22.0.0.Final</wildfly.version>
@@ -923,4 +923,13 @@
             </build>
         </profile>
     </profiles>
+    <repositories>
+        <repository>
+            <id>oss-sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
