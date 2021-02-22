@@ -73,7 +73,7 @@
         <webapp.graphTraversalUrl>
             http://localhost:8080/cargo-tracker/rest/graph-traversal/shortest-path
         </webapp.graphTraversalUrl>
-        <jackson.version>2.11.3</jackson.version>
+        <jackson.version>2.12.1</jackson.version>
         <tyrus-client.version>1.17</tyrus-client.version>   
     </properties>
 
