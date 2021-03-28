@@ -1,19 +1,18 @@
 package org.eclipse.cargotracker.interfaces.tracking.web;
 
+import static javax.transaction.Transactional.TxType.*;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
-
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEventRepository;
-
-import static javax.transaction.Transactional.TxType.*;
 
 /**
  * Backing bean for tracking cargo. This interface sits immediately on top of the domain layer,

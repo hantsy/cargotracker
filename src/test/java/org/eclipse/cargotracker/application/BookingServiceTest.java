@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
-
 import org.eclipse.cargotracker.application.internal.DefaultBookingService;
 import org.eclipse.cargotracker.application.util.DateConverter;
 import org.eclipse.cargotracker.application.util.RestConfiguration;
@@ -96,86 +95,84 @@ public class BookingServiceTest {
 
   @Deployment
   public static WebArchive createDeployment() {
-    WebArchive war= ShrinkWrap.create(WebArchive.class, "cargo-tracker-test.war")
-        // Application layer component directly under test.
-        .addClass(BookingService.class)
-        // Domain layer components.
-        .addClass(TrackingId.class)
-        .addClass(UnLocode.class)
-        .addClass(Itinerary.class)
-        .addClass(Leg.class)
-        .addClass(Voyage.class)
-        .addClass(VoyageNumber.class)
-        .addClass(Schedule.class)
-        .addClass(CarrierMovement.class)
-        .addClass(Location.class)
-        .addClass(HandlingEvent.class)
-        .addClass(Cargo.class)
-        .addClass(RouteSpecification.class)
-        .addClass(AbstractSpecification.class)
-        .addClass(Specification.class)
-        .addClass(AndSpecification.class)
-        .addClass(OrSpecification.class)
-        .addClass(NotSpecification.class)
-        .addClass(Delivery.class)
-        .addClass(TransportStatus.class)
-        .addClass(HandlingActivity.class)
-        .addClass(RoutingStatus.class)
-        .addClass(HandlingHistory.class)
-        .addClass(DomainObjectUtils.class)
-        .addClass(CargoRepository.class)
-        .addClass(LocationRepository.class)
-        .addClass(VoyageRepository.class)
-        .addClass(HandlingEventRepository.class)
-        .addClass(HandlingEventFactory.class)
-        .addClass(CannotCreateHandlingEventException.class)
-        .addClass(UnknownCargoException.class)
-        .addClass(UnknownVoyageException.class)
-        .addClass(UnknownLocationException.class)
-        .addClass(RoutingService.class)
-        // Application layer components
-        .addClass(DefaultBookingService.class)
-        .addClass(DateConverter.class)
-        .addClass(RestConfiguration.class)
-        // Infrastructure layer components.
-        .addClass(JpaCargoRepository.class)
-        .addClass(JpaVoyageRepository.class)
-        .addClass(JpaHandlingEventRepository.class)
-        .addClass(JpaLocationRepository.class)
-        .addClass(ExternalRoutingService.class)
-        .addClass(LoggerProducer.class)
-        // Interface components
-        .addClass(TransitPath.class)
-        .addClass(TransitEdge.class)
-        // Third-party system simulator
-        .addClass(GraphTraversalService.class)
-        .addClass(GraphDao.class)
-        // Sample data.
-        .addClass(BookingServiceTestDataGenerator.class)
-        .addClass(SampleLocations.class)
-        .addClass(SampleVoyages.class)
-        // Persistence unit descriptor
-        .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
-        // Web application descriptor
-        .addAsWebInfResource("test-web.xml", "web.xml")
-        // Library dependencies
-        .addAsLibraries(
-            Maven.resolver()
-                .loadPomFromFile("pom.xml")
-                .resolve("org.apache.commons:commons-lang3", "com.h2database:h2")
-                .withTransitivity()
-                .asFile());
+    WebArchive war =
+        ShrinkWrap.create(WebArchive.class, "cargo-tracker-test.war")
+            // Application layer component directly under test.
+            .addClass(BookingService.class)
+            // Domain layer components.
+            .addClass(TrackingId.class)
+            .addClass(UnLocode.class)
+            .addClass(Itinerary.class)
+            .addClass(Leg.class)
+            .addClass(Voyage.class)
+            .addClass(VoyageNumber.class)
+            .addClass(Schedule.class)
+            .addClass(CarrierMovement.class)
+            .addClass(Location.class)
+            .addClass(HandlingEvent.class)
+            .addClass(Cargo.class)
+            .addClass(RouteSpecification.class)
+            .addClass(AbstractSpecification.class)
+            .addClass(Specification.class)
+            .addClass(AndSpecification.class)
+            .addClass(OrSpecification.class)
+            .addClass(NotSpecification.class)
+            .addClass(Delivery.class)
+            .addClass(TransportStatus.class)
+            .addClass(HandlingActivity.class)
+            .addClass(RoutingStatus.class)
+            .addClass(HandlingHistory.class)
+            .addClass(DomainObjectUtils.class)
+            .addClass(CargoRepository.class)
+            .addClass(LocationRepository.class)
+            .addClass(VoyageRepository.class)
+            .addClass(HandlingEventRepository.class)
+            .addClass(HandlingEventFactory.class)
+            .addClass(CannotCreateHandlingEventException.class)
+            .addClass(UnknownCargoException.class)
+            .addClass(UnknownVoyageException.class)
+            .addClass(UnknownLocationException.class)
+            .addClass(RoutingService.class)
+            // Application layer components
+            .addClass(DefaultBookingService.class)
+            .addClass(DateConverter.class)
+            .addClass(RestConfiguration.class)
+            // Infrastructure layer components.
+            .addClass(JpaCargoRepository.class)
+            .addClass(JpaVoyageRepository.class)
+            .addClass(JpaHandlingEventRepository.class)
+            .addClass(JpaLocationRepository.class)
+            .addClass(ExternalRoutingService.class)
+            .addClass(LoggerProducer.class)
+            // Interface components
+            .addClass(TransitPath.class)
+            .addClass(TransitEdge.class)
+            // Third-party system simulator
+            .addClass(GraphTraversalService.class)
+            .addClass(GraphDao.class)
+            // Sample data.
+            .addClass(BookingServiceTestDataGenerator.class)
+            .addClass(SampleLocations.class)
+            .addClass(SampleVoyages.class)
+            // Persistence unit descriptor
+            .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+            // Web application descriptor
+            .addAsWebInfResource("test-web.xml", "web.xml")
+            // Library dependencies
+            .addAsLibraries(
+                Maven.resolver()
+                    .loadPomFromFile("pom.xml")
+                    .resolve("org.apache.commons:commons-lang3", "com.h2database:h2")
+                    .withTransitivity()
+                    .asFile());
 
     try {
       Class<?> clazz =
-              Class.forName(
-                      "org.eclipse.cargotracker.infrastructure.routing.client.JacksonObjectMapperContextResolver");
+          Class.forName(
+              "org.eclipse.cargotracker.infrastructure.routing.client.JacksonObjectMapperContextResolver");
       war.addClass(clazz);
     } catch (ClassNotFoundException e) {
-      LOGGER.log(
-              Level.WARNING,
-              "ignore this exception on non-WildFly server: {0}",
-              e.getMessage());
+      LOGGER.log(Level.WARNING, "ignore this exception on non-WildFly server: {0}", e.getMessage());
     }
 
     LOGGER.log(Level.INFO, "war: {0}", war.toString(true));
