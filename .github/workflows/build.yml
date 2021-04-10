@@ -25,6 +25,7 @@ jobs:
       # Recommended: latest versions of Google Java Format require JDK 11+
       - uses: actions/setup-java@v2
         with:
+          distribution: 'zulu'
           java-version: "11"
       - uses: axel-op/googlejavaformat-action@v3
         with:
