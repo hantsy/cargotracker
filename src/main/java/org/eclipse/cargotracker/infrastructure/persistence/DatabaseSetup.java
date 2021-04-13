@@ -45,7 +45,7 @@ public class DatabaseSetup {
                             + "-"
                             + connection.getCatalog());
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "database connection failed: {0}", e);
         }
     }
 }

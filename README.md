@@ -7,152 +7,58 @@
 ![Integration Test with Arquillian WildFly Managed Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-wildfly-managed/badge.svg)
 ![Integration Test with Arquillian WildFly Embedded Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-wildfly-embedded/badge.svg)
 
-**This is my personal fork of [eclipse-ee4j/cargotracker](https://github.com/eclipse-ee4j/cargotracker), some features
-planned to sync to the upstream project is in progress.**
+> **This is my personal fork of [eclipse-ee4j/cargotracker](https://github.com/eclipse-ee4j/cargotracker), some features planned to sync to the upstream project is in progress.**
 
-## Overview
+> For the detailed introduction to this project, go to the original project website: https://eclipse-ee4j.github.io/cargotracker/.
 
-The project demonstrates how you can develop applications with Jakarta EE using widely adopted architectural best
-practices like Domain-Driven Design (DDD). The source code is directly based on the well known
-original [DDD cargo tracking application](https://github.com/citerus/dddsample-core) developed by DDD pioneer Eric Evans'
-company Domain Language and the Swedish software consulting company Citerus. The cargo example actually comes from Eric
-Evans' seminal book on DDD.
+Follow the following steps to try it on your local system.
 
-The original application is written in Spring, Hibernate and Jetty whereas the application is built on Jakarta EE.
+## Prerequisites
 
-The application is an end-to-end system for keeping track of shipping cargo. It has several interfaces described in the
-following sections.
-
-For further details on the project, please visit: https://eclipse-ee4j.github.io/cargotracker/.
-
-![Cargo Tracker cover](cargo_tracker_cover.png)
-
-## Getting Started
-
-The [project website](https://eclipse-ee4j.github.io/cargotracker/) has detailed information on how to get started.
-
-### Prerequisites
-
-* Java 8 or 11
-* The latest Apache Maven 3.6.x
+* Java 11
+* Apache Maven 3.8.1
 * Git
 * Docker
-* [Payara 5](https://www.payara.fish/downloads/)
+* [Payara 5](https://www.payara.fish/downloads/) or [WildFly](https://www.wildfly.org)
 
-### Prepare a running database
+## Building and Running the Application
+
+### Preparing a Running Postgres Database
 
 In this project, we use Postgres as an example.
 
-There is a *docker-compose.yaml* file in project source codes. Switch to the project root folder, and simply type the
-following command to start a Postgres instance in docker container.
+There is a *docker-compose.yaml* file available in the project root folder.
+
+Switch to the project root folder, and run  the following command to start a Postgres instance in Docker  container.
 
 ```bash
 docker-compose up postgres
 ```
 
-### Run the application without IDEs
+### Run Application on Payara 5
 
-* Get the project source code.
-* Ensure you are running Java SE 8 or 11. The project by default uses Payara 5, which supports Java SE 8+.
-* Make sure JAVA_HOME is set.
-* As long as you have Maven set up properly, navigate to the project source root and type:
+Run the following command to run the application on Payara 5 using cargo maven plugin.
 
-   ```bash
-   mvn clean package cargo:run
-   ```
-* Go to http://localhost:8080/cargo-tracker
+```bash
+mvn clean package cargo:run
+```
+Open your browser, go to http://localhost:8080/cargo-tracker
 
-### Set up in Eclipse IDE
+### Run Application on WildFly 
 
-* Set up [Java SE 11](https://www.azul.com/downloads/zulu-community/?version=java-11-lts)
-  , [the 2020-06 release of Eclipse for Enterprise Java Developers](https://www.eclipse.org/downloads/packages/release/2020-06/r/eclipse-ide-enterprise-java-developers) (
-  this is the latest Eclipse IDE version that supports Java SE 8) and [Payara 5](https://www.payara.fish/downloads/) .
-  You will also need to set up [Payara Tools](https://marketplace.eclipse.org/content/payara-tools) in Eclipse.
-* Import this code in Eclipse as a Maven project, Eclipse will do the rest for you. Proceed with clean/building the
-  application.
-* After the project is built (which will take a while the very first time as Maven downloads dependencies), simply run
-  it via Payara server.
+Run the following command to run the application on WildFly  using the official WildFly maven plugin.
 
-### Set up in Apache NetBeans IDE
+```bash
+mvn clean package wildfly:run -Pwildfly
+```
+Open your browser, go to http://localhost:8080/cargo-tracker
 
-* Set up [Java SE 11](https://www.azul.com/downloads/zulu-community/?version=java-11-lts)
-  ,  [NetBeans](http://netbeans.apache.org) and  [Payara 5](https://www.payara.fish/downloads/), and
-  configure [Payara in NetBeans](https://blog.payara.fish/adding-payara-server-to-netbeans).
-* Open the project from NetBeans directly. NetBeans recognizes Maven projects automatically.
-* From the project context menu, simply run it via Payara server.
 
-## Exploring the Application
+## Exploring the testing codes
 
-After the application runs, it will be available at:
-http://localhost:8080/cargo-tracker/. Under the hood, the application uses a number of Jakarta EE 8 features including
-JSF, CDI, EJB, JPA, JAX-RS, WebSocket, JSON Processing, Bean Validation and JMS.
+Cargo Tracker's testing is done using JUnit and [Arquillian](http://arquillian.org/). There are several Maven profiles configured for running the testing codes against various adapters.
 
-There are several web interfaces, REST interfaces and a file system scanning interface. It's probably best to start
-exploring the interfaces in the rough order below.
-
-The tracking interface let's you track the status of cargo and is intended for the general public. Try entering a
-tracking ID like **ABC123** (the application is pre-populated with some sample data).
-
-The administrative interface is intended for the shipping company that manages cargo. The landing page of the interface
-is a dashboard providing an overall view of registered cargo. You can book cargo using the booking interface. One cargo
-is booked, you can route it. When you initiate a routing request, the system will determine routes that might work for
-the cargo. Once you select a route, the cargo will be ready to process handling events at the port. You can also change
-the destination for cargo if needed or track cargo.
-
-The Incident Logging interface is intended for port personnel registering what happened to cargo. The interface is
-primarily intended for mobile devices, but you can use it via a desktop browser. The interface is accessible at this
-URL: http://localhost:8080/cargo-tracker/event-logger/index.xhtml. For convenience, you could use a mobile emulator
-instead of an actual mobile device. Generally speaking cargo goes through these events:
-
-* It's received at the origin port.
-* It's loaded and unloaded onto voyages on it's itinerary.
-* It's claimed at it's destination port.
-* It may go through customs at arbitrary points.
-
-While filling out the event registration form, it's best to have the itinerary handy. You can access the itinerary for
-registered cargo via the admin interface. The cargo handling is done via Messaging for scalability. While using the
-incident logger, note that only the load and unload events require as associated voyage.
-
-You should also explore the file system based bulk event registration interface. It reads files under */tmp/uploads*.
-The files are just CSV files. A sample CSV file is available under [*
-src/test/resources/handling_events.csv*](src/test/resources/handling_events.csv). The sample is already set up to match
-the remaining itinerary events for cargo ABC123. Just make sure to update the times in the first column of the sample
-CSV file to match the itinerary as well.
-
-Successfully processed entries are archived under */tmp/archive*. Any failed records are archived under */tmp/failed*.
-
-Don't worry about making mistakes. The application is intended to be fairly error tolerant. If you do come across
-issues, you should [report them](https://github.com/eclipse-ee4j/cargotracker/issues).
-
-> All data entered is wiped upon application restart, so you can start from a blank slate easily if needed.
-
-You can also use the soapUI scripts included in the source code to explore the REST interfaces as well as the numerous
-unit tests covering the code base generally.
-
-## Exploring the Code
-
-As mentioned earlier, the real point of the application is demonstrating how to create well architected, effective
-Jakarta EE applications. To that end, once you have gotten some familiarity with the application functionality the next
-thing to do is to dig right into the code.
-
-DDD is a key aspect of the architecture, so it's important to get at least a working understanding of DDD. As the name
-implies, Domain-Driven Design is an approach to software design and development that focuses on the core domain and
-domain logic.
-
-For the most part, it's fine if you are new to Jakarta EE. As long as you have a basic understanding of server-side
-applications, the code should be good enough to get started. For learning Jakarta EE further, we have recommended a few
-links in the resources section of the project site. Of course, the ideal user of the project is someone who has a basic
-working understanding both Jakarta EE and DDD. Though it's not our goal to become a kitchen sink example for
-demonstrating the vast amount of APIs and features in Jakarta EE, we do use a very representative set. You'll find that
-you'll learn a fair amount by simply digging into the code to see how things are implemented.
-
-## Exploring the Tests
-
-Cargo Tracker's testing is done using JUnit and [Arquillian](http://arquillian.org/). The Arquillian configuration uses
-a [remote container](http://arquillian.org/arquillian-core/#_containers) (Payara 5). Therefore, to perform a test you
-will need to make sure to have a container running.
-
-## Testing Locally with Payara
+### Testing Locally with Payara
 
 For testing locally you will first need to run a Payara 5 server.
 
@@ -169,16 +75,33 @@ Now for running the tests:
 ```shell script
 mvn -Ppayara -DskipTests=false test
 ```
+> I also added configuration of running tests on Payara Embedded and Payara Micro adapters, but they failed. See [the issues](https://github.com/payara/ecosystem-support/issues/created_by/hantsy) I reported on Payara issue tracker.
 
-## Known Issues
+###  Testing with WildFly 
 
-* If you are running older versions of Payara, you will get a log message stating that SSL certificates have expired.
-  This won't get in the way of functionality, but it will stop log messages from being printed to the IDE console. You
-  can solve this issue by manually removing the expired certificates from the Payara domain, as
-  explained [here](https://github.com/payara/Payara/issues/3038).
-* If you restart the application a few times, you will run into a bug causing a spurious deployment failure. While the
-  problem can be annoying, it's harmless. Just re-run the application (make sure to completely shut down Payara first).
-* Sometimes when the server is not shut down correctly or there is a locking/permissions issue, the Derby database that
-  the application uses get's corrupted, resulting in strange database errors. If this occurs, you will need to stop the
-  application and clean the database. You can do this by simply removing *\tmp\cargo-tracker-database* from the file
-  system and restarting the application.
+Getting the latest WildFly distribution from [the official WildFly website](https://www.wildfly.org).
+
+You can do that with the following script:
+
+```shell script
+wget https://download.jboss.org/wildfly/23.0.0.Final/wildfly-23.0.0.Final.zip
+unzip wildfly-23.0.0.Final.zip && cd wildfly-23.0.0.Final/bin
+./standalone -c standalone-full.xml
+```
+
+Follow the [WildFly Admin Guide](https://docs.wildfly.org/23/Admin_Guide.html#add-user-utility) to add a new admin user(`admin/admin@123`).
+
+Now for running the tests against WildFly:
+
+```shell script
+mvn clean verify -Parq-wildfly-managed -DskipTests=false
+```
+
+###  Testing with WildFly Embedded
+
+Run the following command to run testing codes on an embedded WildFly.
+
+```shell script
+mvn clean verify -Parq-wildfly-embedded -DskipTests=false
+```
+

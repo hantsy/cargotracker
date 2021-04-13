@@ -1,11 +1,7 @@
 package org.eclipse.pathfinder.api;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import org.eclipse.pathfinder.internal.GraphDao;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.constraints.NotBlank;
@@ -14,15 +10,20 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import org.eclipse.pathfinder.internal.GraphDao;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Stateless
 @Path("/graph-traversal")
 public class GraphTraversalService {
 
-    private static final long ONE_MIN_MS = 1000 * 60;
+    private static final long ONE_MIN_MS = 1000L * 60;
     private static final long ONE_DAY_MS = ONE_MIN_MS * 60 * 24;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     @Inject private GraphDao dao;
 
     @GET
@@ -120,7 +121,7 @@ public class GraphTraversalService {
     private List<String> getRandomChunkOfLocations(List<String> allLocations) {
         Collections.shuffle(allLocations);
         int total = allLocations.size();
-        int chunk = total > 4 ? 1 + new Random().nextInt(5) : total;
+        int chunk = total > 4 ? 1 + new SecureRandom().nextInt(5) : total;
         return allLocations.subList(0, chunk);
     }
 }

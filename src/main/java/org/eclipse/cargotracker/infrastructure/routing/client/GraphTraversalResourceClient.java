@@ -34,7 +34,11 @@ public class GraphTraversalResourceClient {
                             "org.eclipse.cargotracker.infrastructure.routing.client.JacksonObjectMapperContextResolver");
             jaxrsClient.register(clazz);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.log(
+                    Level.WARNING,
+                    "registering JacksonObjectMapperContextResolver failed: {0}",
+                    e.getMessage());
+            LOGGER.log(Level.INFO, "Skip this error for non-WildFly application servers.");
         }
     }
 

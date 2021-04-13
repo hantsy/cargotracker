@@ -8,9 +8,6 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.TrackingEvents;
 
 public class TrackingEventsDtoAssembler {
 
-    // private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a
-    // z");
-
     public TrackingEvents toDto(Cargo cargo, HandlingEvent handlingEvent) {
         String location = locationFrom(handlingEvent);
         HandlingEvent.Type type = handlingEvent.getType();

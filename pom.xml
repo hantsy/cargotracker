@@ -40,7 +40,7 @@
         <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven2-plugin.version>1.8.5</cargo-maven2-plugin.version>
+        <cargo-maven3-plugin.version>1.9.3</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API -->
         <jakartaee-api.version>8.0.0</jakartaee-api.version>
@@ -53,12 +53,17 @@
         <mockito.version>3.9.0</mockito.version>
         <assertj.version>3.19.0</assertj.version>
         <json-path.version>2.5.0</json-path.version>
+
+        <!-- Jacoco code coverage report -->
+        <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+
         <!-- By default, skip tests -->
         <skipTests>true</skipTests>
 
         <!-- Payara server -->
-        <payara.version>5.2021.2</payara.version>
-        <arquillian-payara.version>2.3.3</arquillian-payara.version>
+        <payara.version>5.2021.1</payara.version>
+        <arquillian-payara.version>2.4.1</arquillian-payara.version>
+        <tyrus-client.version>1.17</tyrus-client.version>
 
         <!-- Wildfly server -->
         <wildfly.version>22.0.0.Final</wildfly.version>
@@ -67,14 +72,13 @@
         <!-- websockets-jsr and resteasy for client, aligned with Wildfly version. -->
         <undertow-websockets-jsr.version>2.2.3.Final</undertow-websockets-jsr.version>
         <resteasy.version>3.14.0.Final</resteasy.version>
+        <jackson.version>2.11.3</jackson.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>
         <webapp.graphTraversalUrl>
             http://localhost:8080/cargo-tracker/rest/graph-traversal/shortest-path
         </webapp.graphTraversalUrl>
-        <jackson.version>2.11.3</jackson.version>
-        <tyrus-client.version>1.17</tyrus-client.version>   
     </properties>
 
     <dependencyManagement>
@@ -307,8 +311,8 @@
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                        <version>${cargo-maven2-plugin.version}</version>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo-maven3-plugin.version}</version>
                         <configuration>
                             <container>
                                 <containerId>payara</containerId>
@@ -336,8 +340,8 @@
                     <!-- run: mvn package cargo:deploy -->
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                        <version>${cargo-maven2-plugin.version}</version>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo-maven3-plugin.version}</version>
                         <configuration>
                             <container>
                                 <containerId>payara</containerId>
@@ -464,7 +468,11 @@
                 <payara.home>${project.build.directory}/payara5</payara.home>
             </properties>
             <dependencies>
-
+                <dependency>
+                    <groupId>fish.payara.arquillian</groupId>
+                    <artifactId>payara-client-ee8</artifactId>
+                    <version>${arquillian-payara.version}</version>
+                </dependency>
                 <dependency>
                     <groupId>org.glassfish.tyrus</groupId>
                     <artifactId>tyrus-client</artifactId>
@@ -903,36 +911,75 @@
                 </plugins>
             </build>
         </profile>
-                <profile>
+        <profile>
             <id>coverage</id>
+            <properties>
+                <jacoco.version>0.8.6</jacoco.version>
+                <arquillian-jacoco.version>1.1.0</arquillian-jacoco.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>org.jacoco.core</artifactId>
+                    <version>${jacoco.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.extension</groupId>
+                    <artifactId>arquillian-jacoco</artifactId>
+                    <version>${arquillian-jacoco.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.6</version>
+                        <version>${jacoco-maven-plugin.version}</version>
                         <configuration>
                             <excludes>
-                                <exclude>**/dto/*</exclude>
+                                <!-- excludes the resources not to calculated in coverage report-->
+                                <exclude>**/*Resource.*</exclude>
                             </excludes>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>prepare-agent</id>
+                                <id>default-prepare-agent</id>
                                 <goals>
                                     <goal>prepare-agent</goal>
                                 </goals>
                             </execution>
                             <execution>
-                                <id>report</id>
+                                <id>default-report</id>
                                 <goals>
                                     <goal>report</goal>
                                 </goals>
+                            </execution>
+                            <execution>
+                                <id>default-check</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <rule>
+                                            <element>BUNDLE</element>
+                                            <limits>
+                                                <limit>
+                                                    <counter>COMPLEXITY</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>0.60</minimum>
+                                                </limit>
+                                            </limits>
+                                        </rule>
+                                    </rules>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
-        </profile>     
+        </profile>
     </profiles>
 </project>

@@ -2,17 +2,17 @@ package org.eclipse.pathfinder.internal;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.Serializable;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 @ApplicationScoped
 public class GraphDao implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     public List<String> listLocations() {
         return new ArrayList<>(
