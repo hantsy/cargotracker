@@ -11,7 +11,8 @@ import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
-import org.eclipse.cargotracker.infrastructure.messaging.JMSResourcesSetup;
+import org.eclipse.cargotracker.infrastructure.messaging.JmsQueueNames;
+import org.eclipse.cargotracker.infrastructure.messaging.JmsResourcesSetup;
 import org.eclipse.cargotracker.infrastructure.messaging.jms.CargoHandledConsumer;
 import org.eclipse.cargotracker.infrastructure.messaging.jms.HandlingEventRegistrationAttemptConsumer;
 import org.eclipse.cargotracker.infrastructure.messaging.jms.JmsApplicationEvents;
@@ -110,7 +111,8 @@ public class ApplicationEventsTest {
         addInfraBase(war);
         // addInfraPersistence(war);
         // addInfraMessaging(war);
-        war.addClass(JMSResourcesSetup.class)
+        war.addClass(JmsResourcesSetup.class)
+                .addClass(JmsQueueNames.class)
                 .addClass(CargoHandledConsumer.class)
                 .addClass(HandlingEventRegistrationAttemptConsumer.class);
         addApplicationBase(war);

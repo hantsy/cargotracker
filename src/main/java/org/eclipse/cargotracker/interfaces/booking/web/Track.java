@@ -21,7 +21,7 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatus;
  * there is never any one perfect solution for all situations, so we've chosen to demonstrate two
  * polarized ways to build user interfaces.
  */
-@Named("admin.track")
+@Named("adminTrack")
 @ViewScoped
 public class Track implements Serializable {
 

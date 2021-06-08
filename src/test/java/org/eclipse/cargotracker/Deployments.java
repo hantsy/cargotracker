@@ -14,7 +14,7 @@ import org.eclipse.cargotracker.domain.service.RoutingService;
 import org.eclipse.cargotracker.domain.shared.*;
 import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 import org.eclipse.cargotracker.infrastructure.logging.LoggerProducer;
-import org.eclipse.cargotracker.infrastructure.messaging.JMSResourcesSetup;
+import org.eclipse.cargotracker.infrastructure.messaging.JmsResourcesSetup;
 import org.eclipse.cargotracker.infrastructure.persistence.DatabaseSetup;
 import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaCargoRepository;
 import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaHandlingEventRepository;
@@ -84,7 +84,7 @@ public class Deployments {
     }
 
     public static void addInfraMessaging(WebArchive war) {
-        war.addPackages(true, JMSResourcesSetup.class.getPackage());
+        war.addPackages(true, JmsResourcesSetup.class.getPackage());
     }
 
     public static void addInfraRouting(WebArchive war) {

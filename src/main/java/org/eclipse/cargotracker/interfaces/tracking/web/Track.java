@@ -26,7 +26,7 @@ import java.util.List;
  *
  * <p>In some very simplistic cases, it is fine to not use even an adapter.
  */
-@Named("public.track")
+@Named("publicTrack")
 @ViewScoped
 public class Track implements Serializable {
 

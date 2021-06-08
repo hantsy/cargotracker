@@ -17,12 +17,12 @@
                         <h:panelGrid columns="3" cellpadding="15">
                             <p>Enter your tracking ID:</p>
                             <p:autoComplete id="trackingIdInput"
-                                            value="#{admin.track.trackingId}" required="true"
+                                            value="#{adminTrack.trackingId}" required="true"
                                             forceSelection="true" placeholder="XYZ789"
                                             title="Valid tracking ID"
-                                            completeMethod="#{admin.track.getTrackingIds}"/>
+                                            completeMethod="#{adminTrack.getTrackingIds}"/>
                             <h:commandButton value="Track!"
-                                             action="#{admin.track.onTrackById()}"/>
+                                             action="#{adminTrack.onTrackById()}"/>
                         </h:panelGrid>
                     </h:form>
                 </div>
@@ -33,30 +33,30 @@
             </div>
 
             <div class="ui-g-12">
-                <h:panelGroup rendered="#{not empty admin.track.cargo}">
+                <h:panelGroup rendered="#{not empty adminTrack.cargo}">
                     <div id="result">
 
                         <p>
-                            Cargo <strong><h:link value="#{admin.track.trackingId}"
+                            Cargo <strong><h:link value="#{adminTrack.trackingId}"
                                                   id="trackingId" outcome="/admin/show.xhtml?faces-redirect=true"
                                                   style="text-decoration: none;color: black;">
-                            <f:param name="trackingId" value="#{admin.track.trackingId}"/>
-                        </h:link></strong> is currently <strong>#{admin.track.cargo.statusText}</strong>
+                            <f:param name="trackingId" value="#{adminTrack.trackingId}"/>
+                        </h:link></strong> is currently <strong>#{adminTrack.cargo.statusText}</strong>
                         </p>
 
                         <p:tooltip id="toolTipFade" for="trackingId"
                                    value="Click to see itinerary's details."/>
 
                         <p>
-                            Estimated time of arrival in <strong>#{admin.track.cargo.destination}</strong>:
-                            #{admin.track.cargo.eta}
+                            Estimated time of arrival in <strong>#{adminTrack.cargo.destination}</strong>:
+                            #{adminTrack.cargo.eta}
                         </p>
                         <ui:fragment
-                                rendered="#{not empty admin.track.cargo.nextExpectedActivity}">
-                            <p>#{admin.track.cargo.nextExpectedActivity}</p>
+                                rendered="#{not empty adminTrack.cargo.nextExpectedActivity}">
+                            <p>#{adminTrack.cargo.nextExpectedActivity}</p>
                         </ui:fragment>
 
-                        <h:panelGroup rendered="#{admin.track.cargo.misdirected}">
+                        <h:panelGroup rendered="#{adminTrack.cargo.misdirected}">
                             <p>
                                 <i class="fa fa-exclamation-triangle" style="color: #9b2332"></i>
                                 Cargo is misdirected.
@@ -78,11 +78,11 @@
                 </div>
 
                 <h:outputLabel
-                        value="There are no events recorded for the tracking ID #{admin.track.trackingId}."
-                        rendered="#{empty admin.track.cargo.events}"/>
+                        value="There are no events recorded for the tracking ID #{adminTrack.trackingId}."
+                        rendered="#{empty adminTrack.cargo.events}"/>
 
                 <div class="ui-g-12">
-                    <ui:repeat value="#{admin.track.cargo.events}" var="event">
+                    <ui:repeat value="#{adminTrack.cargo.events}" var="event">
                         <div>
                             <ui:fragment rendered="#{event.expected}">
                                 &#160;&#160;<i class="fa fa-check"

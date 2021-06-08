@@ -16,35 +16,35 @@ import java.util.logging.Logger;
 // @JMSDestinationDefinition is not repeatable.
 @JMSDestinationDefinitions({
     @JMSDestinationDefinition(
-            name = "java:app/jms/CargoHandledQueue",
+            name = JmsQueueNames.CARGO_HANDLED_QUEUE,
             // resourceAdapter = "jmsra",
             interfaceName = "javax.jms.Queue",
             destinationName = "CargoHandledQueue"),
     @JMSDestinationDefinition(
-            name = "java:app/jms/MisdirectedCargoQueue",
+            name = JmsQueueNames.MISDIRECTED_CARGO_QUEUE,
             // resourceAdapter = "jmsra",
             interfaceName = "javax.jms.Queue",
             destinationName = "MisdirectedCargoQueue"),
     @JMSDestinationDefinition(
-            name = "java:app/jms/DeliveredCargoQueue",
+            name = JmsQueueNames.DELIVERED_CARGO_QUEUE,
             // resourceAdapter = "jmsra",
             interfaceName = "javax.jms.Queue",
             destinationName = "DeliveredCargoQueue"),
     @JMSDestinationDefinition(
-            name = "java:app/jms/RejectedRegistrationAttemptsQueue",
+            name = JmsQueueNames.REJECTED_REGISTRATION_ATTEMPTS_QUEUE,
             // resourceAdapter = "jmsra",
             interfaceName = "javax.jms.Queue",
             destinationName = "RejectedRegistrationAttemptsQueue"),
     @JMSDestinationDefinition(
-            name = "java:app/jms/HandlingEventRegistrationAttemptQueue",
+            name = JmsQueueNames.HANDLING_EVENT_REGISTRATION_ATTEMPT_QUEUE,
             // resourceAdapter = "jmsra",
             interfaceName = "javax.jms.Queue",
             destinationName = "HandlingEventRegistrationAttemptQueue")
 })
 @Startup
 @Singleton
-public class JMSResourcesSetup {
-    private static final Logger LOGGER = Logger.getLogger(JMSResourcesSetup.class.getName());
+public class JmsResourcesSetup {
+    private static final Logger LOGGER = Logger.getLogger(JmsResourcesSetup.class.getName());
 
     @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
     private ConnectionFactory connectionFactory;

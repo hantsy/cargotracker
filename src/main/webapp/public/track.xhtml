@@ -17,10 +17,10 @@
                         <h:panelGrid columns="3" cellpadding="15">
                             <p>Enter your tracking ID:</p>
                             <p:inputText id="trackingIdInput"
-                                         value="#{public.track.trackingId}" required="true"
+                                         value="#{publicTrack.trackingId}" required="true"
                                          placeholder="XYZ789" title="Valid tracking ID"/>
                             <h:commandButton value="Track!"
-                                             action="#{public.track.onTrackById()}"/>
+                                             action="#{publicTrack.onTrackById()}"/>
                         </h:panelGrid>
                     </h:form>
                 </div>
@@ -31,23 +31,23 @@
             </div>
 
             <div class="ui-g-12">
-                <h:panelGroup rendered="#{not empty public.track.cargo}">
+                <h:panelGroup rendered="#{not empty publicTrack.cargo}">
                     <div id="result">
                         <p>
-                            Cargo <strong>#{public.track.cargo.trackingId}</strong> is
-                            currently <strong>#{public.track.cargo.statusText}</strong>
+                            Cargo <strong>#{publicTrack.cargo.trackingId}</strong> is
+                            currently <strong>#{publicTrack.cargo.statusText}</strong>
                         </p>
 
                         <p>
-                            Estimated time of arrival in <strong>#{public.track.cargo.destinationName}</strong>:
-                            #{public.track.cargo.eta}
+                            Estimated time of arrival in <strong>#{publicTrack.cargo.destinationName}</strong>:
+                            #{publicTrack.cargo.eta}
                         </p>
                         <ui:fragment
-                                rendered="#{not empty public.track.cargo.nextExpectedActivity}">
-                            <p>#{public.track.cargo.nextExpectedActivity}</p>
+                                rendered="#{not empty publicTrack.cargo.nextExpectedActivity}">
+                            <p>#{publicTrack.cargo.nextExpectedActivity}</p>
                         </ui:fragment>
 
-                        <h:panelGroup rendered="#{public.track.cargo.misdirected}">
+                        <h:panelGroup rendered="#{publicTrack.cargo.misdirected}">
                             <p>
                                 <i class="fa fa-exclamation-triangle" style="color: #9b2332"></i>
                                 Cargo is misdirected.
@@ -69,11 +69,11 @@
                 </div>
 
                 <h:outputLabel
-                        value="There are no events recorded for the tracking ID #{public.track.cargo.trackingId}."
-                        rendered="#{empty public.track.cargo.events}"/>
+                        value="There are no events recorded for the tracking ID #{publicTrack.cargo.trackingId}."
+                        rendered="#{empty publicTrack.cargo.events}"/>
 
                 <div class="ui-g-12">
-                    <ui:repeat value="#{public.track.cargo.events}" var="leg">
+                    <ui:repeat value="#{publicTrack.cargo.events}" var="leg">
                         <div>
                             <ui:fragment rendered="#{leg.expected}">
                                 &#160;&#160;<i class="fa fa-check"
@@ -88,10 +88,10 @@
                 </div>
             </div>
 
-            <h:panelGroup rendered="#{not empty public.track.cargo}">
+            <h:panelGroup rendered="#{not empty publicTrack.cargo}">
                 <div id="map" class="ui-g-12">
                     <iframe class="mapFrame" width="100%" height="960" frameBorder="0"
-                            src="#{request.contextPath}/public/mapFrame.xhtml?statusCode=#{public.track.cargo.statusCode}&amp;lastKnownLocationCode=#{public.track.cargo.lastKnownLocationCode}&amp;lastKnownLocationName=#{public.track.cargo.lastKnownLocationName}&amp;originCode=#{public.track.cargo.originCode}&amp;originName=#{public.track.cargo.originName}&amp;destinationCode=#{public.track.cargo.destinationCode}&amp;destinationName=#{public.track.cargo.destinationName}"/>
+                            src="#{request.contextPath}/public/mapFrame.xhtml?statusCode=#{publicTrack.cargo.statusCode}&amp;lastKnownLocationCode=#{publicTrack.cargo.lastKnownLocationCode}&amp;lastKnownLocationName=#{publicTrack.cargo.lastKnownLocationName}&amp;originCode=#{publicTrack.cargo.originCode}&amp;originName=#{publicTrack.cargo.originName}&amp;destinationCode=#{publicTrack.cargo.destinationCode}&amp;destinationName=#{publicTrack.cargo.destinationName}"/>
                 </div>
             </h:panelGroup>
         </div>
