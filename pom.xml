@@ -72,7 +72,7 @@
         <!-- websockets-jsr and resteasy for client, aligned with Wildfly version. -->
         <undertow-websockets-jsr.version>2.2.3.Final</undertow-websockets-jsr.version>
         <resteasy.version>3.14.0.Final</resteasy.version>
-        <jackson.version>2.11.3</jackson.version>
+        <jackson.version>2.12.4</jackson.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>
