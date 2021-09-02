@@ -63,7 +63,7 @@
         <!-- Payara server -->
         <payara.version>5.2021.6</payara.version>
         <arquillian-payara.version>2.4.4</arquillian-payara.version>
-        <tyrus-client.version>1.17</tyrus-client.version>
+        <tyrus-client.version>2.0.1</tyrus-client.version>
 
         <!-- Wildfly server -->
         <wildfly.version>23.0.0.Final</wildfly.version>
