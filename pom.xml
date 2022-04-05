@@ -55,7 +55,7 @@
         <json-path.version>2.7.0</json-path.version>
 
         <!-- Jacoco code coverage report -->
-        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
 
         <!-- By default, skip tests -->
         <skipTests>true</skipTests>
