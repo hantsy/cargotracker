@@ -56,7 +56,7 @@ jobs:
           docker ps -a
 #      - run: sudo netstat -ano
       - name: Cache Maven packages
-        uses: actions/cache@v3.0.2
+        uses: actions/cache@v3.0.3
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
