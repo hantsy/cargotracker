@@ -6,9 +6,10 @@
              <module name="org.jboss.resteasy.resteasy-jettison-provider" />-->
         </exclusions>
         <dependencies>
-            <!--<module name="org.jboss.resteasy.resteasy-jackson2-provider" services="import" />-->
+            <!--<module name="org.jboss.resteasy.resteasy-jackson2-provider" services="import" />
             <module name="com.fasterxml.jackson.datatype.jackson-datatype-jsr310" services="import"/>
-            <module name="com.fasterxml.jackson.datatype.jackson-datatype-jdk8" services="import"/>
+            <module name="com.fasterxml.jackson.datatype.jackson-datatype-jdk8" services="import"/>-->
+            <module name="org.jboss.resteasy.resteasy-json-binding-provider" services="import"/>
         </dependencies>
     </deployment>
 </jboss-deployment-structure>

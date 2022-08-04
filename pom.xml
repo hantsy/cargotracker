@@ -35,9 +35,9 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
         <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
-        <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
 
         <!-- Cargo maven plugin -->
         <cargo-maven3-plugin.version>1.9.8</cargo-maven3-plugin.version>
@@ -66,8 +66,8 @@
         <tyrus-client.version>1.17</tyrus-client.version>
 
         <!-- Wildfly server -->
-        <wildfly.version>23.0.0.Final</wildfly.version>
-        <wildfly-maven-plugin.version>2.1.0.Final</wildfly-maven-plugin.version>
+        <wildfly.version>26.1.0.Final</wildfly.version>
+        <wildfly-maven-plugin.version>3.0.2.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>3.0.1.Final</wildfly-arquillian.version>
         <!-- websockets-jsr and resteasy for client, aligned with Wildfly version. -->
         <undertow-websockets-jsr.version>2.2.3.Final</undertow-websockets-jsr.version>
@@ -425,7 +425,7 @@
             </dependencies>
             <build>
                 <plugins>
-                    <plugin>
+                    <!--<plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
                         <version>3.2.0</version>
@@ -443,7 +443,7 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>
+                    </plugin>-->
                     <!-- The WildFly plugin deploys your war to a local WildFly container -->
                     <!-- To use, run: mvn package wildfly:deploy -->
                     <plugin>
@@ -728,7 +728,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jackson2-provider</artifactId>
+                    <artifactId>resteasy-json-binding-provider</artifactId>
                     <version>${resteasy.version}</version>
                     <scope>test</scope>
                 </dependency>
@@ -813,7 +813,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jackson2-provider</artifactId>
+                    <artifactId>resteasy-json-binding-provider</artifactId>
                     <version>${resteasy.version}</version>
                     <scope>test</scope>
                 </dependency>
@@ -868,7 +868,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jackson2-provider</artifactId>
+                    <artifactId>resteasy-json-binding-provider</artifactId>
                     <version>${resteasy.version}</version>
                     <scope>test</scope>
                 </dependency>
