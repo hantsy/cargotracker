@@ -8,7 +8,9 @@ public class UnknownCargoException extends CannotCreateHandlingEventException {
     private static final long serialVersionUID = 1L;
     private final TrackingId trackingId;
 
-    /** @param trackingId cargo tracking id */
+    /**
+     * @param trackingId cargo tracking id
+     */
     public UnknownCargoException(TrackingId trackingId) {
         this.trackingId = trackingId;
     }

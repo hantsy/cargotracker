@@ -32,15 +32,15 @@
         <maven.compiler.release>11</maven.compiler.release>
 
         <!-- Official Maven Plugins -->
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
-        <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
+        <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
         <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.9.8</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.9.13</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API -->
         <jakartaee-api.version>8.0.0</jakartaee-api.version>
@@ -50,20 +50,20 @@
         <!-- Test Utilities -->
         <junit.version>4.13.2</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <mockito.version>4.0.0</mockito.version>
-        <assertj.version>3.21.0</assertj.version>
-        <json-path.version>2.6.0</json-path.version>
+        <mockito.version>4.6.1</mockito.version>
+        <assertj.version>3.23.1</assertj.version>
+        <json-path.version>2.7.0</json-path.version>
 
         <!-- Jacoco code coverage report -->
-        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
 
         <!-- By default, skip tests -->
         <skipTests>true</skipTests>
 
         <!-- Payara server -->
-        <payara.version>5.2021.8</payara.version>
-        <arquillian-payara.version>2.4.5</arquillian-payara.version>
-        <tyrus-client.version>1.17</tyrus-client.version>
+        <payara.version>5.2022.2</payara.version>
+        <arquillian-payara.version>2.4.6</arquillian-payara.version>
+        <tyrus-client.version>1.19</tyrus-client.version>
 
         <!-- Wildfly server -->
         <wildfly.version>26.1.0.Final</wildfly.version>
@@ -72,7 +72,7 @@
         <!-- websockets-jsr and resteasy for client, aligned with Wildfly version. -->
         <undertow-websockets-jsr.version>2.2.3.Final</undertow-websockets-jsr.version>
         <resteasy.version>3.14.0.Final</resteasy.version>
-        <jackson.version>2.13.0</jackson.version>
+        <jackson.version>2.13.3</jackson.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>
@@ -164,7 +164,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.1</version>
+            <version>42.4.1</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.5</version>
+            <version>2.3.6</version>
             <scope>provided</scope>
         </dependency>
 
@@ -381,7 +381,7 @@
                             <dependency>
                                 <groupId>org.glassfish.jaxb</groupId>
                                 <artifactId>jaxb-runtime</artifactId>
-                                <version>2.3.5</version>
+                                <version>2.3.6</version>
                             </dependency>
                         </dependencies>
                     </plugin>
@@ -428,7 +428,7 @@
                     <!--<plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
-                        <version>3.2.0</version>
+                        <version>3.3.0</version>
                         <executions>
                             <execution>
                                 <id>add-source</id>

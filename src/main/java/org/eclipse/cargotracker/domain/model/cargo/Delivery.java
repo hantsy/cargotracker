@@ -179,7 +179,9 @@ public class Delivery implements Serializable {
         return DomainObjectUtils.nullSafe(nextExpectedActivity, NO_ACTIVITY);
     }
 
-    /** @return True if the cargo has been unloaded at the final destination. */
+    /**
+     * @return True if the cargo has been unloaded at the final destination.
+     */
     public boolean isUnloadedAtDestination() {
         return isUnloadedAtDestination;
     }

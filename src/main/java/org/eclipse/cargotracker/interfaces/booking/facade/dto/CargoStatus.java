@@ -34,7 +34,9 @@ public class CargoStatus {
         return destination;
     }
 
-    /** @return A readable string describing the cargo status. */
+    /**
+     * @return A readable string describing the cargo status.
+     */
     public String getStatusText() {
         return statusText;
     }

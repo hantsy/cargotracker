@@ -129,7 +129,9 @@ public class Itinerary implements Serializable {
         }
     }
 
-    /** @return Date when cargo arrives at final destination. */
+    /**
+     * @return Date when cargo arrives at final destination.
+     */
     LocalDateTime getFinalArrivalDate() {
         Leg lastLeg = getLastLeg();
 
@@ -140,7 +142,9 @@ public class Itinerary implements Serializable {
         }
     }
 
-    /** @return The last leg on the itinerary. */
+    /**
+     * @return The last leg on the itinerary.
+     */
     Leg getLastLeg() {
         if (legs.isEmpty()) {
             return null;

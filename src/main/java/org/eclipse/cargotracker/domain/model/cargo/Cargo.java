@@ -114,12 +114,16 @@ public class Cargo implements Serializable {
         return routeSpecification;
     }
 
-    /** @return The delivery. Never null. */
+    /**
+     * @return The delivery. Never null.
+     */
     public Delivery getDelivery() {
         return delivery;
     }
 
-    /** @return The itinerary. Never null. */
+    /**
+     * @return The itinerary. Never null.
+     */
     public Itinerary getItinerary() {
         return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
     }
@@ -185,7 +189,9 @@ public class Cargo implements Serializable {
         return other != null && trackingId.sameValueAs(other.trackingId);
     }
 
-    /** @return Hash code of tracking id. */
+    /**
+     * @return Hash code of tracking id.
+     */
     @Override
     public int hashCode() {
         return trackingId.hashCode();
