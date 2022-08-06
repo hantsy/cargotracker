@@ -12,24 +12,27 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
         <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
               rel="stylesheet"
-              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+              integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
               crossorigin="anonymous"/>
 
-        <!-- Bootstrap ICONS -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"/>
-        <link href="#{request.contextPath}/resources/css/app.css" rel="stylesheet"/>
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"/>
+        <link rel="stylesheet"
+              href="#{request.contextPath}/resources/css/app.css"/>
         <ui:insert name="headIncludes"></ui:insert>
         <title>CargoTracker - A Jakarta EE blueprint application</title>
     </h:head>
     <h:body>
         <header class="container">
-            <div class="row flex-nowrap flex-column flex-md-row align-items-center pb-3 mb-4">
-                <a href="#{request.contextPath}" class="d-flex align-items-center text-dark text-decoration-none">
-                    <img src="#{request.contextPath}/resources/images/logo48.png" width="48" height="48"/>
-                    <span class="ms-1 fs-4">Cargo Tracker</span>
+            <div class="d-flex justify-content-start my-5">
+                <a href="#{request.contextPath}" class="d-block">
+                    <img src="#{request.contextPath}/resources/images/logo48.png" class="logo"/>
                 </a>
+                <span class="ms-2 fs-3 fw-bold text-dark text-decoration-none">
+                    <ui:insert name="title">Cargo Tracker</ui:insert>
+                </span>
             </div>
             <ui:insert name="nav"></ui:insert>
         </header>
@@ -37,24 +40,15 @@
             <ui:include src="/WEB-INF/layout/alert.xhtml"></ui:include>
             <ui:insert name="body"></ui:insert>
         </main>
-        <footer class="fixed-bottom mt-auto py-3" id="footer">
+        <footer class="fixed-bottom mt-auto p-3 bg-secondary text-white" id="footer">
             <ui:include src="/WEB-INF/layout/footer.xhtml"></ui:include>
         </footer>
 
-        <!-- Optional JavaScript; choose one of the two! -->
-
-        <!-- Option 1: Bootstrap Bundle with Popper -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
                 crossorigin="anonymous">
             /* stop closing  */
         </script>
-
-        <!-- Option 2: Separate Popper and Bootstrap JS -->
-        <!--
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
-        -->
         <ui:insert name="bodyIncludes"></ui:insert>
     </h:body>
 </f:view>

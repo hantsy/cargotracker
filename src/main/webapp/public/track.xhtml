@@ -6,52 +6,56 @@
         template="/WEB-INF/layout/public.xhtml">
     <ui:define name="body">
 
-        <h:form id="trackingForm" styleClass="row g-3">
-            <div class="col-auto"><span class="form-control-plaintext">Enter your tracking ID:</span></div>
-            <div class="col-auto">
+        <h:form prependId="false" id="trackingForm" styleClass="row row-cols-lg-auto g-3 align-items-center">
+            <div class="col-12">
+                <label class="visually-hidden" for="trackingIdInput">Enter your tracking ID:</label>
                 <input type="text" jsf:id="trackingIdInput"
                        class="form-control"
-                       jsf:value="#{public.track.trackingId}" jsf:required="true"
-                       placeholder="XYZ789" title="Valid tracking ID"/>
+                       jsf:value="#{track.trackingId}"
+                       jsf:required="true"
+                       placeholder="Enter Tracking ID, eg.XYZ789"/>
             </div>
-            <div class="col-auto">
-                <button class="btn btn-primary mb-3" jsf:action="#{public.track.onTrackById()}">Track!</button>
+            <div class="col-12">
+                <button class="btn btn-primary"
+                        jsf:action="#{track.onTrackById()}">
+                    Track!
+                </button>
             </div>
         </h:form>
 
-        <ui:fragment rendered="#{not empty public.track.cargo}">
+        <ui:fragment rendered="#{not empty track.cargo}">
             <div class="row g-3 my-5 me-3">
                 <div class="col-12 col-md-6">
                     <p>
-                        Cargo <strong>#{public.track.cargo.trackingId}</strong> is
-                        currently <strong>#{public.track.cargo.statusText}</strong>
+                        Cargo <strong>#{track.cargo.trackingId}</strong> is
+                        currently <strong>#{track.cargo.statusText}</strong>
                     </p>
 
                     <p>
-                        Estimated time of arrival in <strong>#{public.track.cargo.destinationName}</strong>:
-                        #{public.track.cargo.eta}
+                        Estimated time of arrival in <strong>#{track.cargo.destinationName}</strong>:
+                        #{track.cargo.eta}
                     </p>
                     <ui:fragment
-                            rendered="#{not empty public.track.cargo.nextExpectedActivity}">
-                        <p>#{public.track.cargo.nextExpectedActivity}</p>
+                            rendered="#{not empty track.cargo.nextExpectedActivity}">
+                        <p>#{track.cargo.nextExpectedActivity}</p>
                     </ui:fragment>
 
-                    <ui:fragment rendered="#{public.track.cargo.misdirected}">
-                        <p>
-                            <i class="fa fa-exclamation-triangle" style="color: #9b2332"></i>
+                    <ui:fragment rendered="#{track.cargo.misdirected}">
+                        <p class="text-danger">
+                            <i class="bi bi-x-circle text-danger"></i>
                             Cargo is misdirected.
                         </p>
                     </ui:fragment>
-                    <p class="m-2 fs-2">Handling History </p>
+                    <h3 class="my-2 fs-3">Handling History </h3>
 
-                    <ui:fragment rendered="#{empty public.track.cargo.events}">
+                    <ui:fragment rendered="#{empty track.cargo.events}">
                         <p>
-                            There are no events recorded for the tracking ID #{public.track.cargo.trackingId}."
+                            There are no events recorded for the tracking ID #{track.cargo.trackingId}."
                         </p>
                     </ui:fragment>
 
 
-                    <ui:repeat value="#{public.track.cargo.events}" var="leg">
+                    <ui:repeat value="#{track.cargo.events}" var="leg">
                         <div>
                             <ui:fragment rendered="#{leg.expected}">
                                 <i class="bi bi-check-circle text-success me-1"></i>#{leg.description}, at #{leg.time}
@@ -64,7 +68,7 @@
                 </div>
                 <div class="col-12 col-md-6">
                     <iframe class="mapFrame" width="100%" height="960" frameBorder="0"
-                            src="#{request.contextPath}/public/mapFrame.xhtml?statusCode=#{public.track.cargo.statusCode}&amp;lastKnownLocationCode=#{public.track.cargo.lastKnownLocationCode}&amp;lastKnownLocationName=#{public.track.cargo.lastKnownLocationName}&amp;originCode=#{public.track.cargo.originCode}&amp;originName=#{public.track.cargo.originName}&amp;destinationCode=#{public.track.cargo.destinationCode}&amp;destinationName=#{public.track.cargo.destinationName}"/>
+                            src="#{request.contextPath}/public/mapFrame.xhtml?statusCode=#{track.cargo.statusCode}&amp;lastKnownLocationCode=#{track.cargo.lastKnownLocationCode}&amp;lastKnownLocationName=#{track.cargo.lastKnownLocationName}&amp;originCode=#{track.cargo.originCode}&amp;originName=#{track.cargo.originName}&amp;destinationCode=#{track.cargo.destinationCode}&amp;destinationName=#{track.cargo.destinationName}"/>
                 </div>
             </div>
         </ui:fragment>
