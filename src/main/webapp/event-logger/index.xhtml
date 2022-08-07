@@ -15,7 +15,7 @@
             <div class="col-12 col-md-6">
                 <label for="trackingId" class="form-label">Tracking ID</label>
                 <h:selectOneMenu id="trackingId"
-                                 styleClass="form-select #{not empty facesContext.getMessageList('completionDate')?'is-invalid':''}"
+                                 styleClass="form-select #{not empty facesContext.getMessageList('trackingId')?'is-invalid':''}"
                                  value="#{eventLogger.trackingId}"
                                  required="true"
                                  requiredMessage="Tracking ID missing">
@@ -30,7 +30,7 @@
             <div class="col-12 col-md-6">
                 <label for="locationId" class="form-label">Location</label>
                 <h:selectOneMenu id="locationId"
-                                 styleClass="form-select #{not empty facesContext.getMessageList('completionDate')?'is-invalid':''}"
+                                 styleClass="form-select #{not empty facesContext.getMessageList('locationId')?'is-invalid':''}"
                                  value="#{eventLogger.location}"
                                  required="true"
                                  requiredMessage="Location missing">
@@ -46,7 +46,7 @@
             <div class="col-12 col-md-6">
                 <label for="eventType" class="form-label">Event Type</label>
                 <h:selectOneMenu id="eventType"
-                                 styleClass="form-select #{not empty facesContext.getMessageList('completionDate')?'is-invalid':''}"
+                                 styleClass="form-select #{not empty facesContext.getMessageList('eventType')?'is-invalid':''}"
                                  value="#{eventLogger.eventType}"
                                  requiredMessage="Event type missing"
                                  required="true">
@@ -67,7 +67,7 @@
             <div class="col-12 col-md-6">
                 <label for="voyage" class="form-label">Voyage</label>
                 <h:selectOneMenu id="voyage"
-                                 styleClass="form-select #{not empty facesContext.getMessageList('completionDate')?'is-invalid':''}"
+                                 styleClass="form-select #{not empty facesContext.getMessageList('voyage')?'is-invalid':''}"
                                  value="#{eventLogger.voyageNumber}"
                                  required="false">
                     <f:selectItem itemLabel="Voyage" itemValue=""
