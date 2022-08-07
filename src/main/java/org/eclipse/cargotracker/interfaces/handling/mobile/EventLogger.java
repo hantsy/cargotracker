@@ -1,17 +1,5 @@
 package org.eclipse.cargotracker.interfaces.handling.mobile;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.transaction.Transactional;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -26,7 +14,18 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
+import org.omnifaces.util.Messages;
 import org.primefaces.event.FlowEvent;
+
+import javax.faces.model.SelectItem;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named
 @ViewScoped
@@ -34,13 +33,17 @@ public class EventLogger implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject private CargoRepository cargoRepository;
+    @Inject
+    private CargoRepository cargoRepository;
 
-    @Inject private LocationRepository locationRepository;
+    @Inject
+    private LocationRepository locationRepository;
 
-    @Inject private VoyageRepository voyageRepository;
+    @Inject
+    private VoyageRepository voyageRepository;
 
-    @Inject private ApplicationEvents applicationEvents;
+    @Inject
+    private ApplicationEvents applicationEvents;
 
     private List<SelectItem> trackingIds;
     private List<SelectItem> locations;
@@ -112,7 +115,6 @@ public class EventLogger implements Serializable {
         return DateUtil.DATE_TIME_FORMAT;
     }
 
-    @PostConstruct
     @Transactional
     public void init() {
         List<Cargo> cargos = cargoRepository.findAll();
@@ -122,8 +124,8 @@ public class EventLogger implements Serializable {
             // List only routed cargo that is not claimed yet.
             if (!cargo.getItinerary().getLegs().isEmpty()
                     && !(cargo.getDelivery()
-                            .getTransportStatus()
-                            .sameValueAs(TransportStatus.CLAIMED))) {
+                    .getTransportStatus()
+                    .sameValueAs(TransportStatus.CLAIMED))) {
                 String trackingId = cargo.getTrackingId().getIdString();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }
@@ -165,12 +167,13 @@ public class EventLogger implements Serializable {
         if ("voyageTab".equals(step)
                 && ("LOAD".equals(eventType) || "UNLOAD".equals(eventType))
                 && voyageNumber == null) {
-            FacesMessage message =
-                    new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR,
-                            "When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix errors to continue.",
-                            "");
-            FacesContext.getCurrentInstance().addMessage(null, message);
+//            FacesMessage message =
+//                    new FacesMessage(
+//                            FacesMessage.SEVERITY_ERROR,
+//                            "When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix errors to continue.",
+//                            "");
+//            FacesContext.getCurrentInstance().addMessage(null, message);
+            Messages.addGlobalError("When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix errors to continue.");
             return false;
         }
 
@@ -197,6 +200,6 @@ public class EventLogger implements Serializable {
 
         applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
 
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Event submitted", ""));
+        Messages.addGlobalInfo("Event submitted");
     }
 }
