@@ -33,17 +33,13 @@ public class EventLogger implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private CargoRepository cargoRepository;
+    @Inject private CargoRepository cargoRepository;
 
-    @Inject
-    private LocationRepository locationRepository;
+    @Inject private LocationRepository locationRepository;
 
-    @Inject
-    private VoyageRepository voyageRepository;
+    @Inject private VoyageRepository voyageRepository;
 
-    @Inject
-    private ApplicationEvents applicationEvents;
+    @Inject private ApplicationEvents applicationEvents;
 
     private List<SelectItem> trackingIds;
     private List<SelectItem> locations;
@@ -124,8 +120,8 @@ public class EventLogger implements Serializable {
             // List only routed cargo that is not claimed yet.
             if (!cargo.getItinerary().getLegs().isEmpty()
                     && !(cargo.getDelivery()
-                    .getTransportStatus()
-                    .sameValueAs(TransportStatus.CLAIMED))) {
+                            .getTransportStatus()
+                            .sameValueAs(TransportStatus.CLAIMED))) {
                 String trackingId = cargo.getTrackingId().getIdString();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }
@@ -167,13 +163,15 @@ public class EventLogger implements Serializable {
         if ("voyageTab".equals(step)
                 && ("LOAD".equals(eventType) || "UNLOAD".equals(eventType))
                 && voyageNumber == null) {
-//            FacesMessage message =
-//                    new FacesMessage(
-//                            FacesMessage.SEVERITY_ERROR,
-//                            "When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix errors to continue.",
-//                            "");
-//            FacesContext.getCurrentInstance().addMessage(null, message);
-            Messages.addGlobalError("When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix errors to continue.");
+            //            FacesMessage message =
+            //                    new FacesMessage(
+            //                            FacesMessage.SEVERITY_ERROR,
+            //                            "When a cargo is LOADed or UNLOADed a Voyage should be
+            // selected, please fix errors to continue.",
+            //                            "");
+            //            FacesContext.getCurrentInstance().addMessage(null, message);
+            Messages.addGlobalError(
+                    "When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix errors to continue.");
             return false;
         }
 
