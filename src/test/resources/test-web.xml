@@ -8,9 +8,8 @@
         <env-entry-type>java.lang.String</env-entry-type>
         <env-entry-value>http://localhost:8080/cargo-tracker-test/rest/graph-traversal/shortest-path</env-entry-value>
     </env-entry>
-    <!--	<data-source>
-            <name>java:app/jdbc/CargoTrackerDatabase</name>
-            <class-name>org.apache.derby.jdbc.EmbeddedDriver</class-name>
-            <url>jdbc:derby:/tmp/test/cargo-tracker-database;create=true</url>
-        </data-source>-->
+    <context-param>
+        <param-name>resteasy.preferJacksonOverJsonB</param-name>
+        <param-value>false</param-value>
+    </context-param>
 </web-app>
