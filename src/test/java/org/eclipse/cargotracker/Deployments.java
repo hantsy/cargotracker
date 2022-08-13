@@ -51,17 +51,6 @@ public class Deployments {
 
     public static void addInfraBase(WebArchive war) {
         war.addPackage(CargoInspected.class.getPackage()).addClass(LoggerProducer.class);
-        try {
-            Class<?> clazz =
-                    Class.forName(
-                            "org.eclipse.cargotracker.infrastructure.routing.client.JacksonObjectMapperContextResolver");
-            war.addClass(clazz);
-        } catch (ClassNotFoundException e) {
-            LOGGER.log(
-                    Level.WARNING,
-                    "ignore this exception on non-WildFly server: {0}",
-                    e.getMessage());
-        }
     }
 
     // Infrastructure layer components.
