@@ -29,7 +29,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import java.io.File;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Deployments {
