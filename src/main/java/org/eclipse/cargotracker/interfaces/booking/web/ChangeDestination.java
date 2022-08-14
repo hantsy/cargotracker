@@ -7,8 +7,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.Location;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
 import org.primefaces.PrimeFaces;
 
 /**
@@ -28,8 +28,8 @@ public class ChangeDestination implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String trackingId;
-    private CargoRoute cargo;
-    private List<Location> locations;
+    private CargoRouteDto cargo;
+    private List<LocationDto> locations;
     private String destinationUnlocode;
 
     @Inject private BookingServiceFacade bookingServiceFacade;
@@ -42,18 +42,18 @@ public class ChangeDestination implements Serializable {
         this.trackingId = trackingId;
     }
 
-    public CargoRoute getCargo() {
+    public CargoRouteDto getCargo() {
         return cargo;
     }
 
-    public List<Location> getLocations() {
+    public List<LocationDto> getLocations() {
         return locations;
     }
 
-    public List<Location> getPotentialDestinations() {
+    public List<LocationDto> getPotentialDestinations() {
         // Potential destination = All Locations - Origin - Current Destination
-        List<Location> destinationsToRemove = new ArrayList<>();
-        for (Location loc : locations) {
+        List<LocationDto> destinationsToRemove = new ArrayList<>();
+        for (LocationDto loc : locations) {
             if (loc.getName().equalsIgnoreCase(cargo.getOrigin())
                     || loc.getName().equalsIgnoreCase(cargo.getFinalDestination())) {
                 destinationsToRemove.add(loc);

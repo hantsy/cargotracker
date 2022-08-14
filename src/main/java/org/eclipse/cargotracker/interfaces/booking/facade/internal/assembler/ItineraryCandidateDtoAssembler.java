@@ -9,7 +9,8 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidate;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LegDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidateDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,15 +19,15 @@ import java.util.stream.Collectors;
 // TODO [Clean Code] Could this be a CDI singleton?
 public class ItineraryCandidateDtoAssembler {
 
-    public RouteCandidate toDto(Itinerary itinerary) {
-        List<org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg> legDTOs =
+    public RouteCandidateDto toDto(Itinerary itinerary) {
+        List<LegDto> legDTOs =
                 itinerary.getLegs().stream().map(this::toLegDTO).collect(Collectors.toList());
-        return new RouteCandidate(legDTOs);
+        return new RouteCandidateDto(legDTOs);
     }
 
-    protected org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg toLegDTO(Leg leg) {
+    protected LegDto toLegDTO(Leg leg) {
         VoyageNumber voyageNumber = leg.getVoyage().getVoyageNumber();
-        return new org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg(
+        return new LegDto(
                 voyageNumber.getIdString(),
                 leg.getLoadLocation().getUnLocode().getIdString(),
                 leg.getLoadLocation().getName(),
@@ -37,12 +38,12 @@ public class ItineraryCandidateDtoAssembler {
     }
 
     public Itinerary fromDTO(
-            RouteCandidate routeCandidateDTO,
+            RouteCandidateDto routeCandidateDTO,
             VoyageRepository voyageRepository,
             LocationRepository locationRepository) {
         List<Leg> legs = new ArrayList<>(routeCandidateDTO.getLegs().size());
 
-        for (org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg legDTO :
+        for (LegDto legDTO :
                 routeCandidateDTO.getLegs()) {
             VoyageNumber voyageNumber = new VoyageNumber(legDTO.getVoyageNumber());
             Voyage voyage = voyageRepository.find(voyageNumber);

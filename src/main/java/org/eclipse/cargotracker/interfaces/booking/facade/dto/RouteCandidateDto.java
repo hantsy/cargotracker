@@ -5,17 +5,17 @@ import java.util.Collections;
 import java.util.List;
 
 /** DTO for presenting and selecting an itinerary from a collection of candidates. */
-public class RouteCandidate implements Serializable {
+public class RouteCandidateDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Leg> legs;
+    private List<LegDto> legs;
 
-    public RouteCandidate(List<Leg> legs) {
+    public RouteCandidateDto(List<LegDto> legs) {
         this.legs = legs;
     }
 
-    public List<Leg> getLegs() {
+    public List<LegDto> getLegs() {
         return Collections.unmodifiableList(legs);
     }
 

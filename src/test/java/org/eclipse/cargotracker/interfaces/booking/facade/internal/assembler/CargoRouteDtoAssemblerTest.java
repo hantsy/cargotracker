@@ -4,7 +4,8 @@ import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LegDto;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -44,11 +45,11 @@ public class CargoRouteDtoAssemblerTest {
 
         cargo.assignToRoute(itinerary);
 
-        final CargoRoute dto = assembler.toDto(cargo);
+        final CargoRouteDto dto = assembler.toDto(cargo);
 
         assertThat(dto.getLegs()).hasSize(2);
 
-        org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg legDTO = dto.getLegs().get(0);
+        LegDto legDTO = dto.getLegs().get(0);
         assertThat(legDTO.getVoyageNumber()).isEqualTo("CM001");
         assertThat(legDTO.getFrom())
                 .contains("SESTO"); // this is a little different from original codes.
@@ -71,7 +72,7 @@ public class CargoRouteDtoAssemblerTest {
                                 SampleLocations.STOCKHOLM,
                                 SampleLocations.MELBOURNE,
                                 LocalDate.now()));
-        final CargoRoute dto = assembler.toDto(cargo);
+        final CargoRouteDto dto = assembler.toDto(cargo);
 
         assertThat(dto.getTrackingId()).isEqualTo("XYZ");
         assertThat(dto.getOrigin()).contains("SESTO");

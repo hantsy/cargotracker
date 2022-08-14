@@ -4,15 +4,15 @@ import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.TrackingEvents;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.TrackingEventsDto;
 
 public class TrackingEventsDtoAssembler {
 
-    public TrackingEvents toDto(Cargo cargo, HandlingEvent handlingEvent) {
+    public TrackingEventsDto toDto(Cargo cargo, HandlingEvent handlingEvent) {
         String location = locationFrom(handlingEvent);
         HandlingEvent.Type type = handlingEvent.getType();
         String voyageNumber = voyageNumberFrom(handlingEvent);
-        return new TrackingEvents(
+        return new TrackingEventsDto(
                 cargo.getItinerary().isExpected(handlingEvent),
                 descriptionFrom(type, location, voyageNumber),
                 timeFrom(handlingEvent));

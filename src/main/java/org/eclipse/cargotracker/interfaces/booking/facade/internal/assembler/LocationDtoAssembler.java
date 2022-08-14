@@ -1,6 +1,7 @@
 package org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler;
 
 import org.eclipse.cargotracker.domain.model.location.Location;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
 
 import java.util.Comparator;
 import java.util.List;
@@ -8,21 +9,20 @@ import java.util.stream.Collectors;
 
 public class LocationDtoAssembler {
 
-    public org.eclipse.cargotracker.interfaces.booking.facade.dto.Location toDto(
+    public LocationDto toDto(
             Location location) {
-        return new org.eclipse.cargotracker.interfaces.booking.facade.dto.Location(
+        return new LocationDto(
                 location.getUnLocode().getIdString(), location.getName());
     }
 
-    public List<org.eclipse.cargotracker.interfaces.booking.facade.dto.Location> toDtoList(
+    public List<LocationDto> toDtoList(
             List<Location> allLocations) {
-        List<org.eclipse.cargotracker.interfaces.booking.facade.dto.Location> dtoList =
+        List<LocationDto> dtoList =
                 allLocations.stream()
                         .map(this::toDto)
                         .sorted(
                                 Comparator.comparing(
-                                        org.eclipse.cargotracker.interfaces.booking.facade.dto
-                                                        .Location
+                                        LocationDto
                                                 ::getName))
                         .collect(Collectors.toList());
         return dtoList;

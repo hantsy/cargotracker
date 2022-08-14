@@ -10,7 +10,7 @@ import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.application.util.LocationUtil;
 
 /** DTO for registering and routing a cargo. */
-public class CargoRoute implements Serializable {
+public class CargoRouteDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,13 +19,13 @@ public class CargoRoute implements Serializable {
     private final String finalDestination;
     private final String arrivalDeadline;
     private final boolean misrouted;
-    private final List<Leg> legs;
+    private final List<LegDto> legs;
     private final boolean claimed;
     private final String lastKnownLocation;
     private final String transportStatus;
     private String nextLocation;
 
-    public CargoRoute(
+    public CargoRouteDto(
             String trackingId,
             String origin,
             String finalDestination,
@@ -87,7 +87,7 @@ public class CargoRoute implements Serializable {
             LocalDateTime loadTime,
             LocalDateTime unloadTime) {
         legs.add(
-                new Leg(
+                new LegDto(
                         voyageNumber,
                         fromUnLocode,
                         fromName,
@@ -97,7 +97,7 @@ public class CargoRoute implements Serializable {
                         unloadTime));
     }
 
-    public List<Leg> getLegs() {
+    public List<LegDto> getLegs() {
         return Collections.unmodifiableList(legs);
     }
 

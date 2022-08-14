@@ -3,13 +3,12 @@ package org.eclipse.cargotracker.interfaces.booking.web;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatus;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatusDto;
+import org.omnifaces.util.Messages;
 
 /**
  * Handles tracking cargo. Operates against a dedicated service facade, and could easily be
@@ -21,7 +20,7 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatus;
  * there is never any one perfect solution for all situations, so we've chosen to demonstrate two
  * polarized ways to build user interfaces.
  */
-@Named("admin.track")
+@Named("adminTrack")
 @ViewScoped
 public class Track implements Serializable {
 
@@ -31,7 +30,7 @@ public class Track implements Serializable {
 
     private List<String> trackingIds;
     private String trackingId;
-    private CargoStatus cargo;
+    private CargoStatusDto cargo;
 
     public List<String> getTrackingIds(String query) {
         return trackingIds;
@@ -45,7 +44,7 @@ public class Track implements Serializable {
         this.trackingId = trackingId;
     }
 
-    public CargoStatus getCargo() {
+    public CargoStatusDto getCargo() {
         return this.cargo;
     }
 
@@ -58,11 +57,7 @@ public class Track implements Serializable {
         cargo = bookingServiceFacade.loadCargoForTracking(this.trackingId);
 
         if (cargo == null) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message =
-                    new FacesMessage("Cargo with tracking ID: " + this.trackingId + " not found.");
-            message.setSeverity(FacesMessage.SEVERITY_ERROR);
-            context.addMessage(null, message);
+            Messages.addGlobalError("Cargo with tracking ID: " + this.trackingId + " not found.");
         }
     }
 }

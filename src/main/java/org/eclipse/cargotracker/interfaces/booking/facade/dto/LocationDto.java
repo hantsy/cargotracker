@@ -3,13 +3,13 @@ package org.eclipse.cargotracker.interfaces.booking.facade.dto;
 import java.io.Serializable;
 
 /** Location DTO. */
-public class Location implements Serializable {
+public class LocationDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String unLocode;
     private String name;
 
-    public Location(String unLocode, String name) {
+    public LocationDto(String unLocode, String name) {
         this.unLocode = unLocode;
         this.name = name;
     }

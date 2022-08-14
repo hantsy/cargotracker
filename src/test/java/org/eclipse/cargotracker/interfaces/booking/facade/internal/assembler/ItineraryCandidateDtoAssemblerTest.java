@@ -9,7 +9,8 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidate;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LegDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidateDto;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -44,7 +45,7 @@ public class ItineraryCandidateDtoAssemblerTest {
                                         LocalDateTime.now(),
                                         LocalDateTime.now())));
 
-        final RouteCandidate dto = assembler.toDto(itinerary);
+        final RouteCandidateDto dto = assembler.toDto(itinerary);
 
         assertThat(dto.getLegs()).hasSize(2);
         var legDTO = dto.getLegs().get(0);
@@ -62,9 +63,9 @@ public class ItineraryCandidateDtoAssemblerTest {
     public void testFromDto() {
         final ItineraryCandidateDtoAssembler assembler = new ItineraryCandidateDtoAssembler();
 
-        var legs = new ArrayList<org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg>();
+        var legs = new ArrayList<LegDto>();
         legs.add(
-                new org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg(
+                new LegDto(
                         "CM001",
                         "AAAAA",
                         "A",
@@ -73,7 +74,7 @@ public class ItineraryCandidateDtoAssemblerTest {
                         LocalDateTime.now(),
                         LocalDateTime.now()));
         legs.add(
-                new org.eclipse.cargotracker.interfaces.booking.facade.dto.Leg(
+                new LegDto(
                         "CM001",
                         "BBBBB",
                         "B",
@@ -92,7 +93,7 @@ public class ItineraryCandidateDtoAssemblerTest {
 
         // Tested call
         final Itinerary itinerary =
-                assembler.fromDTO(new RouteCandidate(legs), voyageRepository, locationRepository);
+                assembler.fromDTO(new RouteCandidateDto(legs), voyageRepository, locationRepository);
 
         assertThat(itinerary).isNotNull();
         assertThat(itinerary.getLegs()).isNotNull();

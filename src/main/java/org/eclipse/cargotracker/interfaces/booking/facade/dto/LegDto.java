@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.eclipse.cargotracker.application.util.DateUtil;
 
 /** DTO for a leg in an itinerary. */
-public class Leg implements Serializable {
+public class LegDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final String voyageNumber;
@@ -16,7 +16,7 @@ public class Leg implements Serializable {
     private final String loadTime;
     private final String unloadTime;
 
-    public Leg(
+    public LegDto(
             String voyageNumber,
             String fromUnLocode,
             String fromName,

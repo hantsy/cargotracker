@@ -7,7 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 
 /**
  * Handles listing cargo. Operates against a dedicated service facade, and could easily be rewritten
@@ -23,14 +23,14 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
 @RequestScoped
 public class ListCargo {
 
-    private List<CargoRoute> cargos;
-    private List<CargoRoute> routedCargos;
-    private List<CargoRoute> claimedCargos;
-    private List<CargoRoute> routedUnclaimedCargos;
+    private List<CargoRouteDto> cargos;
+    private List<CargoRouteDto> routedCargos;
+    private List<CargoRouteDto> claimedCargos;
+    private List<CargoRouteDto> routedUnclaimedCargos;
 
     @Inject private BookingServiceFacade bookingServiceFacade;
 
-    public List<CargoRoute> getCargos() {
+    public List<CargoRouteDto> getCargos() {
         return cargos;
     }
 
@@ -39,10 +39,10 @@ public class ListCargo {
         cargos = bookingServiceFacade.listAllCargos();
     }
 
-    public List<CargoRoute> getRoutedCargos() {
+    public List<CargoRouteDto> getRoutedCargos() {
         routedCargos = new ArrayList<>();
 
-        for (CargoRoute route : cargos) {
+        for (CargoRouteDto route : cargos) {
             if (route.isRouted()) {
                 routedCargos.add(route);
             }
@@ -51,9 +51,9 @@ public class ListCargo {
         return routedCargos;
     }
 
-    public List<CargoRoute> getRoutedUnclaimedCargos() {
+    public List<CargoRouteDto> getRoutedUnclaimedCargos() {
         routedUnclaimedCargos = new ArrayList<>();
-        for (CargoRoute route : cargos) {
+        for (CargoRouteDto route : cargos) {
             if (route.isRouted() && !route.isClaimed()) {
                 routedUnclaimedCargos.add(route);
             }
@@ -62,10 +62,10 @@ public class ListCargo {
         return routedUnclaimedCargos;
     }
 
-    public List<CargoRoute> getClaimedCargos() {
+    public List<CargoRouteDto> getClaimedCargos() {
         claimedCargos = new ArrayList<>();
 
-        for (CargoRoute route : cargos) {
+        for (CargoRouteDto route : cargos) {
             if (route.isClaimed()) {
                 claimedCargos.add(route);
             }
@@ -74,10 +74,10 @@ public class ListCargo {
         return claimedCargos;
     }
 
-    public List<CargoRoute> getNotRoutedCargos() {
-        List<CargoRoute> notRoutedCargos = new ArrayList<>();
+    public List<CargoRouteDto> getNotRoutedCargos() {
+        List<CargoRouteDto> notRoutedCargos = new ArrayList<>();
 
-        for (CargoRoute route : cargos) if (!route.isRouted()) notRoutedCargos.add(route);
+        for (CargoRouteDto route : cargos) if (!route.isRouted()) notRoutedCargos.add(route);
 
         return notRoutedCargos;
     }

@@ -1,0 +1,29 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+        template="/WEB-INF/layout/public.xhtml">
+    <ui:define name="title">Confirm Cargo Registration</ui:define>
+    <ui:define name="body">
+        <h2 class="my-5 fs-2 fw-bolder">Confirm Cargo Registration</h2>
+        <div class="row g-3">
+            <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
+            <div class="col-12 col-md-6">#{booking.originName} <span
+                    class="text-secondary">#{booking.originUnlocode}</span></div>
+            <div class="col-12 col-md-4 fw-bolder float-right">Destination</div>
+            <div class="col-12 col-md-6">#{booking.destinationName} <span
+                    class="text-secondary">#{booking.originUnlocode}</span></div>
+            <div class="col-12 col-md-4 fw-bolder float-right">Arrival deadline</div>
+            <div class="col-12 col-md-6">#{booking.arrivalDeadline}
+                <span class="text-secondary">Journey duration is #{booking.duration} days.</span></div>
+
+            <div class="d-grid col-12 d-md-flex justfiy-content-md-start">
+                <h:link outcome="/admin/dashboard.xhtml" value="Cancel"/>
+                <button class="btn btn-primary" jsf:action="booking">Previous </button>
+                <button class="btn btn-primary" jsf:action="#{booking.register()}">Comfirm</button>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

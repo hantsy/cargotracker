@@ -3,14 +3,14 @@ package org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.RoutingStatus;
 import org.eclipse.cargotracker.domain.model.cargo.TransportStatus;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 
 // TODO [Clean Code] Convert to a singleton and inject?
 public class CargoRouteDtoAssembler {
 
-    public CargoRoute toDto(Cargo cargo) {
-        CargoRoute dto =
-                new CargoRoute(
+    public CargoRouteDto toDto(Cargo cargo) {
+        CargoRouteDto dto =
+                new CargoRouteDto(
                         cargo.getTrackingId().getIdString(),
                         cargo.getOrigin().getName()
                                 + " ("

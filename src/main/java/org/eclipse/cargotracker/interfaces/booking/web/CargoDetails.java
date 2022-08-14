@@ -4,7 +4,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 
 /**
  * Handles viewing cargo details. Operates against a dedicated service facade, and could easily be
@@ -21,7 +21,7 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
 public class CargoDetails {
 
     private String trackingId;
-    private CargoRoute cargo;
+    private CargoRouteDto cargo;
     @Inject private BookingServiceFacade bookingServiceFacade;
 
     public String getTrackingId() {
@@ -32,7 +32,7 @@ public class CargoDetails {
         this.trackingId = trackingId;
     }
 
-    public CargoRoute getCargo() {
+    public CargoRouteDto getCargo() {
         return cargo;
     }
 

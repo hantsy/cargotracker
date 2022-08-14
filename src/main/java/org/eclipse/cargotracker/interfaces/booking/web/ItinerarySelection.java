@@ -6,8 +6,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidate;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidateDto;
 
 /**
  * Handles itinerary selection. Operates against a dedicated service facade, and could easily be
@@ -24,12 +24,12 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidate;
 public class ItinerarySelection implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    List<RouteCandidate> routeCandidates;
+    List<RouteCandidateDto> routeCandidates;
     private String trackingId;
-    private CargoRoute cargo;
+    private CargoRouteDto cargo;
     @Inject private BookingServiceFacade bookingServiceFacade;
 
-    public List<RouteCandidate> getRouteCandidates() {
+    public List<RouteCandidateDto> getRouteCandidates() {
         return routeCandidates;
     }
 
@@ -41,11 +41,11 @@ public class ItinerarySelection implements Serializable {
         this.trackingId = trackingId;
     }
 
-    public CargoRoute getCargo() {
+    public CargoRouteDto getCargo() {
         return cargo;
     }
 
-    public List<RouteCandidate> getRouteCanditates() {
+    public List<RouteCandidateDto> getRouteCanditates() {
         return routeCandidates;
     }
 
@@ -55,7 +55,7 @@ public class ItinerarySelection implements Serializable {
     }
 
     public String assignItinerary(int routeIndex) {
-        RouteCandidate route = routeCandidates.get(routeIndex);
+        RouteCandidateDto route = routeCandidates.get(routeIndex);
         bookingServiceFacade.assignCargoToRoute(trackingId, route);
 
         return "show.html?faces-redirect=true&trackingId=" + trackingId;

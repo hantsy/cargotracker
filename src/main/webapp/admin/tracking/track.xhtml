@@ -1,102 +1,93 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-<ui:composition template="/WEB-INF/templates/common/admin.xhtml">
-    <ui:define name="title">Track Cargo</ui:define>
-    <ui:define name="content">
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        template="/WEB-INF/layout/public.xhtml">
+    <ui:define name="title">Tracking</ui:define>
+    <ui:define name="headIncludes">
+        <link rel="stylesheet"
+              href="#{request.contextPath}/resources/css/timeline.css"/>
+    </ui:define>
+    <ui:define name="body">
 
-        <div class="ui-grid-col-2" id="leftCol"></div>
-        <div class="ui-grid-col-8" id="mainCol">
-
-            <br/>
-            <div class="ui-g ui-g-12">
-                <div class="ui-g-6 ui-g-offset-3">
-                    <h:form id="trackingForm">
-                        <h:panelGrid columns="3" cellpadding="15">
-                            <p>Enter your tracking ID:</p>
-                            <p:autoComplete id="trackingIdInput"
-                                            value="#{admin.track.trackingId}" required="true"
-                                            forceSelection="true" placeholder="XYZ789"
-                                            title="Valid tracking ID"
-                                            completeMethod="#{admin.track.getTrackingIds}"/>
-                            <h:commandButton value="Track!"
-                                             action="#{admin.track.onTrackById()}"/>
-                        </h:panelGrid>
-                    </h:form>
-                </div>
+        <h:form prependId="false" id="trackingForm" styleClass="row row-cols-lg-auto g-3 justify-content-center align-items-center">
+            <div class="col-12">
+                <label class="visually-hidden" for="trackingIdInput">Enter your tracking ID:</label>
+                <input type="text" jsf:id="trackingIdInput"
+                       class="form-control"
+                       jsf:value="#{adminTrack.trackingId}"
+                       jsf:required="true"
+                       placeholder="Enter Tracking ID, eg.XYZ789"/>
             </div>
-
-            <div class="ui-g-12">
-                <p:separator/>
+            <div class="col-12">
+                <button class="btn btn-primary"
+                        jsf:action="#{adminTrack.onTrackById()}">
+                    Track!
+                </button>
             </div>
+        </h:form>
 
-            <div class="ui-g-12">
-                <h:panelGroup rendered="#{not empty admin.track.cargo}">
-                    <div id="result">
-
+        <ui:fragment rendered="#{not empty adminTrack.cargo}">
+            <div class="row g-3 my-5 me-3">
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <div>
                         <p>
-                            Cargo <strong><h:link value="#{admin.track.trackingId}"
+                            Cargo <strong><h:link value="#{adminTrack.cargo.trackingId}"
                                                   id="trackingId" outcome="/admin/show.xhtml?faces-redirect=true"
                                                   style="text-decoration: none;color: black;">
-                            <f:param name="trackingId" value="#{admin.track.trackingId}"/>
-                        </h:link></strong> is currently <strong>#{admin.track.cargo.statusText}</strong>
+                            <f:param name="trackingId" value="#{adminTrack.cargo.trackingId}"/>
+                        </h:link></strong> is
+                            currently <strong>#{adminTrack.cargo.statusText}</strong>
                         </p>
-
-                        <p:tooltip id="toolTipFade" for="trackingId"
-                                   value="Click to see itinerary's details."/>
 
                         <p>
-                            Estimated time of arrival in <strong>#{admin.track.cargo.destination}</strong>:
-                            #{admin.track.cargo.eta}
+                            Estimated time of arrival in <strong>#{adminTrack.cargo.destinationName}</strong>:
+                            #{adminTrack.cargo.eta}
                         </p>
                         <ui:fragment
-                                rendered="#{not empty admin.track.cargo.nextExpectedActivity}">
-                            <p>#{admin.track.cargo.nextExpectedActivity}</p>
+                                rendered="#{not empty adminTrack.cargo.nextExpectedActivity}">
+                            <p>#{adminTrack.cargo.nextExpectedActivity}</p>
                         </ui:fragment>
 
-                        <h:panelGroup rendered="#{admin.track.cargo.misdirected}">
-                            <p>
-                                <i class="fa fa-exclamation-triangle" style="color: #9b2332"></i>
+                        <ui:fragment rendered="#{adminTrack.cargo.misdirected}">
+                            <p class="text-danger">
+                                <i class="bi bi-x-circle"></i>
                                 Cargo is misdirected.
                             </p>
-                        </h:panelGroup>
+                        </ui:fragment>
                     </div>
-                </h:panelGroup>
-            </div>
+                    <div class="mt-5">
+                        <h2 class="fs-2">Handling History </h2>
 
-            <div class="ui-g ui-g-12">
-                <div class="ui-g-3">
-                    <p:outputLabel value="Handling History"
-                                   style="font-size: 2em; font-weight: bold"/>
-                </div>
+                        <ui:fragment rendered="#{empty adminTrack.cargo.events}">
+                            <p class="py-5">
+                                There are no events recorded for the tracking ID #{adminTrack.cargo.trackingId}."
+                            </p>
+                        </ui:fragment>
 
-                <div class="ui-g-12">
-                    <p:separator/>
-                    <br/> <br/>
-                </div>
+                        <ui:fragment rendered="#{not empty adminTrack.cargo.events}">
+                            <ul class="py-5 timeline">
+                                <ui:repeat value="#{adminTrack.cargo.events}" var="leg">
+                                    <ui:fragment rendered="#{leg.expected}">
+                                        <li>
+                                            <i class="bi bi-check-circle text-success me-1"></i>
+                                            #{leg.description}, at #{leg.time}
+                                        </li>
 
-                <h:outputLabel
-                        value="There are no events recorded for the tracking ID #{admin.track.trackingId}."
-                        rendered="#{empty admin.track.cargo.events}"/>
-
-                <div class="ui-g-12">
-                    <ui:repeat value="#{admin.track.cargo.events}" var="event">
-                        <div>
-                            <ui:fragment rendered="#{event.expected}">
-                                &#160;&#160;<i class="fa fa-check"
-                                               style="color: green"/>&#160;#{event.description}, at #{event.time}
-                            </ui:fragment>
-                            <ui:fragment rendered="#{!event.expected}">
-                                &#160;&#160;<em class="fa fa-flag"
-                                                style="color: #9b2332"/>&#160;#{event.description}, at #{event.time}
-                            </ui:fragment>
-                        </div>
-                    </ui:repeat>
+                                    </ui:fragment>
+                                    <ui:fragment rendered="#{!leg.expected}">
+                                        <li>
+                                            <i class="bi bi-x-circle text-danger me-1"></i>
+                                            #{leg.description}, at #{leg.time}
+                                        </li>
+                                    </ui:fragment>
+                                </ui:repeat>
+                            </ul>
+                        </ui:fragment>
+                    </div>
                 </div>
             </div>
-        </div>
+        </ui:fragment>
     </ui:define>
 </ui:composition>
-</html>

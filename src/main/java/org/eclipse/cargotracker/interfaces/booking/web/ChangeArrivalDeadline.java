@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 import org.primefaces.PrimeFaces;
 
 /**
@@ -26,7 +26,7 @@ public class ChangeArrivalDeadline implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String trackingId;
-    private CargoRoute cargo;
+    private CargoRouteDto cargo;
     private LocalDate arrivalDeadline;
 
     @Inject private BookingServiceFacade bookingServiceFacade;
@@ -39,7 +39,7 @@ public class ChangeArrivalDeadline implements Serializable {
         this.trackingId = trackingId;
     }
 
-    public CargoRoute getCargo() {
+    public CargoRouteDto getCargo() {
         return cargo;
     }
 

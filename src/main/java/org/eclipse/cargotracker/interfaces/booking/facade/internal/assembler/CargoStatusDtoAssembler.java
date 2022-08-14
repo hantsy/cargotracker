@@ -5,8 +5,8 @@ import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.Delivery;
 import org.eclipse.cargotracker.domain.model.cargo.HandlingActivity;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatus;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.TrackingEvents;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatusDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.TrackingEventsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,8 +18,8 @@ public class CargoStatusDtoAssembler {
     // public static final String DT_PATTERN = "MM/dd/yyyy hh:mm a z";
     // private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DT_PATTERN);
 
-    public CargoStatus toDto(Cargo cargo, List<HandlingEvent> handlingEvents) {
-        List<TrackingEvents> trackingEvents;
+    public CargoStatusDto toDto(Cargo cargo, List<HandlingEvent> handlingEvents) {
+        List<TrackingEventsDto> trackingEvents;
 
         TrackingEventsDtoAssembler assembler = new TrackingEventsDtoAssembler();
 
@@ -28,7 +28,7 @@ public class CargoStatusDtoAssembler {
                         .map(handlingEvent -> assembler.toDto(cargo, handlingEvent))
                         .collect(Collectors.toList());
 
-        return new CargoStatus(
+        return new CargoStatusDto(
                 cargo.getRouteSpecification().getDestination().getName(),
                 getCargoStatusText(cargo),
                 cargo.getDelivery().isMisdirected(),

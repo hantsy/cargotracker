@@ -1,28 +1,60 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-<ui:composition template="/WEB-INF/templates/common/admin.xhtml">
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+        template="/WEB-INF/layout/public.xhtml">
     <ui:define name="title">Cargo Registration</ui:define>
-    <ui:define name="content">
-        <div class="ui-g-2" id="leftCol"></div>
-        <div class="ui-g-8" id="mainCol">
-            <br/>
-            <h:form>
-                <p:outputLabel value="1. Choose the origin of the new cargo"/>
-                <hr/>
-                <p:selectOneMenu id="origin" value="#{booking.originUnlocode}">
+    <ui:define name="body">
+        <h2 class="my-5 fs-2 fw-bold">Cargo Registration</h2>
+
+        <h:form id="registrationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
+
+            <div class="col-12 col-md-6">
+                <label for="origin" class="form-label">Choose the origin of the new cargo</label>
+                <h:selectOneMenu id="origin"
+                                 styleClass="form-select #{not empty facesContext.getMessageList('origin')?'is-invalid':''}"
+                                 value="#{booking.originUnlocode}">
                     <f:selectItems value="#{booking.locations}" var="location"
                                    itemLabel="#{location.name}" itemValue="#{location.unLocode}"/>
-                </p:selectOneMenu>
-                <hr/>
-                <h:panelGrid columns="2" style="margin: 0 auto;">
-                    <p:commandButton value="Cancel" action="/admin/dashboard"/>
-                    <p:commandButton value="Next" action="booking-destination"/>
-                </h:panelGrid>
-            </h:form>
-        </div>
+                </h:selectOneMenu>
+                <small class="invalid-feedback">
+                    <h:message for="origin" showDetail="false" showSummary="true"/>
+                </small>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label for="destination" class="form-label">Choose the destination of the new cargo</label>
+                <h:selectOneMenu id="destination"
+                                 styleClass="form-select #{not empty facesContext.getMessageList('destination')?'is-invalid':''}"
+                                 value="#{booking.destinationUnlocode}">
+                    <f:selectItems value="#{booking.locations}" var="location"
+                                   itemLabel="#{location.name}" itemValue="#{location.unLocode}"/>
+                </h:selectOneMenu>
+                <small class="invalid-feedback">
+                    <h:message for="destination" showDetail="false" showSummary="true"/>
+                </small>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label for="deadline" class="form-label">Set the arrival deadline for this new cargo </label>
+                <h:inputText id="deadline"
+                             p:type="date"
+                             p:min="#{booking.today}"
+                             styleClass="form-control #{not empty facesContext.getMessageList('deadline')?'is-invalid':''}"
+                             value="#{eventLogger.completionTime}">
+                    <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
+                </h:inputText>
+                <small class="invalid-feedback">
+                    <h:message for="deadline" showDetail="false" showSummary="true"/>
+                </small>
+            </div>
+            <div class="d-grid col-12 d-md-flex justfiy-content-md-start">
+                <h:link outcome="/admin/dashboard.xhtml" value="Cancel"/>
+                <button class="btn btn-primary" jsf:action="booking-confirm">Submit</button>
+            </div>
+        </h:form>
     </ui:define>
 </ui:composition>
-</html>

@@ -12,7 +12,8 @@ import javax.faces.flow.FlowScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.Location;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
+import org.omnifaces.util.Messages;
 import org.primefaces.PrimeFaces;
 
 @Named
@@ -24,7 +25,7 @@ public class Booking implements Serializable {
     private static final long MIN_JOURNEY_DURATION = 1; // Journey should be 1 day minimum.
 
     private LocalDate today = null;
-    private List<Location> locations;
+    private List<LocationDto> locations;
 
     private String originUnlocode;
     private String originName;
@@ -43,8 +44,8 @@ public class Booking implements Serializable {
         locations = bookingServiceFacade.listShippingLocations();
     }
 
-    public List<Location> getLocations() {
-        List<Location> filteredLocations = new ArrayList<>();
+    public List<LocationDto> getLocations() {
+        List<LocationDto> filteredLocations = new ArrayList<>();
         String locationToRemove = null;
 
         // TODO [Jakarta EE 8] Use injection instead?
@@ -60,7 +61,7 @@ public class Booking implements Serializable {
             }
         }
 
-        for (Location location : locations) {
+        for (LocationDto location : locations) {
             if (!location.getUnLocode().equalsIgnoreCase(locationToRemove)) {
                 filteredLocations.add(location);
             }
@@ -75,7 +76,7 @@ public class Booking implements Serializable {
 
     public void setOriginUnlocode(String originUnlocode) {
         this.originUnlocode = originUnlocode;
-        for (Location location : locations) {
+        for (LocationDto location : locations) {
             if (location.getUnLocode().equalsIgnoreCase(originUnlocode)) {
                 this.originName = location.getNameOnly();
             }
@@ -92,7 +93,7 @@ public class Booking implements Serializable {
 
     public void setDestinationUnlocode(String destinationUnlocode) {
         this.destinationUnlocode = destinationUnlocode;
-        for (Location location : locations) {
+        for (LocationDto location : locations) {
             if (location.getUnLocode().equalsIgnoreCase(destinationUnlocode)) {
                 destinationName = location.getNameOnly();
             }
@@ -126,11 +127,7 @@ public class Booking implements Serializable {
     public void deadlineUpdated() {
         duration = ChronoUnit.DAYS.between(today, arrivalDeadline);
 
-        if (duration >= MIN_JOURNEY_DURATION) {
-            bookable = true;
-        } else {
-            bookable = false;
-        }
+        bookable = duration >= MIN_JOURNEY_DURATION;
 
         PrimeFaces.current().ajax().update("dateForm:durationPanel");
         PrimeFaces.current().ajax().update("dateForm:bookBtn");
@@ -140,12 +137,7 @@ public class Booking implements Serializable {
         if (!originUnlocode.equals(destinationUnlocode)) {
             bookingServiceFacade.bookNewCargo(originUnlocode, destinationUnlocode, arrivalDeadline);
         } else {
-            // TODO [Jakarta EE 8] See if this can be injected.
-            FacesContext context = FacesContext.getCurrentInstance();
-            // UI now prevents from selecting same origin/destination
-            FacesMessage message = new FacesMessage("Origin and destination cannot be the same.");
-            message.setSeverity(FacesMessage.SEVERITY_ERROR);
-            context.addMessage(null, message);
+            Messages.addGlobalError("Origin and destination cannot be the same.");
             return null;
         }
 

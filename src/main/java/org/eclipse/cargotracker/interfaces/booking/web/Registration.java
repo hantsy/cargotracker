@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.Location;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
 
 /**
  * Handles registering cargo. Operates against a dedicated service facade, and could easily be
@@ -30,14 +30,14 @@ public class Registration implements Serializable {
 
     // private static final String FORMAT = "yyyy-MM-dd";
 
-    List<Location> locations;
+    List<LocationDto> locations;
     private String arrivalDeadline;
     private String originUnlocode;
     private String destinationUnlocode;
 
     @Inject private BookingServiceFacade bookingServiceFacade;
 
-    public List<Location> getLocations() {
+    public List<LocationDto> getLocations() {
         return locations;
     }
 

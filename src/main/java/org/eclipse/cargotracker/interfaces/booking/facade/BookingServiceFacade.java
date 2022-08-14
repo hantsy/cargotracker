@@ -1,9 +1,9 @@
 package org.eclipse.cargotracker.interfaces.booking.facade;
 
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRoute;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatus;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.Location;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidate;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatusDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidateDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,22 +16,22 @@ public interface BookingServiceFacade {
 
     String bookNewCargo(String origin, String destination, LocalDate arrivalDeadline);
 
-    CargoRoute loadCargoForRouting(String trackingId);
+    CargoRouteDto loadCargoForRouting(String trackingId);
 
-    CargoStatus loadCargoForTracking(String trackingId);
+    CargoStatusDto loadCargoForTracking(String trackingId);
 
-    void assignCargoToRoute(String trackingId, RouteCandidate route);
+    void assignCargoToRoute(String trackingId, RouteCandidateDto route);
 
     void changeDestination(String trackingId, String destinationUnLocode);
 
     void changeDeadline(String trackingId, LocalDate arrivalDeadline);
 
-    List<RouteCandidate> requestPossibleRoutesForCargo(String trackingId);
+    List<RouteCandidateDto> requestPossibleRoutesForCargo(String trackingId);
 
-    List<Location> listShippingLocations();
+    List<LocationDto> listShippingLocations();
 
     // TODO [DDD] Is this the right DTO here?
-    List<CargoRoute> listAllCargos();
+    List<CargoRouteDto> listAllCargos();
 
     List<String> listAllTrackingIds();
 }

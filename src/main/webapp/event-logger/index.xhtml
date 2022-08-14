@@ -7,9 +7,11 @@
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         template="/WEB-INF/layout/public.xhtml">
     <ui:define name="title">Mobile Event Logger</ui:define>
-    <f:metadata>
-        <f:viewAction action="#{eventLogger.init()}"/>
-    </f:metadata>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{eventLogger.init()}"/>
+        </f:metadata>
+    </ui:define>
     <ui:define name="body">
         <h:form id="eventLoggerForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
             <div class="col-12 col-md-6">

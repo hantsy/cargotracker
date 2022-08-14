@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CargoStatus {
+public class CargoStatusDto {
 
     private final String destination;
     private final String statusText;
     private final boolean misdirected;
     private final String eta;
     private final String nextExpectedActivity;
-    private final List<TrackingEvents> events;
+    private final List<TrackingEventsDto> events;
 
-    public CargoStatus(
+    public CargoStatusDto(
             String destination,
             String statusText,
             boolean misdirected,
             String eta,
             String nextExpectedActivity,
-            List<TrackingEvents> handlingEvents) {
+            List<TrackingEventsDto> handlingEvents) {
         this.destination = destination;
         this.statusText = statusText;
         this.misdirected = misdirected;
@@ -53,7 +53,7 @@ public class CargoStatus {
         return nextExpectedActivity;
     }
 
-    public List<TrackingEvents> getEvents() {
+    public List<TrackingEventsDto> getEvents() {
         return Collections.unmodifiableList(events);
     }
 }
