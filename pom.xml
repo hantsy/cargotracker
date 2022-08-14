@@ -868,7 +868,7 @@
                                 <JBOSS_HOME>${project.build.directory}/wildfly-${wildfly.version}</JBOSS_HOME>
                             </environmentVariables>
                             <systemPropertyVariables>
-                                <jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name>
+<!--                                <jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name>-->
                                 <serverConfig>standalone-full.xml</serverConfig>
                                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                             </systemPropertyVariables>
