@@ -32,17 +32,13 @@ public class EventLogger implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private CargoRepository cargoRepository;
+    @Inject private CargoRepository cargoRepository;
 
-    @Inject
-    private LocationRepository locationRepository;
+    @Inject private LocationRepository locationRepository;
 
-    @Inject
-    private VoyageRepository voyageRepository;
+    @Inject private VoyageRepository voyageRepository;
 
-    @Inject
-    private ApplicationEvents applicationEvents;
+    @Inject private ApplicationEvents applicationEvents;
 
     private List<SelectItem> trackingIds;
     private List<SelectItem> locations;
@@ -123,8 +119,8 @@ public class EventLogger implements Serializable {
             // List only routed cargo that is not claimed yet.
             if (!cargo.getItinerary().getLegs().isEmpty()
                     && !(cargo.getDelivery()
-                    .getTransportStatus()
-                    .sameValueAs(TransportStatus.CLAIMED))) {
+                            .getTransportStatus()
+                            .sameValueAs(TransportStatus.CLAIMED))) {
                 String trackingId = cargo.getTrackingId().getIdString();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }
@@ -149,7 +145,6 @@ public class EventLogger implements Serializable {
                             voyage.getVoyageNumber().getIdString()));
         }
     }
-
 
     private boolean validate(final String step) {
         if ("voyageTab".equals(step)
