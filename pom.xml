@@ -87,6 +87,14 @@
             <!-- Jakarta EE API -->
             <dependency>
                 <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-bom</artifactId>
+                <version>${jakartaee-api.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.platform</groupId>
                 <artifactId>jakarta.jakartaee-api</artifactId>
                 <version>${jakartaee-api.version}</version>
                 <scope>provided</scope>
@@ -659,7 +667,6 @@
                 <dependency>
                     <groupId>jakarta.servlet</groupId>
                     <artifactId>jakarta.servlet-api</artifactId>
-                    <version>4.0.4</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
@@ -742,6 +749,11 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
                     <groupId>org.jboss.resteasy</groupId>
                     <artifactId>resteasy-client</artifactId>
                     <version>${resteasy.version}</version>
@@ -794,6 +806,11 @@
                     <groupId>org.glassfish.tyrus</groupId>
                     <artifactId>tyrus-container-grizzly-client</artifactId>
                     <version>${tyrus-client.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet-api</artifactId>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
