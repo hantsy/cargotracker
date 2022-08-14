@@ -47,8 +47,7 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
     @Inject private HandlingEventRepository handlingEventRepository;
 
     @Override
-    public List<LocationDto>
-            listShippingLocations() {
+    public List<LocationDto> listShippingLocations() {
         List<Location> allLocations = locationRepository.findAll();
         LocationDtoAssembler assembler = new LocationDtoAssembler();
         return assembler.toDtoList(allLocations);

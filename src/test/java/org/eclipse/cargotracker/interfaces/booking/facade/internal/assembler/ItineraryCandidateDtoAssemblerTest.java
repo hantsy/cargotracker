@@ -93,7 +93,8 @@ public class ItineraryCandidateDtoAssemblerTest {
 
         // Tested call
         final Itinerary itinerary =
-                assembler.fromDTO(new RouteCandidateDto(legs), voyageRepository, locationRepository);
+                assembler.fromDTO(
+                        new RouteCandidateDto(legs), voyageRepository, locationRepository);
 
         assertThat(itinerary).isNotNull();
         assertThat(itinerary.getLegs()).isNotNull();

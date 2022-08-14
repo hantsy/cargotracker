@@ -27,8 +27,7 @@ public class LocationDtoAssemblerTest {
         final List<Location> locationList =
                 Arrays.asList(SampleLocations.STOCKHOLM, SampleLocations.HAMBURG);
 
-        final List<LocationDto> dtos =
-                assembler.toDtoList(locationList);
+        final List<LocationDto> dtos = assembler.toDtoList(locationList);
 
         assertThat(dtos).hasSize(2);
 

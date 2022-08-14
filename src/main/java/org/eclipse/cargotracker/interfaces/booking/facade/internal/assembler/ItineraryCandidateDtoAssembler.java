@@ -43,8 +43,7 @@ public class ItineraryCandidateDtoAssembler {
             LocationRepository locationRepository) {
         List<Leg> legs = new ArrayList<>(routeCandidateDTO.getLegs().size());
 
-        for (LegDto legDTO :
-                routeCandidateDTO.getLegs()) {
+        for (LegDto legDTO : routeCandidateDTO.getLegs()) {
             VoyageNumber voyageNumber = new VoyageNumber(legDTO.getVoyageNumber());
             Voyage voyage = voyageRepository.find(voyageNumber);
             Location from = locationRepository.find(new UnLocode(legDTO.getFromUnLocode()));
