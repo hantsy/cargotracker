@@ -32,8 +32,7 @@ public class ChangeDestination implements Serializable {
     private List<LocationDto> locations;
     private String destinationUnlocode;
 
-    @Inject
-    private BookingServiceFacade bookingServiceFacade;
+    @Inject private BookingServiceFacade bookingServiceFacade;
 
     public String getTrackingId() {
         return trackingId;
