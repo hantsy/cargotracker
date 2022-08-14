@@ -14,10 +14,9 @@
     </ui:define>
     <ui:define name="title">Route Cargo</ui:define>
     <ui:define name="body">
-        <h2 class="my-5 fs-2 fw-bold">Routing Cargo #{cargoDetails.cargo.trackingId}"</h2>
+        <h2 class="my-5 fs-2 fw-bold">Set Route for Cargo #{cargoDetails.cargo.trackingId}</h2>
 
-        <h3 class="mb-5 fs-3 fw-bolder">Set Route for Cargo #{cargoDetails.cargo.trackingId}</h3>
-        <div class="row g-3">
+        <div class="row mb-5 g-3">
             <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
             <div class="col-12 col-md-6">#{cargoDetails.cargo.originName} <span
                     class="text-secondary">#{cargoDetails.cargo.originCode}</span></div>
@@ -32,63 +31,68 @@
 
         <ui:fragment rendered="#{empty itinerarySelection.routeCandidates}">
             <p>
-                <i class="fa fa-exclamation-triangle" style="color: #9b2332"/> No
+                <i class="bi bi-exclamation-triangle" style="color: #9b2332"/> No
                 routes found that satisfy the route specification. Try setting an
                 arrival deadline further into the future.
             </p>
         </ui:fragment>
 
 
-        <ui:repeat value="#{itinerarySelection.routeCandidates}"
-                   var="itinerary" varStatus="itineraryStatus">
-            <div class="row g-3">
-                <div class="col-12 col-md-4 fw-bolder float-right">
-                    Route option ##{itineraryStatus.index + 1}</div>
-                <div class="col-12 col-md-6">
-                    <h:commandLink
-                            action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}"
-                            style="text-decoration: none;">
-                        <span style="color: #e8b44b; font-weight: bold;">Select</span>
-                    </h:commandLink>
-                </div>
-            </div>
-            <table>
-                <thead>
-                <tr>
-                    <th>Voyage</th>
-                    <th>Load</th>
-                    <th>Time</th>
-                    <th>UnLoad</th>
-                    <th>Time</th>
-                </tr>
-                </thead>
-                <tbody>
-                <ui:repeat var="leg" value="#{itinerary.legs}">
-                    <tr>
-                        <td>#{leg.voyageNumber}</td>
-                        <td>#{leg.fromName}
-                            <span class="text-secondary">#{leg.fromUnLocode}</span>
-                            <ui:fragment
-                                    rendered="#{cargoDetails.cargo.originName.startsWith(leg.fromName)}">
-                                <i class="bi bi-arrow-right"/>
-                            </ui:fragment>
-                        </td>
-                        <td>#{leg.loadTime}</td>
-                        <td>
-                            <ui:fragment
-                                    rendered="#{cargoDetails.cargo.originName.startsWith(leg.fromName)}">
-                                <i class="bi bi-arrow-right"/>
-                            </ui:fragment>
-                            #{leg.toName}
-                            <br/>
-                            <span class="text-secondary">#{leg.toUnLocode}</span>
-                        </td>
-                        <td>#{leg.unloadTime}</td>
-                    </tr>
-                </ui:repeat>
-                </tbody>
-            </table>
+        <ui:fragment rendered="#{not empty itinerarySelection.routeCandidates}">
+            <h:form>
+                <ui:repeat value="#{itinerarySelection.routeCandidates}"
+                           var="itinerary" varStatus="itineraryStatus">
 
-        </ui:repeat>
+                    <div class="row row-cols-lg-auto mb-2 g-3 justify-content-start align-items-center">
+                        <div class="col-12 col-md-4 fs-3 fw-bolder">
+                            Route option ##{itineraryStatus.index + 1}</div>
+                        <div class="col-12 col-md-6 mx-auto">
+                            <h:commandLink
+                                    action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}"
+                                    styleClass="btn btn-primary float-right">
+                                Select
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <table class="mb-5 table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Voyage</th>
+                            <th>Load</th>
+                            <th>Time</th>
+                            <th>UnLoad</th>
+                            <th>Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat var="leg" value="#{itinerary.legs}">
+                            <tr>
+                                <td>#{leg.voyageNumber}</td>
+                                <td>#{leg.fromName}
+                                    <br/>
+                                    <span class="text-secondary">#{leg.fromUnLocode}</span>
+                                    <ui:fragment
+                                            rendered="#{cargoDetails.cargo.originName.startsWith(leg.fromName)}">
+                                        <i class="bi bi-arrow-right-square"/>
+                                    </ui:fragment>
+                                </td>
+                                <td>#{leg.loadTime}</td>
+                                <td>
+                                    <ui:fragment
+                                            rendered="#{cargoDetails.cargo.finalDestinationName.startsWith(leg.toName)}">
+                                        <i class="bi bi-arrow-right-square"/>
+                                    </ui:fragment>
+                                    #{leg.toName}
+                                    <br/>
+                                    <span class="text-secondary">#{leg.toUnLocode}</span>
+                                </td>
+                                <td>#{leg.unloadTime}</td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                </ui:repeat>
+            </h:form>
+        </ui:fragment>
     </ui:define>
 </ui:composition>

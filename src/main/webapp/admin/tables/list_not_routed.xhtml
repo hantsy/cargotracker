@@ -18,14 +18,14 @@
 			</tr>
 			</thead>
 			<tbody>
-			<ui:repeat var="cargo" value="#{listCargo.claimedCargos}">
+			<ui:repeat var="cargo" value="#{listCargo.notRoutedCargos}">
 				<tr>
 					<td>
 						<h:link value="#{cargo.trackingId}"
 								outcome="route.xhtml?faces-redirect=true"
 								styleClass="text-decoration-none">
 							<f:param name="trackingId" value="#{cargo.trackingId}"/>
-							<i class="bi bi-info-circle" style="color: #999999;"></i>
+							<i class="bi bi-info-circle" style="color:#999999;"></i>
 						</h:link>
 					</td>
 					<td><h:outputText value="#{cargo.originName}  "/>

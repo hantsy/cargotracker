@@ -12,13 +12,15 @@
         </f:metadata>
     </ui:define>
     <ui:define name="body">
-        <h2 class="my-5 fs-2 fw-bold">Routing Details for Cargo #{cargoDetails.cargo.trackingId}"</h2>
+        <h2 class="my-5 fs-2 fw-bold">Routing Details for Cargo #{cargoDetails.cargo.trackingId}</h2>
 
-        <div class="row g-3">
+        <div class="row mb-5 g-3">
             <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
-            <div class="col-12 col-md-6">#{cargoDetails.cargo.originName} <span class="text-secondary">#{cargoDetails.cargo.originCode}</span></div>
+            <div class="col-12 col-md-6">#{cargoDetails.cargo.originName} <span
+                    class="text-secondary">#{cargoDetails.cargo.originCode}</span></div>
             <div class="col-12 col-md-4 fw-bolder float-right">Destination</div>
-            <div class="col-12 col-md-6">#{cargoDetails.cargo.finalDestinationName} <span class="text-secondary">#{cargoDetails.cargo.finalDestinationCode}</span></div>
+            <div class="col-12 col-md-6">#{cargoDetails.cargo.finalDestinationName} <span
+                    class="text-secondary">#{cargoDetails.cargo.finalDestinationCode}</span></div>
             <div class="col-12 col-md-4 fw-bolder float-right">Arrival deadline</div>
             <div class="col-12 col-md-6">#{cargoDetails.cargo.arrivalDeadline}</div>
         </div>
@@ -34,8 +36,8 @@
                     </h:link>
                 </p>
             </ui:fragment>
-            <h3 class="my-5 fs-3 fw-bolder">Itinerary</h3>
-            <table class="table table-hover">
+            <h3 class="mb-2 fs-3 fw-bolder">Itinerary</h3>
+            <table class="mb-5 table table-hover">
                 <thead>
                 <tr>
                     <th>Voyage</th>
@@ -47,17 +49,18 @@
                 </thead>
                 <tbody>
                 <ui:repeat var="leg" value="#{cargoDetails.cargo.legs}">
-                <tr>
-                    <td>#{leg.voyageNumber}</td>
-                    <td>#{leg.fromName} <br/>
-                        <span class="text-secondary">#{leg.fromUnLocode}</span>
-                    </td>
-                    <td>#{leg.loadTime}</td>
-                    <td>#{leg.toName}<br/>
-                        <span class="text-secondary">#{leg.toUnLocode}</span>
-                    </td>
-                    <td>#{leg.unloadTime}</td>
-                </tr>
+                    <tr>
+                        <td>#{leg.voyageNumber}</td>
+                        <td>#{leg.fromName} <br/>
+                            <span class="text-secondary">#{leg.fromUnLocode}</span>
+                        </td>
+                        <td>#{leg.loadTime}</td>
+                        <td>#{leg.toName}<br/>
+                            <span class="text-secondary">#{leg.toUnLocode}</span>
+                        </td>
+                        <td>#{leg.unloadTime}</td>
+                    </tr>
+                </ui:repeat>
                 </tbody>
             </table>
 

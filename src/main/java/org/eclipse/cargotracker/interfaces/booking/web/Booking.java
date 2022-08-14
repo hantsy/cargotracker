@@ -13,7 +13,6 @@ import javax.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
 import org.omnifaces.util.Messages;
-import org.primefaces.PrimeFaces;
 
 @Named
 @FlowScoped("booking")
@@ -125,11 +124,7 @@ public class Booking implements Serializable {
 
     public void deadlineUpdated() {
         duration = ChronoUnit.DAYS.between(today, arrivalDeadline);
-
         bookable = duration >= MIN_JOURNEY_DURATION;
-
-        PrimeFaces.current().ajax().update("dateForm:durationPanel");
-        PrimeFaces.current().ajax().update("dateForm:bookBtn");
     }
 
     public String register() {

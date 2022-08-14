@@ -1,15 +1,15 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
-import org.primefaces.PrimeFaces;
+
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles changing the cargo destination. Operates against a dedicated service facade, and could
@@ -32,7 +32,8 @@ public class ChangeDestination implements Serializable {
     private List<LocationDto> locations;
     private String destinationUnlocode;
 
-    @Inject private BookingServiceFacade bookingServiceFacade;
+    @Inject
+    private BookingServiceFacade bookingServiceFacade;
 
     public String getTrackingId() {
         return trackingId;
@@ -78,8 +79,5 @@ public class ChangeDestination implements Serializable {
 
     public void changeDestination() {
         bookingServiceFacade.changeDestination(trackingId, destinationUnlocode);
-        // PF.current().dialog().closeDynamic("DONE");
-        PrimeFaces.current().dialog().closeDynamic("DONE");
-        // RequestContext.getCurrentInstance().closeDialog("DONE");
     }
 }

@@ -13,40 +13,11 @@
         <param-name>javax.faces.CLIENT_WINDOW_MODE</param-name>
         <param-value>url</param-value>
     </context-param>
-    <context-param>
-        <param-name>primefaces.THEME</param-name>
-        <param-value>omega</param-value>
-    </context-param>
-    <context-param>
-        <param-name>primefaces.FONT_AWESOME</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>primefaces.MOVE_SCRIPTS_TO_BOTTOM</param-name>
-        <param-value>true</param-value>
-    </context-param>
 
     <context-param>
         <param-name>resteasy.preferJacksonOverJsonB</param-name>
         <param-value>false</param-value>
     </context-param>
-
-    <mime-mapping>
-        <extension>ttf</extension>
-        <mime-type>application/font-sfnt</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>woff</extension>
-        <mime-type>application/font-woff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>woff2</extension>
-        <mime-type>application/font-woff2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>eot</extension>
-        <mime-type>application/vnd.ms-fontobject</mime-type>
-    </mime-mapping>
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

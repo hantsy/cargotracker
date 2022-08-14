@@ -8,7 +8,6 @@ import javax.inject.Named;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
-import org.primefaces.PrimeFaces;
 
 /**
  * Handles changing the cargo destination. Operates against a dedicated service facade, and could
@@ -58,6 +57,5 @@ public class ChangeArrivalDeadline implements Serializable {
 
     public void changeArrivalDeadline() {
         bookingServiceFacade.changeDeadline(trackingId, arrivalDeadline);
-        PrimeFaces.current().dialog().closeDynamic("DONE");
     }
 }
