@@ -6,6 +6,7 @@
         </exclusions>
         <dependencies>
             <module name="org.jboss.resteasy.resteasy-json-binding-provider" services="import"/>
+            <module name="org.jboss.resteasy.resteasy-json-p-provider" services="import"/>
         </dependencies>
     </deployment>
 </jboss-deployment-structure>
