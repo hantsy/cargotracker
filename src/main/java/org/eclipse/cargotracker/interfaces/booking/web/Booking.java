@@ -12,8 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 @Named
@@ -34,14 +32,11 @@ public class Booking implements Serializable {
     private LocalDate arrivalDeadline;
     private long duration = -1;
 
-    @Inject
-    private BookingServiceFacade bookingServiceFacade;
+    @Inject private BookingServiceFacade bookingServiceFacade;
 
-    @Inject
-    private Conversation conversation;
+    @Inject private Conversation conversation;
 
-    @Inject
-    private FacesContext facesContext;
+    @Inject private FacesContext facesContext;
 
     @PostConstruct
     public void init() {
@@ -130,5 +125,4 @@ public class Booking implements Serializable {
         }
         return "/admin/dashboard.xhtml?faces-redirect=true";
     }
-
 }
