@@ -1,6 +1,7 @@
 <ui:composition
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
@@ -21,7 +22,7 @@
 
             <div class="d-grid col-12 d-md-flex justfiy-content-md-start">
                 <h:link outcome="/admin/dashboard.xhtml" value="Cancel"/>
-                <button class="btn btn-primary" jsf:action="booking">Previous </button>
+                <button class="btn btn-primary btn-outline" jsf:action="booking" jsf:immediate="true">Back </button>
                 <button class="btn btn-primary" jsf:action="#{booking.register()}">Comfirm</button>
             </div>
         </div>

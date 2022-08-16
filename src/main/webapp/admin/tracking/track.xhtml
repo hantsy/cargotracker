@@ -2,8 +2,9 @@
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-        template="/WEB-INF/layout/public.xhtml">
+        template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="title">Tracking</ui:define>
     <ui:define name="headIncludes">
         <link rel="stylesheet"
@@ -33,16 +34,16 @@
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <div>
                         <p>
-                            Cargo <strong><h:link value="#{adminTrack.cargo.trackingId}"
+                            Cargo <strong><h:link value="#{adminTrack.trackingId}"
                                                   id="trackingId" outcome="/admin/show.xhtml?faces-redirect=true"
                                                   style="text-decoration: none;color: black;">
-                            <f:param name="trackingId" value="#{adminTrack.cargo.trackingId}"/>
+                            <f:param name="trackingId" value="#{adminTrack.trackingId}"/>
                         </h:link></strong> is
                             currently <strong>#{adminTrack.cargo.statusText}</strong>
                         </p>
 
                         <p>
-                            Estimated time of arrival in <strong>#{adminTrack.cargo.destinationName}</strong>:
+                            Estimated time of arrival in <strong>#{adminTrack.cargo.destination}</strong>:
                             #{adminTrack.cargo.eta}
                         </p>
                         <ui:fragment
@@ -62,7 +63,7 @@
 
                         <ui:fragment rendered="#{empty adminTrack.cargo.events}">
                             <p class="py-5">
-                                There are no events recorded for the tracking ID #{adminTrack.cargo.trackingId}."
+                                There are no events recorded for the tracking ID #{adminTrack.trackingId}."
                             </p>
                         </ui:fragment>
 

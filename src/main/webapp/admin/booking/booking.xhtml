@@ -6,6 +6,11 @@
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
         template="/WEB-INF/layout/public.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{booking.startConversation()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
     <ui:define name="title">Cargo Registration</ui:define>
     <ui:define name="body">
         <h2 class="my-5 fs-2 fw-bold">Cargo Registration</h2>
@@ -53,7 +58,7 @@
             </div>
             <div class="d-grid col-12 d-md-flex justfiy-content-md-start">
                 <h:link outcome="/admin/dashboard.xhtml" value="Cancel"/>
-                <button class="btn btn-primary" jsf:action="booking-confirm">Submit</button>
+                <button class="btn btn-primary" jsf:action="#{booking.submit()}">Submit</button>
             </div>
         </h:form>
     </ui:define>
