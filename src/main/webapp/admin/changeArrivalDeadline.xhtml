@@ -1,0 +1,46 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+        template="/WEB-INF/layout/admin.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="trackingId" value="#{changeArrivalDeadline.trackingId}"/>
+            <f:viewAction action="#{changeArrivalDeadline.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="title">Change Arrival Deadline</ui:define>
+    <ui:define name="body">
+        <h2 class="my-5 fs-2 fw-bolder">Change Arrival Deadline for Cargo #{changeArrivalDeadline.cargo.trackingId}</h2>
+        <h:form id="changeArrivalDeadlineForm" prependId="false" styleClass="row g-3 needs-validation"
+                p:novalidate="true">
+            <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
+            <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.originName}
+            </div>
+            <div class="col-12 col-md-4 fw-bolder float-right">Destination</div>
+            <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.finalDestinationName}            </div>
+            <div class="col-12 col-md-4 fw-bolder float-right">Arrival Deadline</div>
+            <div class="col-12 col-md-6">
+                <h:inputText id="deadline"
+                             p:type="date"
+                             styleClass="form-control #{not empty facesContext.getMessageList('deadline')?'is-invalid':''}"
+                             value="#{changeArrivalDeadline.arrivalDeadline}"
+                             required="true"
+                             requiredMessage="ArrivalDeadline is required.">
+                    <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
+                </h:inputText>
+                <small class="invalid-feedback">
+                    <h:message for="deadline" showDetail="false" showSummary="true"/>
+                </small>
+            </div>
+            <div class="d-grid gap-3 col-12 d-md-flex justfiy-content-md-start">
+                <h:link styleClass="btn btn-outline-primary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
+                <button class="btn btn-primary" jsf:action="#{changeArrivalDeadline.changeArrivalDeadline()}">Update
+                </button>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -76,7 +76,8 @@ public class ChangeDestination implements Serializable {
         cargo = bookingServiceFacade.loadCargoForRouting(trackingId);
     }
 
-    public void changeDestination() {
+    public String changeDestination() {
         bookingServiceFacade.changeDestination(trackingId, destinationUnlocode);
+        return "show.html?faces-redirect=true&trackingId=" + trackingId;
     }
 }

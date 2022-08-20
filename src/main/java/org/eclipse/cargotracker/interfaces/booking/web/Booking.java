@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Named
@@ -98,6 +99,7 @@ public class Booking implements Serializable {
 
     public void setArrivalDeadline(LocalDate arrivalDeadline) {
         this.arrivalDeadline = arrivalDeadline;
+        this.duration = ChronoUnit.DAYS.between(today, arrivalDeadline);
     }
 
     public long getDuration() {
@@ -114,6 +116,10 @@ public class Booking implements Serializable {
             return null;
         }
         return "/admin/booking/confirm.xhtml";
+    }
+
+    public String back() {
+        return "/admin/booking/booking.xhtml";
     }
 
     public String register() {

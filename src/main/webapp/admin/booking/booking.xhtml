@@ -5,7 +5,7 @@
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-        template="/WEB-INF/layout/public.xhtml">
+        template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="metadata">
         <f:metadata>
             <f:event listener="#{booking.startConversation()}" type="preRenderView"/>
@@ -21,7 +21,9 @@
                 <label for="origin" class="form-label">Choose the origin of the new cargo</label>
                 <h:selectOneMenu id="origin"
                                  styleClass="form-select #{not empty facesContext.getMessageList('origin')?'is-invalid':''}"
-                                 value="#{booking.originUnlocode}">
+                                 value="#{booking.originUnlocode}"
+                                 required="true"
+                                 requiredMessage="Origin is required.">
                     <f:selectItems value="#{booking.locations}" var="location"
                                    itemLabel="#{location.name}" itemValue="#{location.unLocode}"/>
                 </h:selectOneMenu>
@@ -34,7 +36,9 @@
                 <label for="destination" class="form-label">Choose the destination of the new cargo</label>
                 <h:selectOneMenu id="destination"
                                  styleClass="form-select #{not empty facesContext.getMessageList('destination')?'is-invalid':''}"
-                                 value="#{booking.destinationUnlocode}">
+                                 value="#{booking.destinationUnlocode}"
+                                 required="true"
+                                 requiredMessage="Destination is required.">
                     <f:selectItems value="#{booking.locations}" var="location"
                                    itemLabel="#{location.name}" itemValue="#{location.unLocode}"/>
                 </h:selectOneMenu>
@@ -49,15 +53,17 @@
                              p:type="date"
                              p:min="#{booking.today}"
                              styleClass="form-control #{not empty facesContext.getMessageList('deadline')?'is-invalid':''}"
-                             value="#{eventLogger.completionTime}">
+                             value="#{booking.arrivalDeadline}"
+                             required="true"
+                             requiredMessage="ArrivalDeadline is required.">
                     <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
                 </h:inputText>
                 <small class="invalid-feedback">
                     <h:message for="deadline" showDetail="false" showSummary="true"/>
                 </small>
             </div>
-            <div class="d-grid col-12 d-md-flex justfiy-content-md-start">
-                <h:link outcome="/admin/dashboard.xhtml" value="Cancel"/>
+            <div class="d-grid gap-3 col-12 d-md-flex justfiy-content-md-start">
+                <h:link styleClass="btn btn-outline-primary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
                 <button class="btn btn-primary" jsf:action="#{booking.submit()}">Submit</button>
             </div>
         </h:form>

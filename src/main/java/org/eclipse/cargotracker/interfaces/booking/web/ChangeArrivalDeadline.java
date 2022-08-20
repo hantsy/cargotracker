@@ -55,7 +55,8 @@ public class ChangeArrivalDeadline implements Serializable {
         arrivalDeadline = DateUtil.toDate(cargo.getArrivalDeadline());
     }
 
-    public void changeArrivalDeadline() {
+    public String changeArrivalDeadline() {
         bookingServiceFacade.changeDeadline(trackingId, arrivalDeadline);
+        return "/admin/show.xhtml?faces-redirect=true&trackingId=" + trackingId;
     }
 }
