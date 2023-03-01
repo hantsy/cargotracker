@@ -74,7 +74,7 @@
         <!-- websockets-jsr and resteasy for client, aligned with Wildfly version. -->
         <undertow-websockets-jsr.version>2.2.3.Final</undertow-websockets-jsr.version>
         <!-- aligned to Wildfly version. -->
-        <resteasy.version>4.7.8.Final</resteasy.version>
+        <resteasy.version>4.7.9.Final</resteasy.version>
         <jackson.version>2.13.3</jackson.version>
 
         <!-- Application properties -->
