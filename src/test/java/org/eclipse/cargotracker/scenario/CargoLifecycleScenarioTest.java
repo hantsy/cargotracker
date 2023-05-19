@@ -82,6 +82,7 @@ public class CargoLifecycleScenarioTest {
             LocalDate.now().minusYears(1).plusMonths(3).plusDays(18);
     private static TrackingId trackingId;
     @Inject UserTransaction utx;
+
     /**
      * Repository implementations are part of the infrastructure layer, which in this test is
      * stubbed out by in-memory replacements.
@@ -91,6 +92,7 @@ public class CargoLifecycleScenarioTest {
     @Inject CargoRepository cargoRepository;
     @Inject LocationRepository locationRepository;
     VoyageRepository voyageRepository;
+
     /**
      * This interface is part of the application layer, and defines a number of events that occur
      * during aplication execution. It is used for message-driving and is implemented using JMS.
@@ -98,6 +100,7 @@ public class CargoLifecycleScenarioTest {
      * <p>In this test it is stubbed with synchronous calls.
      */
     ApplicationEvents applicationEvents;
+
     /**
      * These three components all belong to the application layer, and map against use cases of the
      * application. The "real" implementations are used in this lifecycle test, but wired with
@@ -107,12 +110,14 @@ public class CargoLifecycleScenarioTest {
 
     @Inject HandlingEventService handlingEventService;
     CargoInspectionService cargoInspectionService;
+
     /**
      * This factory is part of the handling aggregate and belongs to the domain layer. Similar to
      * the application layer components, the "real" implementation is used here too, wired with
      * stubbed infrastructure.
      */
     HandlingEventFactory handlingEventFactory;
+
     /**
      * This is a domain service interface, whose implementation is part of the infrastructure layer
      * (remote call to external system).

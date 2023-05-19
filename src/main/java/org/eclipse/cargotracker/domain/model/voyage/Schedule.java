@@ -17,6 +17,7 @@ public class Schedule implements Serializable {
     // Null object pattern.
     public static final Schedule EMPTY = new Schedule();
     private static final long serialVersionUID = 1L;
+
     // TODO [Clean Code] Look into why cascade delete doesn't work.
     // Hibernate issue:
     // orphanRemoval = true will cause exception under WildFly/Hibernate

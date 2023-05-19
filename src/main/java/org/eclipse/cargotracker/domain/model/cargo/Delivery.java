@@ -31,6 +31,7 @@ public class Delivery implements Serializable {
     public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
     private static final Logger LOGGER = Logger.getLogger(Delivery.class.getName());
     private static final long serialVersionUID = 1L;
+
     // public static final HandlingActivity NO_ACTIVITY = null;
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_status")
