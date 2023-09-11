@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: github.event_name != 'pull_request'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - if: github.event_name == 'pull_request'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
       # Recommended: latest versions of Google Java Format require JDK 11+
@@ -44,7 +44,7 @@ jobs:
         # test against latest update of each major Java version, as well as specific updates of LTS versions:
         java: [ 11, 17 ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
