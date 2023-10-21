@@ -1,13 +1,15 @@
 # Eclipse Cargo Tracker - Applied Domain-Driven Design Blueprints for Jakarta EE
 
 ![compile and build](https://github.com/hantsy/cargotracker/workflows/build/badge.svg)
-![Integration Test with Arquillian Payara Managed Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-payara-managed/badge.svg)
-![Integration Test with Arquillian WildFly Managed Container](https://github.com/hantsy/cargotracker/workflows/it-with-arq-wildfly-managed/badge.svg)
+![Integration Test with Arquillian GlassFish Managed Container](https://github.com/hantsy/cargotracker/workflows/arq-glassfish-managed/badge.svg)
+![Integration Test with Arquillian GlassFish Remote Container](https://github.com/hantsy/cargotracker/workflows/arq-glassfish-remote/badge.svg)
+![Integration Test with Arquillian WildFly Managed Container](https://github.com/hantsy/cargotracker/workflows/arq-wildfly-managed/badge.svg)
+![Integration Test with Arquillian WildFly Remote Container](https://github.com/hantsy/cargotracker/workflows/arq-wildfly-remote/badge.svg)
+
 
 [![CircleCI](https://circleci.com/gh/hantsy/cargotracker.svg?style=svg)](https://circleci.com/gh/hantsy/cargotracker)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=alert_status)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=coverage)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
-
 
 > **This is a personal fork of [Eclipse EE4J CargoTracker](https://github.com/eclipse-ee4j/cargotracker), I'm also [a contributor of the CargoTracker project](https://github.com/eclipse-ee4j/cargotracker/graphs/contributors).**
 
@@ -15,24 +17,22 @@
 
 There are some highlights when comparing to the upstream project.
 
-* Utilize Docker to run a Postgres Database in both development and production to erase the risk brought by different enviroments.
+* Utilize Docker to run a Postgres Database in both development and production to erase the risk brought by different environments.
 * Add support to run application on WildFly.
-* Add several fine-grained Maven profilles for varied Arquillian Container adapters, which is derived from [Jakarta EE 8 template project](https://github.com/hantsy/jakartaee8-starter-boilerplate).
-* Replace Primefaces with simple Bootstrap css style and plain Facelets templates, clean up and reorginize all Facelets templates.
+* Add several fine-grained Maven profiles for varied Arquillian Container adapters, which is derived from [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate).
+* Replace Primefaces with simple Bootstrap css style and plain Facelets templates, clean up and reorganize all Facelets templates.
 * Add a plenty of testing codes to cover more use cases.
-* Add Github Actions workflows to build the project and run testing codes, and generate code quality report via Jacoco, SonarCloud.
+* Add GitHub Actions workflows to build the project and run testing codes, and generate code quality report via Jacoco, SonarCloud.
 
-## Building
+## Build and Run 
 
 ### Prerequisites
 
-* Java 11
-* Apache Maven 3.8.1
+* Java 21
+* Apache Maven 3.9.0
 * Git
 * Docker
-* A Jakarta EE 8 compatible application server
-  * [Payara 5](https://www.payara.fish/downloads/) 
-  * [WildFly 26](https://www.wildfly.org)
+* [GlassFish v7](https://github.com/eclipse-ee4j/glassfish) or [WildFly 30](https://www.wildfly.org)
 
 ### Startup PostgresSQL Database
 
@@ -44,12 +44,12 @@ In your terminal, switch to the project root folder, and run the following comma
 docker-compose up postgres
 ```
 
-### Payara 5
+### GlassFish v7
 
-Run the following command to run the application on Payara 5 using cargo maven plugin.
+Run the following command to run the application on GlassFish v7 using cargo maven plugin.
 
 ```bash
-mvn clean package cargo:run
+mvn clean package cargo:run -Pglassifsh
 ```
 Open your browser, go to http://localhost:8080/cargo-tracker
 
@@ -65,23 +65,24 @@ Open your browser, go to http://localhost:8080/cargo-tracker
 
 ## Testing
 
-Cargo Tracker's testing is done using [JUnit](https://junit.org) and [Arquillian](http://arquillian.org/). There are several Maven profiles configured for running the testing codes against varied Arquillian Container adapters.
+Cargo Tracker's testing is done using [JUnit](https://junit.org) and [Arquillian](http://arquillian.org/). 
 
-###  Payara 5
+There are several Maven profiles configured for running the testing codes against varied Arquillian Container adapters.
 
-Run the following command to run Arquillian tests against Payara Managed Adaper.
+###  GlassFish
+
+Run the following command to run Arquillian tests against Payara Managed Adapter.
 
 ```bash
-mvn clean verify -Parq-payara-managed -DskipTests=false
+mvn clean verify -Parq-glassfish-managed 
 ```
 
 ###  WildFly
 
-Run the following command to run Arquillian tests against WildFly Managed Adaper.
+Run the following command to run Arquillian tests against WildFly Managed Adapter.
 
 ```bash
-mvn clean verify -Parq-wildfly-managed -DskipTests=false
+mvn clean verify -Parq-wildfly-managed
 ```
 
-
-> I have removed other profiles in the latest commits, if you are interested in other Arquillian Adapters, go to  [Jakarta EE 8 template project](https://github.com/hantsy/jakartaee8-starter-boilerplate), and follow [the guides](https://hantsy.github.io/jakartaee8-starter-boilerplate/) and expereince yourself.
+> More details about the Arquillian adapter's configuration, go to [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate), and follow [the guides](https://hantsy.github.io/jakartaee9-starter-boilerplate/) to research them yourself.

@@ -1,23 +1,20 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
-import org.eclipse.cargotracker.IntegrationTests;
-import org.eclipse.cargotracker.application.util.RestConfiguration;
+import jakarta.inject.Inject;
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.LocationRepository;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
+import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,8 +22,9 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 
-@RunWith(Arquillian.class)
-@Category(IntegrationTests.class)
+@ExtendWith(ArquillianExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag("arqtest")
 public class LocationRepositoryTest {
     private static final Logger LOGGER = Logger.getLogger(LocationRepositoryTest.class.getName());
     @Inject private LocationRepository locationRepository;
@@ -42,7 +40,7 @@ public class LocationRepositoryTest {
         addInfraPersistence(war);
         addApplicationBase(war);
 
-        war.addClass(RestConfiguration.class);
+        war.addClass(RestActivator.class);
         war.addClass(SampleDataGenerator.class)
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)
@@ -61,7 +59,7 @@ public class LocationRepositoryTest {
         return war;
     }
 
-    @Before
+    @BeforeEach
     public void setup() {}
 
     @Test

@@ -1,6 +1,6 @@
 package org.eclipse.pathfinder.internal;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;

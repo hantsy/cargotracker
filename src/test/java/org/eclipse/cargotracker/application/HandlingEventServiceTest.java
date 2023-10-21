@@ -11,8 +11,8 @@ import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ public class HandlingEventServiceTest {
                             SampleLocations.HAMBURG, SampleLocations.TOKYO, LocalDate.now()));
     private DefaultHandlingEventService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service =
                 new DefaultHandlingEventService(

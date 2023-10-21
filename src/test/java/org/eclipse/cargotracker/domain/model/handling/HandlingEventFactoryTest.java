@@ -10,9 +10,9 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,13 +36,13 @@ public class HandlingEventFactoryTest {
     // declare HandlingEventFactory
     private HandlingEventFactory handlingEventFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.handlingEventFactory =
                 new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         reset(cargoRepository, voyageRepository, locationRepository);
     }
@@ -91,10 +91,10 @@ public class HandlingEventFactoryTest {
         }
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
-        verifyNoInteractions(voyageRepository);
-        verify(locationRepository, times(1)).find(any(UnLocode.class));
 
+        verify(locationRepository, times(1)).find(any(UnLocode.class));
         verifyNoMoreInteractions(cargoRepository, voyageRepository, locationRepository);
+        verifyZeroInteractions(voyageRepository);
     }
 
     @Test
@@ -117,8 +117,8 @@ public class HandlingEventFactoryTest {
                 .isInstanceOf(UnknownCargoException.class);
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
-        verifyNoInteractions(voyageRepository);
-        verifyNoInteractions(locationRepository);
+        verifyZeroInteractions(voyageRepository);
+        verifyZeroInteractions(locationRepository);
         verifyNoMoreInteractions(cargoRepository, voyageRepository, locationRepository);
     }
 
@@ -142,7 +142,7 @@ public class HandlingEventFactoryTest {
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
         verify(voyageRepository, times(1)).find(any(VoyageNumber.class));
-        verifyNoInteractions(locationRepository);
+        verifyZeroInteractions(locationRepository);
         verifyNoMoreInteractions(cargoRepository, voyageRepository, locationRepository);
     }
 
@@ -164,7 +164,7 @@ public class HandlingEventFactoryTest {
                 .isInstanceOf(CannotCreateHandlingEventException.class);
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
-        verifyNoInteractions(voyageRepository);
+        verifyZeroInteractions(voyageRepository);
         verify(locationRepository, times(1)).find(any(UnLocode.class));
         verifyNoMoreInteractions(cargoRepository, voyageRepository, locationRepository);
     }

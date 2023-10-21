@@ -1,23 +1,16 @@
 package org.eclipse.cargotracker.infrastructure.persistence;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.annotation.sql.DataSourceDefinition;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// H2 will cause deployment failed on payara server.
-//
-// @DataSourceDefinition(
-//        name = "java:app/jdbc/CargoTrackerDatabase",
-//        className = "org.h2.jdbcx.JdbcDataSource",
-//        url = "jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE"
-// )
 @DataSourceDefinition(
         name = "java:app/jdbc/CargoTrackerDatabase",
         className = "org.postgresql.xa.PGXADataSource",
@@ -34,8 +27,8 @@ public class DatabaseSetup {
 
     @PostConstruct
     public void init() {
-        LOGGER.info("calling DatabaseSetup...");
-        LOGGER.log(Level.INFO, "dataSource is not null: {0}", dataSource != null);
+        LOGGER.config("calling DatabaseSetup...");
+        LOGGER.log(Level.INFO, "dataSource is available: {0}", dataSource != null);
 
         try (Connection connection = dataSource.getConnection()) {
             LOGGER.log(

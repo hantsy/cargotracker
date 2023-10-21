@@ -1,29 +1,11 @@
 package org.eclipse.cargotracker.scenario;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.eclipse.cargotracker.Deployments.addApplicationBase;
-import static org.eclipse.cargotracker.Deployments.addDomainModels;
-import static org.eclipse.cargotracker.Deployments.addDomainRepositories;
-import static org.eclipse.cargotracker.Deployments.addDomainService;
-import static org.eclipse.cargotracker.Deployments.addExtraJars;
-import static org.eclipse.cargotracker.Deployments.addInfraBase;
-import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
-import org.eclipse.cargotracker.IntegrationTests;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Status;
+import jakarta.transaction.UserTransaction;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.application.CargoInspectionService;
@@ -31,15 +13,7 @@ import org.eclipse.cargotracker.application.HandlingEventService;
 import org.eclipse.cargotracker.application.internal.DefaultBookingService;
 import org.eclipse.cargotracker.application.internal.DefaultCargoInspectionService;
 import org.eclipse.cargotracker.application.internal.DefaultHandlingEventService;
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
-import org.eclipse.cargotracker.domain.model.cargo.HandlingActivity;
-import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
-import org.eclipse.cargotracker.domain.model.cargo.Leg;
-import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
-import org.eclipse.cargotracker.domain.model.cargo.RoutingStatus;
-import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
-import org.eclipse.cargotracker.domain.model.cargo.TransportStatus;
+import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.CannotCreateHandlingEventException;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEventFactory;
@@ -55,19 +29,27 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.domain.service.RoutingService;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(Arquillian.class)
-@Category(IntegrationTests.class)
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.cargotracker.Deployments.*;
+
+@ExtendWith(ArquillianExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag("arqtest")
 public class CargoLifecycleScenarioTest {
 
     private static final Logger LOGGER =
@@ -179,12 +161,12 @@ public class CargoLifecycleScenarioTest {
         return war;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         startTransaction();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         commitTransaction();
     }
@@ -209,7 +191,7 @@ public class CargoLifecycleScenarioTest {
      * A new cargo is booked, and the unique tracking id is assigned to the cargo.
      */
     @Test
-    @InSequence(1)
+    @Order(1)
     public void testBookNewCargo() throws Exception {
         trackingId =
                 bookingService.bookNewCargo(
@@ -251,7 +233,7 @@ public class CargoLifecycleScenarioTest {
      * The cargo is then assigned to the selected route, described by an itinerary.
      */
     @Test
-    @InSequence(2)
+    @Order(2)
     public void testRouting() throws Exception {
         LOGGER.log(Level.INFO, "assign to route::tracking id: {0}", trackingId);
         Cargo cargo = findCargo();
@@ -297,7 +279,7 @@ public class CargoLifecycleScenarioTest {
      * Handling begins: cargo is received in Hongkong.
      */
     @Test
-    @InSequence(3)
+    @Order(3)
     public void testReceiveInHongKong() throws Exception {
         LOGGER.log(Level.INFO, "receive in HONGKONG::tracking id: {0}", trackingId);
         handlingEventService.registerHandlingEvent(
@@ -323,7 +305,7 @@ public class CargoLifecycleScenarioTest {
 
     /// Next event: Load onto voyage SampleVoyages.v100 in Hongkong
     @Test
-    @InSequence(4)
+    @Order(4)
     public void testLoadInHongKong() throws Exception {
         LOGGER.log(Level.INFO, "load in HONGKONG::tracking id: {0}", trackingId);
         handlingEventService.registerHandlingEvent(
@@ -361,7 +343,7 @@ public class CargoLifecycleScenarioTest {
      * way.
      */
     @Test
-    @InSequence(5)
+    @Order(5)
     public void testCannotCreateHandlingEventException() throws Exception {
         LOGGER.log(
                 Level.INFO,
@@ -385,7 +367,7 @@ public class CargoLifecycleScenarioTest {
 
     // Cargo is now (incorrectly) unloaded in Tokyo
     @Test
-    @InSequence(6)
+    @Order(6)
     public void testUnloadedIncorrectlyInTokyo() throws Exception {
         LOGGER.log(Level.INFO, "unload in Tokyo incorrectly, tracking id: {0}", trackingId);
 
@@ -415,7 +397,7 @@ public class CargoLifecycleScenarioTest {
     // Specify a new route, this time from Tokyo (where it was incorrectly unloaded)
     // to SampleLocations.STOCKHOLM
     @Test
-    @InSequence(7)
+    @Order(7)
     public void testNewRoute() throws Exception {
         LOGGER.log(Level.INFO, "specify new route spec, tracking id: {0}", trackingId);
         Cargo cargo = findCargo();
@@ -456,7 +438,7 @@ public class CargoLifecycleScenarioTest {
     // Repeat procedure of selecting one out of a number of possible routes
     // satisfying the route spec
     @Test
-    @InSequence(8)
+    @Order(8)
     public void testNewItinerary() throws Exception {
         LOGGER.log(Level.INFO, "assign to new itinerary, tracking id: {0}", trackingId);
         Cargo cargo = findCargo();
@@ -512,7 +494,7 @@ public class CargoLifecycleScenarioTest {
     // -- Cargo has been rerouted, shipping continues --
     // Load in Tokyo
     @Test
-    @InSequence(9)
+    @Order(9)
     public void testLoadInTokyo() throws Exception {
         LOGGER.log(Level.INFO, "load in Tokyo now, tracking id: {0}", trackingId);
 
@@ -544,7 +526,7 @@ public class CargoLifecycleScenarioTest {
 
     // Unload in Hamburg
     @Test
-    @InSequence(10)
+    @Order(10)
     public void testUnloadInHamburg() throws Exception {
         LOGGER.log(Level.INFO, "unload in Hamburg, tracking id: {0}", trackingId);
 
@@ -575,7 +557,7 @@ public class CargoLifecycleScenarioTest {
 
     // Load in Hamburg
     @Test
-    @InSequence(11)
+    @Order(11)
     public void testLoadInHamburg() throws Exception {
         LOGGER.log(Level.INFO, "load in Hamburg,  tracking id: {0}", trackingId);
 
@@ -607,7 +589,7 @@ public class CargoLifecycleScenarioTest {
 
     // Unload in SampleLocations.STOCKHOLM
     @Test
-    @InSequence(12)
+    @Order(12)
     public void testUnload_in_STOCKHOLM() throws Exception {
         LOGGER.log(Level.INFO, "unload in STOCKHOLM, tracking id: {0}", trackingId);
 
@@ -636,7 +618,7 @@ public class CargoLifecycleScenarioTest {
     // Finally, cargo is claimed in SampleLocations.STOCKHOLM. This ends the cargo
     // lifecycle from our perspective.
     @Test
-    @InSequence(13)
+    @Order(13)
     public void testClaim_in_STOCKHOLM() throws Exception {
         LOGGER.log(
                 Level.INFO,
@@ -840,34 +822,4 @@ public class CargoLifecycleScenarioTest {
         }
     }
 
-    @ApplicationScoped
-    public static class SynchronousApplicationEventsStub implements ApplicationEvents {
-
-        @Inject Instance<CargoInspectionService> cargoInspectionServiceInstance;
-
-        // no-args constructor required by CDI
-        public SynchronousApplicationEventsStub() {}
-
-        @Override
-        public void cargoWasHandled(HandlingEvent event) {
-            System.out.println("EVENT: cargo was handled: " + event);
-            cargoInspectionServiceInstance.get().inspectCargo(event.getCargo().getTrackingId());
-        }
-
-        @Override
-        public void cargoWasMisdirected(Cargo cargo) {
-            System.out.println("EVENT: cargo was misdirected");
-        }
-
-        @Override
-        public void cargoHasArrived(Cargo cargo) {
-            System.out.println("EVENT: cargo has arrived: " + cargo.getTrackingId().getIdString());
-        }
-
-        @Override
-        public void receivedHandlingEventRegistrationAttempt(
-                HandlingEventRegistrationAttempt attempt) {
-            System.out.println("EVENT: received handling event registration attempt");
-        }
-    }
 }

@@ -1,15 +1,15 @@
 package org.eclipse.cargotracker.infrastructure.messaging.jms;
 
+import jakarta.annotation.Resource;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.jms.Destination;
-import javax.jms.JMSContext;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSContext;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,13 +24,13 @@ public class JmsApplicationEvents implements ApplicationEvents, Serializable {
     @Resource(lookup = "java:app/jms/CargoHandledQueue")
     private Destination cargoHandledQueue;
 
-    @Resource(lookup = "java:app/jms/MisdirectedCargoQueue")
+    @jakarta.annotation.Resource(lookup = "java:app/jms/MisdirectedCargoQueue")
     private Destination misdirectedCargoQueue;
 
-    @Resource(lookup = "java:app/jms/DeliveredCargoQueue")
+    @jakarta.annotation.Resource(lookup = "java:app/jms/DeliveredCargoQueue")
     private Destination deliveredCargoQueue;
 
-    @Resource(lookup = "java:app/jms/HandlingEventRegistrationAttemptQueue")
+    @jakarta.annotation.Resource(lookup = "java:app/jms/HandlingEventRegistrationAttemptQueue")
     private Destination handlingEventQueue;
 
     @Inject private Logger logger;

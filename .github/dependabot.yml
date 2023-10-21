@@ -20,8 +20,8 @@ updates:
       - dependency-name: "org.jboss.resteasy:resteasy-client"
         update-types: [ "version-update:semver-major", "version-update:semver-minor"]
       - dependency-name: "jakarta.platform:jakarta.jakartaee-api"
-        versions: [ "9.x" ]
+        versions: [ "10.x" ]
       - dependency-name: "org.glassfish.jaxb:jaxb-runtime"
-        versions: [ "3.x" ]
+        versions: [ "4.x" ]
       - dependency-name: "*"  
         update-types: [ "version-update:semver-major"]      

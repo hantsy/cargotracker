@@ -1,44 +1,42 @@
 package org.eclipse.cargotracker.interfaces.handling.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.addApplicationBase;
-import static org.eclipse.cargotracker.Deployments.addDomainModels;
-import static org.eclipse.cargotracker.Deployments.addExtraJars;
-import static org.eclipse.cargotracker.Deployments.addInfraBase;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.inject.Inject;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import org.eclipse.cargotracker.IntegrationTests;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
-import org.eclipse.cargotracker.application.util.RestConfiguration;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
+import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(Arquillian.class)
-@Category(IntegrationTests.class)
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.cargotracker.Deployments.*;
+
+@ExtendWith(ArquillianExtension.class)
+@Tag("arqtest")
 public class HandlingReportServiceTest {
 
     private static final Logger LOGGER =
@@ -59,7 +57,7 @@ public class HandlingReportServiceTest {
                 .addClass(ApplicationEvents.class)
                 .addClass(HandlingEventRegistrationAttempt.class)
                 // rest config.
-                .addClass(RestConfiguration.class)
+                .addClass(RestActivator.class)
                 // add samples.
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)
@@ -81,12 +79,12 @@ public class HandlingReportServiceTest {
 
     private Client client;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.client = ClientBuilder.newClient();
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         if (this.client != null) {
             this.client.close();
@@ -103,7 +101,7 @@ public class HandlingReportServiceTest {
         report.setUnLocode(SampleLocations.HONGKONG.getUnLocode().getIdString());
 
         final WebTarget postReportTarget =
-                client.target(new URL(base, "rest/handling/reports").toExternalForm());
+                client.target(URI.create(base + "rest/handling/reports").toURL().toExternalForm());
 
         // Response is an autocloseable resource.
         try (final Response postReportResponse =

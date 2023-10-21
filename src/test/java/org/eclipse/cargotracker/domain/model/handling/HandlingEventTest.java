@@ -5,14 +5,15 @@ import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class HandlingEventTest {
 
@@ -42,7 +43,7 @@ public class HandlingEventTest {
                         HandlingEvent.Type.UNLOAD,
                         SampleLocations.NEWYORK,
                         SampleVoyages.CM003);
-        assertEquals(SampleLocations.NEWYORK, event2.getLocation());
+        assertThat( event2.getLocation()).isEqualTo(SampleLocations.NEWYORK);
 
         // These event types prohibit a carrier movement association
         for (HandlingEvent.Type type :
@@ -89,7 +90,7 @@ public class HandlingEventTest {
                         LocalDateTime.now(),
                         HandlingEvent.Type.CLAIM,
                         SampleLocations.HELSINKI);
-        assertEquals(SampleLocations.HELSINKI, event1.getLocation());
+        assertThat( event1.getLocation()).isEqualTo(SampleLocations.HELSINKI);
     }
 
     @Test
@@ -103,7 +104,7 @@ public class HandlingEventTest {
                         SampleLocations.CHICAGO,
                         SampleVoyages.CM004);
 
-        assertEquals(SampleLocations.CHICAGO, event.getLocation());
+        assertThat( event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }
 
     @Test
@@ -117,7 +118,7 @@ public class HandlingEventTest {
                         SampleLocations.HAMBURG,
                         SampleVoyages.CM004);
 
-        assertEquals(SampleLocations.HAMBURG, ev.getLocation());
+        assertThat( ev.getLocation()).isEqualTo(SampleLocations.HAMBURG);
     }
 
     @Test
@@ -130,7 +131,7 @@ public class HandlingEventTest {
                         HandlingEvent.Type.RECEIVE,
                         SampleLocations.CHICAGO);
 
-        assertEquals(SampleLocations.CHICAGO, event.getLocation());
+        assertThat( event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }
 
     @Test
@@ -143,6 +144,6 @@ public class HandlingEventTest {
                         HandlingEvent.Type.CLAIM,
                         SampleLocations.CHICAGO);
 
-        assertEquals(SampleLocations.CHICAGO, event.getLocation());
+        assertThat( event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }
 }

@@ -1,8 +1,8 @@
 package org.eclipse.cargotracker.domain.shared;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DomainObjectUtilsTest {
 
@@ -12,9 +12,9 @@ public class DomainObjectUtilsTest {
         String noneNullObject = new String("noneNull");
 
         var safeObject = DomainObjectUtils.nullSafe(nullObject, "safe");
-        assertEquals("safe", safeObject);
+        assertThat( safeObject).isEqualTo("safe");
 
         var safeObject2 = DomainObjectUtils.nullSafe(noneNullObject, "safe");
-        assertEquals(noneNullObject, safeObject2);
+        assertThat( safeObject2).isEqualTo(noneNullObject);
     }
 }
