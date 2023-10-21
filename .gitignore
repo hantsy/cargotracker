@@ -8,4 +8,4 @@ target
 nb*
 data
 cargo-tracker-data/
-cargo-tracker-test-data/
+.factorypath
