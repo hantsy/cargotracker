@@ -15,7 +15,6 @@ import jakarta.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// TODO [Jakarta EE 8] Adopt the Date-Time API.
 @Stateless
 public class DefaultCargoInspectionService implements CargoInspectionService {
 

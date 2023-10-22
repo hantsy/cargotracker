@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 /** A few utilities for working with Date. */
-// TODO [Clean Code] Make this a CDI singleton?
 public class DateUtil {
     public static final String DATE_FORMAT = "M/d/yyyy";
     public static final String DATE_TIME_FORMAT = "M/d/yyyy h:m a";

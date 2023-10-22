@@ -6,8 +6,6 @@
 ![Integration Test with Arquillian WildFly Managed Container](https://github.com/hantsy/cargotracker/workflows/arq-wildfly-managed/badge.svg)
 ![Integration Test with Arquillian WildFly Remote Container](https://github.com/hantsy/cargotracker/workflows/arq-wildfly-remote/badge.svg)
 
-
-[![CircleCI](https://circleci.com/gh/hantsy/cargotracker.svg?style=svg)](https://circleci.com/gh/hantsy/cargotracker)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=alert_status)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=coverage)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 
@@ -32,7 +30,7 @@ There are some highlights when comparing to the upstream project.
 * Apache Maven 3.9.0
 * Git
 * Docker
-* [GlassFish v7](https://github.com/eclipse-ee4j/glassfish) or [WildFly 30](https://www.wildfly.org)
+* [GlassFish v7](https://github.com/eclipse-ee4j/glassfish) or [WildFly 30+](https://www.wildfly.org)
 
 ### Startup PostgresSQL Database
 

@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// TODO [Jakarta EE 8] Adopt the Date-Time API.
 @Stateless
 public class DefaultHandlingEventService implements HandlingEventService {
 

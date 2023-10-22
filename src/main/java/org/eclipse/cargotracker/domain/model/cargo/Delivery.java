@@ -276,7 +276,7 @@ public class Delivery implements Serializable {
             }
             case UNLOAD -> {
                 for (Iterator<Leg> iterator = itinerary.getLegs().iterator();
-                     iterator.hasNext(); ) {
+                        iterator.hasNext(); ) {
                     Leg leg = iterator.next();
 
                     if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {

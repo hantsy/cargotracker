@@ -31,27 +31,25 @@ public class GraphTraversalService {
     @Produces({"application/json", "application/xml; qs=.75"})
     public List<TransitPath> findShortestPath(
             @NotBlank(message = "Missing origin UN location code.")
-                    @Size(
-                            min = 5,
-                            max = 5,
-                            message = "Origin UN location code value must be five characters long.")
-                    @QueryParam("origin")
-                    String originUnLocode,
-            @NotBlank(message = "Missing destination UN location code.")
-                    @Size(
-                            min = 5,
-                            max = 5,
-                            message =
-                                    "Destination UN location code value must be five characters long.")
-                    @QueryParam("destination")
-                    String destinationUnLocode,
             @Size(
-                            min = 8,
-                            max = 10,
-                            message =
-                                    "Deadline value must be between eight and ten characters long.")
-                    @QueryParam("deadline")
-                    String deadline) {
+                    min = 5,
+                    max = 5,
+                    message = "Origin UN location code value must be five characters long.")
+            @QueryParam("origin")
+            String originUnLocode,
+            @NotBlank(message = "Missing destination UN location code.")
+            @Size(
+                    min = 5,
+                    max = 5,
+                    message = "Destination UN location code value must be five characters long.")
+            @QueryParam("destination")
+            String destinationUnLocode,
+            @Size(
+                    min = 8,
+                    max = 10,
+                    message = "Deadline value must be between eight and ten characters long.")
+            @QueryParam("deadline")
+            String deadline) {
         LocalDateTime date = nextDate(LocalDateTime.now());
 
         List<String> allVertices = dao.listLocations();
