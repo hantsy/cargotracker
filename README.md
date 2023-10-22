@@ -39,27 +39,24 @@ There is a *docker-compose.yaml* file available in the project root folder.
 In your terminal, switch to the project root folder, and run the following command to start a Postgres instance in Docker container.
 
 ```bash
-docker-compose up postgres
+docker compose up postgres
 ```
 
-### GlassFish v7
+### GlassFish
 
 Run the following command to run the application on GlassFish v7 using cargo maven plugin.
 
 ```bash
 mvn clean package cargo:run -Pglassifsh
 ```
-Open your browser, go to http://localhost:8080/cargo-tracker
-
 ### WildFly 
 
 Run the following command to run the application on WildFly using the official WildFly maven plugin.
 
 ```bash
-mvn clean package wildfly:run -Pwildfly
+mvn clean wildfly:run -Pwildfly
 ```
-Open your browser, go to http://localhost:8080/cargo-tracker
-
+When the application is deployed sucessfully, open your browser, go to http://localhost:8080/cargo-tracker
 
 ## Testing
 
@@ -83,4 +80,4 @@ Run the following command to run Arquillian tests against WildFly Managed Adapte
 mvn clean verify -Parq-wildfly-managed
 ```
 
-> More details about the Arquillian adapter's configuration, go to [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate), and follow [the guides](https://hantsy.github.io/jakartaee9-starter-boilerplate/) to research them yourself.
+> More details about the Arquillian adapter's configuration, go to [Jakarta EE 9 template project](https://github.com/hantsy/jakartaee9-starter-boilerplate) or [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate), and follow [this comprehensive guide](https://hantsy.github.io/jakartaee9-starter-boilerplate/) to research them yourself.

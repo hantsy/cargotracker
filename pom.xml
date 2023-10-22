@@ -492,7 +492,7 @@
         <profile>
             <id>unit-test</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+<!--                <activeByDefault>true</activeByDefault>-->
             </activation>
             <properties>
                 <skip.unit.tests>false</skip.unit.tests>
@@ -861,8 +861,36 @@
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.extension</groupId>
-                    <artifactId>arquillian-jacoco-with-asm</artifactId>
+                    <artifactId>arquillian-jacoco</artifactId>
                     <version>${arquillian-jacoco.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
+                <dependency>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                    <version>9.6</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm-util -->
+                <dependency>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-util</artifactId>
+                    <version>9.6</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/org.jacoco/org.jacoco.core -->
+                <dependency>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>org.jacoco.core</artifactId>
+                    <version>${jacoco.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/org.jacoco/org.jacoco.agent -->
+                <dependency>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>org.jacoco.agent</artifactId>
+                    <version>${jacoco.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -880,15 +908,25 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>default-prepare-agent</id>
+                                <id>prepare-unit-tests</id>
                                 <goals>
                                     <goal>prepare-agent</goal>
                                 </goals>
                             </execution>
                             <execution>
+                                <id>prepare-integration-tests</id>
+                                <goals>
+                                    <goal>prepare-agent-integration</goal>
+                                </goals>
+                                <configuration>
+                                    <append>true</append>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>default-report</id>
                                 <goals>
                                     <goal>report</goal>
+                                    <goal>report-integration</goal>
                                 </goals>
                             </execution>
                             <!--                            <execution>
