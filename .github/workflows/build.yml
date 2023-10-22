@@ -48,3 +48,33 @@ jobs:
           cache: 'maven'
       - name: Build with Maven
         run: mvn clean package --file pom.xml
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'maven'
+      - name: Set up Database
+        run: |
+          docker-compose up -d postgres 
+          sleep 5 
+          docker ps -a
+      - name: Build with Maven
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn clean package --file pom.xml
+          mvn clean verify -Parq-wildfly-managed,coverage jacoco:report \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.organization=hantsy \
+            -Dsonar.projectKey=hantsy_cargotracker \
+            -Dsonar.coverage.exclusions=**/dto/*,**/*Configuration.*,**/SampleDataGenerator.*

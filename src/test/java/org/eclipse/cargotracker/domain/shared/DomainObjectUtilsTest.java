@@ -12,9 +12,9 @@ public class DomainObjectUtilsTest {
         String noneNullObject = new String("noneNull");
 
         var safeObject = DomainObjectUtils.nullSafe(nullObject, "safe");
-        assertThat( safeObject).isEqualTo("safe");
+        assertThat(safeObject).isEqualTo("safe");
 
         var safeObject2 = DomainObjectUtils.nullSafe(noneNullObject, "safe");
-        assertThat( safeObject2).isEqualTo(noneNullObject);
+        assertThat(safeObject2).isEqualTo(noneNullObject);
     }
 }

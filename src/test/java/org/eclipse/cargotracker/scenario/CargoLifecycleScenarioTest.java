@@ -821,5 +821,4 @@ public class CargoLifecycleScenarioTest {
             }
         }
     }
-
 }

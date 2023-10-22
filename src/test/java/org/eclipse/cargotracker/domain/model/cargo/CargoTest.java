@@ -40,10 +40,11 @@ public class CargoTest {
 
         Cargo cargo = new Cargo(trackingId, routeSpecification);
 
-        assertThat( cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
-        assertThat( cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat( cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat( cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
+        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
+        assertThat(cargo.getDelivery().getTransportStatus())
+                .isEqualTo(TransportStatus.NOT_RECEIVED);
+        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
+        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
     }
 
     @Test
@@ -72,10 +73,10 @@ public class CargoTest {
 
         cargo.specifyNewRoute(acceptOnlyGood);
 
-        assertThat( cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
+        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
 
         cargo.assignToRoute(bad);
-        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.MISROUTED) ;
+        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.MISROUTED);
 
         cargo.assignToRoute(good);
         assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.ROUTED);
@@ -98,14 +99,14 @@ public class CargoTest {
     public void testLastKnownLocationReceived() throws Exception {
         Cargo cargo = populateCargoReceivedStockholm();
 
-        assertThat( cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
+        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
     }
 
     @Test
     public void testLastKnownLocationClaimed() throws Exception {
         Cargo cargo = populateCargoClaimedMelbourne();
 
-        assertThat( cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.MELBOURNE);
+        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.MELBOURNE);
     }
 
     @Test

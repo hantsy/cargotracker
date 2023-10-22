@@ -12,8 +12,7 @@ import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAtt
 @ApplicationScoped
 public class SynchronousApplicationEventsStub implements ApplicationEvents {
 
-    @Inject
-    Instance<CargoInspectionService> cargoInspectionServiceInstance;
+    @Inject Instance<CargoInspectionService> cargoInspectionServiceInstance;
 
     // no-args constructor required by CDI
     public SynchronousApplicationEventsStub() {}
@@ -35,8 +34,7 @@ public class SynchronousApplicationEventsStub implements ApplicationEvents {
     }
 
     @Override
-    public void receivedHandlingEventRegistrationAttempt(
-            HandlingEventRegistrationAttempt attempt) {
+    public void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt) {
         System.out.println("EVENT: received handling event registration attempt");
     }
 }

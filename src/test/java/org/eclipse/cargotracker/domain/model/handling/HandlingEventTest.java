@@ -43,7 +43,7 @@ public class HandlingEventTest {
                         HandlingEvent.Type.UNLOAD,
                         SampleLocations.NEWYORK,
                         SampleVoyages.CM003);
-        assertThat( event2.getLocation()).isEqualTo(SampleLocations.NEWYORK);
+        assertThat(event2.getLocation()).isEqualTo(SampleLocations.NEWYORK);
 
         // These event types prohibit a carrier movement association
         for (HandlingEvent.Type type :
@@ -90,7 +90,7 @@ public class HandlingEventTest {
                         LocalDateTime.now(),
                         HandlingEvent.Type.CLAIM,
                         SampleLocations.HELSINKI);
-        assertThat( event1.getLocation()).isEqualTo(SampleLocations.HELSINKI);
+        assertThat(event1.getLocation()).isEqualTo(SampleLocations.HELSINKI);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class HandlingEventTest {
                         SampleLocations.CHICAGO,
                         SampleVoyages.CM004);
 
-        assertThat( event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
+        assertThat(event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class HandlingEventTest {
                         SampleLocations.HAMBURG,
                         SampleVoyages.CM004);
 
-        assertThat( ev.getLocation()).isEqualTo(SampleLocations.HAMBURG);
+        assertThat(ev.getLocation()).isEqualTo(SampleLocations.HAMBURG);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class HandlingEventTest {
                         HandlingEvent.Type.RECEIVE,
                         SampleLocations.CHICAGO);
 
-        assertThat( event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
+        assertThat(event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }
 
     @Test
@@ -144,6 +144,6 @@ public class HandlingEventTest {
                         HandlingEvent.Type.CLAIM,
                         SampleLocations.CHICAGO);
 
-        assertThat( event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
+        assertThat(event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }
 }

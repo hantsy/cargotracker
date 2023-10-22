@@ -14,7 +14,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // TODO [Jakarta EE 8] Move to the Java Date-Time API for date manipulation. Avoid hard-coded dates.
 public class HandlingHistoryTest {
@@ -72,12 +71,12 @@ public class HandlingHistoryTest {
 
     @Test
     public void testDistinctEventsByCompletionTime() {
-        assertThat(
-                 handlingHistory.getDistinctEventsByCompletionTime()).isEqualTo(Arrays.asList(event1, event2));
+        assertThat(handlingHistory.getDistinctEventsByCompletionTime())
+                .isEqualTo(Arrays.asList(event1, event2));
     }
 
     @Test
     public void testMostRecentlyCompletedEvent() {
-        assertThat( handlingHistory.getMostRecentlyCompletedEvent()).isEqualTo(event2);
+        assertThat(handlingHistory.getMostRecentlyCompletedEvent()).isEqualTo(event2);
     }
 }
