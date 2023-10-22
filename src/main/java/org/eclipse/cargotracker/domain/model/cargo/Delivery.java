@@ -212,18 +212,12 @@ public class Delivery implements Serializable {
             return NOT_RECEIVED;
         }
 
-        switch (lastEvent.getType()) {
-            case LOAD:
-                return ONBOARD_CARRIER;
-            case UNLOAD:
-            case RECEIVE:
-            case CUSTOMS:
-                return IN_PORT;
-            case CLAIM:
-                return CLAIMED;
-            default:
-                return UNKNOWN;
-        }
+        return switch (lastEvent.getType()) {
+            case LOAD -> ONBOARD_CARRIER;
+            case UNLOAD, RECEIVE, CUSTOMS -> IN_PORT;
+            case CLAIM -> CLAIMED;
+            default -> UNKNOWN;
+        };
     }
 
     private Location calculateLastKnownLocation() {
@@ -268,50 +262,45 @@ public class Delivery implements Serializable {
             return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.getOrigin());
         }
 
-        switch (lastEvent.getType()) {
-            case LOAD:
+        return switch (lastEvent.getType()) {
+            case LOAD -> {
                 for (Leg leg : itinerary.getLegs()) {
                     if (leg.getLoadLocation().sameIdentityAs(lastEvent.getLocation())) {
-                        return new HandlingActivity(
+                        yield new HandlingActivity(
                                 HandlingEvent.Type.UNLOAD,
                                 leg.getUnloadLocation(),
                                 leg.getVoyage());
                     }
                 }
-
-                return NO_ACTIVITY;
-
-            case UNLOAD:
+                yield NO_ACTIVITY;
+            }
+            case UNLOAD -> {
                 for (Iterator<Leg> iterator = itinerary.getLegs().iterator();
-                        iterator.hasNext(); ) {
+                     iterator.hasNext(); ) {
                     Leg leg = iterator.next();
 
                     if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {
                         if (iterator.hasNext()) {
                             Leg nextLeg = iterator.next();
-                            return new HandlingActivity(
+                            yield new HandlingActivity(
                                     HandlingEvent.Type.LOAD,
                                     nextLeg.getLoadLocation(),
                                     nextLeg.getVoyage());
                         } else {
-                            return new HandlingActivity(
+                            yield new HandlingActivity(
                                     HandlingEvent.Type.CLAIM, leg.getUnloadLocation());
                         }
                     }
                 }
-
-                return NO_ACTIVITY;
-
-            case RECEIVE:
+                yield NO_ACTIVITY;
+            }
+            case RECEIVE -> {
                 Leg firstLeg = itinerary.getLegs().iterator().next();
-
-                return new HandlingActivity(
+                yield new HandlingActivity(
                         HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
-
-            case CLAIM:
-            default:
-                return NO_ACTIVITY;
-        }
+            }
+            default -> NO_ACTIVITY;
+        };
     }
 
     private RoutingStatus calculateRoutingStatus(

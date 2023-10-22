@@ -269,7 +269,7 @@ public class HandlingEvent implements Serializable {
          *
          * @param voyageRequired whether or not a voyage is associated with this event type
          */
-        private Type(boolean voyageRequired) {
+        Type(boolean voyageRequired) {
             this.voyageRequired = voyageRequired;
         }
 
