@@ -1,26 +1,26 @@
 package org.eclipse.cargotracker.interfaces.booking.rest;
 
-import org.eclipse.cargotracker.IntegrationTests;
-import org.eclipse.cargotracker.application.util.RestConfiguration;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
+import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 
-@RunWith(Arquillian.class)
-@Category(IntegrationTests.class)
+@ExtendWith(ArquillianExtension.class)
+@Tag("arqtest")
 public class CargoMonitoringServiceTest {
     private static final Logger LOGGER =
             Logger.getLogger(CargoMonitoringServiceTest.class.getName());
@@ -47,7 +47,7 @@ public class CargoMonitoringServiceTest {
         addInfraPersistence(war);
         addApplicationBase(war);
 
-        war.addClass(RestConfiguration.class).addClass(CargoMonitoringService.class);
+        war.addClass(RestActivator.class).addClass(CargoMonitoringService.class);
         war.addClass(SampleDataGenerator.class)
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)
@@ -66,12 +66,12 @@ public class CargoMonitoringServiceTest {
         return war;
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.client = ClientBuilder.newClient();
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         if (this.client != null) {
             this.client.close();
@@ -82,7 +82,7 @@ public class CargoMonitoringServiceTest {
     public void testCargoStatus() throws Exception {
         LOGGER.log(Level.INFO, " Running test:: CargoMonitoringServiceTest#testCargoStatus ... ");
         final WebTarget getCargoStatus =
-                client.target(new URL(base, "rest/cargo").toExternalForm());
+                client.target(URI.create(base + "rest/cargo").toURL().toExternalForm());
 
         // Response is an autocloseable resource.
         try (final Response getAllPostsResponse =

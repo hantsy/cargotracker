@@ -9,8 +9,8 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -269,7 +269,7 @@ public class HandlingEvent implements Serializable {
          *
          * @param voyageRequired whether or not a voyage is associated with this event type
          */
-        private Type(boolean voyageRequired) {
+        Type(boolean voyageRequired) {
             this.voyageRequired = voyageRequired;
         }
 

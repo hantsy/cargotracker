@@ -1,6 +1,12 @@
 package org.eclipse.cargotracker.application;
 
-import org.eclipse.cargotracker.IntegrationTests;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.transaction.UserTransaction;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
@@ -17,21 +23,14 @@ import org.eclipse.cargotracker.infrastructure.messaging.jms.HandlingEventRegist
 import org.eclipse.cargotracker.infrastructure.messaging.jms.JmsApplicationEvents;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.jms.Destination;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.transaction.UserTransaction;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,8 +43,8 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 
-@RunWith(Arquillian.class)
-@Category(IntegrationTests.class)
+@ExtendWith(ArquillianExtension.class)
+@Tag("arqtest")
 public class ApplicationEventsTest {
     private static final Logger LOGGER = Logger.getLogger(ApplicationEventsTest.class.getName());
     private static TrackingId trackingId;

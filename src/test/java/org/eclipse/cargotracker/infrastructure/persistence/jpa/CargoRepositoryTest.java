@@ -1,7 +1,10 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
-import org.eclipse.cargotracker.IntegrationTests;
-import org.eclipse.cargotracker.application.util.RestConfiguration;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Status;
+import jakarta.transaction.UserTransaction;
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -13,21 +16,16 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
+import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
+
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,8 +38,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 import static org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type.LOAD;
 
-@RunWith(Arquillian.class)
-@Category(IntegrationTests.class)
+@ExtendWith(ArquillianExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag("arqtest")
 public class CargoRepositoryTest {
     private static final Logger LOGGER = Logger.getLogger(CargoRepositoryTest.class.getName());
     @Inject UserTransaction utx;
@@ -66,7 +65,7 @@ public class CargoRepositoryTest {
         addInfraPersistence(war);
         addApplicationBase(war);
 
-        war.addClass(RestConfiguration.class);
+        war.addClass(RestActivator.class);
         war.addClass(SampleDataGenerator.class)
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)
@@ -85,7 +84,7 @@ public class CargoRepositoryTest {
         return war;
     }
 
-    @Before
+    @BeforeEach
     public void setup() {}
 
     public void startTransaction() throws Exception {
@@ -101,7 +100,7 @@ public class CargoRepositoryTest {
     }
 
     @Test
-    @InSequence(1)
+    @Order(1)
     public void testFindAll() {
         List<Cargo> all = cargoRepository.findAll();
         assertThat(all).isNotNull();
@@ -109,7 +108,7 @@ public class CargoRepositoryTest {
     }
 
     @Test
-    @InSequence(2)
+    @Order(2)
     public void testNextTrackingId() {
         TrackingId trackingId = cargoRepository.nextTrackingId();
         assertThat(trackingId).isNotNull();
@@ -120,13 +119,13 @@ public class CargoRepositoryTest {
     }
 
     @Test
-    @InSequence(4)
+    @Order(4)
     public void testFindByCargoIdUnknownId() {
         assertThat(cargoRepository.find(new TrackingId("UNKNOWN"))).isNull();
     }
 
     @Test
-    @InSequence(5)
+    @Order(5)
     public void testFindByCargoId() throws Exception {
         startTransaction();
         final TrackingId trackingId = new TrackingId("ABC123");
@@ -215,7 +214,7 @@ public class CargoRepositoryTest {
     }
 
     @Test
-    @InSequence(6)
+    @Order(6)
     public void testSave() throws Exception {
         startTransaction();
         TrackingId trackingId = new TrackingId("AAA");
@@ -259,7 +258,7 @@ public class CargoRepositoryTest {
     }
 
     @Test
-    @InSequence(7)
+    @Order(7)
     public void testSpecifyNewRoute() throws Exception {
         LOGGER.log(Level.INFO, "run test :: testSpecifyNewRoute");
         startTransaction();
@@ -299,7 +298,7 @@ public class CargoRepositoryTest {
     }
 
     @Test
-    @InSequence(8)
+    @Order(8)
     public void testReplaceItinerary() throws Exception {
         startTransaction();
         var trackingId = new TrackingId("AAA");

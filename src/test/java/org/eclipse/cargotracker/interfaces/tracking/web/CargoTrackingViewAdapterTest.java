@@ -7,7 +7,7 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ public class CargoTrackingViewAdapterTest {
                                 SampleLocations.HELSINKI,
                                 LocalDate.now()));
 
-        List<HandlingEvent> events = new ArrayList<HandlingEvent>();
+        List<HandlingEvent> events = new ArrayList<>();
         events.add(
                 new HandlingEvent(
                         cargo,

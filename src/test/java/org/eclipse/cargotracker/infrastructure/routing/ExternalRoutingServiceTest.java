@@ -11,16 +11,15 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.infrastructure.routing.client.GraphTraversalResourceClient;
 import org.eclipse.pathfinder.api.TransitEdge;
 import org.eclipse.pathfinder.api.TransitPath;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -33,7 +32,7 @@ public class ExternalRoutingServiceTest {
             mock(GraphTraversalResourceClient.class);
     private ExternalRoutingService externalRoutingService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.externalRoutingService =
                 new ExternalRoutingService(
@@ -83,7 +82,7 @@ public class ExternalRoutingServiceTest {
 
         List<Itinerary> candidates =
                 externalRoutingService.fetchRoutesForSpecification(routeSpecification);
-        assertNotNull(candidates);
+        assertThat(candidates).isNotNull();
 
         for (Itinerary itinerary : candidates) {
             List<Leg> legs = itinerary.getLegs();

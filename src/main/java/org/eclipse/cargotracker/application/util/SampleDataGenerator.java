@@ -5,14 +5,14 @@ import org.eclipse.cargotracker.domain.model.handling.*;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 @Startup
 public class SampleDataGenerator {
 
-    @Inject private Logger logger;
+    private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator.class.getName());
 
     @PersistenceContext private EntityManager entityManager;
     @Inject private HandlingEventFactory handlingEventFactory;
@@ -33,7 +33,7 @@ public class SampleDataGenerator {
     @PostConstruct
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void loadSampleData() {
-        logger.info("Loading sample data.");
+        LOGGER.info("Loading sample data.");
         unLoadAll(); // Fail-safe in case of application restart that does not trigger a JPA schema
         // drop.
         loadSampleLocations();
@@ -42,7 +42,7 @@ public class SampleDataGenerator {
     }
 
     private void unLoadAll() {
-        logger.info("Unloading all existing data.");
+        LOGGER.info("Unloading all existing data.");
         // In order to remove handling events, must remove references in cargo.
         // Dropping cargo first won't work since handling events have references
         // to it.
@@ -66,7 +66,7 @@ public class SampleDataGenerator {
     }
 
     private void loadSampleLocations() {
-        logger.info("Loading sample locations.");
+        LOGGER.info("Loading sample locations.");
 
         entityManager.persist(SampleLocations.HONGKONG);
         entityManager.persist(SampleLocations.MELBOURNE);
@@ -84,7 +84,7 @@ public class SampleDataGenerator {
     }
 
     private void loadSampleVoyages() {
-        logger.info("Loading sample voyages.");
+        LOGGER.info("Loading sample voyages.");
 
         entityManager.persist(SampleVoyages.HONGKONG_TO_NEW_YORK);
         entityManager.persist(SampleVoyages.NEW_YORK_TO_DALLAS);
@@ -94,7 +94,7 @@ public class SampleDataGenerator {
     }
 
     private void loadSampleCargos() {
-        logger.info("Loading sample cargo data.");
+        LOGGER.info("Loading sample cargo data.");
 
         // Cargo ABC123. This one is en-route.
         TrackingId trackingId1 = new TrackingId("ABC123");

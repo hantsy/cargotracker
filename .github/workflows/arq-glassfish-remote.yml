@@ -1,0 +1,64 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: arq-glassfish-remote
+
+on:
+  push:
+    paths-ignore:
+      - "docs/**"
+    branches:
+      - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'zulu'
+          cache: maven
+      - name: Set up Database
+        run: |
+          docker-compose up -d postgres 
+          sleep 5 
+          docker ps -a
+      - name: Run Glassfish Server
+        run: |
+          export GLASSFISH_ARCHIVE=glassfish7
+          export GLASSFISH_VERSION=7.0.9
+          export INSTALL_DIR="/opt/appsvr"
+          mkdir ${INSTALL_DIR}
+          
+          curl -o /tmp/${GLASSFISH_ARCHIVE}.zip -L https://github.com/eclipse-ee4j/glassfish/releases/download/${GLASSFISH_VERSION}/glassfish-${GLASSFISH_VERSION}.zip \
+              && unzip /tmp/${GLASSFISH_ARCHIVE}.zip -d ${INSTALL_DIR} \
+              && rm /tmp/${GLASSFISH_ARCHIVE}.zip \
+              && true
+          
+          chmod -R a+rw ${INSTALL_DIR}
+          chmod -R a+x ${INSTALL_DIR}/${GLASSFISH_ARCHIVE}/bin/*
+          export PATH=$PATH:${INSTALL_DIR}/${GLASSFISH_ARCHIVE}/bin/
+          asadmin start-database \
+            && asadmin start-domain domain1 \
+            && true
+          #          echo "set AS_ADMIN_PASSWORD=adminadmin" \
+          #              && echo "AS_ADMIN_PASSWORD=\nAS_ADMIN_NEWPASSWORD=adminadmin" > /tmp/new_passwordfile \
+          #              && echo "AS_ADMIN_PASSWORD=adminadmin" > /tmp/passwordfile \
+          #              && cat /tmp/new_passwordfile && cat /tmp/passwordfile \
+          #          	  && asadmin --passwordfile /tmp/new_passwordfile change-admin-password --domain_name domain1 \
+          #          	  && asadmin --passwordfile /tmp/passwordfile start-domain domain1 \
+          #          	  && true
+          #
+      - name: Build with Maven
+        run: |
+          mvn -B -q clean verify -Parq-glassfish-remote
+      
+  

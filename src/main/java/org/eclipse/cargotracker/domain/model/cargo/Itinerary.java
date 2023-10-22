@@ -1,12 +1,12 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -67,51 +67,34 @@ public class Itinerary implements Serializable {
             return true;
         }
 
-        switch (event.getType()) {
-            case RECEIVE:
-                {
-                    // Check that the first leg's origin is the event's location
-                    Leg leg = legs.get(0);
-                    return leg.getLoadLocation().equals(event.getLocation());
-                }
-
-            case LOAD:
-                {
-                    return legs.stream()
-                            .anyMatch(
-                                    leg ->
-                                            leg.getLoadLocation().equals(event.getLocation())
-                                                    && leg.getVoyage().equals(event.getVoyage()));
-                }
-
-            case UNLOAD:
-                {
-                    // Check that the there is one leg with same unload location and
-                    // voyage
-                    return legs.stream()
-                            .anyMatch(
-                                    leg ->
-                                            leg.getUnloadLocation().equals(event.getLocation())
-                                                    && leg.getVoyage().equals(event.getVoyage()));
-                }
-
-            case CLAIM:
-                {
-                    // Check that the last leg's destination is from the event's
-                    // location
-                    Leg leg = getLastLeg();
-
-                    return leg.getUnloadLocation().equals(event.getLocation());
-                }
-
-            case CUSTOMS:
-                {
-                    return true;
-                }
-
-            default:
-                throw new RuntimeException("Event case is not handled");
-        }
+        // Check that the first leg's origin is the event's location
+        // Check that the last leg's destination is from the event's
+        // location
+        return switch (event.getType()) {
+            case RECEIVE -> {
+                Leg leg = legs.get(0);
+                yield leg.getLoadLocation().equals(event.getLocation());
+            }
+            case LOAD -> legs.stream()
+                    .anyMatch(
+                            leg ->
+                                    leg.getLoadLocation().equals(event.getLocation())
+                                            && leg.getVoyage().equals(event.getVoyage()));
+            case UNLOAD ->
+            // Check that the there is one leg with same unload location and
+            // voyage
+            legs.stream()
+                    .anyMatch(
+                            leg ->
+                                    leg.getUnloadLocation().equals(event.getLocation())
+                                            && leg.getVoyage().equals(event.getVoyage()));
+            case CLAIM -> {
+                Leg leg = getLastLeg();
+                yield leg.getUnloadLocation().equals(event.getLocation());
+            }
+            case CUSTOMS -> true;
+            default -> throw new RuntimeException("Event case is not handled");
+        };
     }
 
     Location getInitialDepartureLocation() {

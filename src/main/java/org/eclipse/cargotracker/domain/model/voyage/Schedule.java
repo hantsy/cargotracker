@@ -1,10 +1,11 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.Validate;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -33,8 +34,8 @@ public class Schedule implements Serializable {
         // Nothing to initialize.
     }
 
-    public Schedule(List<CarrierMovement> carrierMovements) {
-        Validate.notNull(carrierMovements);
+    public Schedule(@Nonnull List<CarrierMovement> carrierMovements) {
+        Validate.notNull(carrierMovements, "Carrier movements is required");
         Validate.noNullElements(carrierMovements);
         Validate.notEmpty(carrierMovements);
 

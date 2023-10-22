@@ -3,7 +3,7 @@ package org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;

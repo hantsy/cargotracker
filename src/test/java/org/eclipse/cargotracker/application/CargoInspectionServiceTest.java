@@ -7,11 +7,12 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEventRepository;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import javax.enterprise.event.Event;
+import jakarta.enterprise.event.Event;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -28,18 +29,21 @@ public class CargoInspectionServiceTest {
     private final CargoRepository cargoRepository = mock(CargoRepository.class);
     private final HandlingEventRepository handlingEventRepository =
             mock(HandlingEventRepository.class);
-    private final Event<Cargo> cargoEvent = mock(Event.class);
+
+    @SuppressWarnings("unchecked")
+    private final Event<Cargo> cargoEvent = (Event<Cargo>) mock(Event.class);
+
     //
     private CargoInspectionService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service =
                 new DefaultCargoInspectionService(
                         applicationEvents, cargoRepository, handlingEventRepository, cargoEvent);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         reset(applicationEvents, cargoRepository, handlingEventRepository, cargoEvent);
     }
@@ -52,7 +56,7 @@ public class CargoInspectionServiceTest {
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
         verifyNoMoreInteractions(cargoRepository);
-        verifyNoInteractions(applicationEvents, handlingEventRepository, cargoEvent);
+        verifyZeroInteractions(applicationEvents, handlingEventRepository, cargoEvent);
     }
 
     @Test
@@ -77,7 +81,7 @@ public class CargoInspectionServiceTest {
         verify(cargoEvent, times(1)).fire(any(Cargo.class));
 
         verifyNoMoreInteractions(cargoRepository, cargoEvent);
-        verifyNoInteractions(applicationEvents);
+        verifyZeroInteractions(applicationEvents);
     }
 
     @Test

@@ -1,38 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             version="2.2"
-             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
-             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
     <persistence-unit name="CargoTrackerUnit" transaction-type="JTA">
         <jta-data-source>java:app/jdbc/CargoTrackerDatabase</jta-data-source>
         <properties>
-            <!-- The default behavior is not generating a schema. Schema generation
-                is good for demos, RAD, development, etc but likely not a good idea for production. -->
-            <!-- 1. simply create database. -->
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
 
-            <!-- 2. typical database setup -->
-            <!--<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="javax.persistence.sql-load-script-source" value="META-INF/data.sql"/>-->
-
-            <!-- 3. Script based database setup -->
-            <!--<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="javax.persistence.schema-generation.create-source" value="script"/>
-            <property name="javax.persistence.schema-generation.create-script-source" value="META-INF/create.sql"/>
-            <property name="javax.persistence.schema-generation.drop-source" value="script"/>
-            <property name="javax.persistence.schema-generation.drop-script-source" value="META-INF/drop.sql"/>
-            <property name="javax.persistence.sql-load-script-source" value="META-INF/data.sql"/>-->
-
-            <!-- 4. generate create and drop scripts based on database mapping metadata -->
-            <!--<property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create" />
-            <property name="javax.persistence.schema-generation.scripts.create-target" value="/tmp/create.ddl" />
-            <property name="javax.persistence.schema-generation.scripts.drop-target" value="/tmp/drop.ddl" />-->
-
+            <!-- for  Glassfish/Payara/EclipseLink -->
             <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
+            <!-- for WildFly/Hibernate -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
