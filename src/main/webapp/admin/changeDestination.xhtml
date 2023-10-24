@@ -29,7 +29,7 @@
                                  required="true"
                                  requiredMessage="Destination is required.">
                     <f:selectItems value="#{changeDestination.potentialDestinations}"
-                                   var="location" itemLabel="#{location.name}"
+                                   var="location" itemLabel="#{location.nameAndUnLocode}"
                                    itemValue="#{location.unLocode}"/>
                 </h:selectOneMenu>
                 <small class="invalid-feedback">

@@ -47,18 +47,18 @@ public class CargoRouteDtoAssemblerTest {
 
         final CargoRouteDto dto = assembler.toDto(cargo);
 
-        assertThat(dto.getLegs()).hasSize(2);
+        assertThat(dto.legs()).hasSize(2);
 
-        LegDto legDTO = dto.getLegs().get(0);
-        assertThat(legDTO.getVoyageNumber()).isEqualTo("CM001");
-        assertThat(legDTO.getFrom())
+        LegDto legDTO = dto.legs().get(0);
+        assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
+        assertThat(legDTO.fromNameAndUnLcode())
                 .contains("SESTO"); // this is a little different from original codes.
-        assertThat(legDTO.getTo()).contains("CNSHA");
+        assertThat(legDTO.toNameAndUnLocode()).contains("CNSHA");
 
-        legDTO = dto.getLegs().get(1);
-        assertThat(legDTO.getVoyageNumber()).isEqualTo("CM001");
-        assertThat(legDTO.getFrom()).contains("NLRTM");
-        assertThat(legDTO.getTo()).contains("AUMEL");
+        legDTO = dto.legs().get(1);
+        assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
+        assertThat(legDTO.from().unLocode()).contains("NLRTM");
+        assertThat(legDTO.to().unLocode()).contains("AUMEL");
     }
 
     @Test
@@ -74,9 +74,9 @@ public class CargoRouteDtoAssemblerTest {
                                 LocalDate.now()));
         final CargoRouteDto dto = assembler.toDto(cargo);
 
-        assertThat(dto.getTrackingId()).isEqualTo("XYZ");
-        assertThat(dto.getOrigin()).contains("SESTO");
-        assertThat(dto.getFinalDestination()).contains("AUMEL");
-        assertThat(dto.getLegs().isEmpty()).isTrue();
+        assertThat(dto.trackingId()).isEqualTo("XYZ");
+        assertThat(dto.origin().unLocode()).contains("SESTO");
+        assertThat(dto.finalDestination().unLocode()).contains("AUMEL");
+        assertThat(dto.legs().isEmpty()).isTrue();
     }
 }

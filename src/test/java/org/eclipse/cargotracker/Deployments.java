@@ -3,7 +3,6 @@ package org.eclipse.cargotracker;
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.application.internal.DefaultBookingService;
 import org.eclipse.cargotracker.application.util.DateUtil;
-import org.eclipse.cargotracker.application.util.LocationUtil;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -29,6 +28,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Deployments {
@@ -45,6 +45,8 @@ public class Deployments {
                                 "org.mockito:mockito-core")
                         .withTransitivity()
                         .asFile();
+        LOGGER.log(
+                Level.FINE, "add test libs to deployment archive: {0}", new Object[] {extraJars});
         war.addAsLibraries(extraJars);
     }
 
@@ -63,7 +65,7 @@ public class Deployments {
     }
 
     public static void addApplicationBase(WebArchive war) {
-        war.addClass(DateUtil.class).addClass(LocationUtil.class);
+        war.addClass(DateUtil.class);
     }
 
     public static void addApplicationService(WebArchive war) {

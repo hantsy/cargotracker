@@ -10,13 +10,9 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.TrackingEventsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
-// TODO [Clean Code] Could this be a CDI singleton?
+
 public class CargoStatusDtoAssembler {
-
-    // public static final String DT_PATTERN = "MM/dd/yyyy hh:mm a z";
-    // private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DT_PATTERN);
 
     public CargoStatusDto toDto(Cargo cargo, List<HandlingEvent> handlingEvents) {
         List<TrackingEventsDto> trackingEvents;
@@ -26,8 +22,7 @@ public class CargoStatusDtoAssembler {
         trackingEvents =
                 handlingEvents.stream()
                         .map(handlingEvent -> assembler.toDto(cargo, handlingEvent))
-                        .collect(Collectors.toList());
-
+                        .toList();
         return new CargoStatusDto(
                 cargo.getRouteSpecification().getDestination().getName(),
                 getCargoStatusText(cargo),
@@ -40,21 +35,15 @@ public class CargoStatusDtoAssembler {
     private String getCargoStatusText(Cargo cargo) {
         Delivery delivery = cargo.getDelivery();
 
-        switch (delivery.getTransportStatus()) {
-            case IN_PORT:
-                return "In port " + delivery.getLastKnownLocation().getName();
-            case ONBOARD_CARRIER:
-                return "Onboard voyage "
-                        + delivery.getCurrentVoyage().getVoyageNumber().getIdString();
-            case CLAIMED:
-                return "Claimed";
-            case NOT_RECEIVED:
-                return "Not received";
-            case UNKNOWN:
-                return "Unknown";
-            default:
-                return "[Unknown status]"; // Should never happen.
-        }
+        return switch (delivery.getTransportStatus()) {
+            case IN_PORT -> "In port " + delivery.getLastKnownLocation().getName();
+            case ONBOARD_CARRIER -> "Onboard voyage "
+                    + delivery.getCurrentVoyage().getVoyageNumber().getIdString();
+            case CLAIMED -> "Claimed";
+            case NOT_RECEIVED -> "Not received";
+            case UNKNOWN -> "Unknown";
+            default -> "[Unknown status]"; // Should never happen.
+        };
     }
 
     private String getEta(Cargo cargo) {
@@ -77,25 +66,23 @@ public class CargoStatusDtoAssembler {
         String text = "Next expected activity is to ";
         HandlingEvent.Type type = activity.getType();
 
-        if (type.sameValueAs(HandlingEvent.Type.LOAD)) {
-            return text
+        return switch (type) {
+            case HandlingEvent.Type.LOAD -> text
                     + type.name().toLowerCase()
                     + " cargo onto voyage "
                     + activity.getVoyage().getVoyageNumber()
                     + " in "
                     + activity.getLocation().getName();
-        } else if (type.sameValueAs(HandlingEvent.Type.UNLOAD)) {
-            return text
+            case HandlingEvent.Type.UNLOAD -> text
                     + type.name().toLowerCase()
                     + " cargo off of "
                     + activity.getVoyage().getVoyageNumber()
                     + " in "
                     + activity.getLocation().getName();
-        } else {
-            return text
+            default -> text
                     + type.name().toLowerCase()
                     + " cargo in "
                     + activity.getLocation().getName();
-        }
+        };
     }
 }

@@ -30,40 +30,46 @@ import java.time.LocalDateTime;
  * <p>All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
  */
 @Entity
+@Table(name = "handling_events")
 @NamedQuery(
         name = "HandlingEvent.findByTrackingId",
         query = "Select e from HandlingEvent e where e.cargo.trackingId = :trackingId")
 public class HandlingEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id @GeneratedValue private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
+
     @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
     private Type type;
 
     @ManyToOne
     @JoinColumn(name = "voyage_id")
     private Voyage voyage;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "location_id")
-    @NotNull
     private Location location;
 
     // @Temporal(TemporalType.DATE)
     @NotNull
-    @Column(name = "completionTime")
+    @Column(name = "completion_time")
     private LocalDateTime completionTime;
 
     // @Temporal(TemporalType.DATE)
     @NotNull
-    @Column(name = "registration")
+    @Column(name = "registration_time")
     private LocalDateTime registrationTime;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "cargo_id")
-    @NotNull
     private Cargo cargo;
 
     @Transient private String summary;

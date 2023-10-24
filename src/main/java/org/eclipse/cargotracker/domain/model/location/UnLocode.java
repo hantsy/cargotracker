@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.domain.model.location;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import org.apache.commons.lang3.Validate;
 
@@ -26,6 +27,7 @@ public class UnLocode implements Serializable {
     // Location code is usually three letters, but may contain the numbers 2-9
     // as well.
     @Pattern(regexp = "[a-zA-Z]{2}[a-zA-Z2-9]{3}")
+    @Column(name = "un_locode")
     private String unlocode;
 
     public UnLocode() {

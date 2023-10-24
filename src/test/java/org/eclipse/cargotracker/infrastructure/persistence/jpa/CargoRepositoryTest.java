@@ -115,7 +115,7 @@ public class CargoRepositoryTest {
 
         TrackingId trackingId2 = cargoRepository.nextTrackingId();
         assertThat(trackingId2).isNotNull();
-        assertThat(trackingId.equals(trackingId2)).isFalse();
+        assertThat(trackingId).isNotEqualTo(trackingId2);
     }
 
     @Test

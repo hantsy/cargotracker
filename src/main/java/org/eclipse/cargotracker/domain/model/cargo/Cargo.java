@@ -1,6 +1,8 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -9,7 +11,6 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
@@ -49,6 +50,7 @@ import java.util.logging.Logger;
  * captured in this aggregate.
  */
 @Entity
+@Table(name = "cargos")
 @NamedQuery(name = "Cargo.findAll", query = "Select c from Cargo c")
 @NamedQuery(
         name = "Cargo.findByTrackingId",
@@ -59,7 +61,10 @@ public class Cargo implements Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(Cargo.class.getName());
 
-    @Id @GeneratedValue private Long id;
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
 
     @Embedded
     @NotNull(message = "Tracking ID is required")

@@ -2,7 +2,6 @@ package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
-import org.eclipse.cargotracker.domain.model.cargo.Leg;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -46,16 +45,14 @@ public class JpaCargoRepository implements CargoRepository, Serializable {
     @Override
     public void store(Cargo cargo) {
         // TODO [Clean Code] See why cascade is not working correctly for legs.
-        for (Leg leg : cargo.getItinerary().getLegs()) {
-            entityManager.persist(leg);
-        }
+        cargo.getItinerary().getLegs().forEach(leg -> entityManager.persist(leg));
 
         entityManager.persist(cargo);
 
         // Hibernate issue:
         // Delete-orphan does not seem to work correctly when the parent is a component
         this.entityManager
-                .createNativeQuery("delete from Leg where cargo_id = null")
+                .createNativeQuery("DELETE FROM legs WHERE cargo_id IS NULL")
                 .executeUpdate();
     }
 
