@@ -11,7 +11,6 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.TrackingEventsDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 public class CargoStatusDtoAssembler {
 
     public CargoStatusDto toDto(Cargo cargo, List<HandlingEvent> handlingEvents) {
