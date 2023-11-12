@@ -66,16 +66,21 @@ Cargo Tracker's testing is done using [JUnit](https://junit.org) and [Arquillian
 
 There are several Maven profiles configured for running the testing codes against varied Arquillian Container adapters.
 
+> Note: Before running the Arquillian integration tests, make sure there is a running Postgres database ready for test, check the Build section for more details.
+
 ###  GlassFish
 
-Before running the Arquillian based integration tests, make sure there is a running Postgres database.
-
-Run the following command to run Arquillian tests against Payara Managed Adapter.
+Open a terminal window, execute the following command to run Arquillian tests against Payara Managed Adapter.
 
 ```bash
 mvn clean verify -Parq-glassfish-managed
+```
 
-// or run on a remote Glassfish server
+Or run this command instead to run tests against a Glassfish Remote adapter.
+
+> Note: Make sure there is a running Glassfish server on your local machine.
+
+```bash 
 mvn clean verify -Parq-glassfish-remote 
 ```
 
