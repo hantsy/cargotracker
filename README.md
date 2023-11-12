@@ -1,8 +1,10 @@
 # Eclipse Cargo Tracker - Applied Domain-Driven Design Blueprints for Jakarta EE
 
 ![compile and build](https://github.com/hantsy/cargotracker/workflows/build/badge.svg)
+
 ![Integration Test with Arquillian GlassFish Managed Container](https://github.com/hantsy/cargotracker/workflows/arq-glassfish-managed/badge.svg)
 ![Integration Test with Arquillian GlassFish Remote Container](https://github.com/hantsy/cargotracker/workflows/arq-glassfish-remote/badge.svg)
+
 ![Integration Test with Arquillian WildFly Managed Container](https://github.com/hantsy/cargotracker/workflows/arq-wildfly-managed/badge.svg)
 ![Integration Test with Arquillian WildFly Remote Container](https://github.com/hantsy/cargotracker/workflows/arq-wildfly-remote/badge.svg)
 
