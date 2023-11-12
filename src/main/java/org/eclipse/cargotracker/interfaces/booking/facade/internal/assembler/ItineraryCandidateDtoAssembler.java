@@ -46,8 +46,7 @@ public class ItineraryCandidateDtoAssembler {
                                             locationRepository.find(
                                                     new UnLocode(leg.from().code()));
                                     Location to =
-                                            locationRepository.find(
-                                                    new UnLocode(leg.to().code()));
+                                            locationRepository.find(new UnLocode(leg.to().code()));
                                     return new Leg(
                                             voyage, from, to, leg.loadTime(), leg.unloadTime());
                                 })

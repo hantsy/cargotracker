@@ -2,7 +2,6 @@ package org.eclipse.cargotracker.interfaces;
 
 import jakarta.el.*;
 
-import java.beans.FeatureDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
