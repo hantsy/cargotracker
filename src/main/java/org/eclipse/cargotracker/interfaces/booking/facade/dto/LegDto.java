@@ -11,10 +11,10 @@ public record LegDto(
         LocalDateTime unloadTime) {
 
     public String fromNameAndUnLcode() {
-        return from.nameAndUnLocode();
+        return from.nameAndCode();
     }
 
     public String toNameAndUnLocode() {
-        return to.nameAndUnLocode();
+        return to.nameAndCode();
     }
 }

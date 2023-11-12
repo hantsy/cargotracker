@@ -17,7 +17,7 @@ public class LocationDtoAssembler {
         List<LocationDto> dtoList =
                 allLocations.stream()
                         .map(this::toDto)
-                        .sorted(Comparator.comparing(LocationDto::nameAndUnLocode))
+                        .sorted(Comparator.comparing(LocationDto::nameAndCode))
                         .collect(Collectors.toList());
         return dtoList;
     }

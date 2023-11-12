@@ -62,7 +62,7 @@ public class Booking implements Serializable {
     public void setOriginUnlocode(String originUnlocode) {
         this.originUnlocode = originUnlocode;
         for (LocationDto location : locations) {
-            if (location.unLocode().equalsIgnoreCase(originUnlocode)) {
+            if (location.code().equalsIgnoreCase(originUnlocode)) {
                 this.originName = location.name();
             }
         }
@@ -79,7 +79,7 @@ public class Booking implements Serializable {
     public void setDestinationUnlocode(String destinationUnlocode) {
         this.destinationUnlocode = destinationUnlocode;
         for (LocationDto location : locations) {
-            if (location.unLocode().equalsIgnoreCase(destinationUnlocode)) {
+            if (location.code().equalsIgnoreCase(destinationUnlocode)) {
                 destinationName = location.name();
             }
         }

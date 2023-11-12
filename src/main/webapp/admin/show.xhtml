@@ -15,11 +15,11 @@
     <ui:define name="content">
         <div class="row mb-5 g-3">
             <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
-            <div class="col-12 col-md-6">#{cargoDetails.cargo.originName} <span
-                    class="text-secondary">#{cargoDetails.cargo.originCode}</span></div>
+            <div class="col-12 col-md-6">#{cargoDetails.cargo.origin.name} <span
+                    class="text-secondary">#{cargoDetails.cargo.origin.code}</span></div>
             <div class="col-12 col-md-4 fw-bolder float-right">Destination</div>
-            <div class="col-12 col-md-6">#{cargoDetails.cargo.finalDestinationName} <span
-                    class="text-secondary">#{cargoDetails.cargo.finalDestinationCode}</span></div>
+            <div class="col-12 col-md-6">#{cargoDetails.cargo.finalDestination.name} <span
+                    class="text-secondary">#{cargoDetails.cargo.finalDestination.code}</span></div>
             <div class="col-12 col-md-4 fw-bolder float-right">Arrival deadline</div>
             <div class="col-12 col-md-6">#{cargoDetails.cargo.arrivalDeadline}</div>
         </div>
@@ -50,12 +50,12 @@
                     <ui:repeat var="leg" value="#{cargoDetails.cargo.legs}">
                         <tr>
                             <td>#{leg.voyageNumber}</td>
-                            <td>#{leg.fromName} <br/>
-                                <span class="text-secondary">#{leg.fromUnLocode}</span>
+                            <td>#{leg.from.name} <br/>
+                                <span class="text-secondary">#{leg.from.code}</span>
                             </td>
                             <td>#{leg.loadTime}</td>
-                            <td>#{leg.toName}<br/>
-                                <span class="text-secondary">#{leg.toUnLocode}</span>
+                            <td>#{leg.to.name}<br/>
+                                <span class="text-secondary">#{leg.to.code}</span>
                             </td>
                             <td>#{leg.unloadTime}</td>
                         </tr>

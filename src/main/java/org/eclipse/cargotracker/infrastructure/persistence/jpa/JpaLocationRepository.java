@@ -33,7 +33,7 @@ public class JpaLocationRepository implements LocationRepository, Serializable {
                             .setParameter("unLocode", unLocode)
                             .getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.WARNING, "Can not find Location by unLocode: {0}", e.getMessage());
+            logger.log(Level.WARNING, "Can not find Location by code: {0}", e.getMessage());
             location = null;
         }
         return location;

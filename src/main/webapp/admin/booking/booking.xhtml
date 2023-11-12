@@ -24,7 +24,7 @@
                                  required="true"
                                  requiredMessage="Origin is required.">
                     <f:selectItems value="#{booking.locations}" var="location"
-                                   itemLabel="#{location.nameAndUnLocode}" itemValue="#{location.unLocode}"/>
+                                   itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
                 </h:selectOneMenu>
                 <small class="invalid-feedback">
                     <h:message for="origin" showDetail="false" showSummary="true"/>
@@ -39,7 +39,7 @@
                                  required="true"
                                  requiredMessage="Destination is required.">
                     <f:selectItems value="#{booking.locations}" var="location"
-                                   itemLabel="#{location.nameAndUnLocode}" itemValue="#{location.unLocode}"/>
+                                   itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
                 </h:selectOneMenu>
                 <small class="invalid-feedback">
                     <h:message for="destination" showDetail="false" showSummary="true"/>

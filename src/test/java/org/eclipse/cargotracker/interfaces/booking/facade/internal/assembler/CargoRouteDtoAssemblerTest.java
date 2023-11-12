@@ -57,8 +57,8 @@ public class CargoRouteDtoAssemblerTest {
 
         legDTO = dto.legs().get(1);
         assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
-        assertThat(legDTO.from().unLocode()).contains("NLRTM");
-        assertThat(legDTO.to().unLocode()).contains("AUMEL");
+        assertThat(legDTO.from().code()).contains("NLRTM");
+        assertThat(legDTO.to().code()).contains("AUMEL");
     }
 
     @Test
@@ -75,8 +75,8 @@ public class CargoRouteDtoAssemblerTest {
         final CargoRouteDto dto = assembler.toDto(cargo);
 
         assertThat(dto.trackingId()).isEqualTo("XYZ");
-        assertThat(dto.origin().unLocode()).contains("SESTO");
-        assertThat(dto.finalDestination().unLocode()).contains("AUMEL");
+        assertThat(dto.origin().code()).contains("SESTO");
+        assertThat(dto.finalDestination().code()).contains("AUMEL");
         assertThat(dto.legs().isEmpty()).isTrue();
     }
 }

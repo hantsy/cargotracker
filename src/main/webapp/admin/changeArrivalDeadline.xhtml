@@ -18,10 +18,10 @@
         <h:form id="changeArrivalDeadlineForm" prependId="false" styleClass="row g-3 needs-validation"
                 p:novalidate="true">
             <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
-            <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.originName}
+            <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.origin.name}
             </div>
             <div class="col-12 col-md-4 fw-bolder float-right">Destination</div>
-            <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.finalDestinationName}            </div>
+            <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.finalDestination.name}            </div>
             <div class="col-12 col-md-4 fw-bolder float-right">Arrival Deadline</div>
             <div class="col-12 col-md-6">
                 <h:inputText id="deadline"

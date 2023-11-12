@@ -77,7 +77,7 @@ public class HandlingEventRegistrationAttempt implements Serializable {
                 + voyageNumber
                 + ", type="
                 + type
-                + ", unLocode="
+                + ", code="
                 + unLocode
                 + '}';
     }

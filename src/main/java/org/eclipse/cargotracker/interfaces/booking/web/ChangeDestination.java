@@ -54,8 +54,8 @@ public class ChangeDestination implements Serializable {
         // Potential destination = All Locations - Origin - Current Destination
         List<LocationDto> destinationsToRemove = new ArrayList<>();
         for (LocationDto loc : locations) {
-            if (loc.unLocode().equalsIgnoreCase(cargo.origin().unLocode())
-                    || loc.unLocode().equalsIgnoreCase(cargo.finalDestination().unLocode())) {
+            if (loc.code().equalsIgnoreCase(cargo.origin().code())
+                    || loc.code().equalsIgnoreCase(cargo.finalDestination().code())) {
                 destinationsToRemove.add(loc);
             }
         }
