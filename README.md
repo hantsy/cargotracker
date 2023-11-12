@@ -66,10 +66,15 @@ There are several Maven profiles configured for running the testing codes agains
 
 ###  GlassFish
 
+Before running the Arquillian based integration tests, make sure there is a running Postgres database.
+
 Run the following command to run Arquillian tests against Payara Managed Adapter.
 
 ```bash
-mvn clean verify -Parq-glassfish-managed 
+mvn clean verify -Parq-glassfish-managed
+
+// or run on a remote Glassfish server
+mvn clean verify -Parq-glassfish-remote 
 ```
 
 ###  WildFly
@@ -78,6 +83,9 @@ Run the following command to run Arquillian tests against WildFly Managed Adapte
 
 ```bash
 mvn clean verify -Parq-wildfly-managed
+
+// or run on a remote WildFly server
+mvn clean verify -Parq-wildfly-remote 
 ```
 
 > More details about the Arquillian adapter's configuration, go to [Jakarta EE 9 template project](https://github.com/hantsy/jakartaee9-starter-boilerplate) or [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate), and follow [this comprehensive guide](https://hantsy.github.io/jakartaee9-starter-boilerplate/) to research them yourself.
