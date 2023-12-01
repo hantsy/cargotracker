@@ -63,7 +63,7 @@
         <eclipselink.version>4.0.1</eclipselink.version>
         <arquillian-glassfish-jakarta.version>7.0.9</arquillian-glassfish-jakarta.version>
         <!-- websocket client for test-->
-        <tyrus.version>2.1.3</tyrus.version>
+        <tyrus.version>2.1.4</tyrus.version>
 
         <!-- Wildfly server -->
         <wildfly.version>30.0.0.Final</wildfly.version>
