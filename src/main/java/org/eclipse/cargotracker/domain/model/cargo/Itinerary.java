@@ -75,19 +75,20 @@ public class Itinerary implements Serializable {
                 Leg leg = legs.get(0);
                 yield leg.getLoadLocation().equals(event.getLocation());
             }
-            case LOAD -> legs.stream()
-                    .anyMatch(
-                            leg ->
-                                    leg.getLoadLocation().equals(event.getLocation())
-                                            && leg.getVoyage().equals(event.getVoyage()));
+            case LOAD ->
+                    legs.stream()
+                            .anyMatch(
+                                    leg ->
+                                            leg.getLoadLocation().equals(event.getLocation())
+                                                    && leg.getVoyage().equals(event.getVoyage()));
             case UNLOAD ->
-            // Check that the there is one leg with same unload location and
-            // voyage
-            legs.stream()
-                    .anyMatch(
-                            leg ->
-                                    leg.getUnloadLocation().equals(event.getLocation())
-                                            && leg.getVoyage().equals(event.getVoyage()));
+                    // Check that the there is one leg with same unload location and
+                    // voyage
+                    legs.stream()
+                            .anyMatch(
+                                    leg ->
+                                            leg.getUnloadLocation().equals(event.getLocation())
+                                                    && leg.getVoyage().equals(event.getVoyage()));
             case CLAIM -> {
                 Leg leg = getLastLeg();
                 yield leg.getUnloadLocation().equals(event.getLocation());
