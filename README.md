@@ -1,6 +1,6 @@
 # Eclipse Cargo Tracker - Applied Domain-Driven Design Blueprints for Jakarta EE
 
-![![build](https://github.com/hantsy/cargotracker/actions/workflows/build.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/build.yml)
+[![build](https://github.com/hantsy/cargotracker/actions/workflows/build.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/build.yml)
 
 [![arq-glassfish-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml)
 [![arq-glassfish-remote](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-remote.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-remote.yml)
