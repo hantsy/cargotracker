@@ -30,7 +30,6 @@ public interface BookingServiceFacade {
 
     List<LocationDto> listShippingLocations();
 
-    // TODO [DDD] Is this the right DTO here?
     List<CargoRouteDto> listAllCargos();
 
     List<String> listAllTrackingIds();

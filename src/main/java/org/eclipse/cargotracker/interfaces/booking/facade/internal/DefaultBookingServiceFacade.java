@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Transactional
@@ -72,7 +71,7 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
     public void assignCargoToRoute(String trackingIdStr, RouteCandidateDto routeCandidateDTO) {
         Itinerary itinerary =
                 new ItineraryCandidateDtoAssembler()
-                        .fromDTO(routeCandidateDTO, voyageRepository, locationRepository);
+                        .fromDto(routeCandidateDTO, voyageRepository, locationRepository);
         TrackingId trackingId = new TrackingId(trackingIdStr);
 
         bookingService.assignCargoToRoute(itinerary, trackingId);
@@ -90,14 +89,13 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
     }
 
     @Override
-    // TODO [DDD] Is this the correct DTO here?
     public List<CargoRouteDto> listAllCargos() {
         List<Cargo> cargos = cargoRepository.findAll();
         List<CargoRouteDto> routes;
 
         CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
 
-        routes = cargos.stream().map(assembler::toDto).collect(Collectors.toList());
+        routes = cargos.stream().map(assembler::toDto).toList();
 
         return routes;
     }
@@ -136,11 +134,8 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
         List<Itinerary> itineraries =
                 bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
 
-        List<RouteCandidateDto> routeCandidates;
         ItineraryCandidateDtoAssembler dtoAssembler = new ItineraryCandidateDtoAssembler();
-        routeCandidates =
-                itineraries.stream().map(dtoAssembler::toDto).collect(Collectors.toList());
 
-        return routeCandidates;
+        return itineraries.stream().map(dtoAssembler::toDto).toList();
     }
 }

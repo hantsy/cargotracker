@@ -3,8 +3,8 @@ package org.eclipse.cargotracker.domain.model.location;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.Validate;
-import org.eclipse.cargotracker.application.util.LocationUtil;
 
 import java.io.Serializable;
 
@@ -15,6 +15,7 @@ import java.io.Serializable;
  * <p>It is uniquely identified by a UN location code.
  */
 @Entity
+@Table(name = "locations")
 @NamedQuery(name = "Location.findAll", query = "Select l from Location l")
 @NamedQuery(
         name = "Location.findByUnLocode",
@@ -25,9 +26,16 @@ public class Location implements Serializable {
     public static final Location UNKNOWN = new Location(new UnLocode("XXXXX"), "Unknown location");
     private static final long serialVersionUID = 1L;
 
-    @Id @GeneratedValue private Long id;
-    @Embedded @NotNull private UnLocode unLocode;
-    @NotEmpty private String name;
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
+
+    @NotNull @Embedded private UnLocode unLocode;
+
+    @NotEmpty
+    @Column(name = "name")
+    private String name;
 
     public Location() {
         // Nothing to do.
@@ -93,6 +101,6 @@ public class Location implements Serializable {
 
     @Override
     public String toString() {
-        return LocationUtil.asString(this);
+        return this.getName() + " (" + this.getUnLocode() + ")";
     }
 }

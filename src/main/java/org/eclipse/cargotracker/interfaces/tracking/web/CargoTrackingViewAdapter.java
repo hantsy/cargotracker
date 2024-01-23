@@ -83,21 +83,15 @@ public class CargoTrackingViewAdapter {
     public String getStatusText() {
         Delivery delivery = cargo.getDelivery();
 
-        switch (delivery.getTransportStatus()) {
-            case IN_PORT:
-                return "In port " + cargo.getRouteSpecification().getDestination().getName();
-            case ONBOARD_CARRIER:
-                return "Onboard voyage "
-                        + delivery.getCurrentVoyage().getVoyageNumber().getIdString();
-            case CLAIMED:
-                return "Claimed";
-            case NOT_RECEIVED:
-                return "Not received";
-            case UNKNOWN:
-                return "Unknown";
-            default:
-                return "[Unknown status]"; // Should never happen.
-        }
+        return switch (delivery.getTransportStatus()) {
+            case IN_PORT -> "In port " + cargo.getRouteSpecification().getDestination().getName();
+            case ONBOARD_CARRIER -> "Onboard voyage "
+                    + delivery.getCurrentVoyage().getVoyageNumber().getIdString();
+            case CLAIMED -> "Claimed";
+            case NOT_RECEIVED -> "Not received";
+            case UNKNOWN -> "Unknown";
+            default -> "[Unknown status]"; // Should never happen.
+        };
     }
 
     public boolean isMisdirected() {

@@ -46,9 +46,11 @@ public class Delivery implements Serializable {
     @JoinColumn(name = "current_voyage_id")
     private Voyage currentVoyage;
 
-    @NotNull private boolean misdirected;
+    @NotNull
+    @Column(name = "misdirected")
+    private boolean misdirected;
 
-    // @Temporal(TemporalType.DATE)
+    @Column(name = "eta")
     private LocalDateTime eta;
 
     @Embedded private HandlingActivity nextExpectedActivity = null;

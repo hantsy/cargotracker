@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 
@@ -52,7 +51,7 @@ public class ChangeArrivalDeadline implements Serializable {
 
     public void load() {
         cargo = bookingServiceFacade.loadCargoForRouting(trackingId);
-        arrivalDeadline = DateUtil.toDate(cargo.getArrivalDeadline());
+        arrivalDeadline = cargo.arrivalDeadline();
     }
 
     public String changeArrivalDeadline() {

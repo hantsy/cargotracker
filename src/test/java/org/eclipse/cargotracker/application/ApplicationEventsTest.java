@@ -279,7 +279,7 @@ public class ApplicationEventsTest {
                     "completionTime: {0}\n"
                             + "tracking id: {1}\n"
                             + "voyageNumber: {2}\n"
-                            + "unLocode: {3}\n"
+                            + "code: {3}\n"
                             + "type: {4}",
                     new Object[] {completionTime, trackingId, voyageNumber, unLocode, type});
             this.completionTime = completionTime;

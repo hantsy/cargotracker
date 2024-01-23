@@ -37,7 +37,7 @@ under the License.
             <!--<property name="adminPassword">adminadmin</property>-->
             <!-- default is empty -->
             <property name="adminPassword"></property>
-            <property name="enableDerby">${enableDerby:true}</property>
+            <property name="enableDerby">${enableDerby:false}</property>
             <property name="allowConnectingToRunningServer">false</property>
             <property name="outputToConsole">true</property>
             <!-- true enables verbose logging of the jaxrs requests -->

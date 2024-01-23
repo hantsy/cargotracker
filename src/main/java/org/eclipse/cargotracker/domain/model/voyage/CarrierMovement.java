@@ -1,18 +1,19 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /** A carrier movement is a vessel voyage from one location to another. */
 @Entity
-@Table(name = "carrier_movement")
+@Table(name = "carrier_movements")
 public class CarrierMovement implements Serializable {
 
     // Null object pattern
@@ -20,7 +21,11 @@ public class CarrierMovement implements Serializable {
             new CarrierMovement(
                     Location.UNKNOWN, Location.UNKNOWN, LocalDateTime.MIN, LocalDateTime.MIN);
     private static final long serialVersionUID = 1L;
-    @Id @GeneratedValue private Long id;
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "departure_location_id")

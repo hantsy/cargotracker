@@ -1,5 +1,9 @@
 package org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
 import org.eclipse.cargotracker.domain.model.cargo.Leg;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -10,16 +14,13 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.LegDto;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidateDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ItineraryCandidateDtoAssemblerTest {
     @Test
@@ -47,16 +48,16 @@ public class ItineraryCandidateDtoAssemblerTest {
 
         final RouteCandidateDto dto = assembler.toDto(itinerary);
 
-        assertThat(dto.getLegs()).hasSize(2);
-        var legDTO = dto.getLegs().get(0);
-        assertThat(legDTO.getVoyageNumber()).isEqualTo("CM001");
-        assertThat(legDTO.getFrom()).contains("SESTO");
-        assertThat(legDTO.getTo()).contains("CNSHA");
+        assertThat(dto.legs()).hasSize(2);
+        var legDTO = dto.legs().get(0);
+        assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
+        assertThat(legDTO.fromNameAndUnLcode()).contains("SESTO");
+        assertThat(legDTO.toNameAndUnLocode()).contains("CNSHA");
 
-        legDTO = dto.getLegs().get(1);
-        assertThat(legDTO.getVoyageNumber()).isEqualTo("CM001");
-        assertThat(legDTO.getFrom()).contains("NLRTM");
-        assertThat(legDTO.getTo()).contains("AUMEL");
+        legDTO = dto.legs().get(1);
+        assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
+        assertThat(legDTO.fromNameAndUnLcode()).contains("NLRTM");
+        assertThat(legDTO.toNameAndUnLocode()).contains("AUMEL");
     }
 
     @Test
@@ -67,19 +68,15 @@ public class ItineraryCandidateDtoAssemblerTest {
         legs.add(
                 new LegDto(
                         "CM001",
-                        "AAAAA",
-                        "A",
-                        "BBBBB",
-                        "B",
+                        new LocationDto("AAAAA", "A"),
+                        new LocationDto("BBBBB", "B"),
                         LocalDateTime.now(),
                         LocalDateTime.now()));
         legs.add(
                 new LegDto(
                         "CM001",
-                        "BBBBB",
-                        "B",
-                        "CCCCC",
-                        "C",
+                        new LocationDto("BBBBB", "B"),
+                        new LocationDto("CCCCC", "C"),
                         LocalDateTime.now(),
                         LocalDateTime.now()));
 
@@ -93,7 +90,7 @@ public class ItineraryCandidateDtoAssemblerTest {
 
         // Tested call
         final Itinerary itinerary =
-                assembler.fromDTO(
+                assembler.fromDto(
                         new RouteCandidateDto(legs), voyageRepository, locationRepository);
 
         assertThat(itinerary).isNotNull();

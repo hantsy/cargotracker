@@ -4,16 +4,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.NamedQuery;
+
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
 @Entity
+@Table(name = "voyages")
 @NamedQuery(
         name = "Voyage.findByVoyageNumber",
         query = "Select v from Voyage v where v.voyageNumber = :voyageNumber")
@@ -23,7 +21,11 @@ public class Voyage implements Serializable {
     // Null object pattern
     public static final Voyage NONE = new Voyage(new VoyageNumber(""), Schedule.EMPTY);
     private static final long serialVersionUID = 1L;
-    @Id @GeneratedValue private Long id;
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
 
     @Embedded
     @NotNull(message = "Voyage number is required")

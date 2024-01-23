@@ -1,13 +1,15 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
-import java.util.ArrayList;
-import java.util.List;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles listing cargo. Operates against a dedicated service facade, and could easily be rewritten
@@ -25,6 +27,7 @@ public class ListCargo {
 
     private List<CargoRouteDto> cargos;
     private List<CargoRouteDto> routedCargos;
+    private List<CargoRouteDto> notRoutedCargos;
     private List<CargoRouteDto> claimedCargos;
     private List<CargoRouteDto> routedUnclaimedCargos;
 
@@ -42,22 +45,16 @@ public class ListCargo {
     public List<CargoRouteDto> getRoutedCargos() {
         routedCargos = new ArrayList<>();
 
-        for (CargoRouteDto route : cargos) {
-            if (route.isRouted()) {
-                routedCargos.add(route);
-            }
-        }
+        cargos.stream().filter(CargoRouteDto::routed).forEach(route -> routedCargos.add(route));
 
         return routedCargos;
     }
 
     public List<CargoRouteDto> getRoutedUnclaimedCargos() {
         routedUnclaimedCargos = new ArrayList<>();
-        for (CargoRouteDto route : cargos) {
-            if (route.isRouted() && !route.isClaimed()) {
-                routedUnclaimedCargos.add(route);
-            }
-        }
+        cargos.stream()
+                .filter(route -> route.routed() && !route.claimed())
+                .forEach(route -> routedUnclaimedCargos.add(route));
 
         return routedUnclaimedCargos;
     }
@@ -65,19 +62,16 @@ public class ListCargo {
     public List<CargoRouteDto> getClaimedCargos() {
         claimedCargos = new ArrayList<>();
 
-        for (CargoRouteDto route : cargos) {
-            if (route.isClaimed()) {
-                claimedCargos.add(route);
-            }
-        }
+        cargos.stream().filter(CargoRouteDto::claimed).forEach(route -> claimedCargos.add(route));
 
         return claimedCargos;
     }
 
     public List<CargoRouteDto> getNotRoutedCargos() {
-        List<CargoRouteDto> notRoutedCargos = new ArrayList<>();
-
-        for (CargoRouteDto route : cargos) if (!route.isRouted()) notRoutedCargos.add(route);
+        notRoutedCargos = new ArrayList<>();
+        cargos.stream()
+                .filter(route -> !route.routed())
+                .forEach(route -> notRoutedCargos.add(route));
 
         return notRoutedCargos;
     }

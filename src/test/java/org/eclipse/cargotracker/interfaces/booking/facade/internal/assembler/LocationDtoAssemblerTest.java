@@ -16,8 +16,8 @@ public class LocationDtoAssemblerTest {
     public void toDto() {
         final LocationDtoAssembler assembler = new LocationDtoAssembler();
         var dto = assembler.toDto(SampleLocations.STOCKHOLM);
-        assertThat(dto.getUnLocode()).isEqualTo("SESTO");
-        assertThat(dto.getName()).contains("Stockholm");
+        assertThat(dto.code()).isEqualTo("SESTO");
+        assertThat(dto.nameAndCode()).contains("Stockholm");
     }
 
     @Test
@@ -32,13 +32,13 @@ public class LocationDtoAssemblerTest {
         assertThat(dtos).hasSize(2);
 
         var dto = dtos.get(0);
-        assertThat(dto.getUnLocode()).isEqualTo("DEHAM");
-        assertThat(dto.getName()).contains("Hamburg");
+        assertThat(dto.code()).isEqualTo("DEHAM");
+        assertThat(dto.nameAndCode()).contains("Hamburg");
 
         // There is different from original version.
         // It is ordered by name.
         dto = dtos.get(1);
-        assertThat(dto.getUnLocode()).isEqualTo("SESTO");
-        assertThat(dto.getName()).contains("Stockholm");
+        assertThat(dto.code()).isEqualTo("SESTO");
+        assertThat(dto.nameAndCode()).contains("Stockholm");
     }
 }
