@@ -1,12 +1,12 @@
 # Eclipse Cargo Tracker - Applied Domain-Driven Design Blueprints for Jakarta EE
 
-![compile and build](https://github.com/hantsy/cargotracker/workflows/build/badge.svg)
+![![build](https://github.com/hantsy/cargotracker/actions/workflows/build.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/build.yml)
 
-![Integration Test with Arquillian GlassFish Managed Container](https://github.com/hantsy/cargotracker/workflows/arq-glassfish-managed/badge.svg)
-![Integration Test with Arquillian GlassFish Remote Container](https://github.com/hantsy/cargotracker/workflows/arq-glassfish-remote/badge.svg)
+[![arq-glassfish-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml)
+[![arq-glassfish-remote](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-remote.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-remote.yml)
 
-![Integration Test with Arquillian WildFly Managed Container](https://github.com/hantsy/cargotracker/workflows/arq-wildfly-managed/badge.svg)
-![Integration Test with Arquillian WildFly Remote Container](https://github.com/hantsy/cargotracker/workflows/arq-wildfly-remote/badge.svg)
+[![arq-wildfly-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml)
+[![arq-wildfly-remote](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-remote.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-remote.yml)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=alert_status)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=coverage)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
