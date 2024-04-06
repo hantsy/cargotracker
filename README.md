@@ -24,6 +24,10 @@ There are some highlights when comparing to the upstream project.
 * Add a plenty of testing codes to cover more use cases.
 * Add GitHub Actions workflows to build the project and run testing codes, and generate code quality report via Jacoco, SonarCloud.
 
+I have also ported the original [Cargotracker regapp](https://github.com/citerus/dddsample-regapp) which was written in Spring and Swing UI to Jakarta EE/CDI world, check the following projects.
+* [cargotracker-regapp](https://github.com/hantsy/cargotracker-regapp): CDI/Weld + JavaFX
+* [quarkus-cargotracker-regapp](https://github.com/hantsy/quarkus-cargotracker-regapp): Quarkus + Quarkus FX Extension/JavaFX
+
 ## Build and Run 
 
 ### Prerequisites
