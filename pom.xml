@@ -55,7 +55,7 @@
         <json-path.version>2.9.0</json-path.version>
 
         <!-- Jacoco code coverage report -->
-        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <!-- Glassfish server -->
         <glassfish.version>7.0.14</glassfish.version>
