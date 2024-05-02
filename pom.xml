@@ -184,7 +184,7 @@
         <dependency>
             <groupId>org.omnifaces</groupId>
             <artifactId>omnifaces</artifactId>
-            <version>4.3</version>
+            <version>4.4</version>
         </dependency>
 
         <!-- Test dependencies -->
