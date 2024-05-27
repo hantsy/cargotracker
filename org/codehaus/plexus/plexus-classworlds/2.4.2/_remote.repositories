@@ -1,4 +1,0 @@
-#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon May 27 16:27:01 CST 2024
-plexus-classworlds-2.4.2.jar>local-plugin-repository=
-plexus-classworlds-2.4.2.pom>local-plugin-repository=

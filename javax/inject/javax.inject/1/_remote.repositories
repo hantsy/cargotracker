@@ -1,6 +1,0 @@
-#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon May 27 16:27:47 CST 2024
-javax.inject-1-sources.jar>local-repository=
-javax.inject-1.jar>local-plugin-repository=
-javax.inject-1.jar>local-repository=
-javax.inject-1.pom>local-repository=

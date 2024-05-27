@@ -1,4 +1,0 @@
-#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon May 27 16:25:16 CST 2024
-maven-war-plugin-3.4.0.jar>local-plugin-repository=
-maven-war-plugin-3.4.0.pom>local-plugin-repository=

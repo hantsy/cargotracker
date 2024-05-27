@@ -1,4 +1,0 @@
-#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon May 27 16:25:19 CST 2024
-maven-failsafe-plugin-3.2.5.jar>local-plugin-repository=
-maven-failsafe-plugin-3.2.5.pom>local-plugin-repository=

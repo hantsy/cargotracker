@@ -1,5 +1,0 @@
-#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon May 27 16:27:30 CST 2024
-arquillian-core-api-1.7.1.Final-sources.jar>local-repository=
-arquillian-core-api-1.7.1.Final.jar>local-repository=
-arquillian-core-api-1.7.1.Final.pom>local-repository=

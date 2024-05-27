@@ -10,3 +10,5 @@ data
 cargo-tracker-data/
 .factorypath
 installs/
+.locks/
+.mvn/
