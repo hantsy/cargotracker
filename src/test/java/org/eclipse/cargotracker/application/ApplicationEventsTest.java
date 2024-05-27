@@ -96,18 +96,7 @@ public class ApplicationEventsTest {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test-ApplicationEventsTest.war");
 
-        File[] extraJars =
-                Maven.resolver()
-                        .loadPomFromFile("pom.xml")
-                        .importCompileAndRuntimeDependencies()
-                        .resolve(
-                                "org.apache.commons:commons-lang3",
-                                "org.assertj:assertj-core",
-                                "org.hamcrest:hamcrest-core",
-                                "org.mockito:mockito-core")
-                        .withTransitivity()
-                        .asFile();
-        war.addAsLibraries(extraJars);
+        addExtraJars(war);
         addDomainModels(war);
         addInfraBase(war);
         // addInfraPersistence(war);

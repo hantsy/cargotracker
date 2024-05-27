@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:28:03 CST 2024
+junit-platform-engine-1.10.2-sources.jar>local-repository=
+junit-platform-engine-1.10.2.jar>local-repository=
+junit-platform-engine-1.10.2.pom>local-repository=

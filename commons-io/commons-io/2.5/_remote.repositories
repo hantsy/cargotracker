@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:28:00 CST 2024
+commons-io-2.5-sources.jar>local-repository=
+commons-io-2.5.jar>local-repository=
+commons-io-2.5.pom>local-repository=

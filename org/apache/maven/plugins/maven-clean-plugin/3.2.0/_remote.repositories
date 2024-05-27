@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:25:28 CST 2024
+maven-clean-plugin-3.2.0.jar>local-plugin-repository=
+maven-clean-plugin-3.2.0.pom>local-plugin-repository=

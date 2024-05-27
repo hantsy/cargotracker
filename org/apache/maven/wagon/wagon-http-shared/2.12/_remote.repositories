@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:27:59 CST 2024
+wagon-http-shared-2.12-sources.jar>local-repository=
+wagon-http-shared-2.12.jar>local-repository=
+wagon-http-shared-2.12.pom>local-repository=

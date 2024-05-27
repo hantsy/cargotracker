@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:30:07 CST 2024
+awaitility-4.2.1-sources.jar>local-repository=
+awaitility-4.2.1.jar>local-repository=
+awaitility-4.2.1.pom>local-repository=

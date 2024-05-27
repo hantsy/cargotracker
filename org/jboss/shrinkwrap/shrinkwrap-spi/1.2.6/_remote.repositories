@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:27:41 CST 2024
+shrinkwrap-spi-1.2.6-sources.jar>local-repository=
+shrinkwrap-spi-1.2.6.jar>local-repository=
+shrinkwrap-spi-1.2.6.pom>local-repository=

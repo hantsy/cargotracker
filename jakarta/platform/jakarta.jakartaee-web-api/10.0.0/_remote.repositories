@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:27:07 CST 2024
+jakarta.jakartaee-web-api-10.0.0-sources.jar>local-repository=
+jakarta.jakartaee-web-api-10.0.0.jar>local-repository=
+jakarta.jakartaee-web-api-10.0.0.pom>local-repository=

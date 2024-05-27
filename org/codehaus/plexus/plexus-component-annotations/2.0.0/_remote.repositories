@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:27:02 CST 2024
+plexus-component-annotations-2.0.0.jar>local-plugin-repository=
+plexus-component-annotations-2.0.0.pom>local-plugin-repository=

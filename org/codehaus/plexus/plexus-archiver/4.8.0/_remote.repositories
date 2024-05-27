@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:27:01 CST 2024
+plexus-archiver-4.8.0.jar>local-plugin-repository=
+plexus-archiver-4.8.0.pom>local-plugin-repository=

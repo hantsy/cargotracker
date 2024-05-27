@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon May 27 16:27:02 CST 2024
+plexus-build-api-0.0.7.jar>local-plugin-repository=
+plexus-build-api-0.0.7.pom>local-plugin-repository=

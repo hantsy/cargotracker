@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set ts=4:sw=4:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>36</version>
+    </parent>
+
+    <!-- Model Information -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Information -->
+    <groupId>org.jboss.shrinkwrap.resolver</groupId>
+    <artifactId>shrinkwrap-resolver-parent</artifactId>
+    <version>3.1.4</version>
+    <packaging>pom</packaging>
+    <name>ShrinkWrap Resolver Aggregator</name>
+    <description>ShrinkWrap Resolver Aggregator</description>
+
+    <!-- Properties -->
+    <properties>
+        <!-- Java target is 1.7 -->
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.7</maven.compiler.argument.source>
+
+        <!-- Versioning -->
+        <version.org.apache.maven>3.6.3</version.org.apache.maven>
+
+        <!-- Wagon version must be the same as used in Maven -->
+        <version.org.apache.maven.wagon>2.12</version.org.apache.maven.wagon>
+
+        <version.org.apache.maven.plugins_maven-site-plugin>3.5.1</version.org.apache.maven.plugins_maven-site-plugin>
+        <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
+        <version.org.codehaus.plexus.compiler.javac>2.7</version.org.codehaus.plexus.compiler.javac>
+        <version.gradle-tooling-api>4.0.1</version.gradle-tooling-api>
+        <version.maven.invoker>3.0.0</version.maven.invoker>
+        <version.arquillian.spacelift>1.0.2</version.arquillian.spacelift>
+
+        <version.maven.shade.plugin>3.0.0</version.maven.shade.plugin>
+
+        <!-- Versions of test dependencies -->
+        <version.junit_junit>4.12</version.junit_junit>
+        <version.assertj>2.8.0</version.assertj>
+        <version.mockito-all>1.10.19</version.mockito-all>
+        <version.org.eclipse.jetty>9.2.17.v20160517</version.org.eclipse.jetty>
+        <version.system.rules>1.19.0</version.system.rules>
+        <version.awaitility>3.0.0</version.awaitility>
+    </properties>
+
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git://github.com/shrinkwrap/resolver.git</connection>
+        <developerConnection>scm:git:git@github.com:shrinkwrap/resolver.git</developerConnection>
+        <url>https://github.com/shrinkwrap/resolver</url>
+      <tag>3.1.4</tag>
+  </scm>
+
+    <!-- Issues -->
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.jboss.com/jira/browse/SHRINKWRAP</url>
+    </issueManagement>
+
+    <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+
+    <!-- Aggregate Modules -->
+    <modules>
+        <module>bom</module>
+        <module>build-resources</module>
+        <module>api</module>
+        <module>spi</module>
+        <module>depchain</module>
+
+        <!-- Maven modules -->
+        <module>maven/api-maven</module>
+        <module>maven/impl-maven</module>
+        <module>maven/api-maven-archive</module>
+        <module>maven/spi-maven</module>
+        <module>maven/spi-maven-archive</module>
+        <module>maven/impl-maven-archive</module>
+        <module>maven/maven-plugin</module>
+        <module>maven/api-maven-embedded</module>
+        <module>maven/impl-maven-embedded</module>
+
+        <!-- Gradle modules -->
+        <module>gradle/impl-gradle</module>
+        <module>gradle/api-gradle-embedded-archive</module>
+        <module>gradle/depchain-gradle</module>
+        <module>gradle/impl-gradle-embedded-archive</module>
+
+        <!-- Disabled by SHRINKRES-49, put it back with SHRINKRES-61 -->
+        <!--<module>impl-maven-integration-tests</module>-->
+    </modules>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven</artifactId>
+                <version>${version.org.apache.maven}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.org.jboss.shrinkwrap}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit_junit}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${version.assertj}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-rules</artifactId>
+                <version>${version.system.rules}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!-- Plugin Configuration -->
+    <build>
+
+        <!-- Plugin Management -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <configuration>
+                        <configLocation>code-style/checkstyle.xml</configLocation>
+                        <logViolationsToConsole>true</logViolationsToConsole>
+                        <violationSeverity>error</violationSeverity>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>checkstyle-report</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                            <artifactId>shrinkwrap-resolver-build-resources</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>enforce</id>
+                            <configuration>
+                                <rules>
+                                    <dependencyConvergence />
+                                </rules>
+                            </configuration>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${version.org.apache.maven.plugins_maven-site-plugin}</version>
+                </plugin>
+
+                <!-- So m2e doesn't throw errors for features it doesn't support in the POM -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-checkstyle-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>check</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-ear-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>generate-application-xml</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-antrun-plugin</artifactId>
+                                        <versionRange>[1.0,)</versionRange>
+                                        <goals>
+                                            <goal>run</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+
+            <!-- Release -->
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Surefire -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <printSummary>true</printSummary>
+                    <includes>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Reporting -->
+    <reporting>
+        <plugins>
+            <!-- Cobertura (Code Coverage) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+            </plugin>
+
+            <!-- FindBugs -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- SHRINKWRAP-157 Workaround -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>project-team</report>
+                            <report>mailing-list</report>
+                            <report>cim</report>
+                            <report>issue-tracking</report>
+                            <report>license</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>
