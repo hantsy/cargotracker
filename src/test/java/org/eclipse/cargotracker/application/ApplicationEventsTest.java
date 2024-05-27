@@ -1,5 +1,9 @@
 package org.eclipse.cargotracker.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.*;
+import static org.eclipse.cargotracker.Deployments.*;
+
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -7,6 +11,7 @@ import jakarta.jms.Destination;
 import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
 import jakarta.transaction.UserTransaction;
+
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
@@ -32,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,9 +45,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
@@ -153,7 +156,6 @@ public class ApplicationEventsTest {
 
     @Test
     public void testCargoWasHandled() throws InterruptedException {
-        CargoInspectionServiceStub.latch = new CountDownLatch(1);
         var trackingId = new TrackingId("AAA");
         var cargo =
                 new Cargo(
@@ -171,14 +173,15 @@ public class ApplicationEventsTest {
                         SampleLocations.HONGKONG);
         applicationEvents.cargoWasHandled(event);
 
-        CargoInspectionServiceStub.latch.await(1, TimeUnit.SECONDS);
-
-        assertThat(cargoInspectionService.getTrackingId()).isEqualTo(trackingId);
+        await().atMost(Duration.ofMillis(1000))
+                .untilAsserted(
+                        () ->
+                                assertThat(cargoInspectionService.getTrackingId())
+                                        .isEqualTo(trackingId));
     }
 
     @Test
     public void testReceivedHandlingEventRegistrationAttempt() throws Exception {
-        HandlingEventServiceStub.latch = new CountDownLatch(1);
         var trackingId = new TrackingId("AAA");
         var attempt =
                 new HandlingEventRegistrationAttempt(
@@ -190,14 +193,17 @@ public class ApplicationEventsTest {
                         SampleLocations.HONGKONG.getUnLocode());
         applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
 
-        HandlingEventServiceStub.latch.await(1, TimeUnit.SECONDS);
-
-        assertThat(handlingEventService.getTrackingId()).isEqualTo(trackingId);
-        assertThat(handlingEventService.getType()).isEqualTo(HandlingEvent.Type.RECEIVE);
-        assertThat(handlingEventService.getVoyageNumber())
-                .isEqualTo(SampleVoyages.v100.getVoyageNumber());
-        assertThat(handlingEventService.getUnLocode())
-                .isEqualTo(SampleLocations.HONGKONG.getUnLocode());
+        await().atMost(Duration.ofMillis(1000))
+                .untilAsserted(
+                        () -> {
+                            assertThat(handlingEventService.getTrackingId()).isEqualTo(trackingId);
+                            assertThat(handlingEventService.getType())
+                                    .isEqualTo(HandlingEvent.Type.RECEIVE);
+                            assertThat(handlingEventService.getVoyageNumber())
+                                    .isEqualTo(SampleVoyages.v100.getVoyageNumber());
+                            assertThat(handlingEventService.getUnLocode())
+                                    .isEqualTo(SampleLocations.HONGKONG.getUnLocode());
+                        });
     }
 
     @Test
@@ -238,7 +244,6 @@ public class ApplicationEventsTest {
 
     @ApplicationScoped
     public static class CargoInspectionServiceStub implements CargoInspectionService {
-        public static CountDownLatch latch;
         @Inject Logger logger;
 
         private TrackingId trackingId;
@@ -247,7 +252,6 @@ public class ApplicationEventsTest {
         public void inspectCargo(TrackingId trackingId) {
             logger.log(Level.INFO, "tracking id: {0}", trackingId);
             this.trackingId = trackingId;
-            latch.countDown();
         }
 
         public TrackingId getTrackingId() {
@@ -257,7 +261,6 @@ public class ApplicationEventsTest {
 
     @ApplicationScoped
     public static class HandlingEventServiceStub implements HandlingEventService {
-        public static CountDownLatch latch;
         @Inject Logger logger;
         private LocalDateTime completionTime;
         private TrackingId trackingId;
@@ -287,7 +290,6 @@ public class ApplicationEventsTest {
             this.voyageNumber = voyageNumber;
             this.unLocode = unLocode;
             this.type = type;
-            latch.countDown();
         }
 
         public LocalDateTime getCompletionTime() {

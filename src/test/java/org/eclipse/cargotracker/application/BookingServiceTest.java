@@ -42,8 +42,6 @@ import static org.eclipse.cargotracker.Deployments.*;
  * <p>Ensure a Payara instance is running locally before this test is executed, with the default
  * user name and password.
  */
-// TODO [Jakarta EE 8] Move to the Java Date-Time API for date manipulation. Also avoid hard-coded
-// dates.
 @ExtendWith(ArquillianExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")

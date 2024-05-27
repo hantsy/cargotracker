@@ -42,7 +42,8 @@ public class Deployments {
                         .resolve(
                                 "org.assertj:assertj-core",
                                 "org.hamcrest:hamcrest-core",
-                                "org.mockito:mockito-core")
+                                "org.mockito:mockito-core",
+                                "org.awaitility:awaitility")
                         .withTransitivity()
                         .asFile();
         LOGGER.log(
