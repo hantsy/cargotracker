@@ -51,7 +51,7 @@
         <junit.version>5.10.3</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>5.12.0</mockito.version>
-        <assertj.version>3.26.0</assertj.version>
+        <assertj.version>3.26.3</assertj.version>
         <json-path.version>2.9.0</json-path.version>
         <awaitility.version>4.2.1</awaitility.version>
 
