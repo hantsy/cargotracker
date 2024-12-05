@@ -56,7 +56,7 @@ public class CargoInspectionServiceTest {
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
         verifyNoMoreInteractions(cargoRepository);
-        verifyZeroInteractions(applicationEvents, handlingEventRepository, cargoEvent);
+        verifyNoInteractions(applicationEvents, handlingEventRepository, cargoEvent);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class CargoInspectionServiceTest {
         verify(cargoEvent, times(1)).fire(any(Cargo.class));
 
         verifyNoMoreInteractions(cargoRepository, cargoEvent);
-        verifyZeroInteractions(applicationEvents);
+        verifyNoInteractions(applicationEvents);
     }
 
     @Test
