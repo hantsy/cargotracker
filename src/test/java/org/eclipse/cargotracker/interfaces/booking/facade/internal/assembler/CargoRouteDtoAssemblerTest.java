@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
@@ -11,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CargoRouteDtoAssemblerTest {
 

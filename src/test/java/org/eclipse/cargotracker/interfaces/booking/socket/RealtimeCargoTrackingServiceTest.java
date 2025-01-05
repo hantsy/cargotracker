@@ -1,9 +1,14 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.cargotracker.Deployments.*;
+
 import com.jayway.jsonpath.JsonPath;
+
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.DeploymentException;
 import jakarta.websocket.Session;
+
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -23,9 +28,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")

@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -12,8 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 // TODO [Jakarta EE 8] Move to the Java Date-Time API for date manipulation. Avoid hard-coded dates.
 public class HandlingHistoryTest {

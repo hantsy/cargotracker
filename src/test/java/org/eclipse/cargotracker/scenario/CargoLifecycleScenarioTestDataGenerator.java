@@ -1,11 +1,6 @@
 package org.eclipse.cargotracker.scenario;
 
 import jakarta.annotation.PostConstruct;
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.location.SampleLocations;
-import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
-import org.eclipse.cargotracker.domain.model.voyage.Voyage;
-
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 import jakarta.ejb.TransactionAttribute;
@@ -13,6 +8,12 @@ import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.location.SampleLocations;
+import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
+import org.eclipse.cargotracker.domain.model.voyage.Voyage;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

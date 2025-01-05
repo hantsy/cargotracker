@@ -1,5 +1,8 @@
 package org.eclipse.cargotracker.infrastructure.routing;
 
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+
 import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
 import org.eclipse.cargotracker.domain.model.cargo.Leg;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
@@ -12,8 +15,6 @@ import org.eclipse.cargotracker.infrastructure.routing.client.GraphTraversalReso
 import org.eclipse.pathfinder.api.TransitEdge;
 import org.eclipse.pathfinder.api.TransitPath;
 
-import jakarta.ejb.Stateless;
-import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,8 +59,8 @@ public class ExternalRoutingService implements RoutingService {
     @Override
     public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
         // The RouteSpecification is picked apart and adapted to the external API.
-        String origin = routeSpecification.getOrigin().getUnLocode().getIdString();
-        String destination = routeSpecification.getDestination().getUnLocode().getIdString();
+        String origin = routeSpecification.origin().getUnLocode().getIdString();
+        String destination = routeSpecification.destination().getUnLocode().getIdString();
 
         List<TransitPath> transitPaths =
                 this.graphTraversalResource.findShortestPath(origin, destination);
@@ -77,7 +78,8 @@ public class ExternalRoutingService implements RoutingService {
                             } else {
                                 LOGGER.log(
                                         Level.FINE,
-                                        "Received itinerary that did not satisfy the route specification: {0}",
+                                        "Received itinerary that did not satisfy the route"
+                                                + " specification: {0}",
                                         itinerary);
                             }
                         });
@@ -87,18 +89,16 @@ public class ExternalRoutingService implements RoutingService {
 
     private Itinerary toItinerary(TransitPath transitPath) {
         List<Leg> legs =
-                transitPath.getTransitEdges().stream()
-                        .map(this::toLeg)
-                        .collect(Collectors.toList());
+                transitPath.transitEdges().stream().map(this::toLeg).collect(Collectors.toList());
         return new Itinerary(legs);
     }
 
     private Leg toLeg(TransitEdge edge) {
         return new Leg(
-                voyageRepository.find(new VoyageNumber(edge.getVoyageNumber())),
-                locationRepository.find(new UnLocode(edge.getFromUnLocode())),
-                locationRepository.find(new UnLocode(edge.getToUnLocode())),
-                edge.getFromDate(),
-                edge.getToDate());
+                voyageRepository.find(new VoyageNumber(edge.voyageNumber())),
+                locationRepository.find(new UnLocode(edge.fromUnLocode())),
+                locationRepository.find(new UnLocode(edge.toUnLocode())),
+                edge.fromDate(),
+                edge.toDate());
     }
 }

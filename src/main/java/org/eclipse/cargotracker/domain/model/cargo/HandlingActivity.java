@@ -1,6 +1,8 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -8,7 +10,6 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 
 /**

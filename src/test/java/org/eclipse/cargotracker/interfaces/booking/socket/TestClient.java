@@ -1,6 +1,7 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
 import jakarta.websocket.*;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;

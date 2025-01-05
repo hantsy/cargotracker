@@ -115,7 +115,6 @@ public class Deployments {
                 .addClass(UnknownLocationException.class)
 
                 // shared classes
-                .addClass(AbstractSpecification.class)
                 .addClass(Specification.class)
                 .addClass(AndSpecification.class)
                 .addClass(OrSpecification.class)

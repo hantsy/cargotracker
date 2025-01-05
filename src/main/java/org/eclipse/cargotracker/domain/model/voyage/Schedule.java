@@ -1,11 +1,12 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
 import jakarta.annotation.Nonnull;
-import org.apache.commons.lang3.Validate;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import org.apache.commons.lang3.Validate;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;

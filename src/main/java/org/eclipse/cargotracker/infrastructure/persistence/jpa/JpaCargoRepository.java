@@ -1,14 +1,15 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
-import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
+import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -45,7 +46,7 @@ public class JpaCargoRepository implements CargoRepository, Serializable {
     @Override
     public void store(Cargo cargo) {
         // TODO [Clean Code] See why cascade is not working correctly for legs.
-        cargo.getItinerary().getLegs().forEach(leg -> entityManager.persist(leg));
+        cargo.getItinerary().legs().forEach(leg -> entityManager.persist(leg));
 
         entityManager.persist(cargo);
 

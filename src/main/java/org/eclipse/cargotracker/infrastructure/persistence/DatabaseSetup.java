@@ -5,11 +5,13 @@ import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
-import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.sql.DataSource;
 
 @DataSourceDefinition(
         name = "java:app/jdbc/CargoTrackerDatabase",

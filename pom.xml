@@ -42,11 +42,14 @@
         <!-- Cargo maven plugin -->
         <cargo-maven3-plugin.version>1.10.16</cargo-maven3-plugin.version>
 
-        <!-- Jakarta EE API -->
-        <jakartaee-api.version>10.0.0</jakartaee-api.version>
+        <!-- Jakarta EE API 11.x -->
+        <jakartaee-api.version>11.0.0-M4</jakartaee-api.version>
 
         <!-- Arquillian BOM -->
-        <arquillian-bom.version>1.8.0.Final</arquillian-bom.version>
+        <arquillian-bom.version>1.9.2.Final</arquillian-bom.version>
+        <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
+        <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
+        <shrinkwrap-resolver-bom.version>3.3.3</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
         <junit.version>5.11.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
@@ -59,16 +62,16 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>7.0.20</glassfish.version>
-        <jersey.version>3.1.9</jersey.version>
-        <eclipselink.version>4.0.1</eclipselink.version>
+        <glassfish.version>8.0.0-M9</glassfish.version>
+        <jersey.version>4.0.0-M1</jersey.version>
+        <eclipselink.version>5.0.0-B03</eclipselink.version>
         <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>
 
         <!-- Wildfly server -->
-        <wildfly.version>30.0.1.Final</wildfly.version>
-        <wildfly-maven-plugin.version>4.2.2.Final</wildfly-maven-plugin.version>
+        <wildfly.version>34.0.0.Final</wildfly.version>
+        <wildfly-maven-plugin.version>5.1.1.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>5.0.1.Final</wildfly-arquillian.version>
         <!-- aligned to Wildfly version. -->
         <resteasy.version>6.2.11.Final</resteasy.version>
@@ -94,7 +97,20 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-bom</artifactId>
+                <version>${resteasy.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>jakarta.platform</groupId>
                 <artifactId>jakarta.jakartaee-api</artifactId>
@@ -109,6 +125,21 @@
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${arquillian-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.jakarta</groupId>
+                <artifactId>arquillian-jakarta-bom</artifactId>
+                <version>${arquillian-jakarta-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${shrinkwrap-resolver-bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -260,6 +291,18 @@
                     <artifactId>cargo-maven3-plugin</artifactId>
                     <version>${cargo-maven3-plugin.version}</version>
                 </plugin>
+
+                <!-- Maven 4.0 requires locking clean/resources plugins in project -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -277,6 +320,23 @@
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify.fmt</groupId>
+                <artifactId>fmt-maven-plugin</artifactId>
+                <version>2.25</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <style>aosp</style>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -464,7 +524,7 @@
                                         </artifactItem>
                                     </artifactItems>
                                     <outputDirectory>
-                                        ${project.build.directory}/cargo/installs/glassfish-${glassfish.version}/glassfish7/glassfish/modules
+                                        ${project.build.directory}/cargo/installs/glassfish-${glassfish.version}/glassfish8/glassfish/modules
                                     </outputDirectory>
                                 </configuration>
                             </execution>
@@ -475,7 +535,7 @@
                         <artifactId>cargo-maven3-plugin</artifactId>
                         <configuration>
                             <container>
-                                <containerId>glassfish7x</containerId>
+                                <containerId>glassfish8x</containerId>
 
                                 <!-- <artifactInstaller>
                                     <groupId>org.glassfish.main.distributions</groupId>
@@ -491,7 +551,7 @@
                             </container>
                             <configuration>
                                 <!-- the configuration used to deploy -->
-                                <home>${project.build.directory}/glassfish7x-home</home>
+                                <home>${project.build.directory}/glassfish8x-home</home>
                                 <properties>
                                     <cargo.remote.password></cargo.remote.password>
                                 </properties>
@@ -504,7 +564,7 @@
         <profile>
             <id>unit-test</id>
             <activation>
-<!--                <activeByDefault>true</activeByDefault>-->
+                <!--                <activeByDefault>true</activeByDefault>-->
             </activation>
             <properties>
                 <skip.unit.tests>false</skip.unit.tests>
@@ -610,7 +670,7 @@
                                         </artifactItem>
                                     </artifactItems>
                                     <outputDirectory>
-                                        ${project.build.directory}/glassfish7/glassfish/modules
+                                        ${project.build.directory}/glassfish8/glassfish/modules
                                     </outputDirectory>
                                 </configuration>
                             </execution>
@@ -622,7 +682,7 @@
                         <version>${maven-failsafe-plugin.version}</version>
                         <configuration>
                             <environmentVariables>
-                                <GLASSFISH_HOME>${project.build.directory}/glassfish7</GLASSFISH_HOME>
+                                <GLASSFISH_HOME>${project.build.directory}/glassfish8</GLASSFISH_HOME>
                             </environmentVariables>
                             <systemPropertyVariables>
                                 <arquillian.launch>glassfish-managed</arquillian.launch>

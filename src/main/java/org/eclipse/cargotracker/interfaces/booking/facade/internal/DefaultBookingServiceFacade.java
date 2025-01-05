@@ -1,5 +1,9 @@
 package org.eclipse.cargotracker.interfaces.booking.facade.internal;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
@@ -21,9 +25,6 @@ import org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler.Car
 import org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler.ItineraryCandidateDtoAssembler;
 import org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler.LocationDtoAssembler;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
         TrackingId trackingId =
                 bookingService.bookNewCargo(
                         new UnLocode(origin), new UnLocode(destination), arrivalDeadline);
-        return trackingId.getIdString();
+        return trackingId.id();
     }
 
     @Override
@@ -103,9 +104,7 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
     @Override
     public List<String> listAllTrackingIds() {
         List<String> trackingIds = new ArrayList<>();
-        cargoRepository
-                .findAll()
-                .forEach(cargo -> trackingIds.add(cargo.getTrackingId().getIdString()));
+        cargoRepository.findAll().forEach(cargo -> trackingIds.add(cargo.getTrackingId().id()));
 
         return trackingIds;
     }

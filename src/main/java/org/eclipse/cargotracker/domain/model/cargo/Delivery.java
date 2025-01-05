@@ -1,5 +1,11 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.*;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,15 +15,9 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Iterator;
-import java.util.logging.Logger;
-
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.*;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
 
 /**
  * The actual transportation of the cargo, as opposed to the customer requirement
@@ -29,10 +29,7 @@ public class Delivery implements Serializable {
     public static final LocalDateTime ETA_UNKOWN = null;
     // Null object pattern
     public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
-    private static final Logger LOGGER = Logger.getLogger(Delivery.class.getName());
-    private static final long serialVersionUID = 1L;
 
-    // public static final HandlingActivity NO_ACTIVITY = null;
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_status")
     @NotNull
@@ -125,7 +122,7 @@ public class Delivery implements Serializable {
         return new Delivery(this.lastEvent, itinerary, routeSpecification);
     }
 
-    public TransportStatus getTransportStatus() {
+    public TransportStatus transportStatus() {
         return transportStatus;
     }
 
@@ -133,7 +130,7 @@ public class Delivery implements Serializable {
         this.transportStatus = transportStatus;
     }
 
-    public Location getLastKnownLocation() {
+    public Location lastKnownLocation() {
         return DomainObjectUtils.nullSafe(lastKnownLocation, Location.UNKNOWN);
     }
 
@@ -145,7 +142,7 @@ public class Delivery implements Serializable {
         this.lastEvent = lastEvent;
     }
 
-    public Voyage getCurrentVoyage() {
+    public Voyage currentVoyage() {
         return DomainObjectUtils.nullSafe(currentVoyage, Voyage.NONE);
     }
 
@@ -162,7 +159,7 @@ public class Delivery implements Serializable {
      *
      * @return <code>true</code> if the cargo has been misdirected,
      */
-    public boolean isMisdirected() {
+    public boolean misdirected() {
         return misdirected;
     }
 
@@ -170,14 +167,14 @@ public class Delivery implements Serializable {
         this.misdirected = misdirected;
     }
 
-    public LocalDateTime getEstimatedTimeOfArrival() {
+    public LocalDateTime estimatedTimeOfArrival() {
         return eta;
     }
 
     // Hibernate issue:
     // After an empty HandlingActivity is persisted, when retrieving it from database it is a
     // *NULL*.
-    public HandlingActivity getNextExpectedActivity() {
+    public HandlingActivity nextExpectedActivity() {
         // return nextExpectedActivity;
         return DomainObjectUtils.nullSafe(nextExpectedActivity, NO_ACTIVITY);
     }
@@ -193,7 +190,7 @@ public class Delivery implements Serializable {
         this.isUnloadedAtDestination = isUnloadedAtDestination;
     }
 
-    public RoutingStatus getRoutingStatus() {
+    public RoutingStatus routingStatus() {
         return routingStatus;
     }
 
@@ -231,7 +228,7 @@ public class Delivery implements Serializable {
     }
 
     private Voyage calculateCurrentVoyage() {
-        if (getTransportStatus().equals(ONBOARD_CARRIER) && lastEvent != null) {
+        if (transportStatus().equals(ONBOARD_CARRIER) && lastEvent != null) {
             return lastEvent.getVoyage();
         } else {
             return null;
@@ -261,12 +258,12 @@ public class Delivery implements Serializable {
         }
 
         if (lastEvent == null) {
-            return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.getOrigin());
+            return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.origin());
         }
 
         return switch (lastEvent.getType()) {
             case LOAD -> {
-                for (Leg leg : itinerary.getLegs()) {
+                for (Leg leg : itinerary.legs()) {
                     if (leg.getLoadLocation().sameIdentityAs(lastEvent.getLocation())) {
                         yield new HandlingActivity(
                                 HandlingEvent.Type.UNLOAD,
@@ -277,8 +274,7 @@ public class Delivery implements Serializable {
                 yield NO_ACTIVITY;
             }
             case UNLOAD -> {
-                for (Iterator<Leg> iterator = itinerary.getLegs().iterator();
-                        iterator.hasNext(); ) {
+                for (Iterator<Leg> iterator = itinerary.legs().iterator(); iterator.hasNext(); ) {
                     Leg leg = iterator.next();
 
                     if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {
@@ -297,7 +293,7 @@ public class Delivery implements Serializable {
                 yield NO_ACTIVITY;
             }
             case RECEIVE -> {
-                Leg firstLeg = itinerary.getLegs().iterator().next();
+                Leg firstLeg = itinerary.legs().iterator().next();
                 yield new HandlingActivity(
                         HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
             }
@@ -321,7 +317,7 @@ public class Delivery implements Serializable {
     private boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification) {
         return lastEvent != null
                 && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
-                && routeSpecification.getDestination().sameIdentityAs(lastEvent.getLocation());
+                && routeSpecification.destination().sameIdentityAs(lastEvent.getLocation());
     }
 
     private boolean onTrack() {

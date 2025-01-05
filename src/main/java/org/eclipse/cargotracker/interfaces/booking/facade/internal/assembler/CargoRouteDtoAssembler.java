@@ -11,19 +11,17 @@ public class CargoRouteDtoAssembler {
     public CargoRouteDto toDto(Cargo cargo) {
         CargoRouteDto dto =
                 new CargoRouteDto(
-                        cargo.getTrackingId().getIdString(),
+                        cargo.getTrackingId().id(),
                         locationDtoAssembler.toDto(cargo.getOrigin()),
-                        locationDtoAssembler.toDto(cargo.getRouteSpecification().getDestination()),
-                        cargo.getRouteSpecification().getArrivalDeadline(),
-                        cargo.getDelivery().getRoutingStatus().sameValueAs(RoutingStatus.MISROUTED),
-                        cargo.getDelivery()
-                                .getTransportStatus()
-                                .sameValueAs(TransportStatus.CLAIMED),
-                        locationDtoAssembler.toDto(cargo.getDelivery().getLastKnownLocation()),
-                        cargo.getDelivery().getTransportStatus().name());
+                        locationDtoAssembler.toDto(cargo.getRouteSpecification().destination()),
+                        cargo.getRouteSpecification().arrivalDeadline(),
+                        cargo.getDelivery().routingStatus().sameValueAs(RoutingStatus.MISROUTED),
+                        cargo.getDelivery().transportStatus().sameValueAs(TransportStatus.CLAIMED),
+                        locationDtoAssembler.toDto(cargo.getDelivery().lastKnownLocation()),
+                        cargo.getDelivery().transportStatus().name());
 
         cargo.getItinerary()
-                .getLegs()
+                .legs()
                 .forEach(
                         leg ->
                                 dto.addLeg(

@@ -1,10 +1,14 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.cargotracker.Deployments.*;
+
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
+
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
@@ -22,9 +26,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")

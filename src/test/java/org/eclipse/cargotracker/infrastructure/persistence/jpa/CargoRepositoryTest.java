@@ -1,10 +1,15 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.cargotracker.Deployments.*;
+import static org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type.LOAD;
+
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
+
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -18,11 +23,9 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -33,10 +36,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
-import static org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type.LOAD;
 
 @ExtendWith(ArquillianExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -131,9 +130,8 @@ public class CargoRepositoryTest {
         final TrackingId trackingId = new TrackingId("ABC123");
         final Cargo cargo = cargoRepository.find(trackingId);
         assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.HONGKONG);
-        assertThat(cargo.getRouteSpecification().getOrigin()).isEqualTo(SampleLocations.HONGKONG);
-        assertThat(cargo.getRouteSpecification().getDestination())
-                .isEqualTo(SampleLocations.HELSINKI);
+        assertThat(cargo.getRouteSpecification().origin()).isEqualTo(SampleLocations.HONGKONG);
+        assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
 
         assertThat(cargo.getDelivery()).isNotNull();
 
@@ -170,7 +168,7 @@ public class CargoRepositoryTest {
         assertHandlingEvent(
                 cargo, secondEvent, LOAD, SampleLocations.HONGKONG, 150, 110, hongkongTonNewYork);
 
-        List<Leg> legs = cargo.getItinerary().getLegs();
+        List<Leg> legs = cargo.getItinerary().legs();
         assertThat(legs).hasSize(3);
 
         Leg firstLeg = legs.get(0);
@@ -251,9 +249,9 @@ public class CargoRepositoryTest {
                         .getSingleResult();
 
         assertThat(result.getTrackingId()).isEqualTo(trackingId);
-        assertThat(result.getRouteSpecification().getOrigin()).isEqualTo(origin);
-        assertThat(result.getRouteSpecification().getDestination()).isEqualTo(destination);
-        assertThat(result.getItinerary().getLegs()).hasSize(1);
+        assertThat(result.getRouteSpecification().origin()).isEqualTo(origin);
+        assertThat(result.getRouteSpecification().destination()).isEqualTo(destination);
+        assertThat(result.getItinerary().legs()).hasSize(1);
         commitTransaction();
     }
 
@@ -290,9 +288,9 @@ public class CargoRepositoryTest {
                 "query cargo by tracking id: {0}, \n result: {1}",
                 new Object[] {trackingId, result.toString(true)});
         assertThat(result.getTrackingId()).isEqualTo(trackingId);
-        assertThat(result.getRouteSpecification().getOrigin()).isEqualTo(origin);
-        assertThat(result.getRouteSpecification().getDestination()).isEqualTo(destination);
-        assertThat(result.getItinerary().getLegs()).hasSize(1);
+        assertThat(result.getRouteSpecification().origin()).isEqualTo(origin);
+        assertThat(result.getRouteSpecification().destination()).isEqualTo(destination);
+        assertThat(result.getItinerary().legs()).hasSize(1);
 
         commitTransaction();
     }
@@ -353,7 +351,7 @@ public class CargoRepositoryTest {
         // LOGGER.log(Level.INFO, "leg count: {0}", (Long) count);
         // assertThat(((Long) count).intValue()).isEqualTo(expected);
 
-        var count = cargoRepository.find(trackingId).getItinerary().getLegs().size();
+        var count = cargoRepository.find(trackingId).getItinerary().legs().size();
         LOGGER.log(Level.INFO, "leg count: {0}", count);
         assertThat(count).isEqualTo(expected);
     }

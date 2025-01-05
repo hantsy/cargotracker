@@ -3,8 +3,8 @@ package org.eclipse.cargotracker.domain.shared;
 /**
  * Specification interface.
  *
- * <p>Use {@link AbstractSpecification} as base for creating specifications, and only the method
- * {@link #isSatisfiedBy(Object)} must be implemented.
+ * <p>Use {@link Specification} as base for creating specifications, and only the method {@link
+ * #isSatisfiedBy(Object)} must be implemented.
  */
 public interface Specification<T> {
 
@@ -23,7 +23,9 @@ public interface Specification<T> {
      * @param specification Specification to AND.
      * @return A new specification.
      */
-    Specification<T> and(Specification<T> specification);
+    default Specification<T> and(Specification<T> specification) {
+        return new AndSpecification<>(this, specification);
+    }
 
     /**
      * Create a new specification that is the OR operation of {@code this} specification and another
@@ -32,7 +34,9 @@ public interface Specification<T> {
      * @param specification Specification to OR.
      * @return A new specification.
      */
-    Specification<T> or(Specification<T> specification);
+    default Specification<T> or(Specification<T> specification) {
+        return new OrSpecification<>(this, specification);
+    }
 
     /**
      * Create a new specification that is the NOT operation of {@code this} specification.
@@ -40,5 +44,7 @@ public interface Specification<T> {
      * @param specification Specification to NOT.
      * @return A new specification.
      */
-    Specification<T> not(Specification<T> specification);
+    default Specification<T> not(Specification<T> specification) {
+        return new NotSpecification<>(specification);
+    }
 }

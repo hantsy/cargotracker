@@ -1,8 +1,5 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
-
 import jakarta.ejb.Singleton;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
@@ -12,6 +9,10 @@ import jakarta.websocket.OnClose;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
+
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -46,13 +47,11 @@ public class RealtimeCargoTrackingService {
         try (JsonGenerator generator = Json.createGenerator(writer)) {
             generator
                     .writeStartObject()
-                    .write("trackingId", cargo.getTrackingId().getIdString())
+                    .write("trackingId", cargo.getTrackingId().id())
                     .write("origin", cargo.getOrigin().getName())
-                    .write("destination", cargo.getRouteSpecification().getDestination().getName())
-                    .write(
-                            "lastKnownLocation",
-                            cargo.getDelivery().getLastKnownLocation().getName())
-                    .write("transportStatus", cargo.getDelivery().getTransportStatus().toString())
+                    .write("destination", cargo.getRouteSpecification().destination().getName())
+                    .write("lastKnownLocation", cargo.getDelivery().lastKnownLocation().getName())
+                    .write("transportStatus", cargo.getDelivery().transportStatus().toString())
                     .writeEnd();
         }
 

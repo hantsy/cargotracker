@@ -94,7 +94,7 @@ public class Cargo implements Serializable {
         // Cargo origin never changes, even if the route specification changes.
         // However, at creation, cargo origin can be derived from the initial
         // route specification.
-        this.origin = routeSpecification.getOrigin();
+        this.origin = routeSpecification.origin();
         this.routeSpecification = routeSpecification;
 
         this.delivery =
