@@ -48,7 +48,7 @@
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.8.0.Final</arquillian-bom.version>
         <!-- Test Utilities -->
-        <junit.version>5.11.3</junit.version>
+        <junit.version>5.11.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>5.14.2</mockito.version>
         <assertj.version>3.27.1</assertj.version>
