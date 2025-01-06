@@ -1,8 +1,9 @@
 package org.eclipse.cargotracker.application.internal;
 
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.CargoInspectionService;
@@ -16,7 +17,8 @@ import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Stateless
+@ApplicationScoped
+@Transactional
 public class DefaultCargoInspectionService implements CargoInspectionService {
 
     private static final Logger LOGGER =

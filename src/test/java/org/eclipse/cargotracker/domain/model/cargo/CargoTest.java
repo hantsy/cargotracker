@@ -55,8 +55,8 @@ public class CargoTest {
                                 SampleLocations.MELBOURNE,
                                 LocalDate.now()));
         final Itinerary good = new Itinerary();
-        Itinerary bad = new Itinerary();
-        @SuppressWarnings("serial")
+        final Itinerary bad = new Itinerary();
+
         RouteSpecification acceptOnlyGood =
                 new RouteSpecification(
                         cargo.getOrigin(),

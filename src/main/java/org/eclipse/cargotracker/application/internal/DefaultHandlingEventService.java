@@ -1,7 +1,8 @@
 package org.eclipse.cargotracker.application.internal;
 
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.HandlingEventService;
@@ -17,7 +18,8 @@ import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Stateless
+@ApplicationScoped
+@Transactional
 public class DefaultHandlingEventService implements HandlingEventService {
 
     private static final Logger LOGGER =

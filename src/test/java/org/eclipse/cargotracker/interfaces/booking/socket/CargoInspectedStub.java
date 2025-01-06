@@ -3,6 +3,8 @@ package org.eclipse.cargotracker.interfaces.booking.socket;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.ejb.*;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 
@@ -17,19 +19,31 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Startup
-@Singleton
+//@ApplicationScoped
+@Startup @Singleton // imported from ejb
 public class CargoInspectedStub {
     private static final Logger LOGGER = Logger.getLogger(CargoInspectedStub.class.getName());
 
     @Inject @CargoInspected Event<Cargo> cargoEvent;
 
+    //@Inject   ManagedScheduledExecutorService scheduledExecutorService;
     @Resource TimerService timerService;
 
     @PostConstruct
     public void initialize() {
-        LOGGER.log(Level.INFO, "starting timer service...");
-        timerService.createTimer(TimeUnit.SECONDS.toMillis(5), "delayed 5 seconds to execute");
+        LOGGER.log(Level.INFO, "raise event after 5 seconds...");
+//        scheduledExecutorService.schedule(
+//                ()-> cargoEvent.fire(
+//                        new Cargo(
+//                                new TrackingId("AAA"),
+//                                new RouteSpecification(
+//                                        SampleLocations.HONGKONG,
+//                                        SampleLocations.NEWYORK,
+//                                        LocalDate.now().plusMonths(6)))),
+//                5000,
+//                TimeUnit.MILLISECONDS
+//        );
+        timerService.createTimer(5000, "delayed 5 seconds to execute");
     }
 
     @Timeout

@@ -13,8 +13,6 @@ import org.eclipse.cargotracker.domain.service.RoutingService;
 import org.eclipse.cargotracker.domain.shared.*;
 import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 import org.eclipse.cargotracker.infrastructure.logging.LoggerProducer;
-import org.eclipse.cargotracker.infrastructure.messaging.JMSResourcesSetup;
-import org.eclipse.cargotracker.infrastructure.persistence.DatabaseSetup;
 import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaCargoRepository;
 import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaHandlingEventRepository;
 import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaLocationRepository;
@@ -58,7 +56,7 @@ public class Deployments {
     // Infrastructure layer components.
     // Add persistence/JPA components.
     public static void addInfraPersistence(WebArchive war) {
-        war.addClass(DatabaseSetup.class)
+        war.addClass(org.eclipse.cargotracker.infrastructure.persistence.DatabaseResources.class)
                 .addClass(JpaCargoRepository.class)
                 .addClass(JpaVoyageRepository.class)
                 .addClass(JpaHandlingEventRepository.class)
@@ -75,7 +73,9 @@ public class Deployments {
     }
 
     public static void addInfraMessaging(WebArchive war) {
-        war.addPackages(true, JMSResourcesSetup.class.getPackage());
+        war.addPackages(
+                true,
+                org.eclipse.cargotracker.infrastructure.messaging.JMSResources.class.getPackage());
     }
 
     public static void addInfraRouting(WebArchive war) {

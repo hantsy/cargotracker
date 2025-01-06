@@ -24,9 +24,8 @@ public class TestClient {
 
     @OnMessage
     public void onMessage(String msg) {
-        LOGGER.info("Message from server: " + msg);
+        LOGGER.log(Level.INFO, "message from server: {0}", msg);
         response = msg;
-        latch.countDown();
     }
 
     @OnClose

@@ -1,7 +1,5 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import static java.util.Collections.*;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -10,52 +8,59 @@ import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 @Embeddable
-public record Itinerary(
-        // TODO [Clean Code] Look into why cascade delete doesn't work.
-        // Hibernate issue:
-        // Changes applied according to WildFly/Hibernate requirements.
-        // The `orphanRemoval = true` option will causes a `all-delete-orphan` exception under
-        // WildFly/Hibernate.
-        // (There is a famous lazy initialization exception you could encounter WildFly/Hibernate.
-        // The `fetch = FetchType.EAGER` fixes the Hibernate lazy initialization exception
-        // but maybe cause bad performance. A good practice is accessing the one-to-many relations
-        // in a session/tx boundary)
-        //
-        // @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-        @OneToMany(cascade = CascadeType.ALL)
-                @JoinColumn(name = "cargo_id")
-                // TODO [Clean Code] Index this is in leg_index
-                // Hibernate issue:
-                // Hibernate does not persist the order of the list element when saving into db.
-                // The `OrderColumn` will persist the position of list elements in db.
-                @OrderColumn(name = "leg_index")
-                // The `OrderBy` only ensures the order of list elements in memory. Only
-                // `@OrderBy("loadTime")`
-                // is added some tests are still failed under WildFly/Hibernate.
-                // @OrderBy("loadTime")
-                @Size(min = 1)
-                @NotEmpty(message = "Legs must not be empty")
-                List<Leg> legs) {
+public class Itinerary implements Serializable {
 
     // Null object pattern.
-    public static final Itinerary EMPTY_ITINERARY = new Itinerary(emptyList());
+    public static final Itinerary EMPTY_ITINERARY = new Itinerary();
+    private static final long serialVersionUID = 1L;
 
-    public Itinerary {
+    // TODO [Clean Code] Look into why cascade delete doesn't work.
+    // Hibernate issue:
+    // Changes applied according to WildFly/Hibernate requirements.
+    // The `orphanRemoval = true` option will causes a `all-delete-orphan` exception under
+    // WildFly/Hibernate.
+    // (There is a famous lazy initialization exception you could encounter WildFly/Hibernate.
+    // The `fetch = FetchType.EAGER` fixes the Hibernate lazy initialization exception
+    // but maybe cause bad performance. A good practice is accessing the one-to-many relations
+    // in a session/tx boundary)
+    //
+    // @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cargo_id")
+    // TODO [Clean Code] Index this is in leg_index
+    // Hibernate issue:
+    // Hibernate does not persist the order of the list element when saving into db.
+    // The `OrderColumn` will persist the position of list elements in db.
+    @OrderColumn(name = "leg_index")
+    // The `OrderBy` only ensures the order of list elements in memory. Only `@OrderBy("loadTime")`
+    // is added some tests are still failed under WildFly/Hibernate.
+    // @OrderBy("loadTime")
+    @Size(min = 1)
+    @NotEmpty(message = "Legs must not be empty")
+    private List<Leg> legs = Collections.emptyList();
+
+    public Itinerary() {
         // Nothing to initialize.
-        Validate.notEmpty(legs);
-        Validate.noNullElements(legs);
     }
 
-    //
-    //    public List<Leg> legs() {
-    //        // this.legs.sort(Comparator.comparing(Leg::getLoadTime));
-    //        return Collections.unmodifiableList(this.legs);
-    //    }
+    public Itinerary(List<Leg> legs) {
+        Validate.notEmpty(legs);
+        Validate.noNullElements(legs);
+
+        this.legs = legs;
+    }
+
+    public List<Leg> legs() {
+        // this.legs.sort(Comparator.comparing(Leg::getLoadTime));
+        return Collections.unmodifiableList(this.legs);
+    }
 
     /** Test if the given handling event is expected when executing this itinerary. */
     public boolean isExpected(HandlingEvent event) {
@@ -86,7 +91,7 @@ public record Itinerary(
                                             leg.getUnloadLocation().equals(event.getLocation())
                                                     && leg.getVoyage().equals(event.getVoyage()));
             case CLAIM -> {
-                Leg leg = getLastLeg();
+                Leg leg = lastLeg();
                 yield leg.getUnloadLocation().equals(event.getLocation());
             }
             case CUSTOMS -> true;
@@ -94,7 +99,7 @@ public record Itinerary(
         };
     }
 
-    Location getInitialDepartureLocation() {
+    Location initialDepartureLocation() {
         if (legs.isEmpty()) {
             return Location.UNKNOWN;
         } else {
@@ -102,19 +107,19 @@ public record Itinerary(
         }
     }
 
-    Location getFinalArrivalLocation() {
+    Location finalArrivalLocation() {
         if (legs.isEmpty()) {
             return Location.UNKNOWN;
         } else {
-            return getLastLeg().getUnloadLocation();
+            return lastLeg().getUnloadLocation();
         }
     }
 
     /**
      * @return Date when cargo arrives at final destination.
      */
-    LocalDateTime getFinalArrivalDate() {
-        Leg lastLeg = getLastLeg();
+    LocalDateTime finalArrivalDate() {
+        Leg lastLeg = lastLeg();
 
         if (lastLeg == null) {
             return LocalDateTime.MAX;
@@ -126,7 +131,7 @@ public record Itinerary(
     /**
      * @return The last leg on the itinerary.
      */
-    Leg getLastLeg() {
+    Leg lastLeg() {
         if (legs.isEmpty()) {
             return null;
         } else {
@@ -143,39 +148,38 @@ public record Itinerary(
         return other != null && Objects.equals(List.copyOf(this.legs), List.copyOf(other.legs));
     }
 
-    //    @Override
-    //    public boolean equals(Object o) {
-    //        if (this == o) {
-    //            return true;
-    //        }
-    //
-    //        //        if (o == null || getClass() != o.getClass()) {
-    //        //            return false;
-    //        //        }
-    //        //
-    //        //
-    // https://stackoverflow.com/questions/27581/what-issues-should-be-considered-when-overriding-equals-and-hashcode-in-java
-    //        // Hibernate issue:
-    //        // `getClass() != o.getClass()` will fail if comparing the objects in different
-    //        // transactions/sessions.
-    //        // The generated dynamic proxies are always different classes.
-    //        if (o == null || !(o instanceof Itinerary)) {
-    //            return false;
-    //        }
-    //
-    //        Itinerary itinerary = (Itinerary) o;
-    //
-    //        return sameValueAs(itinerary);
-    //    }
-    //
-    //    @Override
-    //    public int hashCode() {
-    //        // return legs.hashCode();
-    //        return Objects.hashCode(List.copyOf(legs));
-    //    }
-    //
-    //    @Override
-    //    public String toString() {
-    //        return "Itinerary{" + "legs=" + legs + '}';
-    //    }Itinerary
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        //        if (o == null || getClass() != o.getClass()) {
+        //            return false;
+        //        }
+        //
+        // https://stackoverflow.com/questions/27581/what-issues-should-be-considered-when-overriding-equals-and-hashcode-in-java
+        // Hibernate issue:
+        // `getClass() != o.getClass()` will fail if comparing the objects in different
+        // transactions/sessions.
+        // The generated dynamic proxies are always different classes.
+        if (o == null || !(o instanceof Itinerary)) {
+            return false;
+        }
+
+        Itinerary itinerary = (Itinerary) o;
+
+        return sameValueAs(itinerary);
+    }
+
+    @Override
+    public int hashCode() {
+        // return legs.hashCode();
+        return Objects.hashCode(List.copyOf(legs));
+    }
+
+    @Override
+    public String toString() {
+        return "Itinerary{" + "legs=" + legs + '}';
+    }
 }

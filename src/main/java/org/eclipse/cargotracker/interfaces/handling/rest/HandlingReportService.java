@@ -3,7 +3,6 @@ package org.eclipse.cargotracker.interfaces.handling.rest;
 import static jakarta.ws.rs.core.Response.accepted;
 import static jakarta.ws.rs.core.Response.status;
 
-import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -32,11 +31,10 @@ import java.util.logging.Logger;
  * case of a valid registration attempt, sends an asynchronous message with the information to the
  * handling event registration system for proper registration.
  */
-@Stateless
+@jakarta.enterprise.context.RequestScoped
 @Path("handling")
 public class HandlingReportService {
     public static final Logger LOGGER = Logger.getLogger(HandlingReportService.class.getName());
-    // public static final String ISO_8601_FORMAT = "yyyy-MM-dd HH:mm";
 
     @Inject private ApplicationEvents applicationEvents;
 

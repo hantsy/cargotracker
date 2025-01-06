@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.LocationRepository;
@@ -22,7 +21,7 @@ public class JpaLocationRepository implements LocationRepository, Serializable {
 
     @Inject Logger logger;
 
-    @PersistenceContext private EntityManager entityManager;
+    @Inject private EntityManager entityManager;
 
     @Override
     public Location find(UnLocode unLocode) {

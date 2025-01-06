@@ -98,7 +98,7 @@ public class HandlingReportServiceTest {
         report.setCompletionTime(DateUtil.toString(LocalDateTime.now()));
         report.setEventType("LOAD");
         report.setTrackingId("A001");
-        report.setVoyageNumber(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber().getIdString());
+        report.setVoyageNumber(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber().number());
         report.setUnLocode(SampleLocations.HONGKONG.getUnLocode().getIdString());
 
         final WebTarget postReportTarget =

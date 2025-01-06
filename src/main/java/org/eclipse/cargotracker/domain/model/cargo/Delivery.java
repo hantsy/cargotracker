@@ -245,7 +245,7 @@ public class Delivery implements Serializable {
 
     private LocalDateTime calculateEta(Itinerary itinerary) {
         if (onTrack()) {
-            return itinerary.getFinalArrivalDate();
+            return itinerary.finalArrivalDate();
         } else {
             return ETA_UNKOWN;
         }

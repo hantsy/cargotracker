@@ -43,15 +43,12 @@ public class EventItemWriter extends AbstractItemWriter {
                 new PrintWriter(
                         new BufferedWriter(
                                 new FileWriter(
-                                        new File(
-                                                jobContext
-                                                                .getProperties()
-                                                                .getProperty(ARCHIVE_DIRECTORY)
-                                                        + "/archive_"
-                                                        + jobContext.getJobName()
-                                                        + "_"
-                                                        + jobContext.getInstanceId()
-                                                        + ".csv"),
+                                        jobContext.getProperties().getProperty(ARCHIVE_DIRECTORY)
+                                                + "/archive_"
+                                                + jobContext.getJobName()
+                                                + "_"
+                                                + jobContext.getInstanceId()
+                                                + ".csv",
                                         true)))) {
             for (Object item : items) {
                 HandlingEventRegistrationAttempt attempt = (HandlingEventRegistrationAttempt) item;

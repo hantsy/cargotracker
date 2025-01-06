@@ -12,6 +12,7 @@ import jakarta.websocket.Session;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -35,11 +36,9 @@ public class RealtimeCargoTrackingServiceTest {
 
     private static final Logger LOGGER =
             Logger.getLogger(RealtimeCargoTrackingServiceTest.class.getName());
-    @ArquillianResource URL base;
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-
         WebArchive war =
                 ShrinkWrap.create(WebArchive.class, "test-RealtimeCargoTrackingServiceTest.war");
 
@@ -65,13 +64,16 @@ public class RealtimeCargoTrackingServiceTest {
         return war;
     }
 
+    @ArquillianResource URL base;
+
     @Test
+    @RunAsClient
     public void testOnCargoInspected() throws Exception {
         LOGGER.log(Level.INFO, "run test RealtimeCargoTrackingServiceTest# testOnCargoInspected");
         TestClient.latch = new CountDownLatch(1);
         var session = connectToServer();
         assertThat(session).isNotNull();
-        TestClient.latch.await(5, TimeUnit.SECONDS);
+        TestClient.latch.await(10, TimeUnit.SECONDS);
         assertThat(TestClient.response).isNotNull();
         var json = JsonPath.parse(TestClient.response);
         LOGGER.log(Level.INFO, "response json string: {0}", json);

@@ -1,8 +1,7 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
-import jakarta.ejb.Singleton;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.websocket.OnClose;
@@ -22,26 +21,30 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** WebSocket service for tracking all cargoes in real time. */
-@Singleton
+@ApplicationScoped
 @ServerEndpoint("/tracking")
 public class RealtimeCargoTrackingService {
+    private static final Logger LOGGER =
+            Logger.getLogger(RealtimeCargoTrackingService.class.getName());
 
     private final Set<Session> sessions = new HashSet<>();
-    @Inject private Logger logger;
 
     @OnOpen
     public void onOpen(final Session session) {
         // Infinite by default on GlassFish. We need this principally for WebLogic.
+        LOGGER.log(Level.INFO, "open session: {0}", session.getId());
         session.setMaxIdleTimeout(5L * 60 * 1000);
         sessions.add(session);
     }
 
     @OnClose
     public void onClose(final Session session) {
+        LOGGER.log(Level.INFO, "close session: {0}", session.getId());
         sessions.remove(session);
     }
 
     public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
+        LOGGER.log(Level.INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
         Writer writer = new StringWriter();
 
         try (JsonGenerator generator = Json.createGenerator(writer)) {
@@ -51,17 +54,17 @@ public class RealtimeCargoTrackingService {
                     .write("origin", cargo.getOrigin().getName())
                     .write("destination", cargo.getRouteSpecification().destination().getName())
                     .write("lastKnownLocation", cargo.getDelivery().lastKnownLocation().getName())
-                    .write("transportStatus", cargo.getDelivery().transportStatus().toString())
+                    .write("transportStatus", cargo.getDelivery().transportStatus().name())
                     .writeEnd();
         }
 
         String jsonValue = writer.toString();
-
+        LOGGER.log(Level.INFO, "sending message to client: {0}", jsonValue);
         for (Session session : sessions) {
             try {
                 session.getBasicRemote().sendText(jsonValue);
             } catch (IOException ex) {
-                logger.log(Level.WARNING, "Unable to publish WebSocket message", ex);
+                LOGGER.log(Level.WARNING, "Unable to publish WebSocket message", ex);
             }
         }
     }

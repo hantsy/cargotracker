@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
@@ -22,7 +21,7 @@ public class JpaVoyageRepository implements VoyageRepository, Serializable {
 
     @Inject Logger logger;
 
-    @PersistenceContext private EntityManager entityManager;
+    @Inject private EntityManager entityManager;
 
     @Override
     public Voyage find(VoyageNumber voyageNumber) {

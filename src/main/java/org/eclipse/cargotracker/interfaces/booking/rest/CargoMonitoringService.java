@@ -1,6 +1,6 @@
 package org.eclipse.cargotracker.interfaces.booking.rest;
 
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -16,7 +16,7 @@ import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
 
 import java.util.List;
 
-@Stateless
+@RequestScoped
 @Path("/cargo")
 public class CargoMonitoringService {
 

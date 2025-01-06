@@ -5,7 +5,6 @@ import static org.eclipse.cargotracker.Deployments.*;
 
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
@@ -33,7 +32,7 @@ public class CarrierMovementRepositoryTest {
     private static final Logger LOGGER =
             Logger.getLogger(CarrierMovementRepositoryTest.class.getName());
     @Inject VoyageRepository voyageRepository;
-    @PersistenceContext EntityManager entityManager;
+    @Inject EntityManager entityManager;
     @Inject UserTransaction utx;
     String voyageNumberIdString = "007";
     Voyage voyage;
@@ -104,7 +103,7 @@ public class CarrierMovementRepositoryTest {
         startTransaction();
         Voyage result = voyageRepository.find(new VoyageNumber(voyageNumberIdString));
         assertThat(result).isNotNull();
-        assertThat(result.getVoyageNumber().getIdString()).isEqualTo(voyageNumberIdString);
+        assertThat(result.getVoyageNumber().number()).isEqualTo(voyageNumberIdString);
 
         var movements = result.getSchedule().getCarrierMovements();
         assertThat(movements).hasSize(1);

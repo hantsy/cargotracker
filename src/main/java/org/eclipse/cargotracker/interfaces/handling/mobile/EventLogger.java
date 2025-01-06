@@ -142,8 +142,7 @@ public class EventLogger implements Serializable {
         for (Voyage voyage : voyages) {
             this.voyages.add(
                     new SelectItem(
-                            voyage.getVoyageNumber().getIdString(),
-                            voyage.getVoyageNumber().getIdString()));
+                            voyage.getVoyageNumber().number(), voyage.getVoyageNumber().number()));
         }
     }
 

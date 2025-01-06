@@ -25,13 +25,13 @@ public class JmsApplicationEvents implements ApplicationEvents, Serializable {
     @Resource(lookup = "java:app/jms/CargoHandledQueue")
     private Destination cargoHandledQueue;
 
-    @jakarta.annotation.Resource(lookup = "java:app/jms/MisdirectedCargoQueue")
+    @Resource(lookup = "java:app/jms/MisdirectedCargoQueue")
     private Destination misdirectedCargoQueue;
 
-    @jakarta.annotation.Resource(lookup = "java:app/jms/DeliveredCargoQueue")
+    @Resource(lookup = "java:app/jms/DeliveredCargoQueue")
     private Destination deliveredCargoQueue;
 
-    @jakarta.annotation.Resource(lookup = "java:app/jms/HandlingEventRegistrationAttemptQueue")
+    @Resource(lookup = "java:app/jms/HandlingEventRegistrationAttemptQueue")
     private Destination handlingEventQueue;
 
     @Inject private Logger logger;

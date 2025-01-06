@@ -49,13 +49,6 @@ public class ExternalRoutingService implements RoutingService {
         this.graphTraversalResource = graphTraversalResource;
     }
 
-    //    @PostConstruct
-    //    public void init() {
-    //        // this.graphTraversalResource = new GraphTraversalResourceClient();
-    //        //graphTraversalResource.register(new MoxyJsonFeature()).register(new
-    // JsonMoxyConfigurationContextResolver());
-    //    }
-
     @Override
     public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
         // The RouteSpecification is picked apart and adapted to the external API.
