@@ -44,7 +44,8 @@ public class RealtimeCargoTrackingService {
     }
 
     public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
-        LOGGER.log(Level.INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
+        LOGGER.log(
+                Level.INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
         Writer writer = new StringWriter();
 
         try (JsonGenerator generator = Json.createGenerator(writer)) {
