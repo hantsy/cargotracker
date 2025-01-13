@@ -23,9 +23,9 @@ import java.util.logging.Logger;
 /** WebSocket service for tracking all cargoes in real time. */
 @ApplicationScoped
 @ServerEndpoint("/tracking")
-public class RealtimeCargoTrackingService {
+public class RealtimeCargoTrackingWebSocketService {
     private static final Logger LOGGER =
-            Logger.getLogger(RealtimeCargoTrackingService.class.getName());
+            Logger.getLogger(RealtimeCargoTrackingWebSocketService.class.getName());
 
     private final Set<Session> sessions = new HashSet<>();
 

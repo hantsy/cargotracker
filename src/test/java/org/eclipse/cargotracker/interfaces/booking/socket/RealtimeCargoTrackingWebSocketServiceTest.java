@@ -32,10 +32,10 @@ import java.util.logging.Logger;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
-public class RealtimeCargoTrackingServiceTest {
+public class RealtimeCargoTrackingWebSocketServiceTest {
 
     private static final Logger LOGGER =
-            Logger.getLogger(RealtimeCargoTrackingServiceTest.class.getName());
+            Logger.getLogger(RealtimeCargoTrackingWebSocketServiceTest.class.getName());
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
@@ -46,7 +46,7 @@ public class RealtimeCargoTrackingServiceTest {
         addDomainModels(war);
         addInfraBase(war);
         addApplicationBase(war);
-        war.addClass(RealtimeCargoTrackingService.class)
+        war.addClass(RealtimeCargoTrackingWebSocketService.class)
                 // .addClass(TestClient.class)
                 // EJB to raise a CDI event
                 .addClass(CargoInspectedStub.class)

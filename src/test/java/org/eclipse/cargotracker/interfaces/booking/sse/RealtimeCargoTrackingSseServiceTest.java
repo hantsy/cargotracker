@@ -1,19 +1,19 @@
-package org.eclipse.cargotracker.interfaces.booking.rest;
+package org.eclipse.cargotracker.interfaces.booking.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 
+import com.jayway.jsonpath.JsonPath;
+
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.sse.SseEventSource;
 
-import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
-import org.eclipse.cargotracker.interfaces.RestActivator;
+import org.eclipse.cargotracker.interfaces.booking.socket.RealtimeCargoTrackingWebSocketService;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -26,38 +26,37 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
-public class CargoMonitoringServiceTest {
+public class RealtimeCargoTrackingSseServiceTest {
+
     private static final Logger LOGGER =
-            Logger.getLogger(CargoMonitoringServiceTest.class.getName());
-    @ArquillianResource private URL base;
-    private Client client;
+            Logger.getLogger(RealtimeCargoTrackingSseServiceTest.class.getName());
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CargoMonitoringServiceTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
 
         addExtraJars(war);
         addDomainModels(war);
-        addDomainRepositories(war);
         addInfraBase(war);
-        addInfraPersistence(war);
         addApplicationBase(war);
-
-        war.addClass(RestActivator.class).addClass(CargoMonitoringService.class);
-        war.addClass(SampleDataGenerator.class)
+        war.addClasses(
+                        RealtimeCargoTrackingWebSocketService.class,
+                        SseRequest.class,
+                        SseHandler.class)
+                // stub bean to raise a CDI event
+                .addClass(CargoInspectedSseEventStub.class)
+                // add samples.
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)
-                // add persistence unit descriptor
-                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
-
                 // add web xml
                 .addAsWebInfResource("test-web.xml", "web.xml")
-
                 // add Wildfly specific deployment descriptor
                 .addAsWebInfResource(
                         "test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
@@ -66,6 +65,9 @@ public class CargoMonitoringServiceTest {
 
         return war;
     }
+
+    @ArquillianResource URL base;
+    private Client client;
 
     @BeforeEach
     public void setup() {
@@ -80,16 +82,26 @@ public class CargoMonitoringServiceTest {
     }
 
     @Test
-    public void testCargoStatus() throws Exception {
-        LOGGER.log(Level.INFO, " Running test:: CargoMonitoringServiceTest#testCargoStatus ... ");
-        final WebTarget getCargoStatus =
-                client.target(URI.create(base.toExternalForm() + "rest/cargo"));
+    @RunAsClient
+    public void testOnCargoInspected() throws Exception {
+        LOGGER.log(Level.INFO, " Running test:: RealtimeCargoTrackingServiceTest#testCargoStatus ... ");
+        final var trackingTarget =
+                client.target(URI.create(base.toExternalForm() + "rest/tracking"));
 
-        // Response is an autocloseable resource.
-        try (final Response getAllPostsResponse =
-                getCargoStatus.request().accept(MediaType.APPLICATION_JSON).get()) {
-            assertThat(getAllPostsResponse.getStatus()).isEqualTo(200);
-            // TODO: use POJO to assert the response body.
+        var latch = new CountDownLatch(1);
+        try (final var trackingEventSource = SseEventSource.target(trackingTarget)
+                .build()) {
+            trackingEventSource.register(inboundSseEvent -> {
+                var eventData = inboundSseEvent.readData();
+                assertThat(eventData).isNotNull();
+                var json = JsonPath.parse(eventData);
+                LOGGER.log(Level.INFO, "response json string: {0}", json);
+                assertThat(json.read("$.trackingId", String.class)).isEqualTo("AAA");
+                latch.countDown();
+            });
+            trackingEventSource.open();
         }
+        latch.await(6000, TimeUnit.MILLISECONDS);
     }
+
 }
