@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
+import jakarta.ejb.Singleton;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.json.Json;
@@ -21,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** WebSocket service for tracking all cargoes in real time. */
-@ApplicationScoped
+@Singleton
 @ServerEndpoint("/tracking")
 public class RealtimeCargoTrackingWebSocketService {
     private static final Logger LOGGER =
@@ -44,7 +45,8 @@ public class RealtimeCargoTrackingWebSocketService {
     }
 
     public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
-        LOGGER.log(Level.INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
+        LOGGER.log(
+                Level.INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
         Writer writer = new StringWriter();
 
         try (JsonGenerator generator = Json.createGenerator(writer)) {

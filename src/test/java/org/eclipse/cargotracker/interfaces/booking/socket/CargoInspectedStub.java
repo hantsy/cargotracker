@@ -26,7 +26,7 @@ public class CargoInspectedStub {
 
     @PostConstruct
     public void initialize() {
-        LOGGER.log(Level.INFO, "raise event after 5 seconds...");
+        LOGGER.log(Level.INFO, "raise CDI event after 5 seconds...");
         timerService.createTimer(5000, "delayed 5 seconds to execute");
     }
 
