@@ -1,7 +1,6 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
 import jakarta.ejb.Singleton;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
