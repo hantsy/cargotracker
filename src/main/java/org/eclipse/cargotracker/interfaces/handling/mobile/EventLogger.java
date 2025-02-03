@@ -5,7 +5,6 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
-
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -31,15 +30,24 @@ import java.util.List;
 @ViewScoped
 public class EventLogger implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private CargoRepository cargoRepository;
+    private LocationRepository locationRepository;
+    private VoyageRepository voyageRepository;
+    private ApplicationEvents applicationEvents;
 
-    @Inject private CargoRepository cargoRepository;
+    public EventLogger() {
+    }
 
-    @Inject private LocationRepository locationRepository;
-
-    @Inject private VoyageRepository voyageRepository;
-
-    @Inject private ApplicationEvents applicationEvents;
+    @Inject
+    public EventLogger(CargoRepository cargoRepository,
+                       LocationRepository locationRepository,
+                       VoyageRepository voyageRepository,
+                       ApplicationEvents applicationEvents) {
+        this.cargoRepository = cargoRepository;
+        this.locationRepository = locationRepository;
+        this.voyageRepository = voyageRepository;
+        this.applicationEvents = applicationEvents;
+    }
 
     private List<SelectItem> trackingIds;
     private List<SelectItem> locations;
@@ -120,8 +128,8 @@ public class EventLogger implements Serializable {
             // List only routed cargo that is not claimed yet.
             if (!cargo.getItinerary().legs().isEmpty()
                     && !(cargo.getDelivery()
-                            .transportStatus()
-                            .sameValueAs(TransportStatus.CLAIMED))) {
+                    .transportStatus()
+                    .sameValueAs(TransportStatus.CLAIMED))) {
                 String trackingId = cargo.getTrackingId().id();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }

@@ -2,7 +2,6 @@ package org.eclipse.cargotracker.interfaces.booking.sse;
 
 import static jakarta.ws.rs.core.MediaType.*;
 
-import static java.util.UUID.*;
 import static java.util.logging.Level.INFO;
 
 import jakarta.ejb.Singleton;

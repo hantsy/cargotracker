@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
@@ -17,11 +16,18 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class JpaVoyageRepository implements VoyageRepository, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(JpaVoyageRepository.class.getName());
 
-    @Inject Logger logger;
+    private EntityManager entityManager;
 
-    @Inject private EntityManager entityManager;
+    // no-args constructor required by CDI
+    public JpaVoyageRepository() {
+    }
+
+    @Inject
+    public JpaVoyageRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Voyage find(VoyageNumber voyageNumber) {

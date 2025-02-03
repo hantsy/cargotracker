@@ -17,11 +17,18 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class JpaLocationRepository implements LocationRepository, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(JpaLocationRepository.class.getName());
 
-    @Inject Logger logger;
+    private EntityManager entityManager;
 
-    @Inject private EntityManager entityManager;
+    // no-args constructor required by CDI
+    public JpaLocationRepository() {
+    }
+
+    @Inject
+    public JpaLocationRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Location find(UnLocode unLocode) {

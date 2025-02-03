@@ -14,11 +14,9 @@ public class LocationDtoAssembler {
     }
 
     public List<LocationDto> toDtoList(List<Location> allLocations) {
-        List<LocationDto> dtoList =
-                allLocations.stream()
+        return allLocations.stream()
                         .map(this::toDto)
                         .sorted(Comparator.comparing(LocationDto::nameAndCode))
-                        .collect(Collectors.toList());
-        return dtoList;
+                        .toList();
     }
 }

@@ -18,11 +18,18 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class JpaCargoRepository implements CargoRepository, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(JpaCargoRepository.class.getName());
 
-    @Inject private Logger logger;
+    private EntityManager entityManager;
 
-    @Inject private EntityManager entityManager;
+    // no-args constructor required by CDI
+    public JpaCargoRepository() {
+    }
+
+    @Inject
+    public JpaCargoRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Cargo find(TrackingId trackingId) {

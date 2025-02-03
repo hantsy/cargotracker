@@ -14,9 +14,16 @@ import java.io.Serializable;
 @ApplicationScoped
 public class JpaHandlingEventRepository implements HandlingEventRepository, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private EntityManager entityManager;
 
-    @Inject private EntityManager entityManager;
+    // no-args constructor required by CDI
+    public JpaHandlingEventRepository() {
+    }
+
+    @Inject
+    public JpaHandlingEventRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public void store(HandlingEvent event) {

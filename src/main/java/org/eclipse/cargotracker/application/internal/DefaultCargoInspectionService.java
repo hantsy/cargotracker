@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.CargoInspectionService;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -24,23 +23,21 @@ public class DefaultCargoInspectionService implements CargoInspectionService {
     private static final Logger LOGGER =
             Logger.getLogger(DefaultCargoInspectionService.class.getName());
 
-    @Inject private ApplicationEvents applicationEvents;
-
-    @Inject private CargoRepository cargoRepository;
-
-    @Inject private HandlingEventRepository handlingEventRepository;
-
-    @Inject @CargoInspected private Event<Cargo> cargoInspected;
+    private ApplicationEvents applicationEvents;
+    private CargoRepository cargoRepository;
+    private HandlingEventRepository handlingEventRepository;
+    private Event<Cargo> cargoInspected;
 
     // no-args constructor required by CDI
-    public DefaultCargoInspectionService() {}
+    public DefaultCargoInspectionService() {
+    }
 
-    // @Inject
+    @Inject
     public DefaultCargoInspectionService(
             ApplicationEvents applicationEvents,
             CargoRepository cargoRepository,
             HandlingEventRepository handlingEventRepository,
-            // @CargoInspected
+            @CargoInspected
             Event<Cargo> cargoInspected) {
         this.applicationEvents = applicationEvents;
         this.cargoRepository = cargoRepository;

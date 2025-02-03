@@ -20,7 +20,15 @@ import java.util.List;
 @Path("/cargo")
 public class CargoMonitoringService {
 
-    @Inject private CargoRepository cargoRepository;
+    private CargoRepository cargoRepository;
+
+    public CargoMonitoringService() {
+    }
+
+    @Inject
+    public CargoMonitoringService(CargoRepository cargoRepository) {
+        this.cargoRepository = cargoRepository;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

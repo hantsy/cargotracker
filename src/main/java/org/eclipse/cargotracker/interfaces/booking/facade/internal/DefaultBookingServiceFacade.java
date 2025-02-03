@@ -3,7 +3,6 @@ package org.eclipse.cargotracker.interfaces.booking.facade.internal;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
@@ -34,17 +33,27 @@ import java.util.List;
 @Transactional
 public class DefaultBookingServiceFacade implements BookingServiceFacade, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private BookingService bookingService;
+    private LocationRepository locationRepository;
+    private CargoRepository cargoRepository;
+    private VoyageRepository voyageRepository;
+    private HandlingEventRepository handlingEventRepository;
 
-    @Inject private BookingService bookingService;
+    public DefaultBookingServiceFacade() {
+    }
 
-    @Inject private LocationRepository locationRepository;
-
-    @Inject private CargoRepository cargoRepository;
-
-    @Inject private VoyageRepository voyageRepository;
-
-    @Inject private HandlingEventRepository handlingEventRepository;
+    @Inject
+    public DefaultBookingServiceFacade(BookingService bookingService,
+                                       LocationRepository locationRepository,
+                                       CargoRepository cargoRepository,
+                                       VoyageRepository voyageRepository,
+                                       HandlingEventRepository handlingEventRepository) {
+        this.bookingService = bookingService;
+        this.locationRepository = locationRepository;
+        this.cargoRepository = cargoRepository;
+        this.voyageRepository = voyageRepository;
+        this.handlingEventRepository = handlingEventRepository;
+    }
 
     @Override
     public List<LocationDto> listShippingLocations() {

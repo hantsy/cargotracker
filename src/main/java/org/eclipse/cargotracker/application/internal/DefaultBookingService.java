@@ -3,7 +3,6 @@ package org.eclipse.cargotracker.application.internal;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -20,11 +19,21 @@ import java.util.logging.Logger;
 @ApplicationScoped
 @Transactional
 public class DefaultBookingService implements BookingService {
+    public static final Logger logger = Logger.getLogger(DefaultBookingService.class.getName());
+    private CargoRepository cargoRepository;
+    private LocationRepository locationRepository;
+    private RoutingService routingService;
 
-    @Inject private CargoRepository cargoRepository;
-    @Inject private LocationRepository locationRepository;
-    @Inject private RoutingService routingService;
-    @Inject private Logger logger;
+    // no-args constructor required by CDI
+    public DefaultBookingService() {
+    }
+
+    @Inject
+    public DefaultBookingService(CargoRepository cargoRepository, LocationRepository locationRepository, RoutingService routingService) {
+        this.cargoRepository = cargoRepository;
+        this.locationRepository = locationRepository;
+        this.routingService = routingService;
+    }
 
     @Override
     public TrackingId bookNewCargo(
@@ -81,7 +90,7 @@ public class DefaultBookingService implements BookingService {
         logger.log(
                 Level.INFO,
                 "Changed destination for cargo {0} to {1}",
-                new Object[] {trackingId, routeSpecification.destination()});
+                new Object[]{trackingId, routeSpecification.destination()});
     }
 
     @Override
@@ -100,6 +109,6 @@ public class DefaultBookingService implements BookingService {
         logger.log(
                 Level.INFO,
                 "Changed deadline for cargo {0} to {1}",
-                new Object[] {trackingId, newDeadline});
+                new Object[]{trackingId, newDeadline});
     }
 }

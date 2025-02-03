@@ -3,7 +3,6 @@ package org.eclipse.cargotracker.application.internal;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.HandlingEventService;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -25,16 +24,15 @@ public class DefaultHandlingEventService implements HandlingEventService {
     private static final Logger LOGGER =
             Logger.getLogger(DefaultHandlingEventService.class.getName());
 
-    @Inject private ApplicationEvents applicationEvents;
-
-    @Inject private HandlingEventRepository handlingEventRepository;
-
-    @Inject private HandlingEventFactory handlingEventFactory;
+    private ApplicationEvents applicationEvents;
+    private HandlingEventRepository handlingEventRepository;
+    private HandlingEventFactory handlingEventFactory;
 
     // no-args constructor required by CDI
-    public DefaultHandlingEventService() {}
+    public DefaultHandlingEventService() {
+    }
 
-    // @Inject
+    @Inject
     public DefaultHandlingEventService(
             ApplicationEvents applicationEvents,
             HandlingEventRepository handlingEventRepository,

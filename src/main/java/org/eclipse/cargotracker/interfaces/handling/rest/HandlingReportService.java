@@ -1,8 +1,5 @@
 package org.eclipse.cargotracker.interfaces.handling.rest;
 
-import static jakarta.ws.rs.core.Response.accepted;
-import static jakarta.ws.rs.core.Response.status;
-
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +9,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -26,6 +22,9 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static jakarta.ws.rs.core.Response.accepted;
+import static jakarta.ws.rs.core.Response.status;
+
 /**
  * This REST end-point implementation performs basic validation and parsing of incoming data, and in
  * case of a valid registration attempt, sends an asynchronous message with the information to the
@@ -36,9 +35,15 @@ import java.util.logging.Logger;
 public class HandlingReportService {
     public static final Logger LOGGER = Logger.getLogger(HandlingReportService.class.getName());
 
-    @Inject private ApplicationEvents applicationEvents;
+    private ApplicationEvents applicationEvents;
 
-    public HandlingReportService() {}
+    public HandlingReportService() {
+    }
+
+    @Inject
+    public HandlingReportService(ApplicationEvents applicationEvents) {
+        this.applicationEvents = applicationEvents;
+    }
 
     @POST
     @Path("reports")
