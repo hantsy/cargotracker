@@ -40,7 +40,7 @@
         <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.10.16</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.10.17</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0-M4</jakartaee-api.version>
@@ -53,8 +53,8 @@
         <!-- Test Utilities -->
         <junit.version>5.11.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <mockito.version>5.14.2</mockito.version>
-        <assertj.version>3.27.1</assertj.version>
+        <mockito.version>5.15.2</mockito.version>
+        <assertj.version>3.27.3</assertj.version>
         <json-path.version>2.9.0</json-path.version>
         <awaitility.version>4.2.2</awaitility.version>
 
@@ -65,6 +65,7 @@
         <glassfish.version>8.0.0-M9</glassfish.version>
         <jersey.version>4.0.0-M1</jersey.version>
         <eclipselink.version>5.0.0-B03</eclipselink.version>
+
         <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>
@@ -206,7 +207,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.4</version>
+            <version>42.7.5</version>
             <scope>runtime</scope>
         </dependency>
 
