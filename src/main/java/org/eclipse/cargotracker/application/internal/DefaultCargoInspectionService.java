@@ -29,16 +29,14 @@ public class DefaultCargoInspectionService implements CargoInspectionService {
     private Event<Cargo> cargoInspected;
 
     // no-args constructor required by CDI
-    public DefaultCargoInspectionService() {
-    }
+    public DefaultCargoInspectionService() {}
 
     @Inject
     public DefaultCargoInspectionService(
             ApplicationEvents applicationEvents,
             CargoRepository cargoRepository,
             HandlingEventRepository handlingEventRepository,
-            @CargoInspected
-            Event<Cargo> cargoInspected) {
+            @CargoInspected Event<Cargo> cargoInspected) {
         this.applicationEvents = applicationEvents;
         this.cargoRepository = cargoRepository;
         this.handlingEventRepository = handlingEventRepository;

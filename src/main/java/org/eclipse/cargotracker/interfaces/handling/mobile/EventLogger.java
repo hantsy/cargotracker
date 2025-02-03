@@ -35,14 +35,14 @@ public class EventLogger implements Serializable {
     private VoyageRepository voyageRepository;
     private ApplicationEvents applicationEvents;
 
-    public EventLogger() {
-    }
+    public EventLogger() {}
 
     @Inject
-    public EventLogger(CargoRepository cargoRepository,
-                       LocationRepository locationRepository,
-                       VoyageRepository voyageRepository,
-                       ApplicationEvents applicationEvents) {
+    public EventLogger(
+            CargoRepository cargoRepository,
+            LocationRepository locationRepository,
+            VoyageRepository voyageRepository,
+            ApplicationEvents applicationEvents) {
         this.cargoRepository = cargoRepository;
         this.locationRepository = locationRepository;
         this.voyageRepository = voyageRepository;
@@ -128,8 +128,8 @@ public class EventLogger implements Serializable {
             // List only routed cargo that is not claimed yet.
             if (!cargo.getItinerary().legs().isEmpty()
                     && !(cargo.getDelivery()
-                    .transportStatus()
-                    .sameValueAs(TransportStatus.CLAIMED))) {
+                            .transportStatus()
+                            .sameValueAs(TransportStatus.CLAIMED))) {
                 String trackingId = cargo.getTrackingId().id();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }

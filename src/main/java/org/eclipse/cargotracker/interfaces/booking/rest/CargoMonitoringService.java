@@ -22,8 +22,7 @@ public class CargoMonitoringService {
 
     private CargoRepository cargoRepository;
 
-    public CargoMonitoringService() {
-    }
+    public CargoMonitoringService() {}
 
     @Inject
     public CargoMonitoringService(CargoRepository cargoRepository) {

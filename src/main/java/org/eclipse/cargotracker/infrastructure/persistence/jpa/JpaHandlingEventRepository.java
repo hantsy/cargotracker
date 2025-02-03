@@ -17,8 +17,7 @@ public class JpaHandlingEventRepository implements HandlingEventRepository, Seri
     private EntityManager entityManager;
 
     // no-args constructor required by CDI
-    public JpaHandlingEventRepository() {
-    }
+    public JpaHandlingEventRepository() {}
 
     @Inject
     public JpaHandlingEventRepository(EntityManager entityManager) {

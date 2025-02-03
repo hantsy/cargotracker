@@ -19,7 +19,8 @@ public class SynchronousApplicationEventsStub implements ApplicationEvents {
     public SynchronousApplicationEventsStub() {}
 
     @Inject
-    public SynchronousApplicationEventsStub(Instance<CargoInspectionService> cargoInspectionServiceInstance) {
+    public SynchronousApplicationEventsStub(
+            Instance<CargoInspectionService> cargoInspectionServiceInstance) {
         this.cargoInspectionServiceInstance = cargoInspectionServiceInstance;
     }
 

@@ -23,8 +23,7 @@ public class JpaCargoRepository implements CargoRepository, Serializable {
     private EntityManager entityManager;
 
     // no-args constructor required by CDI
-    public JpaCargoRepository() {
-    }
+    public JpaCargoRepository() {}
 
     @Inject
     public JpaCargoRepository(EntityManager entityManager) {

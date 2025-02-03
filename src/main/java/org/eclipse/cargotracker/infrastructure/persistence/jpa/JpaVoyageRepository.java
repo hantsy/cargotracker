@@ -21,8 +21,7 @@ public class JpaVoyageRepository implements VoyageRepository, Serializable {
     private EntityManager entityManager;
 
     // no-args constructor required by CDI
-    public JpaVoyageRepository() {
-    }
+    public JpaVoyageRepository() {}
 
     @Inject
     public JpaVoyageRepository(EntityManager entityManager) {

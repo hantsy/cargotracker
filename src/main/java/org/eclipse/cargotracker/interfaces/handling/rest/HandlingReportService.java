@@ -37,8 +37,7 @@ public class HandlingReportService {
 
     private ApplicationEvents applicationEvents;
 
-    public HandlingReportService() {
-    }
+    public HandlingReportService() {}
 
     @Inject
     public HandlingReportService(ApplicationEvents applicationEvents) {
