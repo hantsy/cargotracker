@@ -1,6 +1,5 @@
 package org.eclipse.cargotracker.interfaces.booking.sse;
 
-import jakarta.ejb.Singleton;
 import jakarta.enterprise.event.Observes;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
@@ -26,8 +25,8 @@ import static jakarta.ws.rs.core.MediaType.SERVER_SENT_EVENTS;
 import static java.util.logging.Level.INFO;
 
 /** SSE service for tracking all cargoes in real time. */
-@Singleton
-// @ApplicationScoped
+// Both EJB @Singleton and CDI @Singleton/@ApplicationScoped does not work
+// @Singleton
 @Path("tracking")
 public class RealtimeCargoTrackingSseService {
     private static final Logger LOGGER =

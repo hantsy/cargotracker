@@ -1,14 +1,12 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
 import jakarta.enterprise.event.Observes;
-import jakarta.inject.Singleton;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
-
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 
@@ -21,7 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** WebSocket service for tracking all cargoes in real time. */
-@Singleton
+// work with EJB Singleton, but failed with CDI Singleton/ApplicationScoped
+// @Singleton
 @ServerEndpoint("/tracking")
 public class RealtimeCargoTrackingWebSocketService {
     private static final Logger LOGGER =
