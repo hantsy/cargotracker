@@ -1,6 +1,9 @@
 package org.eclipse.cargotracker.interfaces.booking.sse;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+import jakarta.inject.Singleton;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.ws.rs.GET;
@@ -24,27 +27,30 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static jakarta.ws.rs.core.MediaType.SERVER_SENT_EVENTS;
 import static java.util.logging.Level.INFO;
 
-/** SSE service for tracking all cargoes in real time. */
-// Both EJB @Singleton and CDI @Singleton/@ApplicationScoped does not work
-// @Singleton
+/**
+ * SSE service for tracking all cargoes in real time.
+ */
+@ApplicationScoped
 @Path("tracking")
 public class RealtimeCargoTrackingSseService {
     private static final Logger LOGGER =
             Logger.getLogger(RealtimeCargoTrackingSseService.class.getName());
-    private Sse sse;
+    private @Context Sse sse;
     private SseBroadcaster sseBroadcaster;
 
-    public RealtimeCargoTrackingSseService() {}
+    // constructor injection does not work withe EJB Singleton/Stateful and
+    // CDI Singleton/ApplicationScoped
+    // public RealtimeCargoTrackingSseService(@Context Sse sse) {}
 
-    public RealtimeCargoTrackingSseService(@Context Sse sse) {
-        this.sse = sse;
+    @PostConstruct
+    public void init() {
         this.sseBroadcaster = sse.newBroadcaster();
         this.sseBroadcaster.onClose(
                 sseEventSink -> {
                     try {
                         sseEventSink.close();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        LOGGER.log(Level.WARNING, e.getMessage(), e);
                     }
                 });
         this.sseBroadcaster.onError(
@@ -53,7 +59,7 @@ public class RealtimeCargoTrackingSseService {
                     try {
                         sseEventSink.close();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        LOGGER.log(Level.WARNING, e.getMessage(), e);
                     }
                 });
     }

@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
+import jakarta.ejb.Singleton;
 import jakarta.enterprise.event.Observes;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 
 /** WebSocket service for tracking all cargoes in real time. */
 // work with EJB Singleton, but failed with CDI Singleton/ApplicationScoped
-// @Singleton
+@Singleton
 @ServerEndpoint("/tracking")
 public class RealtimeCargoTrackingWebSocketService {
     private static final Logger LOGGER =

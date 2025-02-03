@@ -33,14 +33,14 @@ public class CargoInspectedSseEventStub {
     }
 
     private void raiseEvent() {
-        Cargo cargoEvent =
+        Cargo cargo =
                 new Cargo(
                         new TrackingId("AAA"),
                         new RouteSpecification(
                                 SampleLocations.HONGKONG,
                                 SampleLocations.NEWYORK,
                                 LocalDate.now().plusMonths(6)));
-        LOGGER.log(Level.INFO, "raise event: {0}", cargoEvent);
-        this.cargoEvent.fire(cargoEvent);
+        LOGGER.log(Level.INFO, "raise event: {0}", cargo);
+        this.cargoEvent.fire(cargo);
     }
 }

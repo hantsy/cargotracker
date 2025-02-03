@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ApplicationScoped
-@Transactional
+@Transactional(rollbackOn = CannotCreateHandlingEventException.class)
 public class DefaultHandlingEventService implements HandlingEventService {
 
     private static final Logger LOGGER =
@@ -29,7 +29,8 @@ public class DefaultHandlingEventService implements HandlingEventService {
     private HandlingEventFactory handlingEventFactory;
 
     // no-args constructor required by CDI
-    public DefaultHandlingEventService() {}
+    public DefaultHandlingEventService() {
+    }
 
     @Inject
     public DefaultHandlingEventService(

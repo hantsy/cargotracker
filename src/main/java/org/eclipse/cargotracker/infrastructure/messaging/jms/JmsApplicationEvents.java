@@ -5,7 +5,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSContext;
-
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -17,10 +16,11 @@ import java.util.logging.Logger;
 
 @ApplicationScoped
 public class JmsApplicationEvents implements ApplicationEvents, Serializable {
-
-    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(JmsApplicationEvents.class.getName());
     private static final int LOW_PRIORITY = 0;
-    @Inject JMSContext jmsContext;
+
+    @Inject
+    JMSContext jmsContext;
 
     @Resource(lookup = "java:app/jms/CargoHandledQueue")
     private Destination cargoHandledQueue;
@@ -33,8 +33,6 @@ public class JmsApplicationEvents implements ApplicationEvents, Serializable {
 
     @Resource(lookup = "java:app/jms/HandlingEventRegistrationAttemptQueue")
     private Destination handlingEventQueue;
-
-    @Inject private Logger logger;
 
     @Override
     public void cargoWasHandled(HandlingEvent event) {
