@@ -68,7 +68,7 @@ public class RealtimeCargoTrackingWebSocketServiceTest {
 
     @Test
     @RunAsClient
-    public void testOnCargoInspected() throws Exception {
+    void testOnCargoInspected() throws Exception {
         LOGGER.log(Level.INFO, "run test RealtimeCargoTrackingServiceTest# testOnCargoInspected");
         TestClient.latch = new CountDownLatch(1);
         var session = connectToServer();
@@ -80,7 +80,7 @@ public class RealtimeCargoTrackingWebSocketServiceTest {
         assertThat(json.read("$.trackingId", String.class)).isEqualTo("AAA");
     }
 
-    public Session connectToServer() throws DeploymentException, IOException, URISyntaxException {
+    private Session connectToServer() throws DeploymentException, IOException, URISyntaxException {
         var container = ContainerProvider.getWebSocketContainer();
         URI uri =
                 new URI(

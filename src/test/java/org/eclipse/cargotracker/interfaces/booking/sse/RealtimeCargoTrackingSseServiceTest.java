@@ -83,7 +83,7 @@ public class RealtimeCargoTrackingSseServiceTest {
 
     @Test
     @RunAsClient
-    public void testOnCargoInspected() throws Exception {
+    void testOnCargoInspected() throws Exception {
         LOGGER.log(
                 Level.INFO,
                 " Running test:: RealtimeCargoTrackingServiceTest#testCargoStatus ... ");

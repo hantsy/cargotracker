@@ -11,11 +11,7 @@ public class TestClient {
     private static final Logger LOGGER = Logger.getLogger(TestClient.class.getName());
 
     public static CountDownLatch latch;
-
     public static String response;
-
-    private ClientEndpointConfig clientConfig;
-    private String user;
 
     @OnOpen
     public void connected(Session session, EndpointConfig clientConfig) {
