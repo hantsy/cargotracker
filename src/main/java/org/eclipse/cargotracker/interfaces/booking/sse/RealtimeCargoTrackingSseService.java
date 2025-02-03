@@ -3,7 +3,6 @@ package org.eclipse.cargotracker.interfaces.booking.sse;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-import jakarta.inject.Singleton;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.ws.rs.GET;
@@ -27,9 +26,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static jakarta.ws.rs.core.MediaType.SERVER_SENT_EVENTS;
 import static java.util.logging.Level.INFO;
 
-/**
- * SSE service for tracking all cargoes in real time.
- */
+/** SSE service for tracking all cargoes in real time. */
 @ApplicationScoped
 @Path("tracking")
 public class RealtimeCargoTrackingSseService {
