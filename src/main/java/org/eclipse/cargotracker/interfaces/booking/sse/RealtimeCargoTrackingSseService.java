@@ -1,9 +1,5 @@
 package org.eclipse.cargotracker.interfaces.booking.sse;
 
-import static jakarta.ws.rs.core.MediaType.*;
-
-import static java.util.logging.Level.INFO;
-
 import jakarta.ejb.Singleton;
 import jakarta.enterprise.event.Observes;
 import jakarta.json.Json;
@@ -16,7 +12,6 @@ import jakarta.ws.rs.sse.OutboundSseEvent;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseBroadcaster;
 import jakarta.ws.rs.sse.SseEventSink;
-
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 
@@ -25,6 +20,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static jakarta.ws.rs.core.MediaType.SERVER_SENT_EVENTS;
+import static java.util.logging.Level.INFO;
 
 /** SSE service for tracking all cargoes in real time. */
 @Singleton
