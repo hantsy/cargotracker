@@ -1,7 +1,5 @@
 package org.eclipse.cargotracker.interfaces.booking.sse;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
@@ -28,7 +26,7 @@ public class CargoInspectedSseEventStub {
     @Inject @CargoInspected Event<Cargo> cargoEvent;
     @Inject ManagedScheduledExecutorService scheduledExecutorService;
 
-   // @PostConstruct
+    // @PostConstruct
     public void initialize(@Observes Startup startup) {
         LOGGER.log(Level.INFO, "raise event after 5 seconds...: {0}", startup);
         scheduledExecutorService.schedule(this::raiseEvent, 5000, TimeUnit.MILLISECONDS);
