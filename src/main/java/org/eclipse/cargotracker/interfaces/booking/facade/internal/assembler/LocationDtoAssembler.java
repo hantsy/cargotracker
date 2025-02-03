@@ -5,7 +5,6 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LocationDtoAssembler {
 
@@ -14,11 +13,9 @@ public class LocationDtoAssembler {
     }
 
     public List<LocationDto> toDtoList(List<Location> allLocations) {
-        List<LocationDto> dtoList =
-                allLocations.stream()
-                        .map(this::toDto)
-                        .sorted(Comparator.comparing(LocationDto::nameAndCode))
-                        .collect(Collectors.toList());
-        return dtoList;
+        return allLocations.stream()
+                .map(this::toDto)
+                .sorted(Comparator.comparing(LocationDto::nameAndCode))
+                .toList();
     }
 }

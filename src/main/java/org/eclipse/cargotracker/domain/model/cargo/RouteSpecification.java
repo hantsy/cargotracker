@@ -1,16 +1,17 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.cargotracker.domain.shared.AbstractSpecification;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.eclipse.cargotracker.domain.model.location.Location;
+import org.eclipse.cargotracker.domain.shared.Specification;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -18,7 +19,7 @@ import java.time.LocalDate;
  * Route specification. Describes where a cargo origin and destination is, and the arrival deadline.
  */
 @Embeddable
-public class RouteSpecification extends AbstractSpecification<Itinerary> implements Serializable {
+public class RouteSpecification implements Specification<Itinerary>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,24 +58,24 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
         this.arrivalDeadline = arrivalDeadline;
     }
 
-    public Location getOrigin() {
+    public Location origin() {
         return origin;
     }
 
-    public Location getDestination() {
+    public Location destination() {
         return destination;
     }
 
-    public LocalDate getArrivalDeadline() {
+    public LocalDate arrivalDeadline() {
         return arrivalDeadline;
     }
 
     @Override
     public boolean isSatisfiedBy(Itinerary itinerary) {
         return itinerary != null
-                && getOrigin().sameIdentityAs(itinerary.getInitialDepartureLocation())
-                && getDestination().sameIdentityAs(itinerary.getFinalArrivalLocation())
-                && getArrivalDeadline().isAfter(itinerary.getFinalArrivalDate().toLocalDate());
+                && origin().sameIdentityAs(itinerary.initialDepartureLocation())
+                && destination().sameIdentityAs(itinerary.finalArrivalLocation())
+                && arrivalDeadline().isAfter(itinerary.finalArrivalDate().toLocalDate());
     }
 
     private boolean sameValueAs(RouteSpecification other) {

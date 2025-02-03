@@ -1,34 +1,33 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import jakarta.ejb.*;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
-import jakarta.ejb.*;
-import jakarta.enterprise.event.Event;
-import jakarta.inject.Inject;
 import java.time.LocalDate;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Startup
-@Singleton
+@Singleton // imported from ejb
 public class CargoInspectedStub {
     private static final Logger LOGGER = Logger.getLogger(CargoInspectedStub.class.getName());
 
     @Inject @CargoInspected Event<Cargo> cargoEvent;
-
     @Resource TimerService timerService;
 
     @PostConstruct
     public void initialize() {
-        LOGGER.log(Level.INFO, "starting timer service...");
-        timerService.createTimer(TimeUnit.SECONDS.toMillis(5), "delayed 5 seconds to execute");
+        LOGGER.log(Level.INFO, "raise CDI event after 5 seconds...");
+        timerService.createTimer(5000, "delayed 5 seconds to execute");
     }
 
     @Timeout

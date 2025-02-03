@@ -1,8 +1,6 @@
 package org.eclipse.pathfinder.api;
 
-import org.eclipse.pathfinder.internal.GraphDao;
-
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,6 +8,9 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+
+import org.eclipse.pathfinder.internal.GraphDao;
+
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Stateless
+@RequestScoped
 @Path("/graph-traversal")
 public class GraphTraversalService {
 
@@ -93,7 +94,7 @@ public class GraphTraversalService {
                                 toDate));
             }
 
-            String lastLegFrom = allVertices.get(allVertices.size() - 1);
+            String lastLegFrom = allVertices.getLast();
             fromDate = nextDate(date);
             toDate = nextDate(fromDate);
             transitEdges.add(

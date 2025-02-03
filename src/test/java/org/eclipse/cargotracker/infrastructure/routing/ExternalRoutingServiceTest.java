@@ -1,5 +1,11 @@
 package org.eclipse.cargotracker.infrastructure.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.LocationRepository;
@@ -17,12 +23,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 public class ExternalRoutingServiceTest {
 
@@ -85,7 +85,7 @@ public class ExternalRoutingServiceTest {
         assertThat(candidates).isNotNull();
 
         for (Itinerary itinerary : candidates) {
-            List<Leg> legs = itinerary.getLegs();
+            List<Leg> legs = itinerary.legs();
             assertThat(legs).isNotNull();
             assertThat(legs).isNotEmpty();
 
@@ -94,7 +94,7 @@ public class ExternalRoutingServiceTest {
 
             // Cargo final destination and last leg stop should match
             Location lastLegStop = legs.get(legs.size() - 1).getUnloadLocation();
-            assertEquals(cargo.getRouteSpecification().getDestination(), lastLegStop);
+            assertEquals(cargo.getRouteSpecification().destination(), lastLegStop);
 
             // Assert that all legs are connected
             for (int i = 0; i < legs.size() - 1; i++) {

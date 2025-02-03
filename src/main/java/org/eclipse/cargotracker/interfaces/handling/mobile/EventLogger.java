@@ -1,5 +1,10 @@
 package org.eclipse.cargotracker.interfaces.handling.mobile;
 
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -16,11 +21,6 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.omnifaces.util.Messages;
 
-import jakarta.faces.model.SelectItem;
-import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,15 +30,24 @@ import java.util.List;
 @ViewScoped
 public class EventLogger implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private CargoRepository cargoRepository;
+    private LocationRepository locationRepository;
+    private VoyageRepository voyageRepository;
+    private ApplicationEvents applicationEvents;
 
-    @Inject private CargoRepository cargoRepository;
+    public EventLogger() {}
 
-    @Inject private LocationRepository locationRepository;
-
-    @Inject private VoyageRepository voyageRepository;
-
-    @Inject private ApplicationEvents applicationEvents;
+    @Inject
+    public EventLogger(
+            CargoRepository cargoRepository,
+            LocationRepository locationRepository,
+            VoyageRepository voyageRepository,
+            ApplicationEvents applicationEvents) {
+        this.cargoRepository = cargoRepository;
+        this.locationRepository = locationRepository;
+        this.voyageRepository = voyageRepository;
+        this.applicationEvents = applicationEvents;
+    }
 
     private List<SelectItem> trackingIds;
     private List<SelectItem> locations;
@@ -117,11 +126,11 @@ public class EventLogger implements Serializable {
         trackingIds = new ArrayList<>(cargos.size());
         for (Cargo cargo : cargos) {
             // List only routed cargo that is not claimed yet.
-            if (!cargo.getItinerary().getLegs().isEmpty()
+            if (!cargo.getItinerary().legs().isEmpty()
                     && !(cargo.getDelivery()
-                            .getTransportStatus()
+                            .transportStatus()
                             .sameValueAs(TransportStatus.CLAIMED))) {
-                String trackingId = cargo.getTrackingId().getIdString();
+                String trackingId = cargo.getTrackingId().id();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }
         }
@@ -141,8 +150,7 @@ public class EventLogger implements Serializable {
         for (Voyage voyage : voyages) {
             this.voyages.add(
                     new SelectItem(
-                            voyage.getVoyageNumber().getIdString(),
-                            voyage.getVoyageNumber().getIdString()));
+                            voyage.getVoyageNumber().number(), voyage.getVoyageNumber().number()));
         }
     }
 
@@ -151,7 +159,8 @@ public class EventLogger implements Serializable {
                 && ("LOAD".equals(eventType) || "UNLOAD".equals(eventType))
                 && voyageNumber == null) {
             Messages.addGlobalError(
-                    "When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix errors to continue.");
+                    "When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix"
+                            + " errors to continue.");
             return false;
         }
 

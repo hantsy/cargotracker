@@ -1,7 +1,7 @@
 package org.eclipse.cargotracker.domain.shared;
 
 /** NOT decorator, used to create a new specifcation that is the inverse (NOT) of the given spec. */
-public class NotSpecification<T> extends AbstractSpecification<T> {
+public class NotSpecification<T> implements Specification<T> {
 
     private final Specification<T> spec1;
 

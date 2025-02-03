@@ -1,10 +1,13 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.cargotracker.Deployments.*;
+
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
+
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
@@ -31,9 +34,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
-
 @ExtendWith(ArquillianExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
@@ -47,7 +47,7 @@ public class HandlingEventRepositoryTest {
 
     @Inject private CargoRepository cargoRepository;
 
-    @PersistenceContext private EntityManager entityManager;
+    @Inject private EntityManager entityManager;
 
     @Deployment
     public static WebArchive createDeployment() {

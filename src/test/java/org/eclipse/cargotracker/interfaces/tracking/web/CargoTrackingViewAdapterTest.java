@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.interfaces.tracking.web;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -14,8 +16,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CargoTrackingViewAdapterTest {
     @Test

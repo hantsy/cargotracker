@@ -1,11 +1,16 @@
 package org.eclipse.cargotracker.scenario;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.cargotracker.Deployments.*;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
+
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.application.CargoInspectionService;
@@ -42,10 +47,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.eclipse.cargotracker.Deployments.*;
 
 @ExtendWith(ArquillianExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -214,12 +215,11 @@ public class CargoLifecycleScenarioTest {
         startTransaction();
         Cargo cargo = findCargo();
         assertThat(cargo).isNotNull();
-        assertThat(cargo.getDelivery().getTransportStatus())
-                .isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getEstimatedTimeOfArrival()).isNull();
-        assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
+        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
+        assertThat(cargo.getDelivery().misdirected()).isFalse();
+        assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isNull();
+        assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
     }
 
     /*
@@ -255,11 +255,10 @@ public class CargoLifecycleScenarioTest {
                 "after route is assigned, the delivery status: {0}",
                 result.getDelivery());
 
-        assertThat(result.getDelivery().getTransportStatus())
-                .isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(result.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.ROUTED);
-        assertThat(result.getDelivery().getEstimatedTimeOfArrival()).isNotNull();
-        assertThat(result.getDelivery().getNextExpectedActivity())
+        assertThat(result.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+        assertThat(result.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
+        assertThat(result.getDelivery().estimatedTimeOfArrival()).isNotNull();
+        assertThat(result.getDelivery().nextExpectedActivity())
                 .isEqualTo(
                         new HandlingActivity(HandlingEvent.Type.RECEIVE, SampleLocations.HONGKONG));
     }
@@ -293,9 +292,9 @@ public class CargoLifecycleScenarioTest {
         // verify in new tx
         startTransaction();
         Cargo cargo = findCargo();
-        assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.IN_PORT);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.HONGKONG);
-        assertThat(cargo.getDelivery().getNextExpectedActivity())
+        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HONGKONG);
+        assertThat(cargo.getDelivery().nextExpectedActivity())
                 .isEqualTo(
                         new HandlingActivity(
                                 HandlingEvent.Type.LOAD,
@@ -321,12 +320,12 @@ public class CargoLifecycleScenarioTest {
         startTransaction();
         Cargo cargo = findCargo();
         // Check current state - should be ok
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(SampleVoyages.v100);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.HONGKONG);
-        assertThat(cargo.getDelivery().getTransportStatus())
+        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(SampleVoyages.v100);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HONGKONG);
+        assertThat(cargo.getDelivery().transportStatus())
                 .isEqualTo(TransportStatus.ONBOARD_CARRIER);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getNextExpectedActivity())
+        assertThat(cargo.getDelivery().misdirected()).isFalse();
+        assertThat(cargo.getDelivery().nextExpectedActivity())
                 .isEqualTo(
                         new HandlingActivity(
                                 HandlingEvent.Type.UNLOAD,
@@ -361,7 +360,8 @@ public class CargoLifecycleScenarioTest {
                                         noSuchVoyageNumber,
                                         noSuchUnLocode,
                                         HandlingEvent.Type.LOAD),
-                        "Should not be able to register a handling event with invalid location and voyage")
+                        "Should not be able to register a handling event with invalid location and"
+                                + " voyage")
                 .isInstanceOf(CannotCreateHandlingEventException.class);
     }
 
@@ -384,11 +384,11 @@ public class CargoLifecycleScenarioTest {
         startTransaction();
         Cargo cargo = findCargo();
         // Check current state - cargo is misdirected!
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.TOKYO);
-        assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.IN_PORT);
-        assertThat(cargo.getDelivery().isMisdirected()).isTrue();
-        assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
+        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.TOKYO);
+        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
+        assertThat(cargo.getDelivery().misdirected()).isTrue();
+        assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
     }
 
     // -- Cargo needs to be rerouted --
@@ -430,9 +430,8 @@ public class CargoLifecycleScenarioTest {
                 result.getDelivery());
 
         // The old itinerary does not satisfy the new specification
-        assertThat(result.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.MISROUTED);
-        assertThat(result.getDelivery().getNextExpectedActivity())
-                .isEqualTo(HandlingActivity.EMPTY);
+        assertThat(result.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
+        assertThat(result.getDelivery().nextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
     }
 
     // Repeat procedure of selecting one out of a number of possible routes
@@ -471,7 +470,7 @@ public class CargoLifecycleScenarioTest {
                 result.getDelivery());
 
         // New itinerary should satisfy new route
-        assertThat(result.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.ROUTED);
+        assertThat(result.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
 
         // TODO we can't handle the face that after a reroute, the cargo isn't misdirected anymore
         // assertThat(cargo.isMisdirected()).isFalse();
@@ -511,12 +510,12 @@ public class CargoLifecycleScenarioTest {
         startTransaction();
         Cargo cargo = findCargo();
         // Check current state - should be ok
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(SampleVoyages.v300);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.TOKYO);
-        assertThat(cargo.getDelivery().getTransportStatus())
+        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(SampleVoyages.v300);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.TOKYO);
+        assertThat(cargo.getDelivery().transportStatus())
                 .isEqualTo(TransportStatus.ONBOARD_CARRIER);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getNextExpectedActivity())
+        assertThat(cargo.getDelivery().misdirected()).isFalse();
+        assertThat(cargo.getDelivery().nextExpectedActivity())
                 .isEqualTo(
                         new HandlingActivity(
                                 HandlingEvent.Type.UNLOAD,
@@ -543,11 +542,11 @@ public class CargoLifecycleScenarioTest {
         startTransaction();
         Cargo cargo = findCargo();
         // Check current state - should be ok
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.HAMBURG);
-        assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.IN_PORT);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getNextExpectedActivity())
+        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HAMBURG);
+        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
+        assertThat(cargo.getDelivery().misdirected()).isFalse();
+        assertThat(cargo.getDelivery().nextExpectedActivity())
                 .isEqualTo(
                         new HandlingActivity(
                                 HandlingEvent.Type.LOAD,
@@ -574,12 +573,12 @@ public class CargoLifecycleScenarioTest {
         startTransaction();
         Cargo cargo = findCargo();
         // Check current state - should be ok
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(SampleVoyages.v400);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.HAMBURG);
-        assertThat(cargo.getDelivery().getTransportStatus())
+        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(SampleVoyages.v400);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HAMBURG);
+        assertThat(cargo.getDelivery().transportStatus())
                 .isEqualTo(TransportStatus.ONBOARD_CARRIER);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getNextExpectedActivity())
+        assertThat(cargo.getDelivery().misdirected()).isFalse();
+        assertThat(cargo.getDelivery().nextExpectedActivity())
                 .isEqualTo(
                         new HandlingActivity(
                                 HandlingEvent.Type.UNLOAD,
@@ -606,11 +605,11 @@ public class CargoLifecycleScenarioTest {
         startTransaction();
         Cargo cargo = findCargo();
         // Check current state - should be ok
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
-        assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.IN_PORT);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getNextExpectedActivity())
+        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
+        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
+        assertThat(cargo.getDelivery().misdirected()).isFalse();
+        assertThat(cargo.getDelivery().nextExpectedActivity())
                 .isEqualTo(
                         new HandlingActivity(HandlingEvent.Type.CLAIM, SampleLocations.STOCKHOLM));
     }
@@ -637,11 +636,11 @@ public class CargoLifecycleScenarioTest {
         startTransaction();
         Cargo cargo = findCargo();
         // Check current state - should be ok
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
-        assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.CLAIMED);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
+        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
+        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.CLAIMED);
+        assertThat(cargo.getDelivery().misdirected()).isFalse();
+        assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
     }
 
     /*
@@ -732,7 +731,7 @@ public class CargoLifecycleScenarioTest {
         @Override
         public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
             LOGGER.log(Level.INFO, "fetchRoutesForSpecification:: {0}", routeSpecification);
-            if (routeSpecification.getOrigin().equals(SampleLocations.HONGKONG)) {
+            if (routeSpecification.origin().equals(SampleLocations.HONGKONG)) {
                 // Hongkong - NYC - Chicago - SampleLocations.STOCKHOLM, initial routing
                 return Arrays.asList(
                         new Itinerary(
