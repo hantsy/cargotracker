@@ -25,11 +25,13 @@ public class DefaultBookingService implements BookingService {
     private RoutingService routingService;
 
     // no-args constructor required by CDI
-    public DefaultBookingService() {
-    }
+    public DefaultBookingService() {}
 
     @Inject
-    public DefaultBookingService(CargoRepository cargoRepository, LocationRepository locationRepository, RoutingService routingService) {
+    public DefaultBookingService(
+            CargoRepository cargoRepository,
+            LocationRepository locationRepository,
+            RoutingService routingService) {
         this.cargoRepository = cargoRepository;
         this.locationRepository = locationRepository;
         this.routingService = routingService;
@@ -90,7 +92,7 @@ public class DefaultBookingService implements BookingService {
         logger.log(
                 Level.INFO,
                 "Changed destination for cargo {0} to {1}",
-                new Object[]{trackingId, routeSpecification.destination()});
+                new Object[] {trackingId, routeSpecification.destination()});
     }
 
     @Override
@@ -109,6 +111,6 @@ public class DefaultBookingService implements BookingService {
         logger.log(
                 Level.INFO,
                 "Changed deadline for cargo {0} to {1}",
-                new Object[]{trackingId, newDeadline});
+                new Object[] {trackingId, newDeadline});
     }
 }

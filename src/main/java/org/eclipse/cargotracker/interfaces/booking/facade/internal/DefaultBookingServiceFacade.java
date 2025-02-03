@@ -39,15 +39,15 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
     private VoyageRepository voyageRepository;
     private HandlingEventRepository handlingEventRepository;
 
-    public DefaultBookingServiceFacade() {
-    }
+    public DefaultBookingServiceFacade() {}
 
     @Inject
-    public DefaultBookingServiceFacade(BookingService bookingService,
-                                       LocationRepository locationRepository,
-                                       CargoRepository cargoRepository,
-                                       VoyageRepository voyageRepository,
-                                       HandlingEventRepository handlingEventRepository) {
+    public DefaultBookingServiceFacade(
+            BookingService bookingService,
+            LocationRepository locationRepository,
+            CargoRepository cargoRepository,
+            VoyageRepository voyageRepository,
+            HandlingEventRepository handlingEventRepository) {
         this.bookingService = bookingService;
         this.locationRepository = locationRepository;
         this.cargoRepository = cargoRepository;

@@ -29,8 +29,7 @@ public class DefaultHandlingEventService implements HandlingEventService {
     private HandlingEventFactory handlingEventFactory;
 
     // no-args constructor required by CDI
-    public DefaultHandlingEventService() {
-    }
+    public DefaultHandlingEventService() {}
 
     @Inject
     public DefaultHandlingEventService(

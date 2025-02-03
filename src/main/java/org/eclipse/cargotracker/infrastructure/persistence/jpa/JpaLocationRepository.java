@@ -22,8 +22,7 @@ public class JpaLocationRepository implements LocationRepository, Serializable {
     private EntityManager entityManager;
 
     // no-args constructor required by CDI
-    public JpaLocationRepository() {
-    }
+    public JpaLocationRepository() {}
 
     @Inject
     public JpaLocationRepository(EntityManager entityManager) {
