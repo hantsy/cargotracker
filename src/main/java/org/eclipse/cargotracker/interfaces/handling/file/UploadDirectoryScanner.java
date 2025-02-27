@@ -7,12 +7,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 
 /**
  * Periodically scans a certain directory for files and attempts to parse handling event
@@ -23,9 +20,7 @@ import jakarta.annotation.PreDestroy;
 @ApplicationScoped
 public class UploadDirectoryScanner {
 
-
-    @Inject
-    private ManagedScheduledExecutorService scheduler;
+    @Inject private ManagedScheduledExecutorService scheduler;
 
     @PostConstruct
     public void init() {
