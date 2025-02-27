@@ -28,8 +28,7 @@ public class GraphTraversalService {
 
     private GraphDao dao;
 
-    public GraphTraversalService() {
-    }
+    public GraphTraversalService() {}
 
     @Inject
     public GraphTraversalService(GraphDao dao) {
