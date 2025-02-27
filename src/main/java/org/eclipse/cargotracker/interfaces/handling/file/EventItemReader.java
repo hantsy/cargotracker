@@ -12,7 +12,6 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import java.io.File;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -31,7 +30,7 @@ public class EventItemReader extends AbstractItemReader {
 
     @Inject private Logger logger;
     @Inject private JobContext jobContext;
-    
+
     private EventFilesCheckpoint checkpoint;
     private RandomAccessFile currentFile;
 
@@ -137,12 +136,7 @@ public class EventItemReader extends AbstractItemReader {
         }
 
         return new HandlingEventRegistrationAttempt(
-                LocalDateTime.now(),
-                completionTime,
-                trackingId,
-                voyageNumber,
-                eventType,
-                unLocode);
+                LocalDateTime.now(), completionTime, trackingId, voyageNumber, eventType, unLocode);
     }
 
     @Override

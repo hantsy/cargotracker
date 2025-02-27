@@ -1,6 +1,5 @@
 package org.eclipse.cargotracker.interfaces.handling.file;
 
-import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.LinkedList;
