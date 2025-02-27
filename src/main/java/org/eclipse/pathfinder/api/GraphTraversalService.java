@@ -25,7 +25,16 @@ public class GraphTraversalService {
     private static final long ONE_MIN_MS = 1000L * 60;
     private static final long ONE_DAY_MS = ONE_MIN_MS * 60 * 24;
     private final SecureRandom random = new SecureRandom();
-    @Inject private GraphDao dao;
+
+    private GraphDao dao;
+
+    public GraphTraversalService() {
+    }
+
+    @Inject
+    public GraphTraversalService(GraphDao dao) {
+        this.dao = dao;
+    }
 
     @GET
     @Path("/shortest-path")

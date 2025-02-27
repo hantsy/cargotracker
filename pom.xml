@@ -66,7 +66,7 @@
         <jersey.version>4.0.0-M1</jersey.version>
         <eclipselink.version>5.0.0-B03</eclipselink.version>
 
-        <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
+        <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>
 
@@ -486,34 +486,7 @@
             </properties>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>copy</id>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.glassfish.jersey.ext.cdi</groupId>
-                                            <artifactId>jersey-cdi-rs-inject</artifactId>
-                                            <version>${jersey.version}</version>
-                                            <type>jar</type>
-                                            <overWrite>false</overWrite>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>
-                                        ${project.build.directory}/cargo/installs/glassfish-${glassfish.version}/glassfish8/glassfish/modules
-                                    </outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+                
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven3-plugin</artifactId>
@@ -614,9 +587,9 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.github.hantsy.arquillian-container-glassfish-jakarta</groupId>
-                    <artifactId>arquillian-glassfish-managed-jakarta</artifactId>
-                    <version>${arquillian-glassfish-jakarta.version}</version>
+                    <groupId>io.github.hantsy.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-managed</artifactId>
+                    <version>${arquillian-glassfish.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -652,27 +625,6 @@
                                             <outputDirectory>${project.build.directory}</outputDirectory>
                                         </artifactItem>
                                     </artifactItems>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>copy</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.glassfish.jersey.ext.cdi</groupId>
-                                            <artifactId>jersey-cdi-rs-inject</artifactId>
-                                            <version>${jersey.version}</version>
-                                            <type>jar</type>
-                                            <overWrite>false</overWrite>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>
-                                        ${project.build.directory}/glassfish8/glassfish/modules
-                                    </outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>
@@ -738,9 +690,9 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.github.hantsy.arquillian-container-glassfish-jakarta</groupId>
-                    <artifactId>arquillian-glassfish-remote-jakarta</artifactId>
-                    <version>${arquillian-glassfish-jakarta.version}</version>
+                    <groupId>io.github.hantsy.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-remote</artifactId>
+                    <version>${arquillian-glassfish.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -1061,10 +1013,6 @@
             <id>payara-nexus</id>
             <name>Payara Nexus Artifacts</name>
             <url>https://nexus.payara.fish/repository/payara-artifacts/</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 </project>
