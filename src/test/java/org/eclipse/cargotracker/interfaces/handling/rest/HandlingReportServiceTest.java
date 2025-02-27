@@ -111,7 +111,7 @@ public class HandlingReportServiceTest {
             LOGGER.log(
                     Level.INFO,
                     "response of POST rest/handling/reports: {0}",
-                    postReportResponse.getEntity().toString());
+                    postReportResponse.getEntity());
 
             assertThat(applicationEventsStub.getAttempt()).isNotNull();
             var attempt = applicationEventsStub.getAttempt();
