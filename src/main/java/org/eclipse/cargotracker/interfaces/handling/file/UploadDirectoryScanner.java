@@ -1,7 +1,6 @@
 package org.eclipse.cargotracker.interfaces.handling.file;
 
 import jakarta.batch.operations.JobOperator;
-import jakarta.batch.runtime.BatchRuntime;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -22,8 +21,7 @@ public class UploadDirectoryScanner {
 
     @Inject private ManagedScheduledExecutorService scheduler;
 
-    @Inject
-    private JobOperator jobOperator;
+    @Inject private JobOperator jobOperator;
 
     @PostConstruct
     public void init() {
