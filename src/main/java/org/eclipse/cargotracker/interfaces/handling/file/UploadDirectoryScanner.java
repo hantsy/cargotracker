@@ -27,6 +27,9 @@ public class UploadDirectoryScanner {
     @Inject
     private ManagedScheduledExecutorService scheduler;
 
+    @Inject
+    private JobOperator jobOperator;
+
     @PostConstruct
     public void init() {
         scheduler.scheduleAtFixedRate(this::processFiles, 0, 15, TimeUnit.MINUTES);
@@ -34,7 +37,6 @@ public class UploadDirectoryScanner {
 
     @Transactional
     public void processFiles() {
-        JobOperator jobOperator = BatchRuntime.getJobOperator();
         jobOperator.start("EventFilesProcessorJob", null);
     }
 }
