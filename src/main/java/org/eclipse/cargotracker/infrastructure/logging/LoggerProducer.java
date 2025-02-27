@@ -10,8 +10,6 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class LoggerProducer implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Produces
     public Logger produceLogger(InjectionPoint injectionPoint) {
         String loggerName = extractLoggerName(injectionPoint);

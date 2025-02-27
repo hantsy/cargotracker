@@ -2,10 +2,17 @@ package org.eclipse.cargotracker.interfaces.handling.file;
 
 import jakarta.batch.operations.JobOperator;
 import jakarta.batch.runtime.BatchRuntime;
-import jakarta.ejb.Schedule;
-import jakarta.ejb.Stateless;
-import jakarta.ejb.TransactionManagement;
-import jakarta.ejb.TransactionManagementType;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 /**
  * Periodically scans a certain directory for files and attempts to parse handling event
@@ -13,11 +20,19 @@ import jakarta.ejb.TransactionManagementType;
  *
  * <p>Files that fail to parse are moved into a separate directory, successful files are deleted.
  */
-@Stateless
-@TransactionManagement(TransactionManagementType.BEAN) // Batch steps manage their own transactions.
+@ApplicationScoped
 public class UploadDirectoryScanner {
 
-    @Schedule(minute = "*/2", hour = "*") // In production, run every fifteen minutes
+
+    @Inject
+    private ManagedScheduledExecutorService scheduler;
+
+    @PostConstruct
+    public void init() {
+        scheduler.scheduleAtFixedRate(this::processFiles, 0, 15, TimeUnit.MINUTES);
+    }
+
+    @Transactional
     public void processFiles() {
         JobOperator jobOperator = BatchRuntime.getJobOperator();
         jobOperator.start("EventFilesProcessorJob", null);
