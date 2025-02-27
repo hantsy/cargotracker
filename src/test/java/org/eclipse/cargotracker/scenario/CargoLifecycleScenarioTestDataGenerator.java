@@ -1,6 +1,5 @@
 package org.eclipse.cargotracker.scenario;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
@@ -19,11 +18,9 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class CargoLifecycleScenarioTestDataGenerator {
 
-    @Inject
-    Logger logger;
+    @Inject Logger logger;
 
-    @Inject
-    EntityManager entityManager;
+    @Inject EntityManager entityManager;
 
     @Transactional
     public void loadSampleData(@Observes Startup startup) {
