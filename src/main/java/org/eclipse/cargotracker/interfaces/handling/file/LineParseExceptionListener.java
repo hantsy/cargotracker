@@ -6,10 +6,7 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,11 +20,9 @@ public class LineParseExceptionListener implements SkipReadListener {
 
     private static final String FAILED_DIRECTORY = "failed_directory";
 
-    @Inject
-    private Logger logger;
+    @Inject private Logger logger;
 
-    @Inject
-    private JobContext jobContext;
+    @Inject private JobContext jobContext;
 
     @Override
     public void onSkipReadItem(Exception e) throws Exception {
@@ -41,13 +36,21 @@ public class LineParseExceptionListener implements SkipReadListener {
 
         logger.log(Level.WARNING, "Problem parsing event file line", parseException);
 
-        Path failedFilePath = Paths.get(
-                failedDirectory.getAbsolutePath(),
-                "failed_" + jobContext.getJobName() + "_" + jobContext.getInstanceId() + ".csv");
+        Path failedFilePath =
+                Paths.get(
+                        failedDirectory.getAbsolutePath(),
+                        "failed_"
+                                + jobContext.getJobName()
+                                + "_"
+                                + jobContext.getInstanceId()
+                                + ".csv");
 
-        Files.writeString(failedFilePath, parseException.getLine(), StandardOpenOption.CREATE,
+        Files.writeString(
+                failedFilePath,
+                parseException.getLine(),
+                StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND);
-        
+
         logger.log(Level.INFO, "Failed line written to: {0}", failedFilePath);
     }
 }
