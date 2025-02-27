@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.interfaces.handling.rest;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +31,7 @@ import static jakarta.ws.rs.core.Response.status;
  * case of a valid registration attempt, sends an asynchronous message with the information to the
  * handling event registration system for proper registration.
  */
-@jakarta.enterprise.context.RequestScoped
+@RequestScoped
 @Path("handling")
 public class HandlingReportService {
     public static final Logger LOGGER = Logger.getLogger(HandlingReportService.class.getName());
