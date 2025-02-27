@@ -33,8 +33,8 @@ jobs:
           docker ps -a
       - name: Run Glassfish Server
         run: |
-          export GLASSFISH_ARCHIVE=glassfish7
-          export GLASSFISH_VERSION=7.0.9
+          export GLASSFISH_ARCHIVE=glassfish8
+          export GLASSFISH_VERSION=8.0.0-M9
           export INSTALL_DIR="/opt/appsvr"
           mkdir ${INSTALL_DIR}
           
