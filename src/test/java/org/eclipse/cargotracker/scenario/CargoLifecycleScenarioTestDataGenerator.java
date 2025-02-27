@@ -2,6 +2,8 @@ package org.eclipse.cargotracker.scenario;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -14,18 +16,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// WildFly issue:
-// EJB can not be an inner class.
 @ApplicationScoped
 public class CargoLifecycleScenarioTestDataGenerator {
 
-    @Inject Logger logger;
+    @Inject
+    Logger logger;
 
-    @Inject EntityManager entityManager;
+    @Inject
+    EntityManager entityManager;
 
     @Transactional
-    @PostConstruct
-    public void loadSampleData() {
+    public void loadSampleData(@Observes Startup startup) {
         logger.info("Loading sample data.");
         unLoadAll(); // Fail-safe in case of application restart that does not
         // trigger a JPA schema drop.
