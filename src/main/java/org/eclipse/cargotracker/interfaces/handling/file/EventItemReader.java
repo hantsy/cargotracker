@@ -5,7 +5,6 @@ import jakarta.batch.runtime.context.JobContext;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -16,9 +15,11 @@ import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAtt
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,37 +30,37 @@ public class EventItemReader extends AbstractItemReader {
     private static final String UPLOAD_DIRECTORY = "upload_directory";
 
     @Inject private Logger logger;
-
     @Inject private JobContext jobContext;
+    
     private EventFilesCheckpoint checkpoint;
     private RandomAccessFile currentFile;
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
-        File uploadDirectory = new File(jobContext.getProperties().getProperty(UPLOAD_DIRECTORY));
+        Path uploadDirectory = Paths.get(jobContext.getProperties().getProperty(UPLOAD_DIRECTORY));
 
         if (checkpoint == null) {
             this.checkpoint = new EventFilesCheckpoint();
             logger.log(Level.INFO, "Scanning upload directory: {0}", uploadDirectory);
 
-            if (!uploadDirectory.exists()) {
+            if (Files.notExists(uploadDirectory)) {
                 logger.log(Level.INFO, "Upload directory does not exist, creating it");
-                uploadDirectory.mkdirs();
+                Files.createDirectories(uploadDirectory);
             } else {
-                this.checkpoint.setFiles(Arrays.asList(uploadDirectory.listFiles()));
+                this.checkpoint.setFiles(Files.list(uploadDirectory).toList());
             }
         } else {
             logger.log(Level.INFO, "Starting from previous checkpoint");
             this.checkpoint = (EventFilesCheckpoint) checkpoint;
         }
 
-        File file = this.checkpoint.currentFile();
+        Path file = this.checkpoint.currentFile();
 
         if (file == null) {
             logger.log(Level.INFO, "No files to process");
             currentFile = null;
         } else {
-            currentFile = new RandomAccessFile(file, "r");
+            currentFile = new RandomAccessFile(file.toFile(), "r");
             logger.log(Level.INFO, "Processing file: {0}", file);
             currentFile.seek(this.checkpoint.getFilePointer());
         }
@@ -79,16 +80,16 @@ public class EventItemReader extends AbstractItemReader {
                         "Finished processing file, deleting: {0}",
                         this.checkpoint.currentFile());
                 currentFile.close();
-                if (this.checkpoint.currentFile().delete()) {
+                if (Files.deleteIfExists(this.checkpoint.currentFile())) {
                     logger.log(Level.INFO, "File was deleted");
                 }
-                File nextFile = this.checkpoint.nextFile();
+                Path nextFile = this.checkpoint.nextFile();
 
                 if (nextFile == null) {
                     logger.log(Level.INFO, "No more files to process");
                     return null;
                 } else {
-                    currentFile = new RandomAccessFile(nextFile, "r");
+                    currentFile = new RandomAccessFile(nextFile.toFile(), "r");
                     logger.log(Level.INFO, "Processing file: {0}", nextFile);
                     return readItem();
                 }
@@ -105,58 +106,43 @@ public class EventItemReader extends AbstractItemReader {
             throw new EventLineParseException("Wrong number of data elements", line);
         }
 
-        LocalDateTime completionTime = null;
-
+        LocalDateTime completionTime;
         try {
             completionTime = DateUtil.toDateTime(result[0]);
         } catch (DateTimeParseException e) {
             throw new EventLineParseException("Cannot parse completion time", e, line);
         }
 
-        TrackingId trackingId = null;
-
+        TrackingId trackingId;
         try {
             trackingId = new TrackingId(result[1]);
         } catch (NullPointerException e) {
             throw new EventLineParseException("Cannot parse tracking ID", e, line);
         }
 
-        VoyageNumber voyageNumber = null;
+        VoyageNumber voyageNumber = result[2].isEmpty() ? null : new VoyageNumber(result[2]);
 
-        try {
-            if (!result[2].isEmpty()) {
-                voyageNumber = new VoyageNumber(result[2]);
-            }
-        } catch (NullPointerException e) {
-            throw new EventLineParseException("Cannot parse voyage number", e, line);
-        }
-
-        UnLocode unLocode = null;
-
+        UnLocode unLocode;
         try {
             unLocode = new UnLocode(result[3]);
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new EventLineParseException("Cannot parse UN location code", e, line);
         }
 
-        HandlingEvent.Type eventType = null;
-
+        HandlingEvent.Type eventType;
         try {
             eventType = HandlingEvent.Type.valueOf(result[4]);
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new EventLineParseException("Cannot parse event type", e, line);
         }
 
-        HandlingEventRegistrationAttempt attempt =
-                new HandlingEventRegistrationAttempt(
-                        LocalDateTime.now(),
-                        completionTime,
-                        trackingId,
-                        voyageNumber,
-                        eventType,
-                        unLocode);
-
-        return attempt;
+        return new HandlingEventRegistrationAttempt(
+                LocalDateTime.now(),
+                completionTime,
+                trackingId,
+                voyageNumber,
+                eventType,
+                unLocode);
     }
 
     @Override
