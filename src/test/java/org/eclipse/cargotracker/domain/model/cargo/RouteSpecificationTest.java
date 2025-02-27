@@ -70,7 +70,7 @@ public class RouteSpecificationTest {
     public void testIsNotSatisfiedByWrongOrigin() {
         RouteSpecification routeSpecification =
                 new RouteSpecification(
-                        SampleLocations.HANGZOU,
+                        SampleLocations.HANGZHOU,
                         SampleLocations.CHICAGO,
                         LocalDate.now().minusYears(1).plusMonths(3).plusDays(1));
 

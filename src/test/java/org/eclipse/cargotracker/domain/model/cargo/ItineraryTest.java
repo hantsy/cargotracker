@@ -131,7 +131,7 @@ public class ItineraryTest {
                         LocalDateTime.now(),
                         LocalDateTime.now(),
                         HandlingEvent.Type.RECEIVE,
-                        SampleLocations.HANGZOU);
+                        SampleLocations.HANGZHOU);
         assertThat(itinerary.isExpected(event)).isFalse();
 
         // Loaded to onto the wrong ship, correct location

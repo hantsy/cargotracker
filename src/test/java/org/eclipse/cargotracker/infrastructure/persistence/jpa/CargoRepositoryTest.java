@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 import static org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type.LOAD;
 
-import static java.util.List.*;
-
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -169,7 +167,7 @@ public class CargoRepositoryTest {
         Voyage hongkongToNewYork =
                 new Voyage.Builder(new VoyageNumber("0100S"), SampleLocations.HONGKONG)
                         .addMovement(
-                                SampleLocations.HANGZOU, LocalDateTime.now(), LocalDateTime.now())
+                                SampleLocations.HANGZHOU, LocalDateTime.now(), LocalDateTime.now())
                         .addMovement(
                                 SampleLocations.TOKYO, LocalDateTime.now(), LocalDateTime.now())
                         .addMovement(

@@ -74,7 +74,7 @@ public class CargoLifecycleScenarioTestDataGenerator {
         entityManager.persist(SampleLocations.SHANGHAI);
         entityManager.persist(SampleLocations.ROTTERDAM);
         entityManager.persist(SampleLocations.GOTHENBURG);
-        entityManager.persist(SampleLocations.HANGZOU);
+        entityManager.persist(SampleLocations.HANGZHOU);
         entityManager.persist(SampleLocations.NEWYORK);
         entityManager.persist(SampleLocations.DALLAS);
     }

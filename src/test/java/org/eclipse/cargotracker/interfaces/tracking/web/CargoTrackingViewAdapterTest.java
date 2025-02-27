@@ -24,7 +24,7 @@ public class CargoTrackingViewAdapterTest {
                 new Cargo(
                         new TrackingId("XYZ"),
                         new RouteSpecification(
-                                SampleLocations.HANGZOU,
+                                SampleLocations.HANGZHOU,
                                 SampleLocations.HELSINKI,
                                 LocalDate.now()));
 
@@ -35,7 +35,7 @@ public class CargoTrackingViewAdapterTest {
                         LocalDateTime.now().minusDays(9),
                         LocalDateTime.now().minusDays(10),
                         HandlingEvent.Type.RECEIVE,
-                        SampleLocations.HANGZOU));
+                        SampleLocations.HANGZHOU));
 
         events.add(
                 new HandlingEvent(
@@ -43,7 +43,7 @@ public class CargoTrackingViewAdapterTest {
                         LocalDateTime.now().minusDays(6),
                         LocalDateTime.now().minusDays(7),
                         HandlingEvent.Type.LOAD,
-                        SampleLocations.HANGZOU,
+                        SampleLocations.HANGZHOU,
                         SampleVoyages.CM001));
         events.add(
                 new HandlingEvent(

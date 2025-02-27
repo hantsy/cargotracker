@@ -125,7 +125,7 @@ public class CargoTest {
     public void testIsUnloadedAtFinalDestination() {
         Cargo cargo =
                 setUpCargoWithItinerary(
-                        SampleLocations.HANGZOU, SampleLocations.TOKYO, SampleLocations.NEWYORK);
+                        SampleLocations.HANGZHOU, SampleLocations.TOKYO, SampleLocations.NEWYORK);
         assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
 
         // Adding an event unrelated to unloading at final destination
@@ -135,12 +135,12 @@ public class CargoTest {
                         LocalDateTime.now().minusDays(40),
                         LocalDateTime.now(),
                         HandlingEvent.Type.RECEIVE,
-                        SampleLocations.HANGZOU));
+                        SampleLocations.HANGZHOU));
         cargo.deriveDeliveryProgress(new HandlingHistory(events));
         assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
 
         Voyage voyage =
-                new Voyage.Builder(new VoyageNumber("0123"), SampleLocations.HANGZOU)
+                new Voyage.Builder(new VoyageNumber("0123"), SampleLocations.HANGZHOU)
                         .addMovement(
                                 SampleLocations.NEWYORK, LocalDateTime.now(), LocalDateTime.now())
                         .build();
@@ -467,7 +467,7 @@ public class CargoTest {
                         LocalDateTime.now(),
                         LocalDateTime.now(),
                         HandlingEvent.Type.RECEIVE,
-                        SampleLocations.HANGZOU));
+                        SampleLocations.HANGZHOU));
         events.addAll(handlingEvents);
         cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
