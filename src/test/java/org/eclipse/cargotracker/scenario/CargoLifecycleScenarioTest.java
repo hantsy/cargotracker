@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.cargotracker.Deployments.*;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -43,7 +42,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -162,15 +160,6 @@ public class CargoLifecycleScenarioTest {
         return war;
     }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        startTransaction();
-    }
-
-    @AfterEach
-    public void tearDown() throws Exception {
-        commitTransaction();
-    }
 
     public void startTransaction() throws Exception {
         utx.begin();
@@ -184,6 +173,17 @@ public class CargoLifecycleScenarioTest {
         }
     }
 
+    public void doInTx(Runnable runnable) throws Exception {
+        startTransaction();
+        try {
+            runnable.run();
+            commitTransaction();
+        } catch (Exception e) {
+            utx.rollback();
+            throw new RuntimeException(e);
+        }
+    }
+
     // Split the original testCargoFromHongkongToStockholm into steps.
 
     /*
@@ -194,9 +194,12 @@ public class CargoLifecycleScenarioTest {
     @Test
     @Order(1)
     public void testBookNewCargo() throws Exception {
-        trackingId =
-                bookingService.bookNewCargo(
-                        origin.getUnLocode(), destination.getUnLocode(), arrivalDeadline);
+        doInTx(
+                () -> trackingId =
+                        bookingService.bookNewCargo(
+                                origin.getUnLocode(),
+                                destination.getUnLocode(),
+                                arrivalDeadline));
 
         LOGGER.log(Level.INFO, "book a new cargo::tracking id: {0}", trackingId);
         /*
@@ -209,10 +212,7 @@ public class CargoLifecycleScenarioTest {
          * Tracking the cargo basically amounts to presenting information extracted from
          * the cargo aggregate in a suitable way.
          */
-        commitTransaction();
 
-        // verify in new tx
-        startTransaction();
         Cargo cargo = findCargo();
         assertThat(cargo).isNotNull();
         assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
@@ -236,15 +236,13 @@ public class CargoLifecycleScenarioTest {
     @Order(2)
     public void testRouting() throws Exception {
         LOGGER.log(Level.INFO, "assign to route::tracking id: {0}", trackingId);
-        Cargo cargo = findCargo();
-        List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(trackingId);
-        Itinerary itinerary = selectPreferredItinerary(itineraries);
-        cargo.assignToRoute(itinerary);
+        doInTx(() -> {
+            Cargo cargo = findCargo();
+            List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(trackingId);
+            Itinerary itinerary = selectPreferredItinerary(itineraries);
+            cargo.assignToRoute(itinerary);
+        });
 
-        commitTransaction();
-
-        // verify in new tx
-        startTransaction();
         var result = findCargo();
         LOGGER.log(
                 Level.INFO,
@@ -281,16 +279,20 @@ public class CargoLifecycleScenarioTest {
     @Order(3)
     public void testReceiveInHongKong() throws Exception {
         LOGGER.log(Level.INFO, "receive in HONGKONG::tracking id: {0}", trackingId);
-        handlingEventService.registerHandlingEvent(
-                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(1),
-                trackingId,
-                null,
-                SampleLocations.HONGKONG.getUnLocode(),
-                HandlingEvent.Type.RECEIVE);
-        commitTransaction();
 
-        // verify in new tx
-        startTransaction();
+        doInTx(() -> {
+            try {
+                handlingEventService.registerHandlingEvent(
+                        LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(1),
+                        trackingId,
+                        null,
+                        SampleLocations.HONGKONG.getUnLocode(),
+                        HandlingEvent.Type.RECEIVE);
+            } catch (CannotCreateHandlingEventException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         Cargo cargo = findCargo();
         assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
         assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HONGKONG);
@@ -348,7 +350,6 @@ public class CargoLifecycleScenarioTest {
                 Level.INFO,
                 "test CannotCreateHandlingEventException::tracking id: {0}",
                 trackingId);
-        Cargo cargo = findCargo();
         VoyageNumber noSuchVoyageNumber = new VoyageNumber("XX000");
         UnLocode noSuchUnLocode = new UnLocode("ZZZZZ");
 
@@ -371,17 +372,21 @@ public class CargoLifecycleScenarioTest {
     public void testUnloadedIncorrectlyInTokyo() throws Exception {
         LOGGER.log(Level.INFO, "unload in Tokyo incorrectly, tracking id: {0}", trackingId);
 
-        handlingEventService.registerHandlingEvent(
-                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(5),
-                trackingId,
-                SampleVoyages.v100.getVoyageNumber(),
-                SampleLocations.TOKYO.getUnLocode(),
-                HandlingEvent.Type.UNLOAD);
-
-        commitTransaction();
+        doInTx(() ->
+        {
+            try {
+                handlingEventService.registerHandlingEvent(
+                        LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(5),
+                        trackingId,
+                        SampleVoyages.v100.getVoyageNumber(),
+                        SampleLocations.TOKYO.getUnLocode(),
+                        HandlingEvent.Type.UNLOAD);
+            } catch (CannotCreateHandlingEventException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         // verify in new tx
-        startTransaction();
         Cargo cargo = findCargo();
         // Check current state - cargo is misdirected!
         assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
@@ -400,19 +405,18 @@ public class CargoLifecycleScenarioTest {
     @Order(7)
     public void testNewRoute() throws Exception {
         LOGGER.log(Level.INFO, "specify new route spec, tracking id: {0}", trackingId);
-        Cargo cargo = findCargo();
-        RouteSpecification fromTokyo =
-                new RouteSpecification(
-                        locationRepository.find(SampleLocations.TOKYO.getUnLocode()),
-                        locationRepository.find(SampleLocations.STOCKHOLM.getUnLocode()),
-                        arrivalDeadline);
-        cargo.specifyNewRoute(fromTokyo);
+        doInTx(() -> {
+            Cargo cargo = findCargo();
+            RouteSpecification fromTokyo =
+                    new RouteSpecification(
+                            locationRepository.find(SampleLocations.TOKYO.getUnLocode()),
+                            locationRepository.find(SampleLocations.STOCKHOLM.getUnLocode()),
+                            arrivalDeadline);
+            cargo.specifyNewRoute(fromTokyo);
 
-        cargoRepository.store(cargo);
-        commitTransaction();
+            cargoRepository.store(cargo);
+        });
 
-        // verify in new tx
-        startTransaction();
 
         var result = findCargo();
 
@@ -440,19 +444,17 @@ public class CargoLifecycleScenarioTest {
     @Order(8)
     public void testNewItinerary() throws Exception {
         LOGGER.log(Level.INFO, "assign to new itinerary, tracking id: {0}", trackingId);
-        Cargo cargo = findCargo();
 
-        List<Itinerary> newItineraries =
-                bookingService.requestPossibleRoutesForCargo(cargo.getTrackingId());
-        Itinerary newItinerary = selectPreferredItinerary(newItineraries);
-        cargo.assignToRoute(newItinerary);
+        doInTx(() -> {
+            Cargo cargo = findCargo();
 
-        cargoRepository.store(cargo);
+            List<Itinerary> newItineraries =
+                    bookingService.requestPossibleRoutesForCargo(cargo.getTrackingId());
+            Itinerary newItinerary = selectPreferredItinerary(newItineraries);
+            cargo.assignToRoute(newItinerary);
 
-        commitTransaction();
-
-        // verify in new tx
-        startTransaction();
+            cargoRepository.store(cargo);
+        });
 
         var result = findCargo();
 
@@ -497,17 +499,19 @@ public class CargoLifecycleScenarioTest {
     public void testLoadInTokyo() throws Exception {
         LOGGER.log(Level.INFO, "load in Tokyo now, tracking id: {0}", trackingId);
 
-        handlingEventService.registerHandlingEvent(
-                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(8),
-                trackingId,
-                SampleVoyages.v300.getVoyageNumber(),
-                SampleLocations.TOKYO.getUnLocode(),
-                HandlingEvent.Type.LOAD);
+        doInTx(() -> {
+            try {
+                handlingEventService.registerHandlingEvent(
+                        LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(8),
+                        trackingId,
+                        SampleVoyages.v300.getVoyageNumber(),
+                        SampleLocations.TOKYO.getUnLocode(),
+                        HandlingEvent.Type.LOAD);
+            } catch (CannotCreateHandlingEventException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-        commitTransaction();
-
-        // verify in new tx
-        startTransaction();
         Cargo cargo = findCargo();
         // Check current state - should be ok
         assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(SampleVoyages.v300);
@@ -528,7 +532,8 @@ public class CargoLifecycleScenarioTest {
     @Order(10)
     public void testUnloadInHamburg() throws Exception {
         LOGGER.log(Level.INFO, "unload in Hamburg, tracking id: {0}", trackingId);
-
+        doInTx(() -> {
+            try {
         handlingEventService.registerHandlingEvent(
                 LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(12),
                 trackingId,
@@ -536,10 +541,12 @@ public class CargoLifecycleScenarioTest {
                 SampleLocations.HAMBURG.getUnLocode(),
                 HandlingEvent.Type.UNLOAD);
 
-        commitTransaction();
+            } catch (CannotCreateHandlingEventException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-        // verify in new tx
-        startTransaction();
+
         Cargo cargo = findCargo();
         // Check current state - should be ok
         assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
@@ -559,7 +566,8 @@ public class CargoLifecycleScenarioTest {
     @Order(11)
     public void testLoadInHamburg() throws Exception {
         LOGGER.log(Level.INFO, "load in Hamburg,  tracking id: {0}", trackingId);
-
+        doInTx(() -> {
+            try {
         handlingEventService.registerHandlingEvent(
                 LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(14),
                 trackingId,
@@ -567,10 +575,10 @@ public class CargoLifecycleScenarioTest {
                 SampleLocations.HAMBURG.getUnLocode(),
                 HandlingEvent.Type.LOAD);
 
-        commitTransaction();
-
-        // verify in new tx
-        startTransaction();
+    } catch (CannotCreateHandlingEventException e) {
+        throw new RuntimeException(e);
+    }
+});
         Cargo cargo = findCargo();
         // Check current state - should be ok
         assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(SampleVoyages.v400);
@@ -591,7 +599,8 @@ public class CargoLifecycleScenarioTest {
     @Order(12)
     public void testUnload_in_STOCKHOLM() throws Exception {
         LOGGER.log(Level.INFO, "unload in STOCKHOLM, tracking id: {0}", trackingId);
-
+        doInTx(() -> {
+            try {
         handlingEventService.registerHandlingEvent(
                 LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(15),
                 trackingId,
@@ -599,10 +608,12 @@ public class CargoLifecycleScenarioTest {
                 SampleLocations.STOCKHOLM.getUnLocode(),
                 HandlingEvent.Type.UNLOAD);
 
-        commitTransaction();
+            } catch (CannotCreateHandlingEventException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-        // verify in new tx
-        startTransaction();
+
         Cargo cargo = findCargo();
         // Check current state - should be ok
         assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
@@ -623,17 +634,19 @@ public class CargoLifecycleScenarioTest {
                 Level.INFO,
                 "claim in STOCKHOLM, the cargo is arrived, tracking id: {0}",
                 trackingId);
-
+        doInTx(() -> {
+            try {
         handlingEventService.registerHandlingEvent(
                 LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(16),
                 trackingId,
                 null,
                 SampleLocations.STOCKHOLM.getUnLocode(),
                 HandlingEvent.Type.CLAIM);
-        commitTransaction();
+    } catch (CannotCreateHandlingEventException e) {
+        throw new RuntimeException(e);
+    }
+});
 
-        // verify in new tx
-        startTransaction();
         Cargo cargo = findCargo();
         // Check current state - should be ok
         assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
@@ -647,177 +660,17 @@ public class CargoLifecycleScenarioTest {
      * Utility stubs below.
      */
     private Itinerary selectPreferredItinerary(List<Itinerary> itineraries) {
-        return itineraries.get(0);
+        return itineraries.getFirst();
     }
 
     private Cargo findCargo() {
         var cargo = cargoRepository.find(trackingId);
         LOGGER.log(Level.INFO, "cargo itinerary: {0}", cargo.getItinerary());
         LOGGER.log(Level.INFO, "cargo delivery: {0}", cargo.getDelivery());
-        // this.entityManager.refresh(cargo);
 
         return cargo;
-        //        var cargo = entityManager.createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-        //                .setParameter("trackingId", trackingId).getSingleResult();
-        //        LOGGER.log(Level.INFO, "cargo itinerary: {0}", cargo.getItinerary());
-        //        LOGGER.log(Level.INFO, "cargo delivery: {0}", cargo.getDelivery());
-        //        return cargo;
     }
 
     //    @Before
     //    public void setUp() throws Exception {
-    ////        routingService = routeSpecification -> {
-    //            if (routeSpecification.getOrigin().equals(SampleLocations.HONGKONG)) {
-    //                // Hongkong - NYC - Chicago - SampleLocations.STOCKHOLM, initial routing
-    //                return Arrays.asList(new Itinerary(Arrays.asList(
-    //                        new Leg(SampleVoyages.v100, SampleLocations.HONGKONG,
-    // SampleLocations.NEWYORK,
-    //                                DateUtil.toDateTime("2014-03-03", "00:00"),
-    // DateUtil.toDateTime("2014-03-09", "00:00")),
-    //                        new Leg(SampleVoyages.v200, SampleLocations.NEWYORK,
-    // SampleLocations.CHICAGO,
-    //                                DateUtil.toDateTime("2014-03-10", "00:00"),
-    // DateUtil.toDateTime("2014-03-14", "00:00")),
-    //                        new Leg(SampleVoyages.v200, SampleLocations.CHICAGO,
-    // SampleLocations.STOCKHOLM,
-    //                                DateUtil.toDateTime("2014-03-07", "00:00"),
-    // DateUtil.toDateTime("2014-03-11", "00:00")))));
-    //            } else {
-    //                // Tokyo - Hamburg - SampleLocations.STOCKHOLM, rerouting misdirected cargo
-    // from
-    //                // Tokyo
-    //                return Arrays.asList(new Itinerary(Arrays.asList(
-    //                        new Leg(SampleVoyages.v300, SampleLocations.TOKYO,
-    // SampleLocations.HAMBURG,
-    //                                DateUtil.toDateTime("2014-03-08", "00:00"),
-    // DateUtil.toDateTime("2014-03-12", "00:00")),
-    //                        new Leg(SampleVoyages.v400, SampleLocations.HAMBURG,
-    // SampleLocations.STOCKHOLM,
-    //                                DateUtil.toDateTime("2014-03-14", "00:00"),
-    // DateUtil.toDateTime("2014-03-15", "00:00")))));
-    //            }
-    //        };
-
-    //        applicationEvents = new SynchronousApplicationEventsStub();
-    // In-memory implementations of the repositories
-    //        handlingEventRepository = new HandlingEventRepositoryInMem();
-    //        cargoRepository = new CargoRepositoryInMem();
-    //        locationRepository = new LocationRepositoryInMem();
-    //        voyageRepository = new VoyageRepositoryInMem();
-    // Actual factories and application services, wired with stubbed or in-memory
-    // infrastructure
-    //        handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository,
-    // locationRepository);
-    //        cargoInspectionService = new CargoInspectionServiceImpl(applicationEvents,
-    // cargoRepository, handlingEventRepository);
-    //        handlingEventService = new DefaultHandlingEventService(handlingEventRepository,
-    // applicationEvents, handlingEventFactory);
-    //        bookingService = new BookingServiceImpl(cargoRepository, locationRepository,
-    // routingService);
-    // Circular dependency when doing synchrounous calls
-    //        ((SynchronousApplicationEventsStub)
-    // applicationEvents).setCargoInspectionService(cargoInspectionService);
-    //    }
-
-    @ApplicationScoped
-    public static class RoutingServiceStub implements RoutingService {
-
-        private static final Logger LOGGER = Logger.getLogger(RoutingServiceStub.class.getName());
-
-        @Inject private LocationRepository locationRepository;
-
-        @Inject private VoyageRepository voyageRepository;
-
-        @Override
-        public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
-            LOGGER.log(Level.INFO, "fetchRoutesForSpecification:: {0}", routeSpecification);
-            if (routeSpecification.origin().equals(SampleLocations.HONGKONG)) {
-                // Hongkong - NYC - Chicago - SampleLocations.STOCKHOLM, initial routing
-                return Arrays.asList(
-                        new Itinerary(
-                                Arrays.asList(
-                                        new Leg(
-                                                voyageRepository.find(
-                                                        SampleVoyages.v100.getVoyageNumber()),
-                                                locationRepository.find(
-                                                        SampleLocations.HONGKONG.getUnLocode()),
-                                                locationRepository.find(
-                                                        SampleLocations.NEWYORK.getUnLocode()),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(3),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(9)),
-                                        new Leg(
-                                                voyageRepository.find(
-                                                        SampleVoyages.v200.getVoyageNumber()),
-                                                locationRepository.find(
-                                                        SampleLocations.NEWYORK.getUnLocode()),
-                                                locationRepository.find(
-                                                        SampleLocations.CHICAGO.getUnLocode()),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(10),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(14)),
-                                        new Leg(
-                                                voyageRepository.find(
-                                                        SampleVoyages.v200.getVoyageNumber()),
-                                                locationRepository.find(
-                                                        SampleLocations.CHICAGO.getUnLocode()),
-                                                locationRepository.find(
-                                                        SampleLocations.STOCKHOLM.getUnLocode()),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(7),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(11)))));
-            } else {
-                // Tokyo - Hamburg - SampleLocations.STOCKHOLM, rerouting misdirected cargo from
-                // Tokyo
-                return Arrays.asList(
-                        new Itinerary(
-                                Arrays.asList(
-                                        new Leg(
-                                                voyageRepository.find(
-                                                        SampleVoyages.v300.getVoyageNumber()),
-                                                locationRepository.find(
-                                                        SampleLocations.TOKYO.getUnLocode()),
-                                                locationRepository.find(
-                                                        SampleLocations.HAMBURG.getUnLocode()),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(8),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(12)),
-                                        new Leg(
-                                                voyageRepository.find(
-                                                        SampleVoyages.v400.getVoyageNumber()),
-                                                locationRepository.find(
-                                                        SampleLocations.HAMBURG.getUnLocode()),
-                                                locationRepository.find(
-                                                        SampleLocations.STOCKHOLM.getUnLocode()),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(14),
-                                                LocalDateTime.now()
-                                                        .minusYears(1)
-                                                        .plusMonths(3)
-                                                        .plusDays(15)))));
-            }
-        }
-    }
 }
