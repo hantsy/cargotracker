@@ -11,9 +11,9 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=alert_status)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=coverage)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 
-> **This is a personal fork of [Eclipse EE4J CargoTracker](https://github.com/eclipse-ee4j/cargotracker). I am also [a contributor to the CargoTracker project](https://github.com/eclipse-ee4j/cargotracker/graphs/contributors).**
+> [!WARNING] This is my personal fork of [Eclipse EE4J CargoTracker](https://github.com/eclipse-ee4j/cargotracker). I am also [a contributor to the CargoTracker project](https://github.com/eclipse-ee4j/cargotracker/graphs/contributors).
 
-> For a detailed introduction to the CargoTracker project, visit the upstream project website: https://eclipse-ee4j.github.io/cargotracker/.
+> [!NOTE] For a detailed introduction to the CargoTracker project, visit the upstream project website: https://eclipse-ee4j.github.io/cargotracker/.
 
 Here are some highlights compared to the upstream project:
 
@@ -33,7 +33,7 @@ I have also ported the original [Cargotracker regapp](https://github.com/citerus
 ### Prerequisites
 
 * Java 21
-* Apache Maven 3.9.0
+* Apache Maven 3.9.0 +
 * Git
 * Docker
 * [GlassFish v7](https://github.com/eclipse-ee4j/glassfish) or [WildFly 30+](https://www.wildfly.org)
