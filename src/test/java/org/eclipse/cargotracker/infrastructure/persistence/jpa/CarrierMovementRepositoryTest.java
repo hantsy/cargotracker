@@ -96,35 +96,38 @@ public class CarrierMovementRepositoryTest {
 
     @BeforeEach
     public void setup() throws Exception {
-       runInTx(() -> {
-           voyage =
-                   new Voyage(
-                           new VoyageNumber(voyageNumberIdString),
-                           new Schedule(
-                                   Collections.singletonList(
-                                           new CarrierMovement(from, to, fromDate, toDate))));
-           this.entityManager.persist(voyage);
-           this.entityManager.flush();
-       });
+        runInTx(
+                () -> {
+                    voyage =
+                            new Voyage(
+                                    new VoyageNumber(voyageNumberIdString),
+                                    new Schedule(
+                                            Collections.singletonList(
+                                                    new CarrierMovement(
+                                                            from, to, fromDate, toDate))));
+                    this.entityManager.persist(voyage);
+                    this.entityManager.flush();
+                });
     }
 
     @Test
     public void testFind() throws Exception {
-        runInTx(() -> {
-            Voyage result = voyageRepository.find(new VoyageNumber(voyageNumberIdString));
-            assertThat(result).isNotNull();
-            assertThat(result.getVoyageNumber().number()).isEqualTo(voyageNumberIdString);
+        runInTx(
+                () -> {
+                    Voyage result = voyageRepository.find(new VoyageNumber(voyageNumberIdString));
+                    assertThat(result).isNotNull();
+                    assertThat(result.getVoyageNumber().number()).isEqualTo(voyageNumberIdString);
 
-            var movements = result.getSchedule().getCarrierMovements();
-            assertThat(movements).hasSize(1);
+                    var movements = result.getSchedule().getCarrierMovements();
+                    assertThat(movements).hasSize(1);
 
-            var m = movements.getFirst();
-            assertThat(m.getDepartureLocation()).isEqualTo(from);
-            assertThat(m.getArrivalLocation()).isEqualTo(to);
-            assertThat(m.getDepartureTime().truncatedTo(ChronoUnit.SECONDS))
-                    .isEqualTo(fromDate.truncatedTo(ChronoUnit.SECONDS));
-            assertThat(m.getArrivalTime().truncatedTo(ChronoUnit.SECONDS))
-                    .isEqualTo(toDate.truncatedTo(ChronoUnit.SECONDS));
-        });
+                    var m = movements.getFirst();
+                    assertThat(m.getDepartureLocation()).isEqualTo(from);
+                    assertThat(m.getArrivalLocation()).isEqualTo(to);
+                    assertThat(m.getDepartureTime().truncatedTo(ChronoUnit.SECONDS))
+                            .isEqualTo(fromDate.truncatedTo(ChronoUnit.SECONDS));
+                    assertThat(m.getArrivalTime().truncatedTo(ChronoUnit.SECONDS))
+                            .isEqualTo(toDate.truncatedTo(ChronoUnit.SECONDS));
+                });
     }
 }

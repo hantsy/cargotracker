@@ -20,11 +20,11 @@ import java.util.logging.Logger;
 
 @ApplicationScoped
 public class CargoInspectedWebSocketEventStub {
-    private static final Logger LOGGER = Logger.getLogger(CargoInspectedWebSocketEventStub.class.getName());
+    private static final Logger LOGGER =
+            Logger.getLogger(CargoInspectedWebSocketEventStub.class.getName());
 
     @Inject @CargoInspected Event<Cargo> cargoEvent;
-    @Inject    ManagedScheduledExecutorService scheduledExecutorService;
-
+    @Inject ManagedScheduledExecutorService scheduledExecutorService;
 
     public void initialize(@Observes Startup event) {
         LOGGER.log(Level.INFO, "raise CDI event after 5 seconds...");

@@ -19,11 +19,11 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class CargoLifecycleScenarioTestDataGenerator {
 
-    private static  final Logger logger = Logger.getLogger(CargoLifecycleScenarioTestDataGenerator.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(CargoLifecycleScenarioTestDataGenerator.class.getName());
     private EntityManager entityManager;
 
-    public CargoLifecycleScenarioTestDataGenerator() {
-    }
+    public CargoLifecycleScenarioTestDataGenerator() {}
 
     @Inject
     public CargoLifecycleScenarioTestDataGenerator(EntityManager entityManager) {

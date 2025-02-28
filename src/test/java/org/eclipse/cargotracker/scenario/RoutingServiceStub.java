@@ -79,11 +79,11 @@ public class RoutingServiceStub implements RoutingService {
 
     private VoyageRepository voyageRepository;
 
-    public RoutingServiceStub() {
-    }
+    public RoutingServiceStub() {}
 
     @Inject
-    public RoutingServiceStub(LocationRepository locationRepository, VoyageRepository voyageRepository) {
+    public RoutingServiceStub(
+            LocationRepository locationRepository, VoyageRepository voyageRepository) {
         this.locationRepository = locationRepository;
         this.voyageRepository = voyageRepository;
     }

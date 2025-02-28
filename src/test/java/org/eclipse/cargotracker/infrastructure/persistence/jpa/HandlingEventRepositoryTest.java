@@ -107,45 +107,47 @@ public class HandlingEventRepositoryTest {
 
     @Test
     public void testSave() throws Exception {
-        runInTx(() -> {
-            Location location = locationRepository.find(new UnLocode("SESTO"));
+        runInTx(
+                () -> {
+                    Location location = locationRepository.find(new UnLocode("SESTO"));
 
-            Cargo cargo = cargoRepository.find(new TrackingId("ABC123"));
-            LocalDateTime completionTime = LocalDateTime.now().minusDays(20);
-            LocalDateTime registrationTime = LocalDateTime.now().minusDays(10);
-            HandlingEvent event =
-                    new HandlingEvent(
-                            cargo,
-                            completionTime,
-                            registrationTime,
-                            HandlingEvent.Type.CLAIM,
-                            location);
+                    Cargo cargo = cargoRepository.find(new TrackingId("ABC123"));
+                    LocalDateTime completionTime = LocalDateTime.now().minusDays(20);
+                    LocalDateTime registrationTime = LocalDateTime.now().minusDays(10);
+                    HandlingEvent event =
+                            new HandlingEvent(
+                                    cargo,
+                                    completionTime,
+                                    registrationTime,
+                                    HandlingEvent.Type.CLAIM,
+                                    location);
 
-            handlingEventRepository.store(event);
+                    handlingEventRepository.store(event);
 
-
-        // Payara/EclipseLink issue:
-        // In a native query, the named parameters like `:id` does not work on Payara/EclipseLink.
-        // eg.
-        // HandlingEvent result = (HandlingEvent) this.entityManager.createNativeQuery("select *
-        // from
-        // HandlingEvent where id = :id", HandlingEvent.class)
-        //
-        // revert to use JPQL, it is standard and portable.
-        HandlingEvent result =
-                this.entityManager
-                        .createQuery(
-                                "select e from HandlingEvent e where e.id = :id",
-                                HandlingEvent.class)
-                        .setParameter("id", getLongId(event))
-                        .getSingleResult();
-        assertThat(result.getCargo()).isEqualTo(cargo);
-        assertThat(result.getCompletionTime().truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(completionTime.truncatedTo(ChronoUnit.SECONDS));
-        assertThat(result.getRegistrationTime().truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(registrationTime.truncatedTo(ChronoUnit.SECONDS));
-        assertThat(result.getType()).isEqualTo(HandlingEvent.Type.CLAIM);
-        });
+                    // Payara/EclipseLink issue:
+                    // In a native query, the named parameters like `:id` does not work on
+                    // Payara/EclipseLink.
+                    // eg.
+                    // HandlingEvent result = (HandlingEvent)
+                    // this.entityManager.createNativeQuery("select *
+                    // from
+                    // HandlingEvent where id = :id", HandlingEvent.class)
+                    //
+                    // revert to use JPQL, it is standard and portable.
+                    HandlingEvent result =
+                            this.entityManager
+                                    .createQuery(
+                                            "select e from HandlingEvent e where e.id = :id",
+                                            HandlingEvent.class)
+                                    .setParameter("id", getLongId(event))
+                                    .getSingleResult();
+                    assertThat(result.getCargo()).isEqualTo(cargo);
+                    assertThat(result.getCompletionTime().truncatedTo(ChronoUnit.SECONDS))
+                            .isEqualTo(completionTime.truncatedTo(ChronoUnit.SECONDS));
+                    assertThat(result.getRegistrationTime().truncatedTo(ChronoUnit.SECONDS))
+                            .isEqualTo(registrationTime.truncatedTo(ChronoUnit.SECONDS));
+                    assertThat(result.getType()).isEqualTo(HandlingEvent.Type.CLAIM);
+                });
     }
 
     private Long getLongId(Object o) {
