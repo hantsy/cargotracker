@@ -12,3 +12,4 @@ cargo-tracker-data/
 installs/
 .locks/
 .mvn/
+.qodo
