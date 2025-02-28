@@ -6,6 +6,7 @@ import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
@@ -27,6 +28,7 @@ public class SampleDataGenerator {
     @Inject private HandlingEventFactory handlingEventFactory;
     @Inject private HandlingEventRepository handlingEventRepository;
 
+    @Transactional
     public void loadSampleData(@Observes Startup startup) {
         LOGGER.info("Loading sample data.");
         unLoadAll(); // Fail-safe in case of application restart that does not trigger a JPA schema
