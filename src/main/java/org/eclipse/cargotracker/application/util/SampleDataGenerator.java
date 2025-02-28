@@ -30,17 +30,17 @@ public class SampleDataGenerator {
     private @Inject HandlingEventRepository handlingEventRepository;
 
     // required by CDI
-//    public SampleDataGenerator() {}
-//
-//    @Inject
-//    public SampleDataGenerator(
-//            EntityManager entityManager,
-//            HandlingEventFactory handlingEventFactory,
-//            HandlingEventRepository handlingEventRepository) {
-//        this.entityManager = entityManager;
-//        this.handlingEventFactory = handlingEventFactory;
-//        this.handlingEventRepository = handlingEventRepository;
-//    }
+    //    public SampleDataGenerator() {}
+    //
+    //    @Inject
+    //    public SampleDataGenerator(
+    //            EntityManager entityManager,
+    //            HandlingEventFactory handlingEventFactory,
+    //            HandlingEventRepository handlingEventRepository) {
+    //        this.entityManager = entityManager;
+    //        this.handlingEventFactory = handlingEventFactory;
+    //        this.handlingEventRepository = handlingEventRepository;
+    //    }
 
     @Transactional
     public void loadSampleData(@Observes Startup startup) {
