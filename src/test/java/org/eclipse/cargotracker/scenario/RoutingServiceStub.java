@@ -75,9 +75,18 @@ public class RoutingServiceStub implements RoutingService {
 
     private static final Logger LOGGER = Logger.getLogger(RoutingServiceStub.class.getName());
 
-    @Inject private LocationRepository locationRepository;
+    private LocationRepository locationRepository;
 
-    @Inject private VoyageRepository voyageRepository;
+    private VoyageRepository voyageRepository;
+
+    public RoutingServiceStub() {
+    }
+
+    @Inject
+    public RoutingServiceStub(LocationRepository locationRepository, VoyageRepository voyageRepository) {
+        this.locationRepository = locationRepository;
+        this.voyageRepository = voyageRepository;
+    }
 
     @Override
     public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {

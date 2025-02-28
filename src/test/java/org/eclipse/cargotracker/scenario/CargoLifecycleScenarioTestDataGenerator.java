@@ -6,6 +6,7 @@ import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
@@ -18,9 +19,16 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class CargoLifecycleScenarioTestDataGenerator {
 
-    @Inject Logger logger;
+    private static  final Logger logger = Logger.getLogger(CargoLifecycleScenarioTestDataGenerator.class.getName());
+    private EntityManager entityManager;
 
-    @Inject EntityManager entityManager;
+    public CargoLifecycleScenarioTestDataGenerator() {
+    }
+
+    @Inject
+    public CargoLifecycleScenarioTestDataGenerator(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Transactional
     public void loadSampleData(@Observes Startup startup) {

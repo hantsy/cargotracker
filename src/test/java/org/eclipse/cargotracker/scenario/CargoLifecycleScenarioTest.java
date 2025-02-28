@@ -670,7 +670,4 @@ public class CargoLifecycleScenarioTest {
 
         return cargo;
     }
-
-    //    @Before
-    //    public void setUp() throws Exception {
 }
