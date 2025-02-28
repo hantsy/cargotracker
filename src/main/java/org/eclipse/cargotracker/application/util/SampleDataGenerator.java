@@ -6,6 +6,7 @@ import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
@@ -24,7 +25,8 @@ public class SampleDataGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator.class.getName());
 
-    @Inject private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
     @Inject private HandlingEventFactory handlingEventFactory;
     @Inject private HandlingEventRepository handlingEventRepository;
 
