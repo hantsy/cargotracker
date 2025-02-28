@@ -1,6 +1,5 @@
 package org.eclipse.cargotracker.application;
 
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
