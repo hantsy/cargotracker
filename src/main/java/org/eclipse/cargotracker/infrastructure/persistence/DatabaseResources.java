@@ -3,13 +3,14 @@ package org.eclipse.cargotracker.infrastructure.persistence;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
-import javax.sql.DataSource;
+import jakarta.enterprise.context.ApplicationScoped;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.sql.DataSource;
 
 @DataSourceDefinition(
         name = "java:app/jdbc/CargoTrackerDatabase",
@@ -17,10 +18,9 @@ import java.util.logging.Logger;
         url = "jdbc:postgresql://localhost:5432/cargotracker",
         user = "user",
         password = "password")
-@Singleton
-@Startup
-public class DatabaseSetup {
-    private static final Logger LOGGER = Logger.getLogger(DatabaseSetup.class.getName());
+@ApplicationScoped
+public class DatabaseResources {
+    private static final Logger LOGGER = Logger.getLogger(DatabaseResources.class.getName());
 
     @Resource(lookup = "java:app/jdbc/CargoTrackerDatabase")
     DataSource dataSource;

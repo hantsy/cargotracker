@@ -1,18 +1,18 @@
 package org.eclipse.cargotracker.application.util;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -20,19 +20,30 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /** Loads sample data for demo. */
-@Singleton
-@Startup
+@ApplicationScoped
 public class SampleDataGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator.class.getName());
 
-    @PersistenceContext private EntityManager entityManager;
-    @Inject private HandlingEventFactory handlingEventFactory;
-    @Inject private HandlingEventRepository handlingEventRepository;
+    private @PersistenceContext EntityManager entityManager;
+    private @Inject HandlingEventFactory handlingEventFactory;
+    private @Inject HandlingEventRepository handlingEventRepository;
 
-    @PostConstruct
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void loadSampleData() {
+    // required by CDI
+    //    public SampleDataGenerator() {}
+    //
+    //    @Inject
+    //    public SampleDataGenerator(
+    //            EntityManager entityManager,
+    //            HandlingEventFactory handlingEventFactory,
+    //            HandlingEventRepository handlingEventRepository) {
+    //        this.entityManager = entityManager;
+    //        this.handlingEventFactory = handlingEventFactory;
+    //        this.handlingEventRepository = handlingEventRepository;
+    //    }
+
+    @Transactional
+    public void loadSampleData(@Observes Startup startup) {
         LOGGER.info("Loading sample data.");
         unLoadAll(); // Fail-safe in case of application restart that does not trigger a JPA schema
         // drop.
@@ -78,7 +89,7 @@ public class SampleDataGenerator {
         entityManager.persist(SampleLocations.SHANGHAI);
         entityManager.persist(SampleLocations.ROTTERDAM);
         entityManager.persist(SampleLocations.GOTHENBURG);
-        entityManager.persist(SampleLocations.HANGZOU);
+        entityManager.persist(SampleLocations.HANGZHOU);
         entityManager.persist(SampleLocations.NEWYORK);
         entityManager.persist(SampleLocations.DALLAS);
     }
@@ -176,7 +187,7 @@ public class SampleDataGenerator {
 
         RouteSpecification routeSpecification2 =
                 new RouteSpecification(
-                        SampleLocations.HANGZOU,
+                        SampleLocations.HANGZHOU,
                         SampleLocations.STOCKHOLM,
                         LocalDate.now().plusDays(18));
         Cargo jkl567 = new Cargo(trackingId2, routeSpecification2);
@@ -186,7 +197,7 @@ public class SampleDataGenerator {
                         Arrays.asList(
                                 new Leg(
                                         SampleVoyages.HONGKONG_TO_NEW_YORK,
-                                        SampleLocations.HANGZOU,
+                                        SampleLocations.HANGZHOU,
                                         SampleLocations.NEWYORK,
                                         LocalDateTime.now().minusDays(10),
                                         LocalDateTime.now().minusDays(3)),
@@ -213,7 +224,7 @@ public class SampleDataGenerator {
                             LocalDateTime.now().minusDays(15),
                             trackingId2,
                             null,
-                            SampleLocations.HANGZOU.getUnLocode(),
+                            SampleLocations.HANGZHOU.getUnLocode(),
                             HandlingEvent.Type.RECEIVE);
             entityManager.persist(event1);
 
@@ -223,7 +234,7 @@ public class SampleDataGenerator {
                             LocalDateTime.now().minusDays(10),
                             trackingId2,
                             SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber(),
-                            SampleLocations.HANGZOU.getUnLocode(),
+                            SampleLocations.HANGZHOU.getUnLocode(),
                             HandlingEvent.Type.LOAD);
             entityManager.persist(event2);
 

@@ -1,35 +1,37 @@
 package org.eclipse.cargotracker.scenario;
 
-import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// WildFly issue:
-// EJB can not be an inner class.
-@Singleton
-@Startup
+@ApplicationScoped
 public class CargoLifecycleScenarioTestDataGenerator {
 
-    @Inject Logger logger;
+    private static final Logger logger =
+            Logger.getLogger(CargoLifecycleScenarioTestDataGenerator.class.getName());
+    private EntityManager entityManager;
 
-    @PersistenceContext EntityManager entityManager;
+    public CargoLifecycleScenarioTestDataGenerator() {}
 
-    @PostConstruct
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void loadSampleData() {
+    @Inject
+    public CargoLifecycleScenarioTestDataGenerator(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    @Transactional
+    public void loadSampleData(@Observes Startup startup) {
         logger.info("Loading sample data.");
         unLoadAll(); // Fail-safe in case of application restart that does not
         // trigger a JPA schema drop.
@@ -80,7 +82,7 @@ public class CargoLifecycleScenarioTestDataGenerator {
         entityManager.persist(SampleLocations.SHANGHAI);
         entityManager.persist(SampleLocations.ROTTERDAM);
         entityManager.persist(SampleLocations.GOTHENBURG);
-        entityManager.persist(SampleLocations.HANGZOU);
+        entityManager.persist(SampleLocations.HANGZHOU);
         entityManager.persist(SampleLocations.NEWYORK);
         entityManager.persist(SampleLocations.DALLAS);
     }

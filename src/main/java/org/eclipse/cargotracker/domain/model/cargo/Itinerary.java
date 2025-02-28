@@ -1,12 +1,13 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -56,7 +57,7 @@ public class Itinerary implements Serializable {
         this.legs = legs;
     }
 
-    public List<Leg> getLegs() {
+    public List<Leg> legs() {
         // this.legs.sort(Comparator.comparing(Leg::getLoadTime));
         return Collections.unmodifiableList(this.legs);
     }
@@ -90,7 +91,7 @@ public class Itinerary implements Serializable {
                                             leg.getUnloadLocation().equals(event.getLocation())
                                                     && leg.getVoyage().equals(event.getVoyage()));
             case CLAIM -> {
-                Leg leg = getLastLeg();
+                Leg leg = lastLeg();
                 yield leg.getUnloadLocation().equals(event.getLocation());
             }
             case CUSTOMS -> true;
@@ -98,7 +99,7 @@ public class Itinerary implements Serializable {
         };
     }
 
-    Location getInitialDepartureLocation() {
+    Location initialDepartureLocation() {
         if (legs.isEmpty()) {
             return Location.UNKNOWN;
         } else {
@@ -106,19 +107,19 @@ public class Itinerary implements Serializable {
         }
     }
 
-    Location getFinalArrivalLocation() {
+    Location finalArrivalLocation() {
         if (legs.isEmpty()) {
             return Location.UNKNOWN;
         } else {
-            return getLastLeg().getUnloadLocation();
+            return lastLeg().getUnloadLocation();
         }
     }
 
     /**
      * @return Date when cargo arrives at final destination.
      */
-    LocalDateTime getFinalArrivalDate() {
-        Leg lastLeg = getLastLeg();
+    LocalDateTime finalArrivalDate() {
+        Leg lastLeg = lastLeg();
 
         if (lastLeg == null) {
             return LocalDateTime.MAX;
@@ -130,11 +131,11 @@ public class Itinerary implements Serializable {
     /**
      * @return The last leg on the itinerary.
      */
-    Leg getLastLeg() {
+    Leg lastLeg() {
         if (legs.isEmpty()) {
             return null;
         } else {
-            return legs.get(legs.size() - 1);
+            return legs.getLast();
         }
     }
 

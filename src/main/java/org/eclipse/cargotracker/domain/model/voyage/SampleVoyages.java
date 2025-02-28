@@ -1,5 +1,8 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
+import org.eclipse.cargotracker.domain.model.location.Location;
+import org.eclipse.cargotracker.domain.model.location.SampleLocations;
+
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,8 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 
 /** Sample carrier movements, for demo/test purposes. */
 public class SampleVoyages {
@@ -24,7 +25,7 @@ public class SampleVoyages {
     public static final Voyage CM005 =
             createVoyage("CM005", SampleLocations.CHICAGO, SampleLocations.HAMBURG);
     public static final Voyage CM006 =
-            createVoyage("CM006", SampleLocations.HAMBURG, SampleLocations.HANGZOU);
+            createVoyage("CM006", SampleLocations.HAMBURG, SampleLocations.HANGZHOU);
     public static final Voyage v100 =
             new Voyage.Builder(new VoyageNumber("V100"), SampleLocations.HONGKONG)
                     .addMovement(
@@ -190,7 +191,7 @@ public class SampleVoyages {
     public static final Voyage HONGKONG_TO_NEW_YORK =
             new Voyage.Builder(new VoyageNumber("0100S"), SampleLocations.HONGKONG)
                     .addMovement(
-                            SampleLocations.HANGZOU,
+                            SampleLocations.HANGZHOU,
                             LocalDateTime.now()
                                     .minusYears(1)
                                     .plusMonths(10)

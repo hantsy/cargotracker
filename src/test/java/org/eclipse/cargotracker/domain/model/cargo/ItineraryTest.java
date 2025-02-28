@@ -1,5 +1,8 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
@@ -11,9 +14,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ItineraryTest {
 
@@ -131,7 +131,7 @@ public class ItineraryTest {
                         LocalDateTime.now(),
                         LocalDateTime.now(),
                         HandlingEvent.Type.RECEIVE,
-                        SampleLocations.HANGZOU);
+                        SampleLocations.HANGZHOU);
         assertThat(itinerary.isExpected(event)).isFalse();
 
         // Loaded to onto the wrong ship, correct location
