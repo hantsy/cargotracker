@@ -25,8 +25,7 @@ public class SampleDataGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator.class.getName());
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @PersistenceContext private EntityManager entityManager;
     @Inject private HandlingEventFactory handlingEventFactory;
     @Inject private HandlingEventRepository handlingEventRepository;
 
