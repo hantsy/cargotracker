@@ -1,14 +1,13 @@
 package org.eclipse.cargotracker.application;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
@@ -19,16 +18,22 @@ import java.util.logging.Logger;
 // WildFly issue:
 // EJB can not be a inner class.
 /** Loads sample data for demo. */
-@Singleton
-@Startup
+@ApplicationScoped
 public class BookingServiceTestDataGenerator {
 
-    @Inject private Logger logger;
-    @PersistenceContext private EntityManager entityManager;
+    private static final Logger logger =
+            Logger.getLogger(BookingServiceTestDataGenerator.class.getName());
+    private EntityManager entityManager;
 
-    @PostConstruct
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void loadSampleData() {
+    public BookingServiceTestDataGenerator() {}
+
+    @Inject
+    public BookingServiceTestDataGenerator(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    @Transactional
+    public void loadSampleData(@Observes Startup startup) {
         logger.info("Loading sample data.");
         unLoadAll(); // Fail-safe in case of application restart that does not
         // trigger a JPA schema drop.
