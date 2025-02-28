@@ -160,7 +160,6 @@ public class CargoLifecycleScenarioTest {
         return war;
     }
 
-
     public void startTransaction() throws Exception {
         utx.begin();
         entityManager.joinTransaction();
@@ -195,11 +194,12 @@ public class CargoLifecycleScenarioTest {
     @Order(1)
     public void testBookNewCargo() throws Exception {
         doInTx(
-                () -> trackingId =
-                        bookingService.bookNewCargo(
-                                origin.getUnLocode(),
-                                destination.getUnLocode(),
-                                arrivalDeadline));
+                () ->
+                        trackingId =
+                                bookingService.bookNewCargo(
+                                        origin.getUnLocode(),
+                                        destination.getUnLocode(),
+                                        arrivalDeadline));
 
         LOGGER.log(Level.INFO, "book a new cargo::tracking id: {0}", trackingId);
         /*
@@ -236,12 +236,14 @@ public class CargoLifecycleScenarioTest {
     @Order(2)
     public void testRouting() throws Exception {
         LOGGER.log(Level.INFO, "assign to route::tracking id: {0}", trackingId);
-        doInTx(() -> {
-            Cargo cargo = findCargo();
-            List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(trackingId);
-            Itinerary itinerary = selectPreferredItinerary(itineraries);
-            cargo.assignToRoute(itinerary);
-        });
+        doInTx(
+                () -> {
+                    Cargo cargo = findCargo();
+                    List<Itinerary> itineraries =
+                            bookingService.requestPossibleRoutesForCargo(trackingId);
+                    Itinerary itinerary = selectPreferredItinerary(itineraries);
+                    cargo.assignToRoute(itinerary);
+                });
 
         var result = findCargo();
         LOGGER.log(
@@ -280,18 +282,19 @@ public class CargoLifecycleScenarioTest {
     public void testReceiveInHongKong() throws Exception {
         LOGGER.log(Level.INFO, "receive in HONGKONG::tracking id: {0}", trackingId);
 
-        doInTx(() -> {
-            try {
-                handlingEventService.registerHandlingEvent(
-                        LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(1),
-                        trackingId,
-                        null,
-                        SampleLocations.HONGKONG.getUnLocode(),
-                        HandlingEvent.Type.RECEIVE);
-            } catch (CannotCreateHandlingEventException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        doInTx(
+                () -> {
+                    try {
+                        handlingEventService.registerHandlingEvent(
+                                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(1),
+                                trackingId,
+                                null,
+                                SampleLocations.HONGKONG.getUnLocode(),
+                                HandlingEvent.Type.RECEIVE);
+                    } catch (CannotCreateHandlingEventException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         Cargo cargo = findCargo();
         assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
@@ -372,19 +375,19 @@ public class CargoLifecycleScenarioTest {
     public void testUnloadedIncorrectlyInTokyo() throws Exception {
         LOGGER.log(Level.INFO, "unload in Tokyo incorrectly, tracking id: {0}", trackingId);
 
-        doInTx(() ->
-        {
-            try {
-                handlingEventService.registerHandlingEvent(
-                        LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(5),
-                        trackingId,
-                        SampleVoyages.v100.getVoyageNumber(),
-                        SampleLocations.TOKYO.getUnLocode(),
-                        HandlingEvent.Type.UNLOAD);
-            } catch (CannotCreateHandlingEventException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        doInTx(
+                () -> {
+                    try {
+                        handlingEventService.registerHandlingEvent(
+                                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(5),
+                                trackingId,
+                                SampleVoyages.v100.getVoyageNumber(),
+                                SampleLocations.TOKYO.getUnLocode(),
+                                HandlingEvent.Type.UNLOAD);
+                    } catch (CannotCreateHandlingEventException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         // verify in new tx
         Cargo cargo = findCargo();
@@ -405,18 +408,19 @@ public class CargoLifecycleScenarioTest {
     @Order(7)
     public void testNewRoute() throws Exception {
         LOGGER.log(Level.INFO, "specify new route spec, tracking id: {0}", trackingId);
-        doInTx(() -> {
-            Cargo cargo = findCargo();
-            RouteSpecification fromTokyo =
-                    new RouteSpecification(
-                            locationRepository.find(SampleLocations.TOKYO.getUnLocode()),
-                            locationRepository.find(SampleLocations.STOCKHOLM.getUnLocode()),
-                            arrivalDeadline);
-            cargo.specifyNewRoute(fromTokyo);
+        doInTx(
+                () -> {
+                    Cargo cargo = findCargo();
+                    RouteSpecification fromTokyo =
+                            new RouteSpecification(
+                                    locationRepository.find(SampleLocations.TOKYO.getUnLocode()),
+                                    locationRepository.find(
+                                            SampleLocations.STOCKHOLM.getUnLocode()),
+                                    arrivalDeadline);
+                    cargo.specifyNewRoute(fromTokyo);
 
-            cargoRepository.store(cargo);
-        });
-
+                    cargoRepository.store(cargo);
+                });
 
         var result = findCargo();
 
@@ -445,16 +449,17 @@ public class CargoLifecycleScenarioTest {
     public void testNewItinerary() throws Exception {
         LOGGER.log(Level.INFO, "assign to new itinerary, tracking id: {0}", trackingId);
 
-        doInTx(() -> {
-            Cargo cargo = findCargo();
+        doInTx(
+                () -> {
+                    Cargo cargo = findCargo();
 
-            List<Itinerary> newItineraries =
-                    bookingService.requestPossibleRoutesForCargo(cargo.getTrackingId());
-            Itinerary newItinerary = selectPreferredItinerary(newItineraries);
-            cargo.assignToRoute(newItinerary);
+                    List<Itinerary> newItineraries =
+                            bookingService.requestPossibleRoutesForCargo(cargo.getTrackingId());
+                    Itinerary newItinerary = selectPreferredItinerary(newItineraries);
+                    cargo.assignToRoute(newItinerary);
 
-            cargoRepository.store(cargo);
-        });
+                    cargoRepository.store(cargo);
+                });
 
         var result = findCargo();
 
@@ -499,18 +504,19 @@ public class CargoLifecycleScenarioTest {
     public void testLoadInTokyo() throws Exception {
         LOGGER.log(Level.INFO, "load in Tokyo now, tracking id: {0}", trackingId);
 
-        doInTx(() -> {
-            try {
-                handlingEventService.registerHandlingEvent(
-                        LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(8),
-                        trackingId,
-                        SampleVoyages.v300.getVoyageNumber(),
-                        SampleLocations.TOKYO.getUnLocode(),
-                        HandlingEvent.Type.LOAD);
-            } catch (CannotCreateHandlingEventException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        doInTx(
+                () -> {
+                    try {
+                        handlingEventService.registerHandlingEvent(
+                                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(8),
+                                trackingId,
+                                SampleVoyages.v300.getVoyageNumber(),
+                                SampleLocations.TOKYO.getUnLocode(),
+                                HandlingEvent.Type.LOAD);
+                    } catch (CannotCreateHandlingEventException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         Cargo cargo = findCargo();
         // Check current state - should be ok
@@ -532,20 +538,20 @@ public class CargoLifecycleScenarioTest {
     @Order(10)
     public void testUnloadInHamburg() throws Exception {
         LOGGER.log(Level.INFO, "unload in Hamburg, tracking id: {0}", trackingId);
-        doInTx(() -> {
-            try {
-        handlingEventService.registerHandlingEvent(
-                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(12),
-                trackingId,
-                SampleVoyages.v300.getVoyageNumber(),
-                SampleLocations.HAMBURG.getUnLocode(),
-                HandlingEvent.Type.UNLOAD);
+        doInTx(
+                () -> {
+                    try {
+                        handlingEventService.registerHandlingEvent(
+                                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(12),
+                                trackingId,
+                                SampleVoyages.v300.getVoyageNumber(),
+                                SampleLocations.HAMBURG.getUnLocode(),
+                                HandlingEvent.Type.UNLOAD);
 
-            } catch (CannotCreateHandlingEventException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
+                    } catch (CannotCreateHandlingEventException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         Cargo cargo = findCargo();
         // Check current state - should be ok
@@ -566,19 +572,20 @@ public class CargoLifecycleScenarioTest {
     @Order(11)
     public void testLoadInHamburg() throws Exception {
         LOGGER.log(Level.INFO, "load in Hamburg,  tracking id: {0}", trackingId);
-        doInTx(() -> {
-            try {
-        handlingEventService.registerHandlingEvent(
-                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(14),
-                trackingId,
-                SampleVoyages.v400.getVoyageNumber(),
-                SampleLocations.HAMBURG.getUnLocode(),
-                HandlingEvent.Type.LOAD);
+        doInTx(
+                () -> {
+                    try {
+                        handlingEventService.registerHandlingEvent(
+                                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(14),
+                                trackingId,
+                                SampleVoyages.v400.getVoyageNumber(),
+                                SampleLocations.HAMBURG.getUnLocode(),
+                                HandlingEvent.Type.LOAD);
 
-    } catch (CannotCreateHandlingEventException e) {
-        throw new RuntimeException(e);
-    }
-});
+                    } catch (CannotCreateHandlingEventException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
         Cargo cargo = findCargo();
         // Check current state - should be ok
         assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(SampleVoyages.v400);
@@ -599,20 +606,20 @@ public class CargoLifecycleScenarioTest {
     @Order(12)
     public void testUnload_in_STOCKHOLM() throws Exception {
         LOGGER.log(Level.INFO, "unload in STOCKHOLM, tracking id: {0}", trackingId);
-        doInTx(() -> {
-            try {
-        handlingEventService.registerHandlingEvent(
-                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(15),
-                trackingId,
-                SampleVoyages.v400.getVoyageNumber(),
-                SampleLocations.STOCKHOLM.getUnLocode(),
-                HandlingEvent.Type.UNLOAD);
+        doInTx(
+                () -> {
+                    try {
+                        handlingEventService.registerHandlingEvent(
+                                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(15),
+                                trackingId,
+                                SampleVoyages.v400.getVoyageNumber(),
+                                SampleLocations.STOCKHOLM.getUnLocode(),
+                                HandlingEvent.Type.UNLOAD);
 
-            } catch (CannotCreateHandlingEventException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
+                    } catch (CannotCreateHandlingEventException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         Cargo cargo = findCargo();
         // Check current state - should be ok
@@ -634,18 +641,19 @@ public class CargoLifecycleScenarioTest {
                 Level.INFO,
                 "claim in STOCKHOLM, the cargo is arrived, tracking id: {0}",
                 trackingId);
-        doInTx(() -> {
-            try {
-        handlingEventService.registerHandlingEvent(
-                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(16),
-                trackingId,
-                null,
-                SampleLocations.STOCKHOLM.getUnLocode(),
-                HandlingEvent.Type.CLAIM);
-    } catch (CannotCreateHandlingEventException e) {
-        throw new RuntimeException(e);
-    }
-});
+        doInTx(
+                () -> {
+                    try {
+                        handlingEventService.registerHandlingEvent(
+                                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(16),
+                                trackingId,
+                                null,
+                                SampleLocations.STOCKHOLM.getUnLocode(),
+                                HandlingEvent.Type.CLAIM);
+                    } catch (CannotCreateHandlingEventException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         Cargo cargo = findCargo();
         // Check current state - should be ok
