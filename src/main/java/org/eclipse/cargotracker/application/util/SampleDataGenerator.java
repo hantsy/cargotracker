@@ -25,9 +25,20 @@ public class SampleDataGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator.class.getName());
 
-    @PersistenceContext private EntityManager entityManager;
-    @Inject private HandlingEventFactory handlingEventFactory;
-    @Inject private HandlingEventRepository handlingEventRepository;
+    private EntityManager entityManager;
+    private HandlingEventFactory handlingEventFactory;
+    private HandlingEventRepository handlingEventRepository;
+
+    // required by CDI
+    public SampleDataGenerator() {
+    }
+
+    @Inject
+    public SampleDataGenerator(EntityManager entityManager, HandlingEventFactory handlingEventFactory, HandlingEventRepository handlingEventRepository) {
+        this.entityManager = entityManager;
+        this.handlingEventFactory = handlingEventFactory;
+        this.handlingEventRepository = handlingEventRepository;
+    }
 
     @Transactional
     public void loadSampleData(@Observes Startup startup) {
