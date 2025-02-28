@@ -6,7 +6,6 @@ import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
@@ -30,11 +29,13 @@ public class SampleDataGenerator {
     private HandlingEventRepository handlingEventRepository;
 
     // required by CDI
-    public SampleDataGenerator() {
-    }
+    public SampleDataGenerator() {}
 
     @Inject
-    public SampleDataGenerator(EntityManager entityManager, HandlingEventFactory handlingEventFactory, HandlingEventRepository handlingEventRepository) {
+    public SampleDataGenerator(
+            EntityManager entityManager,
+            HandlingEventFactory handlingEventFactory,
+            HandlingEventRepository handlingEventRepository) {
         this.entityManager = entityManager;
         this.handlingEventFactory = handlingEventFactory;
         this.handlingEventRepository = handlingEventRepository;
