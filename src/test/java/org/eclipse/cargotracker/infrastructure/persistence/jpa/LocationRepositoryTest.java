@@ -60,9 +60,6 @@ public class LocationRepositoryTest {
         return war;
     }
 
-    @BeforeEach
-    public void setup() {}
-
     @Test
     public void testFind() {
         final UnLocode melbourne = new UnLocode("AUMEL");

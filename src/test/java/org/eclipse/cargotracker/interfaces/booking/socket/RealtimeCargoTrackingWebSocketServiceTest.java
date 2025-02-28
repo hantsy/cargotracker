@@ -49,7 +49,7 @@ public class RealtimeCargoTrackingWebSocketServiceTest {
         war.addClass(RealtimeCargoTrackingWebSocketService.class)
                 // .addClass(TestClient.class)
                 // EJB to raise a CDI event
-                .addClass(CargoInspectedStub.class)
+                .addClass(CargoInspectedWebSocketEventStub.class)
                 // add samples.
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)

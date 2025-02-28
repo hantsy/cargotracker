@@ -84,9 +84,6 @@ public class CargoRepositoryTest {
         return war;
     }
 
-    @BeforeEach
-    public void setup() {}
-
     private void startTransaction() throws Exception {
         utx.begin();
         entityManager.joinTransaction();
@@ -103,10 +100,10 @@ public class CargoRepositoryTest {
         startTransaction();
         try {
             runnable.run();
+            commitTransaction();
         } catch (Exception e) {
             utx.rollback();
         }
-        commitTransaction();
     }
 
     @Test

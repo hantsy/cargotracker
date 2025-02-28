@@ -95,25 +95,34 @@ public class HandlingEventRepositoryTest {
         }
     }
 
+    private void runInTx(Runnable runnable) throws Exception {
+        startTransaction();
+        try {
+            runnable.run();
+            commitTransaction();
+        } catch (Exception e) {
+            utx.rollback();
+        }
+    }
+
     @Test
     public void testSave() throws Exception {
-        startTransaction();
-        Location location = locationRepository.find(new UnLocode("SESTO"));
+        runInTx(() -> {
+            Location location = locationRepository.find(new UnLocode("SESTO"));
 
-        Cargo cargo = cargoRepository.find(new TrackingId("ABC123"));
-        LocalDateTime completionTime = LocalDateTime.now().minusDays(20);
-        LocalDateTime registrationTime = LocalDateTime.now().minusDays(10);
-        HandlingEvent event =
-                new HandlingEvent(
-                        cargo,
-                        completionTime,
-                        registrationTime,
-                        HandlingEvent.Type.CLAIM,
-                        location);
+            Cargo cargo = cargoRepository.find(new TrackingId("ABC123"));
+            LocalDateTime completionTime = LocalDateTime.now().minusDays(20);
+            LocalDateTime registrationTime = LocalDateTime.now().minusDays(10);
+            HandlingEvent event =
+                    new HandlingEvent(
+                            cargo,
+                            completionTime,
+                            registrationTime,
+                            HandlingEvent.Type.CLAIM,
+                            location);
 
-        handlingEventRepository.store(event);
+            handlingEventRepository.store(event);
 
-        this.entityManager.flush();
 
         // Payara/EclipseLink issue:
         // In a native query, the named parameters like `:id` does not work on Payara/EclipseLink.
@@ -136,7 +145,7 @@ public class HandlingEventRepositoryTest {
         assertThat(result.getRegistrationTime().truncatedTo(ChronoUnit.SECONDS))
                 .isEqualTo(registrationTime.truncatedTo(ChronoUnit.SECONDS));
         assertThat(result.getType()).isEqualTo(HandlingEvent.Type.CLAIM);
-        commitTransaction();
+        });
     }
 
     private Long getLongId(Object o) {
@@ -176,13 +185,13 @@ public class HandlingEventRepositoryTest {
                 handlingEventRepository
                         .lookupHandlingHistoryOfCargo(trackingId)
                         .getDistinctEventsByCompletionTime();
-        assertThat(handlingEvents).hasSize(0);
+        assertThat(handlingEvents).isEmpty();
 
         TrackingId existingTrackingId = new TrackingId("MNO456"); // existing cargo
         List<HandlingEvent> existingHandlingEvents =
                 handlingEventRepository
                         .lookupHandlingHistoryOfCargo(trackingId)
                         .getDistinctEventsByCompletionTime();
-        assertThat(existingHandlingEvents).hasSize(0);
+        assertThat(existingHandlingEvents).isEmpty();
     }
 }
