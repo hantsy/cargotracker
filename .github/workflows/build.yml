@@ -27,7 +27,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: "21"
-      - uses: axel-op/googlejavaformat-action@v3
+      - uses: axel-op/googlejavaformat-action@v4
         with:
           args: "--aosp  --skip-reflowing-long-strings --skip-sorting-imports --replace"
           #  version: 1.9
