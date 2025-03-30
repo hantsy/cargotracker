@@ -1,10 +1,13 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.cargotracker.Deployments.*;
+
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
+
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
@@ -23,16 +26,13 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
-
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
 public class CarrierMovementRepositoryTest {
     private static final Logger LOGGER =
             Logger.getLogger(CarrierMovementRepositoryTest.class.getName());
     @Inject VoyageRepository voyageRepository;
-    @PersistenceContext EntityManager entityManager;
+    @Inject EntityManager entityManager;
     @Inject UserTransaction utx;
     String voyageNumberIdString = "007";
     Voyage voyage;
@@ -84,37 +84,50 @@ public class CarrierMovementRepositoryTest {
         }
     }
 
+    private void runInTx(Runnable runnable) throws Exception {
+        startTransaction();
+        try {
+            runnable.run();
+            commitTransaction();
+        } catch (Exception e) {
+            utx.rollback();
+        }
+    }
+
     @BeforeEach
     public void setup() throws Exception {
-        startTransaction();
-        voyage =
-                new Voyage(
-                        new VoyageNumber(voyageNumberIdString),
-                        new Schedule(
-                                Collections.singletonList(
-                                        new CarrierMovement(from, to, fromDate, toDate))));
-        this.entityManager.persist(voyage);
-        this.entityManager.flush();
-        commitTransaction();
+        runInTx(
+                () -> {
+                    voyage =
+                            new Voyage(
+                                    new VoyageNumber(voyageNumberIdString),
+                                    new Schedule(
+                                            Collections.singletonList(
+                                                    new CarrierMovement(
+                                                            from, to, fromDate, toDate))));
+                    this.entityManager.persist(voyage);
+                    this.entityManager.flush();
+                });
     }
 
     @Test
     public void testFind() throws Exception {
-        startTransaction();
-        Voyage result = voyageRepository.find(new VoyageNumber(voyageNumberIdString));
-        assertThat(result).isNotNull();
-        assertThat(result.getVoyageNumber().getIdString()).isEqualTo(voyageNumberIdString);
+        runInTx(
+                () -> {
+                    Voyage result = voyageRepository.find(new VoyageNumber(voyageNumberIdString));
+                    assertThat(result).isNotNull();
+                    assertThat(result.getVoyageNumber().number()).isEqualTo(voyageNumberIdString);
 
-        var movements = result.getSchedule().getCarrierMovements();
-        assertThat(movements).hasSize(1);
+                    var movements = result.getSchedule().getCarrierMovements();
+                    assertThat(movements).hasSize(1);
 
-        var m = movements.get(0);
-        assertThat(m.getDepartureLocation()).isEqualTo(from);
-        assertThat(m.getArrivalLocation()).isEqualTo(to);
-        assertThat(m.getDepartureTime().truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(fromDate.truncatedTo(ChronoUnit.SECONDS));
-        assertThat(m.getArrivalTime().truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(toDate.truncatedTo(ChronoUnit.SECONDS));
-        commitTransaction();
+                    var m = movements.getFirst();
+                    assertThat(m.getDepartureLocation()).isEqualTo(from);
+                    assertThat(m.getArrivalLocation()).isEqualTo(to);
+                    assertThat(m.getDepartureTime().truncatedTo(ChronoUnit.SECONDS))
+                            .isEqualTo(fromDate.truncatedTo(ChronoUnit.SECONDS));
+                    assertThat(m.getArrivalTime().truncatedTo(ChronoUnit.SECONDS))
+                            .isEqualTo(toDate.truncatedTo(ChronoUnit.SECONDS));
+                });
     }
 }

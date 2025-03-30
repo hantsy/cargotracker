@@ -1,14 +1,14 @@
 package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 
-import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.cargotracker.domain.model.location.LocationRepository;
-import org.eclipse.cargotracker.domain.model.location.UnLocode;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
+
+import org.eclipse.cargotracker.domain.model.location.Location;
+import org.eclipse.cargotracker.domain.model.location.LocationRepository;
+import org.eclipse.cargotracker.domain.model.location.UnLocode;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,11 +17,17 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class JpaLocationRepository implements LocationRepository, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(JpaLocationRepository.class.getName());
 
-    @Inject Logger logger;
+    private EntityManager entityManager;
 
-    @PersistenceContext private EntityManager entityManager;
+    // no-args constructor required by CDI
+    public JpaLocationRepository() {}
+
+    @Inject
+    public JpaLocationRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Location find(UnLocode unLocode) {

@@ -1,8 +1,5 @@
 package org.eclipse.cargotracker.infrastructure.messaging.jms;
 
-import org.eclipse.cargotracker.application.CargoInspectionService;
-import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
-
 import jakarta.ejb.ActivationConfigProperty;
 import jakarta.ejb.MessageDriven;
 import jakarta.inject.Inject;
@@ -10,6 +7,10 @@ import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import jakarta.jms.TextMessage;
+
+import org.eclipse.cargotracker.application.CargoInspectionService;
+import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

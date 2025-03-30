@@ -1,11 +1,15 @@
 package org.eclipse.cargotracker.interfaces.handling.rest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.cargotracker.Deployments.*;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
+
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -31,9 +35,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
@@ -97,7 +98,7 @@ public class HandlingReportServiceTest {
         report.setCompletionTime(DateUtil.toString(LocalDateTime.now()));
         report.setEventType("LOAD");
         report.setTrackingId("A001");
-        report.setVoyageNumber(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber().getIdString());
+        report.setVoyageNumber(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber().number());
         report.setUnLocode(SampleLocations.HONGKONG.getUnLocode().getIdString());
 
         final WebTarget postReportTarget =
@@ -110,7 +111,7 @@ public class HandlingReportServiceTest {
             LOGGER.log(
                     Level.INFO,
                     "response of POST rest/handling/reports: {0}",
-                    postReportResponse.getEntity().toString());
+                    postReportResponse.getEntity());
 
             assertThat(applicationEventsStub.getAttempt()).isNotNull();
             var attempt = applicationEventsStub.getAttempt();

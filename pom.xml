@@ -34,6 +34,8 @@
         <!-- Official Maven Plugins -->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+        <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
@@ -42,33 +44,43 @@
         <!-- Cargo maven plugin -->
         <cargo-maven3-plugin.version>1.10.17</cargo-maven3-plugin.version>
 
-        <!-- Jakarta EE API -->
-        <jakartaee-api.version>10.0.0</jakartaee-api.version>
+        <!-- Jakarta EE API 11.x -->
+        <jakartaee-api.version>11.0.0-M5</jakartaee-api.version>
+        <postgresql.version>42.7.5</postgresql.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <omnifaces.version>4.6</omnifaces.version>
 
         <!-- Arquillian BOM -->
-        <arquillian-bom.version>1.8.0.Final</arquillian-bom.version>
+        <arquillian-bom.version>1.9.2.Final</arquillian-bom.version>
+        <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
+        <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
+        <shrinkwrap-resolver-bom.version>3.3.3</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
         <junit.version>5.12.0</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>5.15.2</mockito.version>
         <assertj.version>3.27.3</assertj.version>
         <json-path.version>2.9.0</json-path.version>
+        <jacoco.version>0.8.12</jacoco.version>
+        <arquillian-jacoco.version>1.1.0</arquillian-jacoco.version>
+        <asm.version>9.7.1</asm.version>
         <awaitility.version>4.3.0</awaitility.version>
 
         <!-- Jacoco code coverage report -->
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>7.0.22</glassfish.version>
-        <jersey.version>3.1.10</jersey.version>
-        <eclipselink.version>4.0.1</eclipselink.version>
-        <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
+        <glassfish.version>8.0.0-M9</glassfish.version>
+        <jersey.version>4.0.0-M1</jersey.version>
+        <eclipselink.version>5.0.0-B03</eclipselink.version>
+
+        <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>
 
         <!-- Wildfly server -->
-        <wildfly.version>30.0.1.Final</wildfly.version>
-        <wildfly-maven-plugin.version>4.2.2.Final</wildfly-maven-plugin.version>
+        <wildfly.version>34.0.0.Final</wildfly.version>
+        <wildfly-maven-plugin.version>5.1.1.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>5.0.1.Final</wildfly-arquillian.version>
         <!-- aligned to Wildfly version. -->
         <resteasy.version>6.2.11.Final</resteasy.version>
@@ -94,7 +106,20 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-bom</artifactId>
+                <version>${resteasy.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>jakarta.platform</groupId>
                 <artifactId>jakarta.jakartaee-api</artifactId>
@@ -109,6 +134,21 @@
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${arquillian-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.jakarta</groupId>
+                <artifactId>arquillian-jakarta-bom</artifactId>
+                <version>${arquillian-jakarta-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${shrinkwrap-resolver-bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -175,7 +215,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.5</version>
+            <version>${postgresql.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -183,7 +223,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.17.0</version>
+            <version>${commons-lang3.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -191,7 +231,7 @@
         <dependency>
             <groupId>org.omnifaces</groupId>
             <artifactId>omnifaces</artifactId>
-            <version>4.6.1</version>
+            <version>${omnifaces.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -259,6 +299,18 @@
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven3-plugin</artifactId>
                     <version>${cargo-maven3-plugin.version}</version>
+                </plugin>
+
+                <!-- Maven 4.0 requires locking clean/resources plugins in project -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -442,40 +494,13 @@
             </properties>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>copy</id>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.glassfish.jersey.ext.cdi</groupId>
-                                            <artifactId>jersey-cdi-rs-inject</artifactId>
-                                            <version>${jersey.version}</version>
-                                            <type>jar</type>
-                                            <overWrite>false</overWrite>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>
-                                        ${project.build.directory}/cargo/installs/glassfish-${glassfish.version}/glassfish7/glassfish/modules
-                                    </outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+                
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven3-plugin</artifactId>
                         <configuration>
                             <container>
-                                <containerId>glassfish7x</containerId>
+                                <containerId>glassfish8x</containerId>
 
                                 <!-- <artifactInstaller>
                                     <groupId>org.glassfish.main.distributions</groupId>
@@ -491,10 +516,21 @@
                             </container>
                             <configuration>
                                 <!-- the configuration used to deploy -->
-                                <home>${project.build.directory}/glassfish7x-home</home>
+                                <home>${project.build.directory}/glassfish8x-home</home>
                                 <properties>
                                     <cargo.remote.password></cargo.remote.password>
+                                    <cargo.glassfish.removeDefaultDatasource>true
+                                    </cargo.glassfish.removeDefaultDatasource>
                                 </properties>
+                                <datasources>
+                                    <datasource>
+                                        <driverClass>org.apache.derby.jdbc.EmbeddedDriver</driverClass>
+                                        <url>jdbc:derby:derbyDB;create=true</url>
+                                        <jndiName>jdbc/__default</jndiName>
+                                        <username>APP</username>
+                                        <password>nonemptypassword</password>
+                                    </datasource>
+                                </datasources>
                             </configuration>
                         </configuration>
                     </plugin>
@@ -504,7 +540,7 @@
         <profile>
             <id>unit-test</id>
             <activation>
-<!--                <activeByDefault>true</activeByDefault>-->
+                <!--                <activeByDefault>true</activeByDefault>-->
             </activation>
             <properties>
                 <skip.unit.tests>false</skip.unit.tests>
@@ -541,6 +577,12 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-sse</artifactId>
+                    <version>${jersey.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
                     <groupId>org.glassfish.jersey.inject</groupId>
                     <artifactId>jersey-hk2</artifactId>
                     <version>${jersey.version}</version>
@@ -553,9 +595,9 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.github.hantsy.arquillian-container-glassfish-jakarta</groupId>
-                    <artifactId>arquillian-glassfish-managed-jakarta</artifactId>
-                    <version>${arquillian-glassfish-jakarta.version}</version>
+                    <groupId>io.github.hantsy.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-managed</artifactId>
+                    <version>${arquillian-glassfish.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -593,27 +635,6 @@
                                     </artifactItems>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>copy</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.glassfish.jersey.ext.cdi</groupId>
-                                            <artifactId>jersey-cdi-rs-inject</artifactId>
-                                            <version>${jersey.version}</version>
-                                            <type>jar</type>
-                                            <overWrite>false</overWrite>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>
-                                        ${project.build.directory}/glassfish7/glassfish/modules
-                                    </outputDirectory>
-                                </configuration>
-                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
@@ -622,7 +643,7 @@
                         <version>${maven-failsafe-plugin.version}</version>
                         <configuration>
                             <environmentVariables>
-                                <GLASSFISH_HOME>${project.build.directory}/glassfish7</GLASSFISH_HOME>
+                                <GLASSFISH_HOME>${project.build.directory}/glassfish8</GLASSFISH_HOME>
                             </environmentVariables>
                             <systemPropertyVariables>
                                 <arquillian.launch>glassfish-managed</arquillian.launch>
@@ -659,6 +680,12 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-sse</artifactId>
+                    <version>${jersey.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
                     <groupId>org.glassfish.jersey.inject</groupId>
                     <artifactId>jersey-hk2</artifactId>
                     <version>${jersey.version}</version>
@@ -671,9 +698,9 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.github.hantsy.arquillian-container-glassfish-jakarta</groupId>
-                    <artifactId>arquillian-glassfish-remote-jakarta</artifactId>
-                    <version>${arquillian-glassfish-jakarta.version}</version>
+                    <groupId>io.github.hantsy.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-remote</artifactId>
+                    <version>${arquillian-glassfish.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -866,10 +893,6 @@
 
         <profile>
             <id>coverage</id>
-            <properties>
-                <jacoco.version>0.8.12</jacoco.version>
-                <arquillian-jacoco.version>1.1.0</arquillian-jacoco.version>
-            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.extension</groupId>
@@ -881,14 +904,14 @@
                 <dependency>
                     <groupId>org.ow2.asm</groupId>
                     <artifactId>asm</artifactId>
-                    <version>9.7.1</version>
+                    <version>${asm.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm-util -->
                 <dependency>
                     <groupId>org.ow2.asm</groupId>
                     <artifactId>asm-util</artifactId>
-                    <version>9.7.1</version>
+                    <version>${asm.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <!-- https://mvnrepository.com/artifact/org.jacoco/org.jacoco.core -->
@@ -994,10 +1017,6 @@
             <id>payara-nexus</id>
             <name>Payara Nexus Artifacts</name>
             <url>https://nexus.payara.fish/repository/payara-artifacts/</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 </project>

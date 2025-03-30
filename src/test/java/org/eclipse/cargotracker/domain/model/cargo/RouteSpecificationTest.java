@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
@@ -8,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class RouteSpecificationTest {
 
@@ -70,7 +70,7 @@ public class RouteSpecificationTest {
     public void testIsNotSatisfiedByWrongOrigin() {
         RouteSpecification routeSpecification =
                 new RouteSpecification(
-                        SampleLocations.HANGZOU,
+                        SampleLocations.HANGZHOU,
                         SampleLocations.CHICAGO,
                         LocalDate.now().minusYears(1).plusMonths(3).plusDays(1));
 

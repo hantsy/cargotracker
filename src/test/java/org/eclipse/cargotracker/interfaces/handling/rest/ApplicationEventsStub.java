@@ -1,6 +1,7 @@
 package org.eclipse.cargotracker.interfaces.handling.rest;
 
 import jakarta.enterprise.context.ApplicationScoped;
+
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;

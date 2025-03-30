@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
@@ -7,8 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class LocationDtoAssemblerTest {
 

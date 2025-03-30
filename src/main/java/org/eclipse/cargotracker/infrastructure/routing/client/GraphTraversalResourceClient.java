@@ -9,6 +9,7 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
+
 import org.eclipse.pathfinder.api.TransitPath;
 
 import java.util.List;
@@ -28,18 +29,6 @@ public class GraphTraversalResourceClient {
     @PostConstruct
     public void init() {
         this.jaxrsClient = ClientBuilder.newClient();
-        try {
-            Class<?> clazz =
-                    Class.forName(
-                            "org.eclipse.cargotracker.infrastructure.routing.client.JacksonObjectMapperContextResolver");
-            jaxrsClient.register(clazz);
-        } catch (ClassNotFoundException e) {
-            LOGGER.log(
-                    Level.WARNING,
-                    "registering JacksonObjectMapperContextResolver failed: {0}",
-                    e.getMessage());
-            LOGGER.log(Level.INFO, "Skip this error for non-WildFly application servers.");
-        }
     }
 
     @PreDestroy

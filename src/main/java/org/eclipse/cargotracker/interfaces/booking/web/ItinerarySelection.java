@@ -1,13 +1,15 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
-import java.io.Serializable;
-import java.util.List;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.RouteCandidateDto;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Handles itinerary selection. Operates against a dedicated service facade, and could easily be

@@ -3,6 +3,7 @@ package org.eclipse.cargotracker.scenario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.CargoInspectionService;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -12,10 +13,16 @@ import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAtt
 @ApplicationScoped
 public class SynchronousApplicationEventsStub implements ApplicationEvents {
 
-    @Inject Instance<CargoInspectionService> cargoInspectionServiceInstance;
+    private Instance<CargoInspectionService> cargoInspectionServiceInstance;
 
     // no-args constructor required by CDI
     public SynchronousApplicationEventsStub() {}
+
+    @Inject
+    public SynchronousApplicationEventsStub(
+            Instance<CargoInspectionService> cargoInspectionServiceInstance) {
+        this.cargoInspectionServiceInstance = cargoInspectionServiceInstance;
+    }
 
     @Override
     public void cargoWasHandled(HandlingEvent event) {
@@ -30,7 +37,7 @@ public class SynchronousApplicationEventsStub implements ApplicationEvents {
 
     @Override
     public void cargoHasArrived(Cargo cargo) {
-        System.out.println("EVENT: cargo has arrived: " + cargo.getTrackingId().getIdString());
+        System.out.println("EVENT: cargo has arrived: " + cargo.getTrackingId().id());
     }
 
     @Override

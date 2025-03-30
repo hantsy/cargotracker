@@ -43,7 +43,7 @@ public class HandlingHistory {
         if (distinctEvents.isEmpty()) {
             return null;
         } else {
-            return distinctEvents.get(distinctEvents.size() - 1);
+            return distinctEvents.getLast();
         }
     }
 

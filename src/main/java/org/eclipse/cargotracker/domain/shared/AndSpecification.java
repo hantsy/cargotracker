@@ -4,7 +4,7 @@ package org.eclipse.cargotracker.domain.shared;
  * AND specification, used to create a new specification that is the AND of two other
  * specifications.
  */
-public class AndSpecification<T> extends AbstractSpecification<T> {
+public class AndSpecification<T> implements Specification<T> {
 
     private final Specification<T> spec1;
     private final Specification<T> spec2;
