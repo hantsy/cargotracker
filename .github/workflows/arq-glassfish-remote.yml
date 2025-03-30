@@ -36,9 +36,11 @@ jobs:
           export GLASSFISH_ARCHIVE=glassfish8
           export GLASSFISH_VERSION=8.0.0-M9
           export INSTALL_DIR="/opt/appsvr"
+          # export DOWNLOAD_URL=https://github.com/eclipse-ee4j/glassfish/releases/download/${GLASSFISH_VERSION}/glassfish-${GLASSFISH_VERSION}.zip
+          export DOWNLOAD_URL=https://ci.eclipse.org/glassfish/job/glassfish_build-and-test-using-jenkinsfile/job/PR-25430/lastSuccessfulBuild/artifact/bundles/glassfish.zip
           mkdir ${INSTALL_DIR}
           
-          curl -o /tmp/${GLASSFISH_ARCHIVE}.zip -L https://github.com/eclipse-ee4j/glassfish/releases/download/${GLASSFISH_VERSION}/glassfish-${GLASSFISH_VERSION}.zip \
+          curl -o /tmp/${GLASSFISH_ARCHIVE}.zip -L ${DOWNLOAD_URL} \
               && unzip /tmp/${GLASSFISH_ARCHIVE}.zip -d ${INSTALL_DIR} \
               && rm /tmp/${GLASSFISH_ARCHIVE}.zip \
               && true

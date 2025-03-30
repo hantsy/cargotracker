@@ -5,9 +5,8 @@ import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
@@ -25,22 +24,26 @@ public class SampleDataGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator.class.getName());
 
-    private @PersistenceContext EntityManager entityManager;
+//    private @PersistenceContext EntityManager entityManager;
+//    private @Inject HandlingEventFactory handlingEventFactory;
+//    private @Inject HandlingEventRepository handlingEventRepository;
+
+    private @Inject EntityManager entityManager;
     private @Inject HandlingEventFactory handlingEventFactory;
     private @Inject HandlingEventRepository handlingEventRepository;
 
-    // required by CDI
-    //    public SampleDataGenerator() {}
-    //
-    //    @Inject
-    //    public SampleDataGenerator(
-    //            EntityManager entityManager,
-    //            HandlingEventFactory handlingEventFactory,
-    //            HandlingEventRepository handlingEventRepository) {
-    //        this.entityManager = entityManager;
-    //        this.handlingEventFactory = handlingEventFactory;
-    //        this.handlingEventRepository = handlingEventRepository;
-    //    }
+     //required by CDI
+//        public SampleDataGenerator() {}
+//
+//        @Inject
+//        public SampleDataGenerator(
+//                EntityManager entityManager,
+//                HandlingEventFactory handlingEventFactory,
+//                HandlingEventRepository handlingEventRepository) {
+//            this.entityManager = entityManager;
+//            this.handlingEventFactory = handlingEventFactory;
+//            this.handlingEventRepository = handlingEventRepository;
+//        }
 
     @Transactional
     public void loadSampleData(@Observes Startup startup) {
