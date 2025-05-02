@@ -13,11 +13,11 @@ import java.util.Objects;
 public record Schedule(
         /** List of carrier movements. */
         @NotNull
-        @Size(min = 1)
-        @OneToMany(cascade = CascadeType.ALL)
-        @JoinColumn(name = "voyage_id")
-        @OrderColumn(name = "cm_index")
-        List<CarrierMovement> carrierMovements) {
+                @Size(min = 1)
+                @OneToMany(cascade = CascadeType.ALL)
+                @JoinColumn(name = "voyage_id")
+                @OrderColumn(name = "cm_index")
+                List<CarrierMovement> carrierMovements) {
 
     // Null object pattern.
     public static final Schedule EMPTY = new Schedule(Collections.emptyList());

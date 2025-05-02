@@ -3,10 +3,8 @@ package org.eclipse.cargotracker.domain.model.voyage;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,7 @@ import java.util.Objects;
         name = "Voyage.findByVoyageNumber",
         query = "Select v from Voyage v where v.voyageNumber = :voyageNumber")
 @NamedQuery(name = "Voyage.findAll", query = "Select v from Voyage v order by v.voyageNumber")
-public class Voyage  {
+public class Voyage {
     // Null object pattern
     public static final Voyage NONE = new Voyage(new VoyageNumber(""), Schedule.EMPTY);
 

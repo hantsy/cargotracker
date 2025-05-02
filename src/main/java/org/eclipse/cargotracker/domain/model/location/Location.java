@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -19,7 +18,7 @@ import java.util.Objects;
 @NamedQuery(
         name = "Location.findByUnLocode",
         query = "Select l from Location l where l.unLocode = :unLocode")
-public class Location  {
+public class Location {
 
     // Special Location object that marks an unknown location.
     public static final Location UNKNOWN = new Location(new UnLocode("XXXXX"), "Unknown location");
@@ -29,9 +28,7 @@ public class Location  {
     @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @Embedded
-    private UnLocode unLocode;
+    @NotNull @Embedded private UnLocode unLocode;
 
     @NotEmpty
     @Column(name = "name")

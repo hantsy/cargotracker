@@ -25,27 +25,15 @@ import java.util.Objects;
  */
 @Embeddable
 public record RouteSpecification(
-    /**
-     * Origin location - can't be the same as the destination.
-     */
-    @ManyToOne
-    @JoinColumn(name = "spec_origin_id")
-    Location origin,
+        /** Origin location - can't be the same as the destination. */
+        @ManyToOne @JoinColumn(name = "spec_origin_id") Location origin,
 
-    /**
-     * Destination location - can't be the same as the origin.
-     */
-    @ManyToOne
-    @JoinColumn(name = "spec_destination_id")
-    Location destination,
+        /** Destination location - can't be the same as the origin. */
+        @ManyToOne @JoinColumn(name = "spec_destination_id") Location destination,
 
-    /**
-     * Arrival deadline.
-     */
-    @Column(name = "spec_arrival_deadline")
-    @NotNull
-    LocalDate arrivalDeadline
-) implements Specification<Itinerary>, Serializable {
+        /** Arrival deadline. */
+        @Column(name = "spec_arrival_deadline") @NotNull LocalDate arrivalDeadline)
+        implements Specification<Itinerary>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,9 +42,8 @@ public record RouteSpecification(
         Objects.requireNonNull(destination, "Destination is required");
         Objects.requireNonNull(arrivalDeadline, "Arrival deadline is required");
         Validate.isTrue(
-            !origin.sameIdentityAs(destination),
-            "Origin and destination can't be the same: " + origin
-        );
+                !origin.sameIdentityAs(destination),
+                "Origin and destination can't be the same: " + origin);
     }
 
     @Override
@@ -102,9 +89,12 @@ public record RouteSpecification(
     @Override
     public String toString() {
         return "RouteSpecification{"
-                + "origin=" + origin
-                + ", destination=" + destination
-                + ", arrivalDeadline=" + arrivalDeadline
+                + "origin="
+                + origin
+                + ", destination="
+                + destination
+                + ", arrivalDeadline="
+                + arrivalDeadline
                 + '}';
     }
 }
