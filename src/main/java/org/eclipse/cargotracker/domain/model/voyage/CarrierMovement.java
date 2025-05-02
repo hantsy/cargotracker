@@ -3,12 +3,8 @@ package org.eclipse.cargotracker.domain.model.voyage;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 

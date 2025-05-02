@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
@@ -17,20 +16,19 @@ import java.util.Objects;
 
 @Embeddable
 public record Itinerary(
-    /**
-     * The legs of the itinerary.
-     * Hibernate issue:
-     * - Cascade delete doesn't work with `orphanRemoval = true` under WildFly/Hibernate.
-     * - `OrderColumn` persists the position of list elements in the database.
-     * - `@OrderBy` ensures the order of list elements in memory but may not work in all cases.
-     */
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cargo_id")
-    @OrderColumn(name = "leg_index")
-    @Size(min = 1)
-    @NotEmpty(message = "Legs must not be empty")
-    List<Leg> legs
-) implements Serializable {
+        /**
+         * The legs of the itinerary. Hibernate issue: - Cascade delete doesn't work with
+         * `orphanRemoval = true` under WildFly/Hibernate. - `OrderColumn` persists the position of
+         * list elements in the database. - `@OrderBy` ensures the order of list elements in memory
+         * but may not work in all cases.
+         */
+        @OneToMany(cascade = CascadeType.ALL)
+                @JoinColumn(name = "cargo_id")
+                @OrderColumn(name = "leg_index")
+                @Size(min = 1)
+                @NotEmpty(message = "Legs must not be empty")
+                List<Leg> legs)
+        implements Serializable {
 
     public static final Itinerary EMPTY_ITINERARY = new Itinerary(Collections.emptyList());
     private static final long serialVersionUID = 1L;

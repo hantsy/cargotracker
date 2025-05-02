@@ -8,10 +8,8 @@ import java.util.Objects;
 
 @Embeddable
 public record VoyageNumber(
-        @Column(name = "voyage_number")
-        @NotBlank(message = "Voyage number cannot be blank") 
-        String number
-        ) {
+        @Column(name = "voyage_number") @NotBlank(message = "Voyage number cannot be blank")
+                String number) {
 
     public VoyageNumber {
         Objects.requireNonNull(number, "Voyage number is required");

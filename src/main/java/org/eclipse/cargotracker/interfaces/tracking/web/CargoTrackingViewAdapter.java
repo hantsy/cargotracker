@@ -127,10 +127,7 @@ public class CargoTrackingViewAdapter {
                     + " in "
                     + activity.location().getName();
         } else {
-            return text
-                    + type.name().toLowerCase()
-                    + " cargo in "
-                    + activity.location().getName();
+            return text + type.name().toLowerCase() + " cargo in " + activity.location().getName();
         }
     }
 

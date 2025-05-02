@@ -13,7 +13,6 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
 

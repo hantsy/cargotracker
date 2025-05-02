@@ -6,7 +6,6 @@ import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -46,7 +45,6 @@ public record Delivery(
         @Column(name = "unloaded_at_dest") @NotNull boolean isUnloadedAtDestination,
         @Enumerated(EnumType.STRING) @Column(name = "routing_status") @NotNull
                 RoutingStatus routingStatus,
-
         @Column(name = "calculated_at") @NotNull LocalDateTime calculatedAt,
         @ManyToOne @JoinColumn(name = "last_event_id") HandlingEvent lastEvent) {
 
@@ -55,10 +53,7 @@ public record Delivery(
     public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
 
     public static Delivery of(
-            RouteSpecification routeSpecification,
-            Itinerary itinerary,
-            HandlingEvent lastEvent
-    ) {
+            RouteSpecification routeSpecification, Itinerary itinerary, HandlingEvent lastEvent) {
         var calculatedAt = LocalDateTime.now();
         var misdirected = calculateMisdirectionStatus(itinerary, lastEvent);
         var routingStatus = calculateRoutingStatus(itinerary, routeSpecification);
@@ -66,7 +61,9 @@ public record Delivery(
         var lastKnownLocation = calculateLastKnownLocation(lastEvent);
         var currentVoyage = calculateCurrentVoyage(transportStatus, lastEvent);
         var eta = calculateEta(itinerary, routingStatus, misdirected);
-        var nextExpectedActivity = calculateNextExpectedActivity(routeSpecification, itinerary,lastEvent, routingStatus, misdirected);
+        var nextExpectedActivity =
+                calculateNextExpectedActivity(
+                        routeSpecification, itinerary, lastEvent, routingStatus, misdirected);
         var isUnloadedAtDestination = calculateUnloadedAtDestination(routeSpecification, lastEvent);
 
         return new Delivery(
@@ -117,8 +114,6 @@ public record Delivery(
         return Objects.requireNonNullElse(lastKnownLocation, Location.UNKNOWN);
     }
 
-
-
     public Voyage currentVoyage() {
         return Objects.requireNonNullElse(currentVoyage, Voyage.NONE);
     }
@@ -133,7 +128,6 @@ public record Delivery(
     public HandlingActivity nextExpectedActivity() {
         return Objects.requireNonNullElse(nextExpectedActivity, NO_ACTIVITY);
     }
-
 
     private static TransportStatus calculateTransportStatus(HandlingEvent lastEvent) {
         if (lastEvent == null) {
@@ -156,7 +150,8 @@ public record Delivery(
         }
     }
 
-    private static Voyage calculateCurrentVoyage(TransportStatus transportStatus, HandlingEvent lastEvent) {
+    private static Voyage calculateCurrentVoyage(
+            TransportStatus transportStatus, HandlingEvent lastEvent) {
         if (transportStatus.equals(ONBOARD_CARRIER) && lastEvent != null) {
             return lastEvent.getVoyage();
         } else {
@@ -164,7 +159,8 @@ public record Delivery(
         }
     }
 
-    private static boolean calculateMisdirectionStatus(Itinerary itinerary, HandlingEvent lastEvent) {
+    private static boolean calculateMisdirectionStatus(
+            Itinerary itinerary, HandlingEvent lastEvent) {
         if (lastEvent == null) {
             return false;
         } else {
@@ -172,7 +168,8 @@ public record Delivery(
         }
     }
 
-    private static LocalDateTime calculateEta(Itinerary itinerary, RoutingStatus routingStatus, boolean misdirected) {
+    private static LocalDateTime calculateEta(
+            Itinerary itinerary, RoutingStatus routingStatus, boolean misdirected) {
         if (onTrack(routingStatus, misdirected)) {
             return itinerary.finalArrivalDate();
         } else {
@@ -181,8 +178,12 @@ public record Delivery(
     }
 
     private static HandlingActivity calculateNextExpectedActivity(
-            RouteSpecification routeSpecification, Itinerary itinerary, HandlingEvent lastEvent,RoutingStatus routingStatus, boolean misdirected) {
-        if (!onTrack(routingStatus,misdirected)) {
+            RouteSpecification routeSpecification,
+            Itinerary itinerary,
+            HandlingEvent lastEvent,
+            RoutingStatus routingStatus,
+            boolean misdirected) {
+        if (!onTrack(routingStatus, misdirected)) {
             return NO_ACTIVITY;
         }
 
@@ -243,7 +244,8 @@ public record Delivery(
         }
     }
 
-    private static boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification, HandlingEvent lastEvent) {
+    private static boolean calculateUnloadedAtDestination(
+            RouteSpecification routeSpecification, HandlingEvent lastEvent) {
         return lastEvent != null
                 && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
                 && routeSpecification.destination().sameIdentityAs(lastEvent.getLocation());
@@ -254,7 +256,7 @@ public record Delivery(
     }
 
     private boolean sameValueAs(Delivery other) {
-        return other != null && Objects.equals(this, (Delivery)other);
+        return other != null && Objects.equals(this, (Delivery) other);
     }
 
     @Override
