@@ -30,10 +30,9 @@ public record Itinerary(
     @Size(min = 1)
     @NotEmpty(message = "Legs must not be empty")
     List<Leg> legs
-) implements Serializable {
+){
 
     public static final Itinerary EMPTY_ITINERARY = new Itinerary(Collections.emptyList());
-    private static final long serialVersionUID = 1L;
 
     public Itinerary {
         Objects.requireNonNull(legs, "Legs must not be null");
@@ -43,11 +42,7 @@ public record Itinerary(
         if (legs.stream().anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException("Legs must not contain null elements");
         }
-        legs = Collections.unmodifiableList(new ArrayList<>(legs));
-    }
-
-    public List<Leg> legs() {
-        return legs;
+        legs = List.copyOf(legs);
     }
 
     /** Test if the given handling event is expected when executing this itinerary. */
@@ -61,7 +56,7 @@ public record Itinerary(
         // location
         return switch (event.getType()) {
             case RECEIVE -> {
-                Leg leg = legs.get(0);
+                Leg leg = legs.getFirst();
                 yield leg.getLoadLocation().equals(event.getLocation());
             }
             case LOAD ->
@@ -123,7 +118,7 @@ public record Itinerary(
         if (legs.isEmpty()) {
             return null;
         } else {
-            return legs.get(legs.size() - 1);
+            return legs.getLast();
         }
     }
 
@@ -162,7 +157,6 @@ public record Itinerary(
 
     @Override
     public int hashCode() {
-        // return legs.hashCode();
         return Objects.hashCode(List.copyOf(legs));
     }
 
