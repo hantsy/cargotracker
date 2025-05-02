@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Objects;
 
 @Entity
 @Table(name = "legs")
@@ -61,8 +62,11 @@ public class Leg implements Serializable {
             Location unloadLocation,
             LocalDateTime loadTime,
             LocalDateTime unloadTime) {
-        Validate.noNullElements(
-                new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
+        Objects.requireNonNull(voyage, "voyage must not be null");
+        Objects.requireNonNull(loadLocation, "loadLocation must not be null");
+        Objects.requireNonNull(unloadLocation, "unloadLocation must not be null");
+        Objects.requireNonNull(loadTime, "loadTime must not be null");
+        Objects.requireNonNull(unloadTime, "unloadTime must not be null");
 
         this.voyage = voyage;
         this.loadLocation = loadLocation;

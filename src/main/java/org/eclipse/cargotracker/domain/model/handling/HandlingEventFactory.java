@@ -18,9 +18,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 @ApplicationScoped
-public class HandlingEventFactory implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class HandlingEventFactory {
 
     private static final Logger LOGGER = Logger.getLogger(HandlingEventFactory.class.getName());
 

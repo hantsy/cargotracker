@@ -8,8 +8,6 @@ package org.eclipse.cargotracker.domain.model.handling;
  */
 public class CannotCreateHandlingEventException extends Exception {
 
-    private static final long serialVersionUID = 1L;
-
     public CannotCreateHandlingEventException(Exception e) {
         super(e);
     }

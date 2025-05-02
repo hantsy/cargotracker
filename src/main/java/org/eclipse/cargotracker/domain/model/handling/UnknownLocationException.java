@@ -4,7 +4,6 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 
 public class UnknownLocationException extends CannotCreateHandlingEventException {
 
-    private static final long serialVersionUID = 1L;
     private final UnLocode unlocode;
 
     public UnknownLocationException(UnLocode unlocode) {

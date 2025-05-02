@@ -4,9 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.Validate;
-
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A location in our model is stops on a journey, such as cargo origin or destination, or carrier
@@ -20,18 +19,19 @@ import java.io.Serializable;
 @NamedQuery(
         name = "Location.findByUnLocode",
         query = "Select l from Location l where l.unLocode = :unLocode")
-public class Location implements Serializable {
+public class Location  {
 
     // Special Location object that marks an unknown location.
     public static final Location UNKNOWN = new Location(new UnLocode("XXXXX"), "Unknown location");
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     @Column(name = "id")
     private Long id;
 
-    @NotNull @Embedded private UnLocode unLocode;
+    @NotNull
+    @Embedded
+    private UnLocode unLocode;
 
     @NotEmpty
     @Column(name = "name")
@@ -47,8 +47,8 @@ public class Location implements Serializable {
      * @throws IllegalArgumentException if the UN Locode or name is null
      */
     public Location(UnLocode unLocode, String name) {
-        Validate.notNull(unLocode, "Location unlocode is required");
-        Validate.notNull(name, "Location name is required");
+        Objects.requireNonNull(unLocode, "Location unlocode is required");
+        Objects.requireNonNull(name, "Location name is required");
 
         this.unLocode = unLocode;
         this.name = name;
@@ -88,7 +88,7 @@ public class Location implements Serializable {
     }
 
     public boolean sameIdentityAs(Location other) {
-        return this.unLocode.sameValueAs(other.unLocode);
+        return this.unLocode.equals(other.unLocode);
     }
 
     /**

@@ -14,68 +14,57 @@ import org.eclipse.cargotracker.domain.shared.Specification;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * Route specification. Describes where a cargo origin and destination is, and the arrival deadline.
+ *
+ * @param origin origin location - can't be the same as the destination
+ * @param destination destination location - can't be the same as the origin
+ * @param arrivalDeadline arrival deadline
  */
 @Embeddable
-public class RouteSpecification implements Specification<Itinerary>, Serializable {
+public record RouteSpecification(
+    /**
+     * Origin location - can't be the same as the destination.
+     */
+    @ManyToOne
+    @JoinColumn(name = "spec_origin_id")
+    Location origin,
+
+    /**
+     * Destination location - can't be the same as the origin.
+     */
+    @ManyToOne
+    @JoinColumn(name = "spec_destination_id")
+    Location destination,
+
+    /**
+     * Arrival deadline.
+     */
+    @Column(name = "spec_arrival_deadline")
+    @NotNull
+    LocalDate arrivalDeadline
+) implements Specification<Itinerary>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // private static final Logger LOGGER = Logger.getLogger(RouteSpecification.class.getName());
-
-    @ManyToOne
-    @JoinColumn(name = "spec_origin_id")
-    private Location origin;
-
-    @ManyToOne
-    @JoinColumn(name = "spec_destination_id")
-    private Location destination;
-
-    // @Temporal(TemporalType.DATE)
-    @Column(name = "spec_arrival_deadline")
-    @NotNull
-    private LocalDate arrivalDeadline;
-
-    public RouteSpecification() {}
-
-    /**
-     * @param origin origin location - can't be the same as the destination
-     * @param destination destination location - can't be the same as the origin
-     * @param arrivalDeadline arrival deadline
-     */
-    public RouteSpecification(Location origin, Location destination, LocalDate arrivalDeadline) {
-        Validate.notNull(origin, "Origin is required");
-        Validate.notNull(destination, "Destination is required");
-        Validate.notNull(arrivalDeadline, "Arrival deadline is required");
+    public RouteSpecification {
+        Objects.requireNonNull(origin, "Origin is required");
+        Objects.requireNonNull(destination, "Destination is required");
+        Objects.requireNonNull(arrivalDeadline, "Arrival deadline is required");
         Validate.isTrue(
-                !origin.sameIdentityAs(destination),
-                "Origin and destination can't be the same: " + origin);
-
-        this.origin = origin;
-        this.destination = destination;
-        this.arrivalDeadline = arrivalDeadline;
-    }
-
-    public Location origin() {
-        return origin;
-    }
-
-    public Location destination() {
-        return destination;
-    }
-
-    public LocalDate arrivalDeadline() {
-        return arrivalDeadline;
+            !origin.sameIdentityAs(destination),
+            "Origin and destination can't be the same: " + origin
+        );
     }
 
     @Override
     public boolean isSatisfiedBy(Itinerary itinerary) {
         return itinerary != null
-                && origin().sameIdentityAs(itinerary.initialDepartureLocation())
-                && destination().sameIdentityAs(itinerary.finalArrivalLocation())
-                && arrivalDeadline().isAfter(itinerary.finalArrivalDate().toLocalDate());
+                && origin.sameIdentityAs(itinerary.initialDepartureLocation())
+                && destination.sameIdentityAs(itinerary.finalArrivalLocation())
+                && arrivalDeadline.isAfter(itinerary.finalArrivalDate().toLocalDate());
     }
 
     private boolean sameValueAs(RouteSpecification other) {
@@ -113,12 +102,9 @@ public class RouteSpecification implements Specification<Itinerary>, Serializabl
     @Override
     public String toString() {
         return "RouteSpecification{"
-                + "origin="
-                + origin
-                + ", destination="
-                + destination
-                + ", arrivalDeadline="
-                + arrivalDeadline
+                + "origin=" + origin
+                + ", destination=" + destination
+                + ", arrivalDeadline=" + arrivalDeadline
                 + '}';
     }
 }

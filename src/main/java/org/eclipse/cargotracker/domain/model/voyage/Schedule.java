@@ -1,46 +1,34 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import org.apache.commons.lang3.Validate;
-
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 /** A voyage schedule. */
 @Embeddable
-public class Schedule implements Serializable {
+public record Schedule(
+        /** List of carrier movements. */
+        @NotNull
+        @Size(min = 1)
+        @OneToMany(cascade = CascadeType.ALL)
+        @JoinColumn(name = "voyage_id")
+        @OrderColumn(name = "cm_index")
+        List<CarrierMovement> carrierMovements) {
 
     // Null object pattern.
-    public static final Schedule EMPTY = new Schedule();
-    private static final long serialVersionUID = 1L;
+    public static final Schedule EMPTY = new Schedule(Collections.emptyList());
 
-    // TODO [Clean Code] Look into why cascade delete doesn't work.
-    // Hibernate issue:
-    // orphanRemoval = true will cause exception under WildFly/Hibernate
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "voyage_id")
-    // TODO [Clean Code] Index as cm_index
-    @OrderColumn(name = "cm_index")
-    @NotNull
-    @Size(min = 1)
-    private List<CarrierMovement> carrierMovements = Collections.emptyList();
+    public Schedule {
+        Objects.requireNonNull(carrierMovements, "Carrier movements is required");
 
-    public Schedule() {
-        // Nothing to initialize.
-    }
-
-    public Schedule(@Nonnull List<CarrierMovement> carrierMovements) {
-        Validate.notNull(carrierMovements, "Carrier movements is required");
-        Validate.noNullElements(carrierMovements);
-        Validate.notEmpty(carrierMovements);
-
-        this.carrierMovements = carrierMovements;
+        if (carrierMovements.isEmpty()) {
+            throw new IllegalArgumentException("Carrier movements must not be empty");
+        }
+        carrierMovements.forEach(Objects::requireNonNull);
     }
 
     public List<CarrierMovement> getCarrierMovements() {

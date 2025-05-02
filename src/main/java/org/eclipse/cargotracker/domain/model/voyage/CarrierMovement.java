@@ -10,17 +10,17 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /** A carrier movement is a vessel voyage from one location to another. */
 @Entity
 @Table(name = "carrier_movements")
-public class CarrierMovement implements Serializable {
+public class CarrierMovement {
 
     // Null object pattern
     public static final CarrierMovement NONE =
             new CarrierMovement(
                     Location.UNKNOWN, Location.UNKNOWN, LocalDateTime.MIN, LocalDateTime.MIN);
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
@@ -37,12 +37,10 @@ public class CarrierMovement implements Serializable {
     @NotNull
     private Location arrivalLocation;
 
-    // @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "departure_time")
     @NotNull
     private LocalDateTime departureTime;
 
-    // @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "arrival_time")
     @NotNull
     private LocalDateTime arrivalTime;
@@ -56,8 +54,10 @@ public class CarrierMovement implements Serializable {
             Location arrivalLocation,
             LocalDateTime departureTime,
             LocalDateTime arrivalTime) {
-        Validate.noNullElements(
-                new Object[] {departureLocation, arrivalLocation, departureTime, arrivalTime});
+        Objects.requireNonNull(departureLocation, "Departure location must not be null");
+        Objects.requireNonNull(arrivalLocation, "Arrival location must not be null");
+        Objects.requireNonNull(departureTime, "Departure time must not be null");
+        Objects.requireNonNull(arrivalTime, "Arrival time must not be null");
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.departureLocation = departureLocation;
@@ -96,21 +96,10 @@ public class CarrierMovement implements Serializable {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.departureLocation)
-                .append(this.departureTime)
-                .append(this.arrivalLocation)
-                .append(this.arrivalTime)
-                .toHashCode();
+        return Objects.hashCode(this);
     }
 
     private boolean sameValueAs(CarrierMovement other) {
-        return other != null
-                && new EqualsBuilder()
-                        .append(this.departureLocation, other.departureLocation)
-                        .append(this.departureTime, other.departureTime)
-                        .append(this.arrivalLocation, other.arrivalLocation)
-                        .append(this.arrivalTime, other.arrivalTime)
-                        .isEquals();
+        return other != null && Objects.equals(this, other);
     }
 }

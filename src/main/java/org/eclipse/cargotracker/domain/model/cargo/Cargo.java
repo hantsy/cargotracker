@@ -3,15 +3,11 @@ package org.eclipse.cargotracker.domain.model.cargo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
-import java.io.Serializable;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -55,9 +51,7 @@ import java.util.logging.Logger;
 @NamedQuery(
         name = "Cargo.findByTrackingId",
         query = "Select c from Cargo c where c.trackingId = :trackingId")
-public class Cargo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Cargo {
 
     private static final Logger LOGGER = Logger.getLogger(Cargo.class.getName());
 
@@ -87,8 +81,8 @@ public class Cargo implements Serializable {
     }
 
     public Cargo(TrackingId trackingId, RouteSpecification routeSpecification) {
-        Validate.notNull(trackingId, "Tracking ID is required");
-        Validate.notNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(trackingId, "Tracking ID is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         this.trackingId = trackingId;
         // Cargo origin never changes, even if the route specification changes.
@@ -130,12 +124,12 @@ public class Cargo implements Serializable {
      * @return The itinerary. Never null.
      */
     public Itinerary getItinerary() {
-        return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
+        return Objects.requireNonNullElse(this.itinerary, Itinerary.EMPTY_ITINERARY);
     }
 
     /** Specifies a new route for this cargo. */
     public void specifyNewRoute(RouteSpecification routeSpecification) {
-        Validate.notNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         this.routeSpecification = routeSpecification;
         // Handling consistency within the Cargo aggregate synchronously
@@ -143,7 +137,7 @@ public class Cargo implements Serializable {
     }
 
     public void assignToRoute(Itinerary itinerary) {
-        Validate.notNull(itinerary, "Itinerary is required for assignment");
+        Objects.requireNonNull(itinerary, "Itinerary is required for assignment");
 
         this.itinerary = itinerary;
 
@@ -209,7 +203,7 @@ public class Cargo implements Serializable {
 
     public String toString(boolean verbose) {
         return verbose
-                ? ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE)
+                ? Objects.toString(this, "tacking id:" + trackingId.toString())
                 : trackingId.toString();
     }
 

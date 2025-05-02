@@ -1,12 +1,5 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.*;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -15,21 +8,29 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.logging.Logger;
+
+import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.*;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
 
 /**
  * The actual transportation of the cargo, as opposed to the customer requirement
  * (RouteSpecification) and the plan (Itinerary).
  */
 @Embeddable
-public class Delivery implements Serializable {
+public class Delivery {
     // Null object pattern.
     public static final LocalDateTime ETA_UNKOWN = null;
     // Null object pattern
     public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
 
+    // public static final HandlingActivity NO_ACTIVITY = null;
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_status")
     @NotNull
@@ -50,7 +51,8 @@ public class Delivery implements Serializable {
     @Column(name = "eta")
     private LocalDateTime eta;
 
-    @Embedded private HandlingActivity nextExpectedActivity = null;
+    @Embedded 
+    private HandlingActivity nextExpectedActivity = null;
 
     @Column(name = "unloaded_at_dest")
     @NotNull
@@ -103,8 +105,8 @@ public class Delivery implements Serializable {
             RouteSpecification routeSpecification,
             Itinerary itinerary,
             HandlingHistory handlingHistory) {
-        Validate.notNull(routeSpecification, "Route specification is required");
-        Validate.notNull(handlingHistory, "Delivery history is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(handlingHistory, "Delivery history is required");
 
         HandlingEvent lastEvent = handlingHistory.getMostRecentlyCompletedEvent();
 
@@ -117,12 +119,12 @@ public class Delivery implements Serializable {
      * performed.
      */
     Delivery updateOnRouting(RouteSpecification routeSpecification, Itinerary itinerary) {
-        Validate.notNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         return new Delivery(this.lastEvent, itinerary, routeSpecification);
     }
 
-    public TransportStatus transportStatus() {
+    public TransportStatus getTransportStatus() {
         return transportStatus;
     }
 
@@ -130,8 +132,8 @@ public class Delivery implements Serializable {
         this.transportStatus = transportStatus;
     }
 
-    public Location lastKnownLocation() {
-        return DomainObjectUtils.nullSafe(lastKnownLocation, Location.UNKNOWN);
+    public Location getLastKnownLocation() {
+        return Objects.requireNonNullElse(lastKnownLocation, Location.UNKNOWN);
     }
 
     public void setLastKnownLocation(Location lastKnownLocation) {
@@ -142,8 +144,8 @@ public class Delivery implements Serializable {
         this.lastEvent = lastEvent;
     }
 
-    public Voyage currentVoyage() {
-        return DomainObjectUtils.nullSafe(currentVoyage, Voyage.NONE);
+    public Voyage getCurrentVoyage() {
+        return Objects.requireNonNullElse(currentVoyage, Voyage.NONE);
     }
 
     /**
@@ -159,7 +161,7 @@ public class Delivery implements Serializable {
      *
      * @return <code>true</code> if the cargo has been misdirected,
      */
-    public boolean misdirected() {
+    public boolean isMisdirected() {
         return misdirected;
     }
 
@@ -167,14 +169,14 @@ public class Delivery implements Serializable {
         this.misdirected = misdirected;
     }
 
-    public LocalDateTime estimatedTimeOfArrival() {
+    public LocalDateTime getEstimatedTimeOfArrival() {
         return eta;
     }
 
     // Hibernate issue:
     // After an empty HandlingActivity is persisted, when retrieving it from database it is a
     // *NULL*.
-    public HandlingActivity nextExpectedActivity() {
+    public HandlingActivity getNextExpectedActivity() {
         // return nextExpectedActivity;
         return DomainObjectUtils.nullSafe(nextExpectedActivity, NO_ACTIVITY);
     }
@@ -190,7 +192,7 @@ public class Delivery implements Serializable {
         this.isUnloadedAtDestination = isUnloadedAtDestination;
     }
 
-    public RoutingStatus routingStatus() {
+    public RoutingStatus getRoutingStatus() {
         return routingStatus;
     }
 
@@ -228,7 +230,7 @@ public class Delivery implements Serializable {
     }
 
     private Voyage calculateCurrentVoyage() {
-        if (transportStatus().equals(ONBOARD_CARRIER) && lastEvent != null) {
+        if (getTransportStatus().equals(ONBOARD_CARRIER) && lastEvent != null) {
             return lastEvent.getVoyage();
         } else {
             return null;
@@ -274,7 +276,8 @@ public class Delivery implements Serializable {
                 yield NO_ACTIVITY;
             }
             case UNLOAD -> {
-                for (Iterator<Leg> iterator = itinerary.legs().iterator(); iterator.hasNext(); ) {
+                for (Iterator<Leg> iterator = itinerary.legs().iterator();
+                        iterator.hasNext(); ) {
                     Leg leg = iterator.next();
 
                     if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {

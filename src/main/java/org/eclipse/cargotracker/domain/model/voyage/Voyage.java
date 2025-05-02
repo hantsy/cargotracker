@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "voyages")
@@ -17,11 +18,9 @@ import java.util.List;
         name = "Voyage.findByVoyageNumber",
         query = "Select v from Voyage v where v.voyageNumber = :voyageNumber")
 @NamedQuery(name = "Voyage.findAll", query = "Select v from Voyage v order by v.voyageNumber")
-public class Voyage implements Serializable {
-
+public class Voyage  {
     // Null object pattern
     public static final Voyage NONE = new Voyage(new VoyageNumber(""), Schedule.EMPTY);
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
@@ -41,8 +40,8 @@ public class Voyage implements Serializable {
     }
 
     public Voyage(VoyageNumber voyageNumber, Schedule schedule) {
-        Validate.notNull(voyageNumber, "Voyage number is required");
-        Validate.notNull(schedule, "Schedule is required");
+        Objects.requireNonNull(voyageNumber, "Voyage number is required");
+        Objects.requireNonNull(schedule, "Schedule is required");
 
         this.voyageNumber = voyageNumber;
         this.schedule = schedule;
@@ -98,8 +97,8 @@ public class Voyage implements Serializable {
         private Location departureLocation;
 
         public Builder(VoyageNumber voyageNumber, Location departureLocation) {
-            Validate.notNull(voyageNumber, "Voyage number is required");
-            Validate.notNull(departureLocation, "Departure location is required");
+            Objects.requireNonNull(voyageNumber, "Voyage number is required");
+            Objects.requireNonNull(departureLocation, "Departure location is required");
 
             this.voyageNumber = voyageNumber;
             this.departureLocation = departureLocation;
