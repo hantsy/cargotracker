@@ -8,6 +8,7 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoStatusDto;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.TrackingEventsDto;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -58,33 +59,31 @@ public class CargoStatusDtoAssembler {
     private String getNextExpectedActivity(Cargo cargo) {
         HandlingActivity activity = cargo.getDelivery().nextExpectedActivity();
 
-        if ((activity == null) || (activity.isEmpty())) {
+        if (activity == null|| activity == HandlingActivity.EMPTY) {
             return "";
         }
 
-        String text = "Next expected activity is to ";
-        HandlingEvent.Type type = activity.getType();
+        String textLoad = "Next expected activity is to {0} cargo onto voyage {1} in {2}";
+        String textUnload = "Next expected activity is to {0} cargo off of {1} in {2}";
+        String textInPort = "Next expected activity is to {0} cargo in {1}";
 
+        HandlingEvent.Type type = activity.type();
         return switch (type) {
             case HandlingEvent.Type.LOAD ->
-                    text
-                            + type.name().toLowerCase()
-                            + " cargo onto voyage "
-                            + activity.getVoyage().getVoyageNumber()
-                            + " in "
-                            + activity.getLocation().getName();
+                    MessageFormat.format(
+                            textLoad,
+                            type.name().toLowerCase(),
+                            activity.voyage().getVoyageNumber(),
+                            activity.location().getName());
             case HandlingEvent.Type.UNLOAD ->
-                    text
-                            + type.name().toLowerCase()
-                            + " cargo off of "
-                            + activity.getVoyage().getVoyageNumber()
-                            + " in "
-                            + activity.getLocation().getName();
+                    MessageFormat.format(
+                            textUnload,
+                            type.name().toLowerCase(),
+                            activity.voyage().getVoyageNumber(),
+                            activity.location().getName());
             default ->
-                    text
-                            + type.name().toLowerCase()
-                            + " cargo in "
-                            + activity.getLocation().getName();
+                    MessageFormat.format(
+                            textInPort, type.name().toLowerCase(), activity.location().getName());
         };
     }
 }

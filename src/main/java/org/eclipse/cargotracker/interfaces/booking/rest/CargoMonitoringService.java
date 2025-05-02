@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
+import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.util.List;
 
@@ -48,18 +49,11 @@ public class CargoMonitoringService {
                 .add("misdirected", cargo.getDelivery().misdirected())
                 .add("transportStatus", cargo.getDelivery().transportStatus().toString())
                 .add("atDestination", cargo.getDelivery().isUnloadedAtDestination())
-                .add("origin", cargo.getOrigin().getUnLocode().getIdString())
+                .add("origin", cargo.getOrigin().getUnLocode().value())
                 .add(
                         "lastKnownLocation",
-                        cargo.getDelivery()
-                                        .lastKnownLocation()
-                                        .getUnLocode()
-                                        .getIdString()
-                                        .equals("XXXXX")
+                        cargo.getDelivery().lastKnownLocation().equals(Location.UNKNOWN)
                                 ? "Unknown"
-                                : cargo.getDelivery()
-                                        .lastKnownLocation()
-                                        .getUnLocode()
-                                        .getIdString());
+                                : cargo.getDelivery().lastKnownLocation().getUnLocode().value());
     }
 }

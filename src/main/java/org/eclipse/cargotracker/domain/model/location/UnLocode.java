@@ -32,4 +32,6 @@ public record UnLocode(
         }
         return new UnLocode(countryAndLocation.toUpperCase());
     }
+
+    public String value() { return this.unlocode; }
 }

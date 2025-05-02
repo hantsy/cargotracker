@@ -139,7 +139,7 @@ public class EventLogger implements Serializable {
 
         this.locations = new ArrayList<>(locations.size());
         for (Location location : locations) {
-            String locationCode = location.getUnLocode().getIdString();
+            String locationCode = location.getUnLocode().value();
             this.locations.add(
                     new SelectItem(locationCode, location.getName() + " (" + locationCode + ")"));
         }

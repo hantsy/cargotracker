@@ -64,7 +64,7 @@ public class SampleDataGenerator {
         List<Cargo> cargos =
                 entityManager.createQuery("Select c from Cargo c", Cargo.class).getResultList();
         for (Cargo cargo : cargos) {
-            cargo.getDelivery().setLastEvent(null);
+            Delivery delivery = cargo.getDelivery();
             entityManager.merge(cargo);
         }
         entityManager.flush();

@@ -5,6 +5,7 @@ import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.Delivery;
 import org.eclipse.cargotracker.domain.model.cargo.HandlingActivity;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
+import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,9 +14,6 @@ import java.util.List;
 
 /** View adapter for displaying a cargo in a tracking context. */
 public class CargoTrackingViewAdapter {
-
-    // public static final String DT_PATTERN = "MM/dd/yyyy hh:mm a z";
-    // private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DT_PATTERN);
 
     private final Cargo cargo;
     private final List<HandlingEventViewAdapter> events;
@@ -36,7 +34,7 @@ public class CargoTrackingViewAdapter {
     }
 
     public String getOriginCode() {
-        return cargo.getRouteSpecification().origin().getUnLocode().getIdString();
+        return cargo.getRouteSpecification().origin().getUnLocode().value();
     }
 
     public String getDestinationName() {
@@ -44,17 +42,17 @@ public class CargoTrackingViewAdapter {
     }
 
     public String getDestinationCode() {
-        return cargo.getRouteSpecification().destination().getUnLocode().getIdString();
+        return cargo.getRouteSpecification().destination().getUnLocode().value();
     }
 
     public String getLastKnownLocationName() {
-        return cargo.getDelivery().lastKnownLocation().getUnLocode().getIdString().equals("XXXXX")
+        return cargo.getDelivery().lastKnownLocation().equals(Location.UNKNOWN)
                 ? "Unknown"
                 : cargo.getDelivery().lastKnownLocation().getName();
     }
 
     public String getLastKnownLocationCode() {
-        return cargo.getDelivery().lastKnownLocation().getUnLocode().getIdString();
+        return cargo.getDelivery().lastKnownLocation().getUnLocode().value();
     }
 
     public String getStatusCode() {
@@ -112,27 +110,27 @@ public class CargoTrackingViewAdapter {
         }
 
         String text = "Next expected activity is to ";
-        HandlingEvent.Type type = activity.getType();
+        HandlingEvent.Type type = activity.type();
 
         if (type.sameValueAs(HandlingEvent.Type.LOAD)) {
             return text
                     + type.name().toLowerCase()
                     + " cargo onto voyage "
-                    + activity.getVoyage().getVoyageNumber()
+                    + activity.voyage().getVoyageNumber()
                     + " in "
-                    + activity.getLocation().getName();
+                    + activity.location().getName();
         } else if (type.sameValueAs(HandlingEvent.Type.UNLOAD)) {
             return text
                     + type.name().toLowerCase()
                     + " cargo off of "
-                    + activity.getVoyage().getVoyageNumber()
+                    + activity.voyage().getVoyageNumber()
                     + " in "
-                    + activity.getLocation().getName();
+                    + activity.location().getName();
         } else {
             return text
                     + type.name().toLowerCase()
                     + " cargo in "
-                    + activity.getLocation().getName();
+                    + activity.location().getName();
         }
     }
 
@@ -148,7 +146,7 @@ public class CargoTrackingViewAdapter {
 
         private final HandlingEvent handlingEvent;
 
-        private boolean expected;
+        private final boolean expected;
 
         public HandlingEventViewAdapter(HandlingEvent handlingEvent) {
             this.handlingEvent = handlingEvent;

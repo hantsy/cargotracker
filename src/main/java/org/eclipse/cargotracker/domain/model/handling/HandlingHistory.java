@@ -26,10 +26,7 @@ public class HandlingHistory {
      *     completion time.
      */
     public List<HandlingEvent> getDistinctEventsByCompletionTime() {
-        List<HandlingEvent> ordered = new ArrayList<>(new HashSet<>(handlingEvents));
-        ordered.sort(BY_COMPLETION_TIME_COMPARATOR);
-
-        return Collections.unmodifiableList(ordered);
+        return handlingEvents.stream().distinct().sorted(BY_COMPLETION_TIME_COMPARATOR).toList();
     }
 
     /**
@@ -37,12 +34,8 @@ public class HandlingHistory {
      */
     public HandlingEvent getMostRecentlyCompletedEvent() {
         List<HandlingEvent> distinctEvents = getDistinctEventsByCompletionTime();
-        // LOGGER.log(Level.INFO, "distinct events: {0}", distinctEvents);
-        if (distinctEvents.isEmpty()) {
-            return null;
-        } else {
-            return distinctEvents.getLast();
-        }
+        if (distinctEvents.isEmpty()) return null;
+        return distinctEvents.getLast();
     }
 
     private boolean sameValueAs(HandlingHistory other) {
