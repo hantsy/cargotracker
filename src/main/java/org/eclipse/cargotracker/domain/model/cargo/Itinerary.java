@@ -7,29 +7,25 @@ import jakarta.validation.constraints.Size;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 @Embeddable
 public record Itinerary(
-    /**
-     * The legs of the itinerary.
-     * Hibernate issue:
-     * - Cascade delete doesn't work with `orphanRemoval = true` under WildFly/Hibernate.
-     * - `OrderColumn` persists the position of list elements in the database.
-     * - `@OrderBy` ensures the order of list elements in memory but may not work in all cases.
-     */
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cargo_id")
-    @OrderColumn(name = "leg_index")
-    @Size(min = 1)
-    @NotEmpty(message = "Legs must not be empty")
-    List<Leg> legs
-){
+        /**
+         * The legs of the itinerary. Hibernate issue: - Cascade delete doesn't work with
+         * `orphanRemoval = true` under WildFly/Hibernate. - `OrderColumn` persists the position of
+         * list elements in the database. - `@OrderBy` ensures the order of list elements in memory
+         * but may not work in all cases.
+         */
+        @OneToMany(cascade = CascadeType.ALL)
+                @JoinColumn(name = "cargo_id")
+                @OrderColumn(name = "leg_index")
+                @Size(min = 1)
+                @NotEmpty(message = "Legs must not be empty")
+                List<Leg> legs) {
 
     public static final Itinerary EMPTY_ITINERARY = new Itinerary(Collections.emptyList());
 
