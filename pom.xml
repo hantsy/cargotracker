@@ -37,12 +37,12 @@
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
-        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
-        <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.5.3</maven-surefire-report-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.10.17</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.10.19</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0-M5</jakartaee-api.version>
@@ -56,9 +56,9 @@
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
         <shrinkwrap-resolver-bom.version>3.3.3</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
-        <junit.version>5.12.0</junit.version>
+        <junit.version>5.12.2</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <mockito.version>5.15.2</mockito.version>
+        <mockito.version>5.17.0</mockito.version>
         <assertj.version>3.27.3</assertj.version>
         <json-path.version>2.9.0</json-path.version>
         <jacoco.version>0.8.12</jacoco.version>
@@ -70,10 +70,9 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0-M9</glassfish.version>
-        <jersey.version>4.0.0-M1</jersey.version>
-        <eclipselink.version>5.0.0-B03</eclipselink.version>
-
+        <glassfish.version>8.0.0-M11</glassfish.version>
+        <jersey.version>4.0.0-M2</jersey.version>
+        <eclipselink.version>5.0.0-B07</eclipselink.version>
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>
@@ -83,7 +82,7 @@
         <wildfly-maven-plugin.version>5.1.1.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>5.0.1.Final</wildfly-arquillian.version>
         <!-- aligned to Wildfly version. -->
-        <resteasy.version>6.2.11.Final</resteasy.version>
+        <resteasy.version>6.2.12.Final</resteasy.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>
