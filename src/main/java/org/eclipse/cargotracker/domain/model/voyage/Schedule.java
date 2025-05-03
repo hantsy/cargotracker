@@ -10,9 +10,17 @@ import java.util.Objects;
 
 /** A voyage schedule. */
 @Embeddable
-public record Schedule(/** List of carrier movements. */
-@NotNull @Size(min = 1) @OneToMany(cascade = CascadeType.ALL) @JoinColumn(name = "voyage_id") @OrderColumn(
-		name = "cm_index") List<CarrierMovement> carrierMovements) {
+//@formatter:off
+public record Schedule(
+
+	/** List of carrier movements. */
+	@NotNull @Size(min = 1)
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "voyage_id")
+	@OrderColumn(name = "cm_index")
+	List<CarrierMovement> carrierMovements
+) {
+//@formatter:on
 
 	// Null object pattern.
 	public static final Schedule EMPTY = new Schedule(Collections.emptyList());

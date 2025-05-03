@@ -71,8 +71,9 @@
 
         <!-- spring format and Checkstyle -->
         <spring-javaformat.version>0.0.43</spring-javaformat.version>
-        <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
-        <checkstyle.version>8.29</checkstyle.version>
+        <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+        <!-- NOTE: aligned with spring-javaformat -->
+        <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
         <glassfish.version>8.0.0-M11</glassfish.version>
@@ -320,17 +321,17 @@
         </pluginManagement>
         <plugins>
             <plugin>
-            <groupId>io.spring.javaformat</groupId>
-            <artifactId>spring-javaformat-maven-plugin</artifactId>
-            <version>${spring-javaformat.version}</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>validate</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
+                <groupId>io.spring.javaformat</groupId>
+                <artifactId>spring-javaformat-maven-plugin</artifactId>
+                <version>${spring-javaformat.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -542,7 +543,7 @@
             </properties>
             <build>
                 <plugins>
-                
+
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven3-plugin</artifactId>

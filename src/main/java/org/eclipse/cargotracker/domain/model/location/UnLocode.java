@@ -13,8 +13,16 @@ import jakarta.validation.constraints.Pattern;
  * http://www.unece.org/cefact/locode/DocColumnDescription.htm#LOCODE
  */
 @Embeddable
-public record UnLocode(@NotEmpty(message = "Location code must not be empty") @Pattern(
-		regexp = "[a-zA-Z]{2}[a-zA-Z2-9]{3}") @Column(name = "un_locode") String unlocode) {
+//@formatter:off
+public record UnLocode(
+
+	@NotEmpty(message = "Location code must not be empty")
+	@Pattern(
+	regexp = "[a-zA-Z]{2}[a-zA-Z2-9]{3}")
+	@Column(name = "un_locode")
+	String unlocode
+) {
+//@formatter:on
 
 	private static final java.util.regex.Pattern VALID_PATTERN = java.util.regex.Pattern
 		.compile("[a-zA-Z]{2}[a-zA-Z2-9]{3}");
