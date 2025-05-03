@@ -16,67 +16,52 @@ import java.util.Arrays;
 
 public class CargoRouteDtoAssemblerTest {
 
-    @Test
-    public void testToDTO() {
-        final CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
+	@Test
+	public void testToDTO() {
+		final CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
 
-        final Location origin = SampleLocations.STOCKHOLM;
-        final Location destination = SampleLocations.MELBOURNE;
-        final Cargo cargo =
-                new Cargo(
-                        new TrackingId("XYZ"),
-                        new RouteSpecification(origin, destination, LocalDate.now()));
+		final Location origin = SampleLocations.STOCKHOLM;
+		final Location destination = SampleLocations.MELBOURNE;
+		final Cargo cargo = new Cargo(new TrackingId("XYZ"),
+				new RouteSpecification(origin, destination, LocalDate.now()));
 
-        final Itinerary itinerary =
-                new Itinerary(
-                        Arrays.asList(
-                                new Leg(
-                                        SampleVoyages.CM001,
-                                        origin,
-                                        SampleLocations.SHANGHAI,
-                                        LocalDateTime.now(),
-                                        LocalDateTime.now()),
-                                new Leg(
-                                        SampleVoyages.CM001,
-                                        SampleLocations.ROTTERDAM,
-                                        destination,
-                                        LocalDateTime.now(),
-                                        LocalDateTime.now())));
+		final Itinerary itinerary = new Itinerary(Arrays.asList(
+				new Leg(SampleVoyages.CM001, origin, SampleLocations.SHANGHAI, LocalDateTime.now(),
+						LocalDateTime.now()),
+				new Leg(SampleVoyages.CM001, SampleLocations.ROTTERDAM, destination, LocalDateTime.now(),
+						LocalDateTime.now())));
 
-        cargo.assignToRoute(itinerary);
+		cargo.assignToRoute(itinerary);
 
-        final CargoRouteDto dto = assembler.toDto(cargo);
+		final CargoRouteDto dto = assembler.toDto(cargo);
 
-        assertThat(dto.legs()).hasSize(2);
+		assertThat(dto.legs()).hasSize(2);
 
-        LegDto legDTO = dto.legs().get(0);
-        assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
-        assertThat(legDTO.fromNameAndUnLcode())
-                .contains("SESTO"); // this is a little different from original codes.
-        assertThat(legDTO.toNameAndUnLocode()).contains("CNSHA");
+		LegDto legDTO = dto.legs().get(0);
+		assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
+		assertThat(legDTO.fromNameAndUnLcode()).contains("SESTO"); // this is a little
+																	// different from
+																	// original codes.
+		assertThat(legDTO.toNameAndUnLocode()).contains("CNSHA");
 
-        legDTO = dto.legs().get(1);
-        assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
-        assertThat(legDTO.from().code()).contains("NLRTM");
-        assertThat(legDTO.to().code()).contains("AUMEL");
-    }
+		legDTO = dto.legs().get(1);
+		assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
+		assertThat(legDTO.from().code()).contains("NLRTM");
+		assertThat(legDTO.to().code()).contains("AUMEL");
+	}
 
-    @Test
-    public void testToDTO_NoItinerary() {
-        final CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
+	@Test
+	public void testToDTO_NoItinerary() {
+		final CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
 
-        final Cargo cargo =
-                new Cargo(
-                        new TrackingId("XYZ"),
-                        new RouteSpecification(
-                                SampleLocations.STOCKHOLM,
-                                SampleLocations.MELBOURNE,
-                                LocalDate.now()));
-        final CargoRouteDto dto = assembler.toDto(cargo);
+		final Cargo cargo = new Cargo(new TrackingId("XYZ"),
+				new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
+		final CargoRouteDto dto = assembler.toDto(cargo);
 
-        assertThat(dto.trackingId()).isEqualTo("XYZ");
-        assertThat(dto.origin().code()).contains("SESTO");
-        assertThat(dto.finalDestination().code()).contains("AUMEL");
-        assertThat(dto.legs().isEmpty()).isTrue();
-    }
+		assertThat(dto.trackingId()).isEqualTo("XYZ");
+		assertThat(dto.origin().code()).contains("SESTO");
+		assertThat(dto.finalDestination().code()).contains("AUMEL");
+		assertThat(dto.legs().isEmpty()).isTrue();
+	}
+
 }

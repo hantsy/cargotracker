@@ -20,53 +20,53 @@ import java.util.logging.Logger;
 @Transactional
 public class DefaultCargoInspectionService implements CargoInspectionService {
 
-    private static final Logger LOGGER =
-            Logger.getLogger(DefaultCargoInspectionService.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(DefaultCargoInspectionService.class.getName());
 
-    private ApplicationEvents applicationEvents;
-    private CargoRepository cargoRepository;
-    private HandlingEventRepository handlingEventRepository;
-    private Event<Cargo> cargoInspected;
+	private ApplicationEvents applicationEvents;
 
-    // no-args constructor required by CDI
-    public DefaultCargoInspectionService() {}
+	private CargoRepository cargoRepository;
 
-    @Inject
-    public DefaultCargoInspectionService(
-            ApplicationEvents applicationEvents,
-            CargoRepository cargoRepository,
-            HandlingEventRepository handlingEventRepository,
-            @CargoInspected Event<Cargo> cargoInspected) {
-        this.applicationEvents = applicationEvents;
-        this.cargoRepository = cargoRepository;
-        this.handlingEventRepository = handlingEventRepository;
-        this.cargoInspected = cargoInspected;
-    }
+	private HandlingEventRepository handlingEventRepository;
 
-    @Override
-    public void inspectCargo(TrackingId trackingId) {
-        Cargo cargo = cargoRepository.find(trackingId);
+	private Event<Cargo> cargoInspected;
 
-        if (cargo == null) {
-            LOGGER.log(Level.WARNING, "Can't inspect non-existing cargo {0}", trackingId);
-            return;
-        }
+	// no-args constructor required by CDI
+	public DefaultCargoInspectionService() {
+	}
 
-        HandlingHistory handlingHistory =
-                handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+	@Inject
+	public DefaultCargoInspectionService(ApplicationEvents applicationEvents, CargoRepository cargoRepository,
+			HandlingEventRepository handlingEventRepository, @CargoInspected Event<Cargo> cargoInspected) {
+		this.applicationEvents = applicationEvents;
+		this.cargoRepository = cargoRepository;
+		this.handlingEventRepository = handlingEventRepository;
+		this.cargoInspected = cargoInspected;
+	}
 
-        cargo.deriveDeliveryProgress(handlingHistory);
+	@Override
+	public void inspectCargo(TrackingId trackingId) {
+		Cargo cargo = cargoRepository.find(trackingId);
 
-        if (cargo.getDelivery().misdirected()) {
-            applicationEvents.cargoWasMisdirected(cargo);
-        }
+		if (cargo == null) {
+			LOGGER.log(Level.WARNING, "Can't inspect non-existing cargo {0}", trackingId);
+			return;
+		}
 
-        if (cargo.getDelivery().isUnloadedAtDestination()) {
-            applicationEvents.cargoHasArrived(cargo);
-        }
+		HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
 
-        cargoRepository.store(cargo);
+		cargo.deriveDeliveryProgress(handlingHistory);
 
-        cargoInspected.fire(cargo);
-    }
+		if (cargo.getDelivery().misdirected()) {
+			applicationEvents.cargoWasMisdirected(cargo);
+		}
+
+		if (cargo.getDelivery().isUnloadedAtDestination()) {
+			applicationEvents.cargoHasArrived(cargo);
+		}
+
+		cargoRepository.store(cargo);
+
+		cargoInspected.fire(cargo);
+	}
+
 }

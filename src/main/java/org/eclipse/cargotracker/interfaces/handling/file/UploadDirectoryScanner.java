@@ -14,22 +14,27 @@ import jakarta.annotation.PostConstruct;
  * Periodically scans a certain directory for files and attempts to parse handling event
  * registrations from the contents by calling a batch job.
  *
- * <p>Files that fail to parse are moved into a separate directory, successful files are deleted.
+ * <p>
+ * Files that fail to parse are moved into a separate directory, successful files are
+ * deleted.
  */
 @ApplicationScoped
 public class UploadDirectoryScanner {
 
-    @Inject private ManagedScheduledExecutorService scheduler;
+	@Inject
+	private ManagedScheduledExecutorService scheduler;
 
-    @Inject private JobOperator jobOperator;
+	@Inject
+	private JobOperator jobOperator;
 
-    @PostConstruct
-    public void init() {
-        scheduler.scheduleAtFixedRate(this::processFiles, 0, 15, TimeUnit.MINUTES);
-    }
+	@PostConstruct
+	public void init() {
+		scheduler.scheduleAtFixedRate(this::processFiles, 0, 15, TimeUnit.MINUTES);
+	}
 
-    @Transactional
-    public void processFiles() {
-        jobOperator.start("EventFilesProcessorJob", null);
-    }
+	@Transactional
+	public void processFiles() {
+		jobOperator.start("EventFilesProcessorJob", null);
+	}
+
 }

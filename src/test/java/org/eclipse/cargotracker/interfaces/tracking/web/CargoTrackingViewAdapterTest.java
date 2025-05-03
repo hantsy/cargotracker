@@ -18,73 +18,52 @@ import java.util.Iterator;
 import java.util.List;
 
 public class CargoTrackingViewAdapterTest {
-    @Test
-    public void testCreate() {
-        Cargo cargo =
-                new Cargo(
-                        new TrackingId("XYZ"),
-                        new RouteSpecification(
-                                SampleLocations.HANGZHOU,
-                                SampleLocations.HELSINKI,
-                                LocalDate.now()));
 
-        List<HandlingEvent> events = new ArrayList<>();
-        events.add(
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now().minusDays(9),
-                        LocalDateTime.now().minusDays(10),
-                        HandlingEvent.Type.RECEIVE,
-                        SampleLocations.HANGZHOU));
+	@Test
+	public void testCreate() {
+		Cargo cargo = new Cargo(new TrackingId("XYZ"),
+				new RouteSpecification(SampleLocations.HANGZHOU, SampleLocations.HELSINKI, LocalDate.now()));
 
-        events.add(
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now().minusDays(6),
-                        LocalDateTime.now().minusDays(7),
-                        HandlingEvent.Type.LOAD,
-                        SampleLocations.HANGZHOU,
-                        SampleVoyages.CM001));
-        events.add(
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now().minusDays(3),
-                        LocalDateTime.now().minusDays(5),
-                        HandlingEvent.Type.UNLOAD,
-                        SampleLocations.HELSINKI,
-                        SampleVoyages.CM001));
+		List<HandlingEvent> events = new ArrayList<>();
+		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(9), LocalDateTime.now().minusDays(10),
+				HandlingEvent.Type.RECEIVE, SampleLocations.HANGZHOU));
 
-        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(6), LocalDateTime.now().minusDays(7),
+				HandlingEvent.Type.LOAD, SampleLocations.HANGZHOU, SampleVoyages.CM001));
+		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(5),
+				HandlingEvent.Type.UNLOAD, SampleLocations.HELSINKI, SampleVoyages.CM001));
 
-        CargoTrackingViewAdapter adapter = new CargoTrackingViewAdapter(cargo, events);
+		cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
-        assertThat(adapter.getTrackingId()).isEqualTo("XYZ");
-        assertThat(adapter.getOriginName()).isEqualTo("Hangzhou");
-        assertThat(adapter.getDestinationName()).isEqualTo("Helsinki");
-        assertThat(adapter.getStatusText()).isEqualTo("In port Helsinki");
+		CargoTrackingViewAdapter adapter = new CargoTrackingViewAdapter(cargo, events);
 
-        Iterator<CargoTrackingViewAdapter.HandlingEventViewAdapter> it =
-                adapter.getEvents().iterator();
+		assertThat(adapter.getTrackingId()).isEqualTo("XYZ");
+		assertThat(adapter.getOriginName()).isEqualTo("Hangzhou");
+		assertThat(adapter.getDestinationName()).isEqualTo("Helsinki");
+		assertThat(adapter.getStatusText()).isEqualTo("In port Helsinki");
 
-        CargoTrackingViewAdapter.HandlingEventViewAdapter event = it.next();
-        // assertThat(event.getType()).isEqualTo("RECEIVE");
-        // assertThat(event.getLocation()).isEqualTo("Hangzhou");
-        // assertThat(event.getTime()).isEqualTo("1970-01-01 01:00");
-        // assertThat(event.getVoyageNumber()).isEqualTo("");
-        assertThat(event.isExpected()).isTrue();
+		Iterator<CargoTrackingViewAdapter.HandlingEventViewAdapter> it = adapter.getEvents().iterator();
 
-        event = it.next();
-        // assertThat(event.getType()).isEqualTo("LOAD");
-        // assertThat(event.getLocation()).isEqualTo("Hangzhou");
-        // assertThat(event.getTime()).isEqualTo("1970-01-01 01:00");
-        // assertThat(event.getVoyageNumber()).isEqualTo("CM001");
-        assertThat(event.isExpected()).isTrue();
+		CargoTrackingViewAdapter.HandlingEventViewAdapter event = it.next();
+		// assertThat(event.getType()).isEqualTo("RECEIVE");
+		// assertThat(event.getLocation()).isEqualTo("Hangzhou");
+		// assertThat(event.getTime()).isEqualTo("1970-01-01 01:00");
+		// assertThat(event.getVoyageNumber()).isEqualTo("");
+		assertThat(event.isExpected()).isTrue();
 
-        event = it.next();
-        // assertThat(event.getType()).isEqualTo("UNLOAD");
-        // assertThat(event.getLocation()).isEqualTo("Helsinki");
-        // assertThat(event.getTime()).isEqualTo("1970-01-01 01:00");
-        // assertThat(event.getVoyageNumber()).isEqualTo("CM001");
-        assertThat(event.isExpected()).isTrue();
-    }
+		event = it.next();
+		// assertThat(event.getType()).isEqualTo("LOAD");
+		// assertThat(event.getLocation()).isEqualTo("Hangzhou");
+		// assertThat(event.getTime()).isEqualTo("1970-01-01 01:00");
+		// assertThat(event.getVoyageNumber()).isEqualTo("CM001");
+		assertThat(event.isExpected()).isTrue();
+
+		event = it.next();
+		// assertThat(event.getType()).isEqualTo("UNLOAD");
+		// assertThat(event.getLocation()).isEqualTo("Helsinki");
+		// assertThat(event.getTime()).isEqualTo("1970-01-01 01:00");
+		// assertThat(event.getVoyageNumber()).isEqualTo("CM001");
+		assertThat(event.isExpected()).isTrue();
+	}
+
 }

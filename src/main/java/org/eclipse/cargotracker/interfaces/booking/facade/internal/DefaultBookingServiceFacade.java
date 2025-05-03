@@ -33,117 +33,114 @@ import java.util.List;
 @Transactional
 public class DefaultBookingServiceFacade implements BookingServiceFacade, Serializable {
 
-    private BookingService bookingService;
-    private LocationRepository locationRepository;
-    private CargoRepository cargoRepository;
-    private VoyageRepository voyageRepository;
-    private HandlingEventRepository handlingEventRepository;
+	private BookingService bookingService;
 
-    public DefaultBookingServiceFacade() {}
+	private LocationRepository locationRepository;
 
-    @Inject
-    public DefaultBookingServiceFacade(
-            BookingService bookingService,
-            LocationRepository locationRepository,
-            CargoRepository cargoRepository,
-            VoyageRepository voyageRepository,
-            HandlingEventRepository handlingEventRepository) {
-        this.bookingService = bookingService;
-        this.locationRepository = locationRepository;
-        this.cargoRepository = cargoRepository;
-        this.voyageRepository = voyageRepository;
-        this.handlingEventRepository = handlingEventRepository;
-    }
+	private CargoRepository cargoRepository;
 
-    @Override
-    public List<LocationDto> listShippingLocations() {
-        List<Location> allLocations = locationRepository.findAll();
-        LocationDtoAssembler assembler = new LocationDtoAssembler();
-        return assembler.toDtoList(allLocations);
-    }
+	private VoyageRepository voyageRepository;
 
-    @Override
-    public String bookNewCargo(String origin, String destination, LocalDate arrivalDeadline) {
-        TrackingId trackingId =
-                bookingService.bookNewCargo(
-                        new UnLocode(origin), new UnLocode(destination), arrivalDeadline);
-        return trackingId.id();
-    }
+	private HandlingEventRepository handlingEventRepository;
 
-    @Override
-    public CargoRouteDto loadCargoForRouting(String trackingId) {
-        Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
-        CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
-        return assembler.toDto(cargo);
-    }
+	public DefaultBookingServiceFacade() {
+	}
 
-    @Override
-    public void assignCargoToRoute(String trackingIdStr, RouteCandidateDto routeCandidateDTO) {
-        Itinerary itinerary =
-                new ItineraryCandidateDtoAssembler()
-                        .fromDto(routeCandidateDTO, voyageRepository, locationRepository);
-        TrackingId trackingId = new TrackingId(trackingIdStr);
+	@Inject
+	public DefaultBookingServiceFacade(BookingService bookingService, LocationRepository locationRepository,
+			CargoRepository cargoRepository, VoyageRepository voyageRepository,
+			HandlingEventRepository handlingEventRepository) {
+		this.bookingService = bookingService;
+		this.locationRepository = locationRepository;
+		this.cargoRepository = cargoRepository;
+		this.voyageRepository = voyageRepository;
+		this.handlingEventRepository = handlingEventRepository;
+	}
 
-        bookingService.assignCargoToRoute(itinerary, trackingId);
-    }
+	@Override
+	public List<LocationDto> listShippingLocations() {
+		List<Location> allLocations = locationRepository.findAll();
+		LocationDtoAssembler assembler = new LocationDtoAssembler();
+		return assembler.toDtoList(allLocations);
+	}
 
-    @Override
-    public void changeDestination(String trackingId, String destinationUnLocode) {
-        bookingService.changeDestination(
-                new TrackingId(trackingId), new UnLocode(destinationUnLocode));
-    }
+	@Override
+	public String bookNewCargo(String origin, String destination, LocalDate arrivalDeadline) {
+		TrackingId trackingId = bookingService.bookNewCargo(new UnLocode(origin), new UnLocode(destination),
+				arrivalDeadline);
+		return trackingId.id();
+	}
 
-    @Override
-    public void changeDeadline(String trackingId, LocalDate arrivalDeadline) {
-        bookingService.changeDeadline(new TrackingId(trackingId), arrivalDeadline);
-    }
+	@Override
+	public CargoRouteDto loadCargoForRouting(String trackingId) {
+		Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
+		CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
+		return assembler.toDto(cargo);
+	}
 
-    @Override
-    public List<CargoRouteDto> listAllCargos() {
-        List<Cargo> cargos = cargoRepository.findAll();
-        List<CargoRouteDto> routes;
+	@Override
+	public void assignCargoToRoute(String trackingIdStr, RouteCandidateDto routeCandidateDTO) {
+		Itinerary itinerary = new ItineraryCandidateDtoAssembler().fromDto(routeCandidateDTO, voyageRepository,
+				locationRepository);
+		TrackingId trackingId = new TrackingId(trackingIdStr);
 
-        CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
+		bookingService.assignCargoToRoute(itinerary, trackingId);
+	}
 
-        routes = cargos.stream().map(assembler::toDto).toList();
+	@Override
+	public void changeDestination(String trackingId, String destinationUnLocode) {
+		bookingService.changeDestination(new TrackingId(trackingId), new UnLocode(destinationUnLocode));
+	}
 
-        return routes;
-    }
+	@Override
+	public void changeDeadline(String trackingId, LocalDate arrivalDeadline) {
+		bookingService.changeDeadline(new TrackingId(trackingId), arrivalDeadline);
+	}
 
-    @Override
-    public List<String> listAllTrackingIds() {
-        List<String> trackingIds = new ArrayList<>();
-        cargoRepository.findAll().forEach(cargo -> trackingIds.add(cargo.getTrackingId().id()));
+	@Override
+	public List<CargoRouteDto> listAllCargos() {
+		List<Cargo> cargos = cargoRepository.findAll();
+		List<CargoRouteDto> routes;
 
-        return trackingIds;
-    }
+		CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
 
-    @Override
-    public CargoStatusDto loadCargoForTracking(String trackingIdValue) {
-        TrackingId trackingId = new TrackingId(trackingIdValue);
-        Cargo cargo = cargoRepository.find(trackingId);
+		routes = cargos.stream().map(assembler::toDto).toList();
 
-        if (cargo == null) {
-            return null;
-        }
+		return routes;
+	}
 
-        CargoStatusDtoAssembler assembler = new CargoStatusDtoAssembler();
+	@Override
+	public List<String> listAllTrackingIds() {
+		List<String> trackingIds = new ArrayList<>();
+		cargoRepository.findAll().forEach(cargo -> trackingIds.add(cargo.getTrackingId().id()));
 
-        List<HandlingEvent> handlingEvents =
-                handlingEventRepository
-                        .lookupHandlingHistoryOfCargo(trackingId)
-                        .getDistinctEventsByCompletionTime();
+		return trackingIds;
+	}
 
-        return assembler.toDto(cargo, handlingEvents);
-    }
+	@Override
+	public CargoStatusDto loadCargoForTracking(String trackingIdValue) {
+		TrackingId trackingId = new TrackingId(trackingIdValue);
+		Cargo cargo = cargoRepository.find(trackingId);
 
-    @Override
-    public List<RouteCandidateDto> requestPossibleRoutesForCargo(String trackingId) {
-        List<Itinerary> itineraries =
-                bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
+		if (cargo == null) {
+			return null;
+		}
 
-        ItineraryCandidateDtoAssembler dtoAssembler = new ItineraryCandidateDtoAssembler();
+		CargoStatusDtoAssembler assembler = new CargoStatusDtoAssembler();
 
-        return itineraries.stream().map(dtoAssembler::toDto).toList();
-    }
+		List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId)
+			.getDistinctEventsByCompletionTime();
+
+		return assembler.toDto(cargo, handlingEvents);
+	}
+
+	@Override
+	public List<RouteCandidateDto> requestPossibleRoutesForCargo(String trackingId) {
+		List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
+
+		ItineraryCandidateDtoAssembler dtoAssembler = new ItineraryCandidateDtoAssembler();
+
+		return itineraries.stream().map(dtoAssembler::toDto).toList();
+	}
+
 }

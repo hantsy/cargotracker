@@ -16,67 +16,74 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Backing bean for tracking cargo. This interface sits immediately on top of the domain layer,
- * unlike the booking interface which has a facade and supporting DTOs in between.
+ * Backing bean for tracking cargo. This interface sits immediately on top of the domain
+ * layer, unlike the booking interface which has a facade and supporting DTOs in between.
  *
- * <p>An adapter class, designed for the tracking use case, is used to wrap the domain model to make
- * it easier to work with in a web page rendering context. We do not want to apply view rendering
- * constraints to the design of our domain model and the adapter helps us shield the domain model
- * classes where needed.
+ * <p>
+ * An adapter class, designed for the tracking use case, is used to wrap the domain model
+ * to make it easier to work with in a web page rendering context. We do not want to apply
+ * view rendering constraints to the design of our domain model and the adapter helps us
+ * shield the domain model classes where needed.
  *
- * <p>In some very simplistic cases, it is fine to not use even an adapter.
+ * <p>
+ * In some very simplistic cases, it is fine to not use even an adapter.
  */
 @Named("track")
 @ViewScoped
 public class Track implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Inject private CargoRepository cargoRepository;
-    @Inject private HandlingEventRepository handlingEventRepository;
+	@Inject
+	private CargoRepository cargoRepository;
 
-    private String trackingId;
-    private CargoTrackingViewAdapter cargo;
+	@Inject
+	private HandlingEventRepository handlingEventRepository;
 
-    public String getTrackingId() {
-        return trackingId;
-    }
+	private String trackingId;
 
-    public void setTrackingId(String trackingId) {
-        if (trackingId != null) {
-            trackingId = trackingId.trim();
-        }
+	private CargoTrackingViewAdapter cargo;
 
-        this.trackingId = trackingId;
-    }
+	public String getTrackingId() {
+		return trackingId;
+	}
 
-    public CargoTrackingViewAdapter getCargo() {
-        return cargo;
-    }
+	public void setTrackingId(String trackingId) {
+		if (trackingId != null) {
+			trackingId = trackingId.trim();
+		}
 
-    public void setCargo(CargoTrackingViewAdapter cargo) {
-        this.cargo = cargo;
-    }
+		this.trackingId = trackingId;
+	}
 
-    @Transactional(Transactional.TxType.REQUIRED)
-    public void onTrackById() {
-        Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
+	public CargoTrackingViewAdapter getCargo() {
+		return cargo;
+	}
 
-        if (cargo != null) {
-            List<HandlingEvent> handlingEvents =
-                    handlingEventRepository
-                            .lookupHandlingHistoryOfCargo(new TrackingId(trackingId))
-                            .getDistinctEventsByCompletionTime();
-            this.cargo = new CargoTrackingViewAdapter(cargo, handlingEvents);
-        } else {
-            Messages.addFlashGlobalError("Cargo with tracking ID: {0} not found.", trackingId);
-            //            FacesContext context = FacesContext.getCurrentInstance();
-            //            FacesMessage message =
-            //                    new FacesMessage("Cargo with tracking ID: " + trackingId + " not
-            // found.");
-            //            message.setSeverity(FacesMessage.SEVERITY_ERROR);
-            //            context.addMessage(null, message);
-            this.cargo = null;
-        }
-    }
+	public void setCargo(CargoTrackingViewAdapter cargo) {
+		this.cargo = cargo;
+	}
+
+	@Transactional(Transactional.TxType.REQUIRED)
+	public void onTrackById() {
+		Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
+
+		if (cargo != null) {
+			List<HandlingEvent> handlingEvents = handlingEventRepository
+				.lookupHandlingHistoryOfCargo(new TrackingId(trackingId))
+				.getDistinctEventsByCompletionTime();
+			this.cargo = new CargoTrackingViewAdapter(cargo, handlingEvents);
+		}
+		else {
+			Messages.addFlashGlobalError("Cargo with tracking ID: {0} not found.", trackingId);
+			// FacesContext context = FacesContext.getCurrentInstance();
+			// FacesMessage message =
+			// new FacesMessage("Cargo with tracking ID: " + trackingId + " not
+			// found.");
+			// message.setSeverity(FacesMessage.SEVERITY_ERROR);
+			// context.addMessage(null, message);
+			this.cargo = null;
+		}
+	}
+
 }

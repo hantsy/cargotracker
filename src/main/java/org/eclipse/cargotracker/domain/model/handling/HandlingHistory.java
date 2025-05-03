@@ -3,60 +3,66 @@ package org.eclipse.cargotracker.domain.model.handling;
 import java.util.*;
 
 public class HandlingHistory {
-    // private static final Logger LOGGER = Logger.getLogger(HandlingHistory.class.getName());
 
-    // Null object pattern.
-    public static final HandlingHistory EMPTY = new HandlingHistory(Collections.emptyList());
-    private static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR =
-            Comparator.comparing(HandlingEvent::getCompletionTime);
-    private final List<HandlingEvent> handlingEvents;
+	// private static final Logger LOGGER =
+	// Logger.getLogger(HandlingHistory.class.getName());
 
-    public HandlingHistory(Collection<HandlingEvent> handlingEvents) {
-        Objects.requireNonNull(handlingEvents, "Handling events are required");
+	// Null object pattern.
+	public static final HandlingHistory EMPTY = new HandlingHistory(Collections.emptyList());
 
-        this.handlingEvents = new ArrayList<>(handlingEvents);
-    }
+	private static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR = Comparator
+		.comparing(HandlingEvent::getCompletionTime);
 
-    public List<HandlingEvent> getAllHandlingEvents() {
-        return handlingEvents;
-    }
+	private final List<HandlingEvent> handlingEvents;
 
-    /**
-     * @return A distinct list (no duplicate registrations) of handling events, ordered by
-     *     completion time.
-     */
-    public List<HandlingEvent> getDistinctEventsByCompletionTime() {
-        return handlingEvents.stream().distinct().sorted(BY_COMPLETION_TIME_COMPARATOR).toList();
-    }
+	public HandlingHistory(Collection<HandlingEvent> handlingEvents) {
+		Objects.requireNonNull(handlingEvents, "Handling events are required");
 
-    /**
-     * @return Most recently completed event, or null if the delivery history is empty.
-     */
-    public HandlingEvent getMostRecentlyCompletedEvent() {
-        List<HandlingEvent> distinctEvents = getDistinctEventsByCompletionTime();
-        if (distinctEvents.isEmpty()) return null;
-        return distinctEvents.getLast();
-    }
+		this.handlingEvents = new ArrayList<>(handlingEvents);
+	}
 
-    private boolean sameValueAs(HandlingHistory other) {
-        return other != null && this.handlingEvents.equals(other.handlingEvents);
-    }
+	public List<HandlingEvent> getAllHandlingEvents() {
+		return handlingEvents;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+	/**
+	 * @return A distinct list (no duplicate registrations) of handling events, ordered by
+	 * completion time.
+	 */
+	public List<HandlingEvent> getDistinctEventsByCompletionTime() {
+		return handlingEvents.stream().distinct().sorted(BY_COMPLETION_TIME_COMPARATOR).toList();
+	}
 
-        HandlingHistory other = (HandlingHistory) o;
-        return sameValueAs(other);
-    }
+	/**
+	 * @return Most recently completed event, or null if the delivery history is empty.
+	 */
+	public HandlingEvent getMostRecentlyCompletedEvent() {
+		List<HandlingEvent> distinctEvents = getDistinctEventsByCompletionTime();
+		if (distinctEvents.isEmpty())
+			return null;
+		return distinctEvents.getLast();
+	}
 
-    @Override
-    public int hashCode() {
-        return handlingEvents.hashCode();
-    }
+	private boolean sameValueAs(HandlingHistory other) {
+		return other != null && this.handlingEvents.equals(other.handlingEvents);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		HandlingHistory other = (HandlingHistory) o;
+		return sameValueAs(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return handlingEvents.hashCode();
+	}
+
 }

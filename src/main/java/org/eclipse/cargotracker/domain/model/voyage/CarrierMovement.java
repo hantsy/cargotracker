@@ -13,89 +13,86 @@ import java.util.Objects;
 @Table(name = "carrier_movements")
 public class CarrierMovement {
 
-    // Null object pattern
-    public static final CarrierMovement NONE =
-            new CarrierMovement(
-                    Location.UNKNOWN, Location.UNKNOWN, LocalDateTime.MIN, LocalDateTime.MIN);
+	// Null object pattern
+	public static final CarrierMovement NONE = new CarrierMovement(Location.UNKNOWN, Location.UNKNOWN,
+			LocalDateTime.MIN, LocalDateTime.MIN);
 
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private Long id;
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "departure_location_id")
-    @NotNull
-    private Location departureLocation;
+	@ManyToOne
+	@JoinColumn(name = "departure_location_id")
+	@NotNull
+	private Location departureLocation;
 
-    @ManyToOne
-    @JoinColumn(name = "arrival_location_id")
-    @NotNull
-    private Location arrivalLocation;
+	@ManyToOne
+	@JoinColumn(name = "arrival_location_id")
+	@NotNull
+	private Location arrivalLocation;
 
-    @Column(name = "departure_time")
-    @NotNull
-    private LocalDateTime departureTime;
+	@Column(name = "departure_time")
+	@NotNull
+	private LocalDateTime departureTime;
 
-    @Column(name = "arrival_time")
-    @NotNull
-    private LocalDateTime arrivalTime;
+	@Column(name = "arrival_time")
+	@NotNull
+	private LocalDateTime arrivalTime;
 
-    public CarrierMovement() {
-        // Nothing to initialize.
-    }
+	public CarrierMovement() {
+		// Nothing to initialize.
+	}
 
-    public CarrierMovement(
-            Location departureLocation,
-            Location arrivalLocation,
-            LocalDateTime departureTime,
-            LocalDateTime arrivalTime) {
-        Objects.requireNonNull(departureLocation, "Departure location must not be null");
-        Objects.requireNonNull(arrivalLocation, "Arrival location must not be null");
-        Objects.requireNonNull(departureTime, "Departure time must not be null");
-        Objects.requireNonNull(arrivalTime, "Arrival time must not be null");
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
-        this.departureLocation = departureLocation;
-        this.arrivalLocation = arrivalLocation;
-    }
+	public CarrierMovement(Location departureLocation, Location arrivalLocation, LocalDateTime departureTime,
+			LocalDateTime arrivalTime) {
+		Objects.requireNonNull(departureLocation, "Departure location must not be null");
+		Objects.requireNonNull(arrivalLocation, "Arrival location must not be null");
+		Objects.requireNonNull(departureTime, "Departure time must not be null");
+		Objects.requireNonNull(arrivalTime, "Arrival time must not be null");
+		this.departureTime = departureTime;
+		this.arrivalTime = arrivalTime;
+		this.departureLocation = departureLocation;
+		this.arrivalLocation = arrivalLocation;
+	}
 
-    public Location getDepartureLocation() {
-        return departureLocation;
-    }
+	public Location getDepartureLocation() {
+		return departureLocation;
+	}
 
-    public Location getArrivalLocation() {
-        return arrivalLocation;
-    }
+	public Location getArrivalLocation() {
+		return arrivalLocation;
+	}
 
-    public LocalDateTime getDepartureTime() {
-        return departureTime;
-    }
+	public LocalDateTime getDepartureTime() {
+		return departureTime;
+	}
 
-    public LocalDateTime getArrivalTime() {
-        return arrivalTime;
-    }
+	public LocalDateTime getArrivalTime() {
+		return arrivalTime;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof CarrierMovement)) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || !(o instanceof CarrierMovement)) {
+			return false;
+		}
 
-        CarrierMovement that = (CarrierMovement) o;
+		CarrierMovement that = (CarrierMovement) o;
 
-        return sameValueAs(that);
-    }
+		return sameValueAs(that);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(this);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(this);
+	}
 
-    private boolean sameValueAs(CarrierMovement other) {
-        return other != null && Objects.equals(this, other);
-    }
+	private boolean sameValueAs(CarrierMovement other) {
+		return other != null && Objects.equals(this, other);
+	}
+
 }

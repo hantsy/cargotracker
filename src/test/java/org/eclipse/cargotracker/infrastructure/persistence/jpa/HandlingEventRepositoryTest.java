@@ -38,162 +38,158 @@ import java.util.logging.Logger;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
 public class HandlingEventRepositoryTest {
-    private static final Logger LOGGER =
-            Logger.getLogger(HandlingEventRepositoryTest.class.getName());
-    @Inject UserTransaction utx;
-    @Inject private LocationRepository locationRepository;
 
-    @Inject private HandlingEventRepository handlingEventRepository;
+	private static final Logger LOGGER = Logger.getLogger(HandlingEventRepositoryTest.class.getName());
 
-    @Inject private CargoRepository cargoRepository;
+	@Inject
+	UserTransaction utx;
 
-    @Inject private EntityManager entityManager;
+	@Inject
+	private LocationRepository locationRepository;
 
-    @Deployment
-    public static WebArchive createDeployment() {
-        WebArchive war =
-                ShrinkWrap.create(WebArchive.class, "test-HandlingEventRepositoryTest.war");
+	@Inject
+	private HandlingEventRepository handlingEventRepository;
 
-        addExtraJars(war);
-        addDomainModels(war);
-        addDomainRepositories(war);
-        addInfraBase(war);
-        addInfraPersistence(war);
-        addApplicationBase(war);
+	@Inject
+	private CargoRepository cargoRepository;
 
-        war.addClass(RestActivator.class);
-        war.addClass(SampleDataGenerator.class)
-                .addClass(SampleLocations.class)
-                .addClass(SampleVoyages.class)
-                // add persistence unit descriptor
-                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
+	@Inject
+	private EntityManager entityManager;
 
-                // add web xml
-                .addAsWebInfResource("test-web.xml", "web.xml")
+	@Deployment
+	public static WebArchive createDeployment() {
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "test-HandlingEventRepositoryTest.war");
 
-                // add Wildfly specific deployment descriptor
-                .addAsWebInfResource(
-                        "test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
+		addExtraJars(war);
+		addDomainModels(war);
+		addDomainRepositories(war);
+		addInfraBase(war);
+		addInfraPersistence(war);
+		addApplicationBase(war);
 
-        LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
+		war.addClass(RestActivator.class);
+		war.addClass(SampleDataGenerator.class)
+			.addClass(SampleLocations.class)
+			.addClass(SampleVoyages.class)
+			// add persistence unit descriptor
+			.addAsResource("test-persistence.xml", "META-INF/persistence.xml")
 
-        return war;
-    }
+			// add web xml
+			.addAsWebInfResource("test-web.xml", "web.xml")
 
-    @BeforeEach
-    public void setup() {}
+			// add Wildfly specific deployment descriptor
+			.addAsWebInfResource("test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
 
-    public void startTransaction() throws Exception {
-        utx.begin();
-        entityManager.joinTransaction();
-    }
+		LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
 
-    public void commitTransaction() throws Exception {
-        LOGGER.log(Level.INFO, "UserTransaction status is: {0}", utx.getStatus());
-        if (utx.getStatus() == Status.STATUS_ACTIVE) {
-            utx.commit();
-        }
-    }
+		return war;
+	}
 
-    private void runInTx(Runnable runnable) throws Exception {
-        startTransaction();
-        try {
-            runnable.run();
-            commitTransaction();
-        } catch (Exception e) {
-            utx.rollback();
-        }
-    }
+	@BeforeEach
+	public void setup() {
+	}
 
-    @Test
-    public void testSave() throws Exception {
-        runInTx(
-                () -> {
-                    Location location = locationRepository.find(new UnLocode("SESTO"));
+	public void startTransaction() throws Exception {
+		utx.begin();
+		entityManager.joinTransaction();
+	}
 
-                    Cargo cargo = cargoRepository.find(new TrackingId("ABC123"));
-                    LocalDateTime completionTime = LocalDateTime.now().minusDays(20);
-                    LocalDateTime registrationTime = LocalDateTime.now().minusDays(10);
-                    HandlingEvent event =
-                            new HandlingEvent(
-                                    cargo,
-                                    completionTime,
-                                    registrationTime,
-                                    HandlingEvent.Type.CLAIM,
-                                    location);
+	public void commitTransaction() throws Exception {
+		LOGGER.log(Level.INFO, "UserTransaction status is: {0}", utx.getStatus());
+		if (utx.getStatus() == Status.STATUS_ACTIVE) {
+			utx.commit();
+		}
+	}
 
-                    handlingEventRepository.store(event);
+	private void runInTx(Runnable runnable) throws Exception {
+		startTransaction();
+		try {
+			runnable.run();
+			commitTransaction();
+		}
+		catch (Exception e) {
+			utx.rollback();
+		}
+	}
 
-                    // Payara/EclipseLink issue:
-                    // In a native query, the named parameters like `:id` does not work on
-                    // Payara/EclipseLink.
-                    // eg.
-                    // HandlingEvent result = (HandlingEvent)
-                    // this.entityManager.createNativeQuery("select *
-                    // from
-                    // HandlingEvent where id = :id", HandlingEvent.class)
-                    //
-                    // revert to use JPQL, it is standard and portable.
-                    HandlingEvent result =
-                            this.entityManager
-                                    .createQuery(
-                                            "select e from HandlingEvent e where e.id = :id",
-                                            HandlingEvent.class)
-                                    .setParameter("id", getLongId(event))
-                                    .getSingleResult();
-                    assertThat(result.getCargo()).isEqualTo(cargo);
-                    assertThat(result.getCompletionTime().truncatedTo(ChronoUnit.SECONDS))
-                            .isEqualTo(completionTime.truncatedTo(ChronoUnit.SECONDS));
-                    assertThat(result.getRegistrationTime().truncatedTo(ChronoUnit.SECONDS))
-                            .isEqualTo(registrationTime.truncatedTo(ChronoUnit.SECONDS));
-                    assertThat(result.getType()).isEqualTo(HandlingEvent.Type.CLAIM);
-                });
-    }
+	@Test
+	public void testSave() throws Exception {
+		runInTx(() -> {
+			Location location = locationRepository.find(new UnLocode("SESTO"));
 
-    private Long getLongId(Object o) {
+			Cargo cargo = cargoRepository.find(new TrackingId("ABC123"));
+			LocalDateTime completionTime = LocalDateTime.now().minusDays(20);
+			LocalDateTime registrationTime = LocalDateTime.now().minusDays(10);
+			HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, HandlingEvent.Type.CLAIM,
+					location);
 
-        try {
-            Field id = o.getClass().getDeclaredField("id");
-            id.setAccessible(true);
-            return (Long) id.get(o);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
-    }
+			handlingEventRepository.store(event);
 
-    //    private void flush() {
-    //        sessionFactory.getCurrentSession().flush();
-    //    }
-    //
-    //    private Long getLongId(Object o) {
-    //        final Session session = sessionFactory.getCurrentSession();
-    //        if (session.contains(o)) {
-    //            return (Long) session.getIdentifier(o);
-    //        } else {
-    //            try {
-    //                Field id = o.getClass().getDeclaredField("id");
-    //                id.setAccessible(true);
-    //                return (Long) id.get(o);
-    //            } catch (Exception e) {
-    //                throw new RuntimeException();
-    //            }
-    //        }
-    //    }
+			// Payara/EclipseLink issue:
+			// In a native query, the named parameters like `:id` does not work on
+			// Payara/EclipseLink.
+			// eg.
+			// HandlingEvent result = (HandlingEvent)
+			// this.entityManager.createNativeQuery("select *
+			// from
+			// HandlingEvent where id = :id", HandlingEvent.class)
+			//
+			// revert to use JPQL, it is standard and portable.
+			HandlingEvent result = this.entityManager
+				.createQuery("select e from HandlingEvent e where e.id = :id", HandlingEvent.class)
+				.setParameter("id", getLongId(event))
+				.getSingleResult();
+			assertThat(result.getCargo()).isEqualTo(cargo);
+			assertThat(result.getCompletionTime().truncatedTo(ChronoUnit.SECONDS))
+				.isEqualTo(completionTime.truncatedTo(ChronoUnit.SECONDS));
+			assertThat(result.getRegistrationTime().truncatedTo(ChronoUnit.SECONDS))
+				.isEqualTo(registrationTime.truncatedTo(ChronoUnit.SECONDS));
+			assertThat(result.getType()).isEqualTo(HandlingEvent.Type.CLAIM);
+		});
+	}
 
-    @Test
-    public void testFindEventsForCargo() {
-        TrackingId trackingId = new TrackingId("XYZ"); // non-existing cargo
-        List<HandlingEvent> handlingEvents =
-                handlingEventRepository
-                        .lookupHandlingHistoryOfCargo(trackingId)
-                        .getDistinctEventsByCompletionTime();
-        assertThat(handlingEvents).isEmpty();
+	private Long getLongId(Object o) {
 
-        TrackingId existingTrackingId = new TrackingId("MNO456"); // existing cargo
-        List<HandlingEvent> existingHandlingEvents =
-                handlingEventRepository
-                        .lookupHandlingHistoryOfCargo(trackingId)
-                        .getDistinctEventsByCompletionTime();
-        assertThat(existingHandlingEvents).isEmpty();
-    }
+		try {
+			Field id = o.getClass().getDeclaredField("id");
+			id.setAccessible(true);
+			return (Long) id.get(o);
+		}
+		catch (Exception e) {
+			throw new RuntimeException();
+		}
+	}
+
+	// private void flush() {
+	// sessionFactory.getCurrentSession().flush();
+	// }
+	//
+	// private Long getLongId(Object o) {
+	// final Session session = sessionFactory.getCurrentSession();
+	// if (session.contains(o)) {
+	// return (Long) session.getIdentifier(o);
+	// } else {
+	// try {
+	// Field id = o.getClass().getDeclaredField("id");
+	// id.setAccessible(true);
+	// return (Long) id.get(o);
+	// } catch (Exception e) {
+	// throw new RuntimeException();
+	// }
+	// }
+	// }
+
+	@Test
+	public void testFindEventsForCargo() {
+		TrackingId trackingId = new TrackingId("XYZ"); // non-existing cargo
+		List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId)
+			.getDistinctEventsByCompletionTime();
+		assertThat(handlingEvents).isEmpty();
+
+		TrackingId existingTrackingId = new TrackingId("MNO456"); // existing cargo
+		List<HandlingEvent> existingHandlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId)
+			.getDistinctEventsByCompletionTime();
+		assertThat(existingHandlingEvents).isEmpty();
+	}
+
 }

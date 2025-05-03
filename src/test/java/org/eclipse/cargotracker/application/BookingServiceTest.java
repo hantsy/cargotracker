@@ -37,216 +37,217 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Application layer integration test covering a number of otherwise fairly trivial components that
- * largely do not warrant their own tests.
+ * Application layer integration test covering a number of otherwise fairly trivial
+ * components that largely do not warrant their own tests.
  *
- * <p>Ensure a Payara instance is running locally before this test is executed, with the default
- * user name and password.
+ * <p>
+ * Ensure a Payara instance is running locally before this test is executed, with the
+ * default user name and password.
  */
 @ExtendWith(ArquillianExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
 public class BookingServiceTest {
-    private static final Logger LOGGER = Logger.getLogger(BookingServiceTest.class.getName());
-    private static TrackingId trackingId;
-    private static List<Itinerary> candidates;
-    private static LocalDate deadline;
-    private static Itinerary assigned;
-    @Inject UserTransaction utx;
-    @Inject private BookingService bookingService;
-    @PersistenceContext private EntityManager entityManager;
 
-    @Deployment
-    public static WebArchive createDeployment() {
+	private static final Logger LOGGER = Logger.getLogger(BookingServiceTest.class.getName());
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "cargo-tracker-test.war");
+	private static TrackingId trackingId;
 
-        addExtraJars(war);
-        addDomainModels(war);
-        addDomainRepositories(war);
-        addInfraBase(war);
-        addInfraPersistence(war);
-        addApplicationBase(war);
+	private static List<Itinerary> candidates;
 
-        // add target BookingService for test
-        war.addClass(BookingService.class).addClass(DefaultBookingService.class);
+	private static LocalDate deadline;
 
-        addDomainService(war);
-        war.addClass(ExternalRoutingService.class)
-                .addClass(GraphTraversalResourceClient.class)
+	private static Itinerary assigned;
 
-                // .addClass(JsonMoxyConfigurationContextResolver.class)
-                // Interface components
-                .addClass(TransitPath.class)
-                .addClass(TransitEdge.class)
-                // Third-party system simulator
-                .addClass(GraphTraversalService.class)
-                .addClass(GraphDao.class)
-                // Sample data.
-                .addClass(BookingServiceTestDataGenerator.class)
-                .addClass(SampleLocations.class)
-                .addClass(SampleVoyages.class)
-                .addClass(RestActivator.class)
+	@Inject
+	UserTransaction utx;
 
-                // add persistence unit descriptor
-                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+	@Inject
+	private BookingService bookingService;
 
-                // add web xml
-                .addAsWebInfResource("test-web.xml", "web.xml")
+	@PersistenceContext
+	private EntityManager entityManager;
 
-                // add Wildfly specific deployment descriptor
-                .addAsWebInfResource(
-                        "test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
+	@Deployment
+	public static WebArchive createDeployment() {
 
-        LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "cargo-tracker-test.war");
 
-        return war;
-    }
+		addExtraJars(war);
+		addDomainModels(war);
+		addDomainRepositories(war);
+		addInfraBase(war);
+		addInfraPersistence(war);
+		addApplicationBase(war);
 
-    // Wildfly/Hibernate issue:
-    // use a UserTransaction to wrap the tests and avoid the Hibernate lazy initialization exception
-    // in test.
-    @BeforeEach
-    public void setUp() throws Exception {
-        startTransaction();
-    }
+		// add target BookingService for test
+		war.addClass(BookingService.class).addClass(DefaultBookingService.class);
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        commitTransaction();
-    }
+		addDomainService(war);
+		war.addClass(ExternalRoutingService.class)
+			.addClass(GraphTraversalResourceClient.class)
 
-    public void startTransaction() throws Exception {
-        utx.begin();
-        entityManager.joinTransaction();
-    }
+			// .addClass(JsonMoxyConfigurationContextResolver.class)
+			// Interface components
+			.addClass(TransitPath.class)
+			.addClass(TransitEdge.class)
+			// Third-party system simulator
+			.addClass(GraphTraversalService.class)
+			.addClass(GraphDao.class)
+			// Sample data.
+			.addClass(BookingServiceTestDataGenerator.class)
+			.addClass(SampleLocations.class)
+			.addClass(SampleVoyages.class)
+			.addClass(RestActivator.class)
 
-    public void commitTransaction() throws Exception {
-        utx.commit();
-    }
+			// add persistence unit descriptor
+			.addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
 
-    @Test
-    @Order(1)
-    // The `Transactional` annotation does not work in Arquillian test.
-    // @Transactional
-    public void testRegisterNew() {
-        UnLocode fromUnlocode = new UnLocode("USCHI");
-        UnLocode toUnlocode = new UnLocode("SESTO");
+			// add web xml
+			.addAsWebInfResource("test-web.xml", "web.xml")
 
-        deadline = LocalDate.now().plusMonths(6);
+			// add Wildfly specific deployment descriptor
+			.addAsWebInfResource("test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
 
-        trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, deadline);
+		LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
 
-        Cargo cargo =
-                entityManager
-                        .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                        .setParameter("trackingId", trackingId)
-                        .getSingleResult();
+		return war;
+	}
 
-        assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-        assertThat(cargo.getRouteSpecification().destination())
-                .isEqualTo(SampleLocations.STOCKHOLM);
-        assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(deadline);
-        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().misdirected()).isFalse();
-        assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
-        assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
-        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
-        assertThat(cargo.getItinerary()).isEqualTo(Itinerary.EMPTY_ITINERARY);
-    }
+	// Wildfly/Hibernate issue:
+	// use a UserTransaction to wrap the tests and avoid the Hibernate lazy initialization
+	// exception
+	// in test.
+	@BeforeEach
+	public void setUp() throws Exception {
+		startTransaction();
+	}
 
-    @Test
-    @Order(2)
-    // @Transactional
-    public void testRouteCandidates() {
-        candidates = bookingService.requestPossibleRoutesForCargo(trackingId);
+	@AfterEach
+	public void tearDown() throws Exception {
+		commitTransaction();
+	}
 
-        assertThat(candidates).isNotEmpty();
-    }
+	public void startTransaction() throws Exception {
+		utx.begin();
+		entityManager.joinTransaction();
+	}
 
-    @Test
-    @Order(3)
-    // @Transactional
-    public void testAssignRoute() {
-        assigned = candidates.get(new Random().nextInt(candidates.size()));
+	public void commitTransaction() throws Exception {
+		utx.commit();
+	}
 
-        bookingService.assignCargoToRoute(assigned, trackingId);
+	@Test
+	@Order(1)
+	// The `Transactional` annotation does not work in Arquillian test.
+	// @Transactional
+	public void testRegisterNew() {
+		UnLocode fromUnlocode = new UnLocode("USCHI");
+		UnLocode toUnlocode = new UnLocode("SESTO");
 
-        Cargo cargo =
-                entityManager
-                        .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                        .setParameter("trackingId", trackingId)
-                        .getSingleResult();
+		deadline = LocalDate.now().plusMonths(6);
 
-        assertThat(cargo.getItinerary()).isEqualTo(assigned);
-        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().misdirected()).isFalse();
-        assertThat(cargo.getDelivery().estimatedTimeOfArrival().isBefore(deadline.atStartOfDay()))
-                .isTrue();
-        assertThat(cargo.getDelivery().nextExpectedActivity().getType())
-                .isEqualTo(HandlingEvent.Type.RECEIVE);
-        assertThat(cargo.getDelivery().nextExpectedActivity().getLocation())
-                .isEqualTo(SampleLocations.CHICAGO);
-        assertThat(cargo.getDelivery().nextExpectedActivity().getVoyage()).isNull();
-        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
-    }
+		trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, deadline);
 
-    @Test
-    @Order(4)
-    // @Transactional
-    public void testChangeDestination() {
-        bookingService.changeDestination(trackingId, new UnLocode("FIHEL"));
+		Cargo cargo = entityManager.createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+			.setParameter("trackingId", trackingId)
+			.getSingleResult();
 
-        Cargo cargo =
-                entityManager
-                        .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                        .setParameter("trackingId", trackingId)
-                        .getSingleResult();
+		assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
+		assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.STOCKHOLM);
+		assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(deadline);
+		assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
+		assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+		assertThat(cargo.getDelivery().misdirected()).isFalse();
+		assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+		assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
+		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
+		assertThat(cargo.getItinerary()).isEqualTo(Itinerary.EMPTY_ITINERARY);
+	}
 
-        assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-        assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
-        assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(deadline);
-        assertThat(cargo.getItinerary()).isEqualTo(assigned);
-        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().misdirected()).isFalse();
-        assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
-        assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
-        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
-    }
+	@Test
+	@Order(2)
+	// @Transactional
+	public void testRouteCandidates() {
+		candidates = bookingService.requestPossibleRoutesForCargo(trackingId);
 
-    @Test
-    @Order(5)
-    // @Transactional
-    public void testChangeDeadline() {
-        LocalDate newDeadline = deadline.plusMonths(1);
-        bookingService.changeDeadline(trackingId, newDeadline);
+		assertThat(candidates).isNotEmpty();
+	}
 
-        Cargo cargo =
-                entityManager
-                        .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                        .setParameter("trackingId", trackingId)
-                        .getSingleResult();
+	@Test
+	@Order(3)
+	// @Transactional
+	public void testAssignRoute() {
+		assigned = candidates.get(new Random().nextInt(candidates.size()));
 
-        assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-        assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
-        assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(newDeadline);
-        assertThat(cargo.getItinerary()).isEqualTo(assigned);
-        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().misdirected()).isFalse();
-        assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
-        assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
-        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
-    }
+		bookingService.assignCargoToRoute(assigned, trackingId);
+
+		Cargo cargo = entityManager.createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+			.setParameter("trackingId", trackingId)
+			.getSingleResult();
+
+		assertThat(cargo.getItinerary()).isEqualTo(assigned);
+		assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
+		assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+		assertThat(cargo.getDelivery().misdirected()).isFalse();
+		assertThat(cargo.getDelivery().estimatedTimeOfArrival().isBefore(deadline.atStartOfDay())).isTrue();
+		assertThat(cargo.getDelivery().nextExpectedActivity().getType()).isEqualTo(HandlingEvent.Type.RECEIVE);
+		assertThat(cargo.getDelivery().nextExpectedActivity().getLocation()).isEqualTo(SampleLocations.CHICAGO);
+		assertThat(cargo.getDelivery().nextExpectedActivity().getVoyage()).isNull();
+		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
+	}
+
+	@Test
+	@Order(4)
+	// @Transactional
+	public void testChangeDestination() {
+		bookingService.changeDestination(trackingId, new UnLocode("FIHEL"));
+
+		Cargo cargo = entityManager.createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+			.setParameter("trackingId", trackingId)
+			.getSingleResult();
+
+		assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
+		assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
+		assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(deadline);
+		assertThat(cargo.getItinerary()).isEqualTo(assigned);
+		assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
+		assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+		assertThat(cargo.getDelivery().misdirected()).isFalse();
+		assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+		assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
+		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
+	}
+
+	@Test
+	@Order(5)
+	// @Transactional
+	public void testChangeDeadline() {
+		LocalDate newDeadline = deadline.plusMonths(1);
+		bookingService.changeDeadline(trackingId, newDeadline);
+
+		Cargo cargo = entityManager.createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+			.setParameter("trackingId", trackingId)
+			.getSingleResult();
+
+		assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
+		assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
+		assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(newDeadline);
+		assertThat(cargo.getItinerary()).isEqualTo(assigned);
+		assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
+		assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+		assertThat(cargo.getDelivery().misdirected()).isFalse();
+		assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+		assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
+		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
+	}
+
 }

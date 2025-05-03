@@ -24,55 +24,44 @@ import java.util.logging.Logger;
 @Named("EventItemWriter")
 public class EventItemWriter extends AbstractItemWriter {
 
-    private static final String ARCHIVE_DIRECTORY = "archive_directory";
+	private static final String ARCHIVE_DIRECTORY = "archive_directory";
 
-    @Inject private JobContext jobContext;
-    @Inject private ApplicationEvents applicationEvents;
-    @Inject private Logger logger;
+	@Inject
+	private JobContext jobContext;
 
-    @Override
-    public void open(Serializable checkpoint) throws Exception {
-        Path archiveDirectory =
-                Paths.get(jobContext.getProperties().getProperty(ARCHIVE_DIRECTORY));
+	@Inject
+	private ApplicationEvents applicationEvents;
 
-        if (Files.notExists(archiveDirectory)) {
-            Files.createDirectories(archiveDirectory);
-        }
-    }
+	@Inject
+	private Logger logger;
 
-    @Override
-    @Transactional
-    public void writeItems(List<Object> items) throws Exception {
-        Path archivePath =
-                Paths.get(
-                        jobContext.getProperties().getProperty(ARCHIVE_DIRECTORY),
-                        "archive_"
-                                + jobContext.getJobName()
-                                + "_"
-                                + jobContext.getInstanceId()
-                                + ".csv");
+	@Override
+	public void open(Serializable checkpoint) throws Exception {
+		Path archiveDirectory = Paths.get(jobContext.getProperties().getProperty(ARCHIVE_DIRECTORY));
 
-        List<String> lines = new ArrayList<>();
-        items.forEach(
-                item -> {
-                    if (item instanceof HandlingEventRegistrationAttempt attempt) {
-                        applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
-                        lines.add(
-                                DateUtil.toString(attempt.getRegistrationTime())
-                                        + ","
-                                        + DateUtil.toString(attempt.getCompletionTime())
-                                        + ","
-                                        + attempt.getTrackingId()
-                                        + ","
-                                        + attempt.getVoyageNumber()
-                                        + ","
-                                        + attempt.getUnLocode()
-                                        + ","
-                                        + attempt.getType());
-                    }
-                });
+		if (Files.notExists(archiveDirectory)) {
+			Files.createDirectories(archiveDirectory);
+		}
+	}
 
-        Files.write(archivePath, lines, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        logger.log(Level.INFO, "write to file: {}", archivePath);
-    }
+	@Override
+	@Transactional
+	public void writeItems(List<Object> items) throws Exception {
+		Path archivePath = Paths.get(jobContext.getProperties().getProperty(ARCHIVE_DIRECTORY),
+				"archive_" + jobContext.getJobName() + "_" + jobContext.getInstanceId() + ".csv");
+
+		List<String> lines = new ArrayList<>();
+		items.forEach(item -> {
+			if (item instanceof HandlingEventRegistrationAttempt attempt) {
+				applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
+				lines.add(DateUtil.toString(attempt.getRegistrationTime()) + ","
+						+ DateUtil.toString(attempt.getCompletionTime()) + "," + attempt.getTrackingId() + ","
+						+ attempt.getVoyageNumber() + "," + attempt.getUnLocode() + "," + attempt.getType());
+			}
+		});
+
+		Files.write(archivePath, lines, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+		logger.log(Level.INFO, "write to file: {}", archivePath);
+	}
+
 }

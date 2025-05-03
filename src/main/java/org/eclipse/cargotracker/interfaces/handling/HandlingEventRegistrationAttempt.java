@@ -9,76 +9,67 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * This is a simple transfer object for passing incoming handling event registration attempts to the
- * proper registration procedure.
+ * This is a simple transfer object for passing incoming handling event registration
+ * attempts to the proper registration procedure.
  *
- * <p>It is used as a message queue element.
+ * <p>
+ * It is used as a message queue element.
  */
 public class HandlingEventRegistrationAttempt implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final LocalDateTime registrationTime;
-    private final LocalDateTime completionTime;
-    private final TrackingId trackingId;
-    private final VoyageNumber voyageNumber;
-    private final HandlingEvent.Type type;
-    private final UnLocode unLocode;
+	private final LocalDateTime registrationTime;
 
-    public HandlingEventRegistrationAttempt(
-            LocalDateTime registrationDate,
-            LocalDateTime completionDate,
-            TrackingId trackingId,
-            VoyageNumber voyageNumber,
-            HandlingEvent.Type type,
-            UnLocode unLocode) {
-        this.registrationTime = registrationDate;
-        this.completionTime = completionDate;
-        this.trackingId = trackingId;
-        this.voyageNumber = voyageNumber;
-        this.type = type;
-        this.unLocode = unLocode;
-    }
+	private final LocalDateTime completionTime;
 
-    public TrackingId getTrackingId() {
-        return trackingId;
-    }
+	private final TrackingId trackingId;
 
-    public VoyageNumber getVoyageNumber() {
-        return voyageNumber;
-    }
+	private final VoyageNumber voyageNumber;
 
-    public HandlingEvent.Type getType() {
-        return type;
-    }
+	private final HandlingEvent.Type type;
 
-    public UnLocode getUnLocode() {
-        return unLocode;
-    }
+	private final UnLocode unLocode;
 
-    public LocalDateTime getRegistrationTime() {
-        return registrationTime;
-    }
+	public HandlingEventRegistrationAttempt(LocalDateTime registrationDate, LocalDateTime completionDate,
+			TrackingId trackingId, VoyageNumber voyageNumber, HandlingEvent.Type type, UnLocode unLocode) {
+		this.registrationTime = registrationDate;
+		this.completionTime = completionDate;
+		this.trackingId = trackingId;
+		this.voyageNumber = voyageNumber;
+		this.type = type;
+		this.unLocode = unLocode;
+	}
 
-    public LocalDateTime getCompletionTime() {
-        return completionTime;
-    }
+	public TrackingId getTrackingId() {
+		return trackingId;
+	}
 
-    @Override
-    public String toString() {
-        return "HandlingEventRegistrationAttempt{"
-                + "registrationTime="
-                + registrationTime
-                + ", completionTime="
-                + completionTime
-                + ", trackingId="
-                + trackingId
-                + ", voyageNumber="
-                + voyageNumber
-                + ", type="
-                + type
-                + ", code="
-                + unLocode
-                + '}';
-    }
+	public VoyageNumber getVoyageNumber() {
+		return voyageNumber;
+	}
+
+	public HandlingEvent.Type getType() {
+		return type;
+	}
+
+	public UnLocode getUnLocode() {
+		return unLocode;
+	}
+
+	public LocalDateTime getRegistrationTime() {
+		return registrationTime;
+	}
+
+	public LocalDateTime getCompletionTime() {
+		return completionTime;
+	}
+
+	@Override
+	public String toString() {
+		return "HandlingEventRegistrationAttempt{" + "registrationTime=" + registrationTime + ", completionTime="
+				+ completionTime + ", trackingId=" + trackingId + ", voyageNumber=" + voyageNumber + ", type=" + type
+				+ ", code=" + unLocode + '}';
+	}
+
 }

@@ -8,14 +8,12 @@ import java.util.List;
 
 public class LocationDtoAssembler {
 
-    public LocationDto toDto(Location location) {
-        return new LocationDto(location.getUnLocode().value(), location.getName());
-    }
+	public LocationDto toDto(Location location) {
+		return new LocationDto(location.getUnLocode().value(), location.getName());
+	}
 
-    public List<LocationDto> toDtoList(List<Location> allLocations) {
-        return allLocations.stream()
-                .map(this::toDto)
-                .sorted(Comparator.comparing(LocationDto::nameAndCode))
-                .toList();
-    }
+	public List<LocationDto> toDtoList(List<Location> allLocations) {
+		return allLocations.stream().map(this::toDto).sorted(Comparator.comparing(LocationDto::nameAndCode)).toList();
+	}
+
 }

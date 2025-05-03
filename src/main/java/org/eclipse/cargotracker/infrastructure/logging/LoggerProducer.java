@@ -10,22 +10,23 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class LoggerProducer implements Serializable {
 
-    @Produces
-    public Logger produceLogger(InjectionPoint injectionPoint) {
-        String loggerName = extractLoggerName(injectionPoint);
+	@Produces
+	public Logger produceLogger(InjectionPoint injectionPoint) {
+		String loggerName = extractLoggerName(injectionPoint);
 
-        return Logger.getLogger(loggerName);
-    }
+		return Logger.getLogger(loggerName);
+	}
 
-    private String extractLoggerName(InjectionPoint injectionPoint) {
-        if (injectionPoint.getBean() == null) {
-            return injectionPoint.getMember().getDeclaringClass().getName();
-        }
+	private String extractLoggerName(InjectionPoint injectionPoint) {
+		if (injectionPoint.getBean() == null) {
+			return injectionPoint.getMember().getDeclaringClass().getName();
+		}
 
-        if (injectionPoint.getBean().getName() == null) {
-            return injectionPoint.getBean().getBeanClass().getName();
-        }
+		if (injectionPoint.getBean().getName() == null) {
+			return injectionPoint.getBean().getBeanClass().getName();
+		}
 
-        return injectionPoint.getBean().getName();
-    }
+		return injectionPoint.getBean().getName();
+	}
+
 }

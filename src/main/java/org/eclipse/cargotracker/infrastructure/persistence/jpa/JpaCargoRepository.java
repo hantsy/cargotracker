@@ -18,59 +18,58 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class JpaCargoRepository implements CargoRepository, Serializable {
 
-    private static final Logger logger = Logger.getLogger(JpaCargoRepository.class.getName());
+	private static final Logger logger = Logger.getLogger(JpaCargoRepository.class.getName());
 
-    private EntityManager entityManager;
+	private EntityManager entityManager;
 
-    // no-args constructor required by CDI
-    public JpaCargoRepository() {}
+	// no-args constructor required by CDI
+	public JpaCargoRepository() {
+	}
 
-    @Inject
-    public JpaCargoRepository(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+	@Inject
+	public JpaCargoRepository(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
-    @Override
-    public Cargo find(TrackingId trackingId) {
-        Cargo cargo;
+	@Override
+	public Cargo find(TrackingId trackingId) {
+		Cargo cargo;
 
-        try {
-            cargo =
-                    entityManager
-                            .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                            .setParameter("trackingId", trackingId)
-                            .getSingleResult();
-        } catch (NoResultException e) {
-            logger.log(Level.FINE, "Find called on non-existant tracking ID.", e);
-            cargo = null;
-        }
+		try {
+			cargo = entityManager.createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+				.setParameter("trackingId", trackingId)
+				.getSingleResult();
+		}
+		catch (NoResultException e) {
+			logger.log(Level.FINE, "Find called on non-existant tracking ID.", e);
+			cargo = null;
+		}
 
-        return cargo;
-    }
+		return cargo;
+	}
 
-    @Override
-    public void store(Cargo cargo) {
-        // TODO [Clean Code] See why cascade is not working correctly for legs.
-        cargo.getItinerary().legs().forEach(leg -> entityManager.persist(leg));
+	@Override
+	public void store(Cargo cargo) {
+		// TODO [Clean Code] See why cascade is not working correctly for legs.
+		cargo.getItinerary().legs().forEach(leg -> entityManager.persist(leg));
 
-        entityManager.persist(cargo);
+		entityManager.persist(cargo);
 
-        // Hibernate issue:
-        // Delete-orphan does not seem to work correctly when the parent is a component
-        this.entityManager
-                .createNativeQuery("DELETE FROM legs WHERE cargo_id IS NULL")
-                .executeUpdate();
-    }
+		// Hibernate issue:
+		// Delete-orphan does not seem to work correctly when the parent is a component
+		this.entityManager.createNativeQuery("DELETE FROM legs WHERE cargo_id IS NULL").executeUpdate();
+	}
 
-    @Override
-    public TrackingId nextTrackingId() {
-        String random = UUID.randomUUID().toString().toUpperCase();
+	@Override
+	public TrackingId nextTrackingId() {
+		String random = UUID.randomUUID().toString().toUpperCase();
 
-        return new TrackingId(random.substring(0, random.indexOf("-")));
-    }
+		return new TrackingId(random.substring(0, random.indexOf("-")));
+	}
 
-    @Override
-    public List<Cargo> findAll() {
-        return entityManager.createNamedQuery("Cargo.findAll", Cargo.class).getResultList();
-    }
+	@Override
+	public List<Cargo> findAll() {
+		return entityManager.createNamedQuery("Cargo.findAll", Cargo.class).getResultList();
+	}
+
 }

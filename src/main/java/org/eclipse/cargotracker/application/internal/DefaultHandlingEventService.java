@@ -21,55 +21,50 @@ import java.util.logging.Logger;
 @Transactional(rollbackOn = CannotCreateHandlingEventException.class)
 public class DefaultHandlingEventService implements HandlingEventService {
 
-    private static final Logger LOGGER =
-            Logger.getLogger(DefaultHandlingEventService.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(DefaultHandlingEventService.class.getName());
 
-    private ApplicationEvents applicationEvents;
-    private HandlingEventRepository handlingEventRepository;
-    private HandlingEventFactory handlingEventFactory;
+	private ApplicationEvents applicationEvents;
 
-    // no-args constructor required by CDI
-    public DefaultHandlingEventService() {}
+	private HandlingEventRepository handlingEventRepository;
 
-    @Inject
-    public DefaultHandlingEventService(
-            ApplicationEvents applicationEvents,
-            HandlingEventRepository handlingEventRepository,
-            HandlingEventFactory handlingEventFactory) {
-        this.applicationEvents = applicationEvents;
-        this.handlingEventRepository = handlingEventRepository;
-        this.handlingEventFactory = handlingEventFactory;
-    }
+	private HandlingEventFactory handlingEventFactory;
 
-    @Override
-    public void registerHandlingEvent(
-            LocalDateTime completionTime,
-            TrackingId trackingId,
-            VoyageNumber voyageNumber,
-            UnLocode unLocode,
-            HandlingEvent.Type type)
-            throws CannotCreateHandlingEventException {
-        LocalDateTime registrationTime = LocalDateTime.now();
+	// no-args constructor required by CDI
+	public DefaultHandlingEventService() {
+	}
 
-        /*
-         * Using a factory to create a HandlingEvent (aggregate). This is where it is
-         * determined wether the incoming data, the attempt, actually is capable of
-         * representing a real handling event.
-         */
-        HandlingEvent event =
-                handlingEventFactory.createHandlingEvent(
-                        registrationTime, completionTime, trackingId, voyageNumber, unLocode, type);
+	@Inject
+	public DefaultHandlingEventService(ApplicationEvents applicationEvents,
+			HandlingEventRepository handlingEventRepository, HandlingEventFactory handlingEventFactory) {
+		this.applicationEvents = applicationEvents;
+		this.handlingEventRepository = handlingEventRepository;
+		this.handlingEventFactory = handlingEventFactory;
+	}
 
-        /*
-         * Store the new handling event, which updates the persistent state of the
-         * handling event aggregate (but not the cargo aggregate - that happens
-         * asynchronously!)
-         */
-        handlingEventRepository.store(event);
+	@Override
+	public void registerHandlingEvent(LocalDateTime completionTime, TrackingId trackingId, VoyageNumber voyageNumber,
+			UnLocode unLocode, HandlingEvent.Type type) throws CannotCreateHandlingEventException {
+		LocalDateTime registrationTime = LocalDateTime.now();
 
-        /* Publish an event stating that a cargo has been handled. */
-        applicationEvents.cargoWasHandled(event);
+		/*
+		 * Using a factory to create a HandlingEvent (aggregate). This is where it is
+		 * determined wether the incoming data, the attempt, actually is capable of
+		 * representing a real handling event.
+		 */
+		HandlingEvent event = handlingEventFactory.createHandlingEvent(registrationTime, completionTime, trackingId,
+				voyageNumber, unLocode, type);
 
-        LOGGER.log(Level.INFO, "Registered handling event: {0}", event);
-    }
+		/*
+		 * Store the new handling event, which updates the persistent state of the
+		 * handling event aggregate (but not the cargo aggregate - that happens
+		 * asynchronously!)
+		 */
+		handlingEventRepository.store(event);
+
+		/* Publish an event stating that a cargo has been handled. */
+		applicationEvents.cargoWasHandled(event);
+
+		LOGGER.log(Level.INFO, "Registered handling event: {0}", event);
+	}
+
 }

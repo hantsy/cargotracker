@@ -16,38 +16,36 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class JpaVoyageRepository implements VoyageRepository, Serializable {
 
-    private static final Logger logger = Logger.getLogger(JpaVoyageRepository.class.getName());
+	private static final Logger logger = Logger.getLogger(JpaVoyageRepository.class.getName());
 
-    private EntityManager entityManager;
+	private EntityManager entityManager;
 
-    // no-args constructor required by CDI
-    public JpaVoyageRepository() {}
+	// no-args constructor required by CDI
+	public JpaVoyageRepository() {
+	}
 
-    @Inject
-    public JpaVoyageRepository(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+	@Inject
+	public JpaVoyageRepository(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
-    @Override
-    public Voyage find(VoyageNumber voyageNumber) {
-        Voyage voyage = null;
-        try {
-            voyage =
-                    entityManager
-                            .createNamedQuery("Voyage.findByVoyageNumber", Voyage.class)
-                            .setParameter("voyageNumber", voyageNumber)
-                            .getSingleResult();
-        } catch (NoResultException e) {
-            logger.log(
-                    Level.WARNING,
-                    "Find called on non-existing voyageNumber: {0}.",
-                    e.getMessage());
-        }
-        return voyage;
-    }
+	@Override
+	public Voyage find(VoyageNumber voyageNumber) {
+		Voyage voyage = null;
+		try {
+			voyage = entityManager.createNamedQuery("Voyage.findByVoyageNumber", Voyage.class)
+				.setParameter("voyageNumber", voyageNumber)
+				.getSingleResult();
+		}
+		catch (NoResultException e) {
+			logger.log(Level.WARNING, "Find called on non-existing voyageNumber: {0}.", e.getMessage());
+		}
+		return voyage;
+	}
 
-    @Override
-    public List<Voyage> findAll() {
-        return entityManager.createNamedQuery("Voyage.findAll", Voyage.class).getResultList();
-    }
+	@Override
+	public List<Voyage> findAll() {
+		return entityManager.createNamedQuery("Voyage.findAll", Voyage.class).getResultList();
+	}
+
 }

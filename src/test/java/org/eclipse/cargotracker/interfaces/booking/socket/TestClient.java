@@ -8,33 +8,34 @@ import java.util.logging.Logger;
 
 @ClientEndpoint
 public class TestClient {
-    private static final Logger LOGGER = Logger.getLogger(TestClient.class.getName());
 
-    public static CountDownLatch latch;
-    public static String response;
+	private static final Logger LOGGER = Logger.getLogger(TestClient.class.getName());
 
-    @OnOpen
-    public void connected(Session session, EndpointConfig clientConfig) {
-        LOGGER.log(Level.INFO, "connected: {0}", session.getId());
-    }
+	public static CountDownLatch latch;
 
-    @OnMessage
-    public void onMessage(String msg) {
-        LOGGER.log(Level.INFO, "message from server: {0}", msg);
-        response = msg;
-    }
+	public static String response;
 
-    @OnClose
-    public void disconnected(Session session, CloseReason reason) {
-        LOGGER.log(
-                Level.INFO,
-                "disconnected id: {0}, reason: {1} ",
-                new Object[] {session.getId(), reason.getReasonPhrase()});
-    }
+	@OnOpen
+	public void connected(Session session, EndpointConfig clientConfig) {
+		LOGGER.log(Level.INFO, "connected: {0}", session.getId());
+	}
 
-    @OnError
-    public void disconnected(Session session, Throwable error) {
-        error.printStackTrace();
-        LOGGER.info("Error communicating with server: " + error.getMessage());
-    }
+	@OnMessage
+	public void onMessage(String msg) {
+		LOGGER.log(Level.INFO, "message from server: {0}", msg);
+		response = msg;
+	}
+
+	@OnClose
+	public void disconnected(Session session, CloseReason reason) {
+		LOGGER.log(Level.INFO, "disconnected id: {0}, reason: {1} ",
+				new Object[] { session.getId(), reason.getReasonPhrase() });
+	}
+
+	@OnError
+	public void disconnected(Session session, Throwable error) {
+		error.printStackTrace();
+		LOGGER.info("Error communicating with server: " + error.getMessage());
+	}
+
 }

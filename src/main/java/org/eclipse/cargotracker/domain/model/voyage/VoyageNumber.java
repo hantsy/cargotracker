@@ -8,14 +8,13 @@ import java.util.Objects;
 
 @Embeddable
 public record VoyageNumber(
-        @Column(name = "voyage_number") @NotBlank(message = "Voyage number cannot be blank")
-                String number) {
+		@Column(name = "voyage_number") @NotBlank(message = "Voyage number cannot be blank") String number) {
 
-    public VoyageNumber {
-        Objects.requireNonNull(number, "Voyage number is required");
-    }
+	public VoyageNumber {
+		Objects.requireNonNull(number, "Voyage number is required");
+	}
 
-    boolean sameValueAs(VoyageNumber other) {
-        return other != null && this.number.equals(other.number);
-    }
+	boolean sameValueAs(VoyageNumber other) {
+		return other != null && this.number.equals(other.number);
+	}
 }

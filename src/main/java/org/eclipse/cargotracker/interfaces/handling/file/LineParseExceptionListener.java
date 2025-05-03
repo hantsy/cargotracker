@@ -18,39 +18,33 @@ import java.util.logging.Logger;
 @Named("LineParseExceptionListener")
 public class LineParseExceptionListener implements SkipReadListener {
 
-    private static final String FAILED_DIRECTORY = "failed_directory";
+	private static final String FAILED_DIRECTORY = "failed_directory";
 
-    @Inject private Logger logger;
+	@Inject
+	private Logger logger;
 
-    @Inject private JobContext jobContext;
+	@Inject
+	private JobContext jobContext;
 
-    @Override
-    public void onSkipReadItem(Exception e) throws Exception {
-        File failedDirectory = new File(jobContext.getProperties().getProperty(FAILED_DIRECTORY));
+	@Override
+	public void onSkipReadItem(Exception e) throws Exception {
+		File failedDirectory = new File(jobContext.getProperties().getProperty(FAILED_DIRECTORY));
 
-        if (!failedDirectory.exists()) {
-            failedDirectory.mkdirs();
-        }
+		if (!failedDirectory.exists()) {
+			failedDirectory.mkdirs();
+		}
 
-        EventLineParseException parseException = (EventLineParseException) e;
+		EventLineParseException parseException = (EventLineParseException) e;
 
-        logger.log(Level.WARNING, "Problem parsing event file line", parseException);
+		logger.log(Level.WARNING, "Problem parsing event file line", parseException);
 
-        Path failedFilePath =
-                Paths.get(
-                        failedDirectory.getAbsolutePath(),
-                        "failed_"
-                                + jobContext.getJobName()
-                                + "_"
-                                + jobContext.getInstanceId()
-                                + ".csv");
+		Path failedFilePath = Paths.get(failedDirectory.getAbsolutePath(),
+				"failed_" + jobContext.getJobName() + "_" + jobContext.getInstanceId() + ".csv");
 
-        Files.writeString(
-                failedFilePath,
-                parseException.getLine(),
-                StandardOpenOption.CREATE,
-                StandardOpenOption.APPEND);
+		Files.writeString(failedFilePath, parseException.getLine(), StandardOpenOption.CREATE,
+				StandardOpenOption.APPEND);
 
-        logger.log(Level.INFO, "Failed line written to: {0}", failedFilePath);
-    }
+		logger.log(Level.INFO, "Failed line written to: {0}", failedFilePath);
+	}
+
 }

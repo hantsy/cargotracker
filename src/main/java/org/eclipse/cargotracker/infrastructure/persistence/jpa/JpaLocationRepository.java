@@ -17,36 +17,37 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class JpaLocationRepository implements LocationRepository, Serializable {
 
-    private static final Logger logger = Logger.getLogger(JpaLocationRepository.class.getName());
+	private static final Logger logger = Logger.getLogger(JpaLocationRepository.class.getName());
 
-    private EntityManager entityManager;
+	private EntityManager entityManager;
 
-    // no-args constructor required by CDI
-    public JpaLocationRepository() {}
+	// no-args constructor required by CDI
+	public JpaLocationRepository() {
+	}
 
-    @Inject
-    public JpaLocationRepository(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+	@Inject
+	public JpaLocationRepository(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
-    @Override
-    public Location find(UnLocode unLocode) {
-        Location location;
-        try {
-            location =
-                    entityManager
-                            .createNamedQuery("Location.findByUnLocode", Location.class)
-                            .setParameter("unLocode", unLocode)
-                            .getSingleResult();
-        } catch (NoResultException e) {
-            logger.log(Level.WARNING, "Can not find Location by code: {0}", e.getMessage());
-            location = null;
-        }
-        return location;
-    }
+	@Override
+	public Location find(UnLocode unLocode) {
+		Location location;
+		try {
+			location = entityManager.createNamedQuery("Location.findByUnLocode", Location.class)
+				.setParameter("unLocode", unLocode)
+				.getSingleResult();
+		}
+		catch (NoResultException e) {
+			logger.log(Level.WARNING, "Can not find Location by code: {0}", e.getMessage());
+			location = null;
+		}
+		return location;
+	}
 
-    @Override
-    public List<Location> findAll() {
-        return entityManager.createNamedQuery("Location.findAll", Location.class).getResultList();
-    }
+	@Override
+	public List<Location> findAll() {
+		return entityManager.createNamedQuery("Location.findAll", Location.class).getResultList();
+	}
+
 }

@@ -36,80 +36,77 @@ import java.util.logging.Logger;
 @Tag("arqtest")
 public class RealtimeCargoTrackingSseServiceTest {
 
-    private static final Logger LOGGER =
-            Logger.getLogger(RealtimeCargoTrackingSseServiceTest.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingSseServiceTest.class.getName());
 
-    @Deployment(testable = false)
-    public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
+	@Deployment(testable = false)
+	public static WebArchive createDeployment() {
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
 
-        addExtraJars(war);
-        addDomainModels(war);
-        addInfraBase(war);
-        addApplicationBase(war);
-        war.addClasses(RealtimeCargoTrackingSseService.class)
-                // stub bean to raise a CDI event
-                .addClass(CargoInspectedSseEventStub.class)
-                .addClass(RestActivator.class) // activate REST
-                // add samples.
-                .addClass(SampleLocations.class)
-                .addClass(SampleVoyages.class)
-                // add web xml
-                .addAsWebInfResource("test-web.xml", "web.xml")
-                // add Wildfly specific deployment descriptor
-                .addAsWebInfResource(
-                        "test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
+		addExtraJars(war);
+		addDomainModels(war);
+		addInfraBase(war);
+		addApplicationBase(war);
+		war.addClasses(RealtimeCargoTrackingSseService.class)
+			// stub bean to raise a CDI event
+			.addClass(CargoInspectedSseEventStub.class)
+			.addClass(RestActivator.class) // activate REST
+			// add samples.
+			.addClass(SampleLocations.class)
+			.addClass(SampleVoyages.class)
+			// add web xml
+			.addAsWebInfResource("test-web.xml", "web.xml")
+			// add Wildfly specific deployment descriptor
+			.addAsWebInfResource("test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
 
-        LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
+		LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
 
-        return war;
-    }
+		return war;
+	}
 
-    @ArquillianResource URL base;
-    private Client client;
+	@ArquillianResource
+	URL base;
 
-    @BeforeEach
-    public void setup() {
-        LOGGER.log(Level.INFO, "base url: {0}", base.toExternalForm());
-        this.client = ClientBuilder.newClient();
-    }
+	private Client client;
 
-    @AfterEach
-    public void teardown() {
-        if (this.client != null) {
-            this.client.close();
-        }
-    }
+	@BeforeEach
+	public void setup() {
+		LOGGER.log(Level.INFO, "base url: {0}", base.toExternalForm());
+		this.client = ClientBuilder.newClient();
+	}
 
-    @Test
-    @RunAsClient
-    void testOnCargoInspected() throws Exception {
-        LOGGER.log(
-                Level.INFO,
-                " Running test:: RealtimeCargoTrackingServiceTest#testCargoStatus ... ");
-        final var trackingTarget =
-                client.target(URI.create(base.toExternalForm() + "rest/tracking"));
+	@AfterEach
+	public void teardown() {
+		if (this.client != null) {
+			this.client.close();
+		}
+	}
 
-        var latch = new CountDownLatch(1);
-        try (final var trackingEventSource = SseEventSource.target(trackingTarget).build()) {
-            AtomicReference<String> eventData = new AtomicReference<>();
-            trackingEventSource.register(
-                    inboundSseEvent -> {
-                        eventData.set(inboundSseEvent.readData());
-                        latch.countDown();
-                    },
-                    Throwable::printStackTrace);
-            trackingEventSource.open();
-            LOGGER.log(Level.INFO, "connecting to SSE endpoint");
-            latch.await(10000, TimeUnit.MILLISECONDS);
+	@Test
+	@RunAsClient
+	void testOnCargoInspected() throws Exception {
+		LOGGER.log(Level.INFO, " Running test:: RealtimeCargoTrackingServiceTest#testCargoStatus ... ");
+		final var trackingTarget = client.target(URI.create(base.toExternalForm() + "rest/tracking"));
 
-            // assert the result
-            assertThat(eventData.get()).isNotNull();
-            var json = JsonPath.parse(eventData.get());
-            LOGGER.log(Level.INFO, "response json string: {0}", json);
-            assertThat(json.read("$.trackingId", String.class)).isEqualTo("AAA");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+		var latch = new CountDownLatch(1);
+		try (final var trackingEventSource = SseEventSource.target(trackingTarget).build()) {
+			AtomicReference<String> eventData = new AtomicReference<>();
+			trackingEventSource.register(inboundSseEvent -> {
+				eventData.set(inboundSseEvent.readData());
+				latch.countDown();
+			}, Throwable::printStackTrace);
+			trackingEventSource.open();
+			LOGGER.log(Level.INFO, "connecting to SSE endpoint");
+			latch.await(10000, TimeUnit.MILLISECONDS);
+
+			// assert the result
+			assertThat(eventData.get()).isNotNull();
+			var json = JsonPath.parse(eventData.get());
+			LOGGER.log(Level.INFO, "response json string: {0}", json);
+			assertThat(json.read("$.trackingId", String.class)).isEqualTo("AAA");
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

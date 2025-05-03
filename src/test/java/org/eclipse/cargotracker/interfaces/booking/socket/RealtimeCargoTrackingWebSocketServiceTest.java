@@ -34,64 +34,56 @@ import java.util.logging.Logger;
 @Tag("arqtest")
 public class RealtimeCargoTrackingWebSocketServiceTest {
 
-    private static final Logger LOGGER =
-            Logger.getLogger(RealtimeCargoTrackingWebSocketServiceTest.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingWebSocketServiceTest.class.getName());
 
-    @Deployment(testable = false)
-    public static WebArchive createDeployment() {
-        WebArchive war =
-                ShrinkWrap.create(WebArchive.class, "test-RealtimeCargoTrackingServiceTest.war");
+	@Deployment(testable = false)
+	public static WebArchive createDeployment() {
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "test-RealtimeCargoTrackingServiceTest.war");
 
-        addExtraJars(war);
-        addDomainModels(war);
-        addInfraBase(war);
-        addApplicationBase(war);
-        war.addClass(RealtimeCargoTrackingWebSocketService.class)
-                // .addClass(TestClient.class)
-                // EJB to raise a CDI event
-                .addClass(CargoInspectedWebSocketEventStub.class)
-                // add samples.
-                .addClass(SampleLocations.class)
-                .addClass(SampleVoyages.class)
-                // add web xml
-                .addAsWebInfResource("test-web.xml", "web.xml")
-                // add Wildfly specific deployment descriptor
-                .addAsWebInfResource(
-                        "test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
+		addExtraJars(war);
+		addDomainModels(war);
+		addInfraBase(war);
+		addApplicationBase(war);
+		war.addClass(RealtimeCargoTrackingWebSocketService.class)
+			// .addClass(TestClient.class)
+			// EJB to raise a CDI event
+			.addClass(CargoInspectedWebSocketEventStub.class)
+			// add samples.
+			.addClass(SampleLocations.class)
+			.addClass(SampleVoyages.class)
+			// add web xml
+			.addAsWebInfResource("test-web.xml", "web.xml")
+			// add Wildfly specific deployment descriptor
+			.addAsWebInfResource("test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
 
-        LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
+		LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
 
-        return war;
-    }
+		return war;
+	}
 
-    @ArquillianResource URL base;
+	@ArquillianResource
+	URL base;
 
-    @Test
-    @RunAsClient
-    void testOnCargoInspected() throws Exception {
-        LOGGER.log(Level.INFO, "run test RealtimeCargoTrackingServiceTest# testOnCargoInspected");
-        TestClient.latch = new CountDownLatch(1);
-        var session = connectToServer();
-        assertThat(session).isNotNull();
-        TestClient.latch.await(10, TimeUnit.SECONDS);
-        assertThat(TestClient.response).isNotNull();
-        var json = JsonPath.parse(TestClient.response);
-        LOGGER.log(Level.INFO, "response json string: {0}", json);
-        assertThat(json.read("$.trackingId", String.class)).isEqualTo("AAA");
-    }
+	@Test
+	@RunAsClient
+	void testOnCargoInspected() throws Exception {
+		LOGGER.log(Level.INFO, "run test RealtimeCargoTrackingServiceTest# testOnCargoInspected");
+		TestClient.latch = new CountDownLatch(1);
+		var session = connectToServer();
+		assertThat(session).isNotNull();
+		TestClient.latch.await(10, TimeUnit.SECONDS);
+		assertThat(TestClient.response).isNotNull();
+		var json = JsonPath.parse(TestClient.response);
+		LOGGER.log(Level.INFO, "response json string: {0}", json);
+		assertThat(json.read("$.trackingId", String.class)).isEqualTo("AAA");
+	}
 
-    private Session connectToServer() throws DeploymentException, IOException, URISyntaxException {
-        var container = ContainerProvider.getWebSocketContainer();
-        URI uri =
-                new URI(
-                        "ws://"
-                                + base.getHost()
-                                + ":"
-                                + base.getPort()
-                                + base.getPath()
-                                + "tracking");
+	private Session connectToServer() throws DeploymentException, IOException, URISyntaxException {
+		var container = ContainerProvider.getWebSocketContainer();
+		URI uri = new URI("ws://" + base.getHost() + ":" + base.getPort() + base.getPath() + "tracking");
 
-        LOGGER.log(Level.INFO, "connected to url: {0}", uri);
-        return container.connectToServer(TestClient.class, uri);
-    }
+		LOGGER.log(Level.INFO, "connected to url: {0}", uri);
+		return container.connectToServer(TestClient.class, uri);
+	}
+
 }

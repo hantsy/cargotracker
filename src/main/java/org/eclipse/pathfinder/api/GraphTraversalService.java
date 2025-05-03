@@ -22,115 +22,87 @@ import java.util.List;
 @Path("/graph-traversal")
 public class GraphTraversalService {
 
-    private static final long ONE_MIN_MS = 1000L * 60;
-    private static final long ONE_DAY_MS = ONE_MIN_MS * 60 * 24;
-    private final SecureRandom random = new SecureRandom();
+	private static final long ONE_MIN_MS = 1000L * 60;
 
-    private GraphDao dao;
+	private static final long ONE_DAY_MS = ONE_MIN_MS * 60 * 24;
 
-    public GraphTraversalService() {}
+	private final SecureRandom random = new SecureRandom();
 
-    @Inject
-    public GraphTraversalService(GraphDao dao) {
-        this.dao = dao;
-    }
+	private GraphDao dao;
 
-    @GET
-    @Path("/shortest-path")
-    @Produces({"application/json", "application/xml; qs=.75"})
-    public List<TransitPath> findShortestPath(
-            @NotBlank(message = "Missing origin UN location code.")
-                    @Size(
-                            min = 5,
-                            max = 5,
-                            message = "Origin UN location code value must be five characters long.")
-                    @QueryParam("origin")
-                    String originUnLocode,
-            @NotBlank(message = "Missing destination UN location code.")
-                    @Size(
-                            min = 5,
-                            max = 5,
-                            message =
-                                    "Destination UN location code value must be five characters long.")
-                    @QueryParam("destination")
-                    String destinationUnLocode,
-            @Size(
-                            min = 8,
-                            max = 10,
-                            message =
-                                    "Deadline value must be between eight and ten characters long.")
-                    @QueryParam("deadline")
-                    String deadline) {
-        LocalDateTime date = nextDate(LocalDateTime.now());
+	public GraphTraversalService() {
+	}
 
-        List<String> allVertices = dao.listLocations();
-        allVertices.remove(originUnLocode);
-        allVertices.remove(destinationUnLocode);
+	@Inject
+	public GraphTraversalService(GraphDao dao) {
+		this.dao = dao;
+	}
 
-        int candidateCount = getRandomNumberOfCandidates();
-        List<TransitPath> candidates = new ArrayList<>(candidateCount);
+	@GET
+	@Path("/shortest-path")
+	@Produces({ "application/json", "application/xml; qs=.75" })
+	public List<TransitPath> findShortestPath(@NotBlank(message = "Missing origin UN location code.") @Size(min = 5,
+			max = 5,
+			message = "Origin UN location code value must be five characters long.") @QueryParam("origin") String originUnLocode,
+			@NotBlank(message = "Missing destination UN location code.") @Size(min = 5, max = 5,
+					message = "Destination UN location code value must be five characters long.") @QueryParam("destination") String destinationUnLocode,
+			@Size(min = 8, max = 10,
+					message = "Deadline value must be between eight and ten characters long.") @QueryParam("deadline") String deadline) {
+		LocalDateTime date = nextDate(LocalDateTime.now());
 
-        for (int i = 0; i < candidateCount; i++) {
-            allVertices = getRandomChunkOfLocations(allVertices);
-            List<TransitEdge> transitEdges = new ArrayList<>(allVertices.size() - 1);
-            String firstLegTo = allVertices.get(0);
+		List<String> allVertices = dao.listLocations();
+		allVertices.remove(originUnLocode);
+		allVertices.remove(destinationUnLocode);
 
-            LocalDateTime fromDate = nextDate(date);
-            LocalDateTime toDate = nextDate(fromDate);
-            date = nextDate(toDate);
+		int candidateCount = getRandomNumberOfCandidates();
+		List<TransitPath> candidates = new ArrayList<>(candidateCount);
 
-            transitEdges.add(
-                    new TransitEdge(
-                            dao.getVoyageNumber(originUnLocode, firstLegTo),
-                            originUnLocode,
-                            firstLegTo,
-                            fromDate,
-                            toDate));
+		for (int i = 0; i < candidateCount; i++) {
+			allVertices = getRandomChunkOfLocations(allVertices);
+			List<TransitEdge> transitEdges = new ArrayList<>(allVertices.size() - 1);
+			String firstLegTo = allVertices.get(0);
 
-            for (int j = 0; j < allVertices.size() - 1; j++) {
-                String current = allVertices.get(j);
-                String next = allVertices.get(j + 1);
-                fromDate = nextDate(date);
-                toDate = nextDate(fromDate);
-                date = nextDate(toDate);
-                transitEdges.add(
-                        new TransitEdge(
-                                dao.getVoyageNumber(current, next),
-                                current,
-                                next,
-                                fromDate,
-                                toDate));
-            }
+			LocalDateTime fromDate = nextDate(date);
+			LocalDateTime toDate = nextDate(fromDate);
+			date = nextDate(toDate);
 
-            String lastLegFrom = allVertices.getLast();
-            fromDate = nextDate(date);
-            toDate = nextDate(fromDate);
-            transitEdges.add(
-                    new TransitEdge(
-                            dao.getVoyageNumber(lastLegFrom, destinationUnLocode),
-                            lastLegFrom,
-                            destinationUnLocode,
-                            fromDate,
-                            toDate));
+			transitEdges.add(new TransitEdge(dao.getVoyageNumber(originUnLocode, firstLegTo), originUnLocode,
+					firstLegTo, fromDate, toDate));
 
-            candidates.add(new TransitPath(transitEdges));
-        }
+			for (int j = 0; j < allVertices.size() - 1; j++) {
+				String current = allVertices.get(j);
+				String next = allVertices.get(j + 1);
+				fromDate = nextDate(date);
+				toDate = nextDate(fromDate);
+				date = nextDate(toDate);
+				transitEdges.add(new TransitEdge(dao.getVoyageNumber(current, next), current, next, fromDate, toDate));
+			}
 
-        return candidates;
-    }
+			String lastLegFrom = allVertices.getLast();
+			fromDate = nextDate(date);
+			toDate = nextDate(fromDate);
+			transitEdges.add(new TransitEdge(dao.getVoyageNumber(lastLegFrom, destinationUnLocode), lastLegFrom,
+					destinationUnLocode, fromDate, toDate));
 
-    private LocalDateTime nextDate(LocalDateTime date) {
-        return date.plus(ONE_DAY_MS + (random.nextInt(1000) - 500) * ONE_MIN_MS, ChronoUnit.MILLIS);
-    }
+			candidates.add(new TransitPath(transitEdges));
+		}
 
-    private int getRandomNumberOfCandidates() {
-        return 3 + random.nextInt(3);
-    }
+		return candidates;
+	}
 
-    private List<String> getRandomChunkOfLocations(List<String> allLocations) {
-        Collections.shuffle(allLocations);
-        int total = allLocations.size();
-        int chunk = total > 4 ? 1 + new SecureRandom().nextInt(5) : total;
-        return allLocations.subList(0, chunk);
-    }
+	private LocalDateTime nextDate(LocalDateTime date) {
+		return date.plus(ONE_DAY_MS + (random.nextInt(1000) - 500) * ONE_MIN_MS, ChronoUnit.MILLIS);
+	}
+
+	private int getRandomNumberOfCandidates() {
+		return 3 + random.nextInt(3);
+	}
+
+	private List<String> getRandomChunkOfLocations(List<String> allLocations) {
+		Collections.shuffle(allLocations);
+		int total = allLocations.size();
+		int chunk = total > 4 ? 1 + new SecureRandom().nextInt(5) : total;
+		return allLocations.subList(0, chunk);
+	}
+
 }

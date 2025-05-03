@@ -13,35 +13,36 @@ import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAtt
 @ApplicationScoped
 public class SynchronousApplicationEventsStub implements ApplicationEvents {
 
-    private Instance<CargoInspectionService> cargoInspectionServiceInstance;
+	private Instance<CargoInspectionService> cargoInspectionServiceInstance;
 
-    // no-args constructor required by CDI
-    public SynchronousApplicationEventsStub() {}
+	// no-args constructor required by CDI
+	public SynchronousApplicationEventsStub() {
+	}
 
-    @Inject
-    public SynchronousApplicationEventsStub(
-            Instance<CargoInspectionService> cargoInspectionServiceInstance) {
-        this.cargoInspectionServiceInstance = cargoInspectionServiceInstance;
-    }
+	@Inject
+	public SynchronousApplicationEventsStub(Instance<CargoInspectionService> cargoInspectionServiceInstance) {
+		this.cargoInspectionServiceInstance = cargoInspectionServiceInstance;
+	}
 
-    @Override
-    public void cargoWasHandled(HandlingEvent event) {
-        System.out.println("EVENT: cargo was handled: " + event);
-        cargoInspectionServiceInstance.get().inspectCargo(event.getCargo().getTrackingId());
-    }
+	@Override
+	public void cargoWasHandled(HandlingEvent event) {
+		System.out.println("EVENT: cargo was handled: " + event);
+		cargoInspectionServiceInstance.get().inspectCargo(event.getCargo().getTrackingId());
+	}
 
-    @Override
-    public void cargoWasMisdirected(Cargo cargo) {
-        System.out.println("EVENT: cargo was misdirected");
-    }
+	@Override
+	public void cargoWasMisdirected(Cargo cargo) {
+		System.out.println("EVENT: cargo was misdirected");
+	}
 
-    @Override
-    public void cargoHasArrived(Cargo cargo) {
-        System.out.println("EVENT: cargo has arrived: " + cargo.getTrackingId().id());
-    }
+	@Override
+	public void cargoHasArrived(Cargo cargo) {
+		System.out.println("EVENT: cargo has arrived: " + cargo.getTrackingId().id());
+	}
 
-    @Override
-    public void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt) {
-        System.out.println("EVENT: received handling event registration attempt");
-    }
+	@Override
+	public void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt) {
+		System.out.println("EVENT: received handling event registration attempt");
+	}
+
 }

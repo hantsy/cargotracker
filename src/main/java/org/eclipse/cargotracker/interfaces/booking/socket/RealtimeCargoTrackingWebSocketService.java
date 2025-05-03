@@ -24,49 +24,49 @@ import java.util.logging.Logger;
 @Singleton
 @ServerEndpoint("/tracking")
 public class RealtimeCargoTrackingWebSocketService {
-    private static final Logger LOGGER =
-            Logger.getLogger(RealtimeCargoTrackingWebSocketService.class.getName());
 
-    private final Set<Session> sessions = new HashSet<>();
+	private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingWebSocketService.class.getName());
 
-    @OnOpen
-    public void onOpen(final Session session) {
-        // Infinite by default on GlassFish. We need this principally for WebLogic.
-        LOGGER.log(Level.INFO, "open session: {0}", session.getId());
-        session.setMaxIdleTimeout(5L * 60 * 1000);
-        sessions.add(session);
-    }
+	private final Set<Session> sessions = new HashSet<>();
 
-    @OnClose
-    public void onClose(final Session session) {
-        LOGGER.log(Level.INFO, "close session: {0}", session.getId());
-        sessions.remove(session);
-    }
+	@OnOpen
+	public void onOpen(final Session session) {
+		// Infinite by default on GlassFish. We need this principally for WebLogic.
+		LOGGER.log(Level.INFO, "open session: {0}", session.getId());
+		session.setMaxIdleTimeout(5L * 60 * 1000);
+		sessions.add(session);
+	}
 
-    public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
-        LOGGER.log(
-                Level.INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
-        Writer writer = new StringWriter();
+	@OnClose
+	public void onClose(final Session session) {
+		LOGGER.log(Level.INFO, "close session: {0}", session.getId());
+		sessions.remove(session);
+	}
 
-        try (JsonGenerator generator = Json.createGenerator(writer)) {
-            generator
-                    .writeStartObject()
-                    .write("trackingId", cargo.getTrackingId().id())
-                    .write("origin", cargo.getOrigin().getName())
-                    .write("destination", cargo.getRouteSpecification().destination().getName())
-                    .write("lastKnownLocation", cargo.getDelivery().lastKnownLocation().getName())
-                    .write("transportStatus", cargo.getDelivery().transportStatus().name())
-                    .writeEnd();
-        }
+	public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
+		LOGGER.log(Level.INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
+		Writer writer = new StringWriter();
 
-        String jsonValue = writer.toString();
-        LOGGER.log(Level.INFO, "sending message to client: {0}", jsonValue);
-        for (Session session : sessions) {
-            try {
-                session.getBasicRemote().sendText(jsonValue);
-            } catch (IOException ex) {
-                LOGGER.log(Level.WARNING, "Unable to publish WebSocket message", ex);
-            }
-        }
-    }
+		try (JsonGenerator generator = Json.createGenerator(writer)) {
+			generator.writeStartObject()
+				.write("trackingId", cargo.getTrackingId().id())
+				.write("origin", cargo.getOrigin().getName())
+				.write("destination", cargo.getRouteSpecification().destination().getName())
+				.write("lastKnownLocation", cargo.getDelivery().lastKnownLocation().getName())
+				.write("transportStatus", cargo.getDelivery().transportStatus().name())
+				.writeEnd();
+		}
+
+		String jsonValue = writer.toString();
+		LOGGER.log(Level.INFO, "sending message to client: {0}", jsonValue);
+		for (Session session : sessions) {
+			try {
+				session.getBasicRemote().sendText(jsonValue);
+			}
+			catch (IOException ex) {
+				LOGGER.log(Level.WARNING, "Unable to publish WebSocket message", ex);
+			}
+		}
+	}
+
 }

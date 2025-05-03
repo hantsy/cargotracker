@@ -18,36 +18,34 @@ import java.util.logging.Logger;
 
 @ApplicationScoped
 public class GraphTraversalResourceClient {
-    private static final Logger LOGGER =
-            Logger.getLogger(GraphTraversalResourceClient.class.getName());
 
-    @Resource(lookup = "java:app/configuration/GraphTraversalUrl")
-    private String graphTraversalUrl;
+	private static final Logger LOGGER = Logger.getLogger(GraphTraversalResourceClient.class.getName());
 
-    private Client jaxrsClient = null;
+	@Resource(lookup = "java:app/configuration/GraphTraversalUrl")
+	private String graphTraversalUrl;
 
-    @PostConstruct
-    public void init() {
-        this.jaxrsClient = ClientBuilder.newClient();
-    }
+	private Client jaxrsClient = null;
 
-    @PreDestroy
-    public void destroy() {
-        this.jaxrsClient.close();
-    }
+	@PostConstruct
+	public void init() {
+		this.jaxrsClient = ClientBuilder.newClient();
+	}
 
-    public List<TransitPath> findShortestPath(String origin, String destination) {
-        LOGGER.log(
-                Level.FINE,
-                "fetch the shortest paths from external resource: {0}",
-                graphTraversalUrl);
-        WebTarget graphTraversalResource = jaxrsClient.target(graphTraversalUrl);
-        // @formatter:off
+	@PreDestroy
+	public void destroy() {
+		this.jaxrsClient.close();
+	}
+
+	public List<TransitPath> findShortestPath(String origin, String destination) {
+		LOGGER.log(Level.FINE, "fetch the shortest paths from external resource: {0}", graphTraversalUrl);
+		WebTarget graphTraversalResource = jaxrsClient.target(graphTraversalUrl);
+		// @formatter:off
         return graphTraversalResource
                 .queryParam("origin", origin)
                 .queryParam("destination", destination)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(new GenericType<>() {});
         // @formatter:on
-    }
+	}
+
 }

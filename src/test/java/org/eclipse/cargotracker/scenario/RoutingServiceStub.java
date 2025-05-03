@@ -73,110 +73,59 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class RoutingServiceStub implements RoutingService {
 
-    private static final Logger LOGGER = Logger.getLogger(RoutingServiceStub.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(RoutingServiceStub.class.getName());
 
-    private LocationRepository locationRepository;
+	private LocationRepository locationRepository;
 
-    private VoyageRepository voyageRepository;
+	private VoyageRepository voyageRepository;
 
-    public RoutingServiceStub() {}
+	public RoutingServiceStub() {
+	}
 
-    @Inject
-    public RoutingServiceStub(
-            LocationRepository locationRepository, VoyageRepository voyageRepository) {
-        this.locationRepository = locationRepository;
-        this.voyageRepository = voyageRepository;
-    }
+	@Inject
+	public RoutingServiceStub(LocationRepository locationRepository, VoyageRepository voyageRepository) {
+		this.locationRepository = locationRepository;
+		this.voyageRepository = voyageRepository;
+	}
 
-    @Override
-    public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
-        LOGGER.log(Level.INFO, "fetchRoutesForSpecification:: {0}", routeSpecification);
-        if (routeSpecification.origin().equals(SampleLocations.HONGKONG)) {
-            // Hongkong - NYC - Chicago - SampleLocations.STOCKHOLM, initial routing
-            return Arrays.asList(
-                    new Itinerary(
-                            Arrays.asList(
-                                    new Leg(
-                                            voyageRepository.find(
-                                                    SampleVoyages.v100.getVoyageNumber()),
-                                            locationRepository.find(
-                                                    SampleLocations.HONGKONG.getUnLocode()),
-                                            locationRepository.find(
-                                                    SampleLocations.NEWYORK.getUnLocode()),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(3),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(9)),
-                                    new Leg(
-                                            voyageRepository.find(
-                                                    SampleVoyages.v200.getVoyageNumber()),
-                                            locationRepository.find(
-                                                    SampleLocations.NEWYORK.getUnLocode()),
-                                            locationRepository.find(
-                                                    SampleLocations.CHICAGO.getUnLocode()),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(10),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(14)),
-                                    new Leg(
-                                            voyageRepository.find(
-                                                    SampleVoyages.v200.getVoyageNumber()),
-                                            locationRepository.find(
-                                                    SampleLocations.CHICAGO.getUnLocode()),
-                                            locationRepository.find(
-                                                    SampleLocations.STOCKHOLM.getUnLocode()),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(7),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(11)))));
-        } else {
-            // Tokyo - Hamburg - SampleLocations.STOCKHOLM, rerouting misdirected cargo from
-            // Tokyo
-            return Arrays.asList(
-                    new Itinerary(
-                            Arrays.asList(
-                                    new Leg(
-                                            voyageRepository.find(
-                                                    SampleVoyages.v300.getVoyageNumber()),
-                                            locationRepository.find(
-                                                    SampleLocations.TOKYO.getUnLocode()),
-                                            locationRepository.find(
-                                                    SampleLocations.HAMBURG.getUnLocode()),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(8),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(12)),
-                                    new Leg(
-                                            voyageRepository.find(
-                                                    SampleVoyages.v400.getVoyageNumber()),
-                                            locationRepository.find(
-                                                    SampleLocations.HAMBURG.getUnLocode()),
-                                            locationRepository.find(
-                                                    SampleLocations.STOCKHOLM.getUnLocode()),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(14),
-                                            LocalDateTime.now()
-                                                    .minusYears(1)
-                                                    .plusMonths(3)
-                                                    .plusDays(15)))));
-        }
-    }
+	@Override
+	public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
+		LOGGER.log(Level.INFO, "fetchRoutesForSpecification:: {0}", routeSpecification);
+		if (routeSpecification.origin().equals(SampleLocations.HONGKONG)) {
+			// Hongkong - NYC - Chicago - SampleLocations.STOCKHOLM, initial routing
+			return Arrays.asList(new Itinerary(Arrays.asList(
+					new Leg(voyageRepository.find(SampleVoyages.v100.getVoyageNumber()),
+							locationRepository.find(SampleLocations.HONGKONG.getUnLocode()),
+							locationRepository.find(SampleLocations.NEWYORK.getUnLocode()),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(3),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(9)),
+					new Leg(voyageRepository.find(SampleVoyages.v200.getVoyageNumber()),
+							locationRepository.find(SampleLocations.NEWYORK.getUnLocode()),
+							locationRepository.find(SampleLocations.CHICAGO.getUnLocode()),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(10),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(14)),
+					new Leg(voyageRepository.find(SampleVoyages.v200.getVoyageNumber()),
+							locationRepository.find(SampleLocations.CHICAGO.getUnLocode()),
+							locationRepository.find(SampleLocations.STOCKHOLM.getUnLocode()),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(7),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(11)))));
+		}
+		else {
+			// Tokyo - Hamburg - SampleLocations.STOCKHOLM, rerouting misdirected cargo
+			// from
+			// Tokyo
+			return Arrays.asList(new Itinerary(Arrays.asList(
+					new Leg(voyageRepository.find(SampleVoyages.v300.getVoyageNumber()),
+							locationRepository.find(SampleLocations.TOKYO.getUnLocode()),
+							locationRepository.find(SampleLocations.HAMBURG.getUnLocode()),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(8),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(12)),
+					new Leg(voyageRepository.find(SampleVoyages.v400.getVoyageNumber()),
+							locationRepository.find(SampleLocations.HAMBURG.getUnLocode()),
+							locationRepository.find(SampleLocations.STOCKHOLM.getUnLocode()),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(14),
+							LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(15)))));
+		}
+	}
+
 }
