@@ -1,123 +1,121 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
+import org.eclipse.cargotracker.domain.model.location.Location;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
-import org.eclipse.cargotracker.domain.model.location.Location;
+import java.util.Objects;
 
 @Entity
 @Table(name = "voyages")
-@NamedQuery(
-        name = "Voyage.findByVoyageNumber",
-        query = "Select v from Voyage v where v.voyageNumber = :voyageNumber")
+@NamedQuery(name = "Voyage.findByVoyageNumber", query = "Select v from Voyage v where v.voyageNumber = :voyageNumber")
 @NamedQuery(name = "Voyage.findAll", query = "Select v from Voyage v order by v.voyageNumber")
-public class Voyage implements Serializable {
+public class Voyage {
 
-    // Null object pattern
-    public static final Voyage NONE = new Voyage(new VoyageNumber(""), Schedule.EMPTY);
-    private static final long serialVersionUID = 1L;
+	// Null object pattern
+	public static final Voyage NONE = new Voyage(new VoyageNumber(""), Schedule.EMPTY);
 
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private Long id;
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
+	private Long id;
 
-    @Embedded
-    @NotNull(message = "Voyage number is required")
-    private VoyageNumber voyageNumber;
+	@Embedded
+	@NotNull(message = "Voyage number is required")
+	private VoyageNumber voyageNumber;
 
-    @Embedded
-    @NotNull(message = "Schedule is required")
-    private Schedule schedule;
+	@Embedded
+	@NotNull(message = "Schedule is required")
+	private Schedule schedule;
 
-    public Voyage() {
-        // Nothing to initialize
-    }
+	public Voyage() {
+		// Nothing to initialize
+	}
 
-    public Voyage(VoyageNumber voyageNumber, Schedule schedule) {
-        Validate.notNull(voyageNumber, "Voyage number is required");
-        Validate.notNull(schedule, "Schedule is required");
+	public Voyage(VoyageNumber voyageNumber, Schedule schedule) {
+		Objects.requireNonNull(voyageNumber, "Voyage number is required");
+		Objects.requireNonNull(schedule, "Schedule is required");
 
-        this.voyageNumber = voyageNumber;
-        this.schedule = schedule;
-    }
+		this.voyageNumber = voyageNumber;
+		this.schedule = schedule;
+	}
 
-    public VoyageNumber getVoyageNumber() {
-        return voyageNumber;
-    }
+	public VoyageNumber getVoyageNumber() {
+		return voyageNumber;
+	}
 
-    public Schedule getSchedule() {
-        return schedule;
-    }
+	public Schedule getSchedule() {
+		return schedule;
+	}
 
-    @Override
-    public int hashCode() {
-        return voyageNumber.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return voyageNumber.hashCode();
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof Voyage)) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (!(o instanceof Voyage)) {
+			return false;
+		}
 
-        Voyage that = (Voyage) o;
+		Voyage that = (Voyage) o;
 
-        return sameIdentityAs(that);
-    }
+		return sameIdentityAs(that);
+	}
 
-    public boolean sameIdentityAs(Voyage other) {
-        return other != null && this.getVoyageNumber().sameValueAs(other.getVoyageNumber());
-    }
+	public boolean sameIdentityAs(Voyage other) {
+		return other != null && this.getVoyageNumber().sameValueAs(other.getVoyageNumber());
+	}
 
-    @Override
-    public String toString() {
-        return "Voyage " + voyageNumber;
-    }
+	@Override
+	public String toString() {
+		return "Voyage " + voyageNumber;
+	}
 
-    /**
-     * Builder pattern is used for incremental construction of a Voyage aggregate. This serves as an
-     * aggregate factory.
-     */
-    public static class Builder {
+	/**
+	 * Builder pattern is used for incremental construction of a Voyage aggregate. This
+	 * serves as an aggregate factory.
+	 */
+	public static class Builder {
 
-        private List<CarrierMovement> carrierMovements = new ArrayList<>();
-        private VoyageNumber voyageNumber;
-        private Location departureLocation;
+		private List<CarrierMovement> carrierMovements = new ArrayList<>();
 
-        public Builder(VoyageNumber voyageNumber, Location departureLocation) {
-            Validate.notNull(voyageNumber, "Voyage number is required");
-            Validate.notNull(departureLocation, "Departure location is required");
+		private VoyageNumber voyageNumber;
 
-            this.voyageNumber = voyageNumber;
-            this.departureLocation = departureLocation;
-        }
+		private Location departureLocation;
 
-        public Builder addMovement(
-                Location arrivalLocation, LocalDateTime departureTime, LocalDateTime arrivalTime) {
-            carrierMovements.add(
-                    new CarrierMovement(
-                            departureLocation, arrivalLocation, departureTime, arrivalTime));
+		public Builder(VoyageNumber voyageNumber, Location departureLocation) {
+			Objects.requireNonNull(voyageNumber, "Voyage number is required");
+			Objects.requireNonNull(departureLocation, "Departure location is required");
 
-            // Next departure location is the same as this arrival location
-            this.departureLocation = arrivalLocation;
+			this.voyageNumber = voyageNumber;
+			this.departureLocation = departureLocation;
+		}
 
-            return this;
-        }
+		public Builder addMovement(Location arrivalLocation, LocalDateTime departureTime, LocalDateTime arrivalTime) {
+			carrierMovements.add(new CarrierMovement(departureLocation, arrivalLocation, departureTime, arrivalTime));
 
-        public Voyage build() {
-            return new Voyage(voyageNumber, new Schedule(carrierMovements));
-        }
-    }
+			// Next departure location is the same as this arrival location
+			this.departureLocation = arrivalLocation;
+
+			return this;
+		}
+
+		public Voyage build() {
+			return new Voyage(voyageNumber, new Schedule(carrierMovements));
+		}
+
+	}
+
 }

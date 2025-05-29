@@ -1,73 +1,63 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
-import jakarta.annotation.Nonnull;
-import org.apache.commons.lang3.Validate;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serializable;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 /** A voyage schedule. */
 @Embeddable
-public class Schedule implements Serializable {
+//@formatter:off
+public record Schedule(
 
-    // Null object pattern.
-    public static final Schedule EMPTY = new Schedule();
-    private static final long serialVersionUID = 1L;
+	/** List of carrier movements. */
+	@NotNull @Size(min = 1)
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "voyage_id")
+	@OrderColumn(name = "cm_index")
+	List<CarrierMovement> carrierMovements
+) {
+//@formatter:on
 
-    // TODO [Clean Code] Look into why cascade delete doesn't work.
-    // Hibernate issue:
-    // orphanRemoval = true will cause exception under WildFly/Hibernate
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "voyage_id")
-    // TODO [Clean Code] Index as cm_index
-    @OrderColumn(name = "cm_index")
-    @NotNull
-    @Size(min = 1)
-    private List<CarrierMovement> carrierMovements = Collections.emptyList();
+	// Null object pattern.
+	public static final Schedule EMPTY = new Schedule(Collections.emptyList());
 
-    public Schedule() {
-        // Nothing to initialize.
-    }
+	public Schedule {
+		Objects.requireNonNull(carrierMovements, "Carrier movements is required");
 
-    public Schedule(@Nonnull List<CarrierMovement> carrierMovements) {
-        Validate.notNull(carrierMovements, "Carrier movements is required");
-        Validate.noNullElements(carrierMovements);
-        Validate.notEmpty(carrierMovements);
+		if (carrierMovements.isEmpty()) {
+			throw new IllegalArgumentException("Carrier movements must not be empty");
+		}
+		carrierMovements.forEach(Objects::requireNonNull);
+	}
 
-        this.carrierMovements = carrierMovements;
-    }
+	public List<CarrierMovement> getCarrierMovements() {
+		return Collections.unmodifiableList(carrierMovements);
+	}
 
-    public List<CarrierMovement> getCarrierMovements() {
-        return Collections.unmodifiableList(carrierMovements);
-    }
+	private boolean sameValueAs(Schedule other) {
+		return other != null && Objects.equals(List.copyOf(carrierMovements), List.copyOf(other.carrierMovements));
+	}
 
-    private boolean sameValueAs(Schedule other) {
-        return other != null
-                && Objects.equals(
-                        List.copyOf(carrierMovements), List.copyOf(other.carrierMovements));
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+		Schedule that = (Schedule) o;
 
-        Schedule that = (Schedule) o;
+		return sameValueAs(that);
+	}
 
-        return sameValueAs(that);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(List.copyOf(this.carrierMovements));
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(List.copyOf(this.carrierMovements));
+	}
 }
