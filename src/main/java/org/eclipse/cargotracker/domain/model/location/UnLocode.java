@@ -17,8 +17,7 @@ import jakarta.validation.constraints.Pattern;
 public record UnLocode(
 
 	@NotEmpty(message = "Location code must not be empty")
-	@Pattern(
-	regexp = "[a-zA-Z]{2}[a-zA-Z2-9]{3}")
+	@Pattern(regexp = "[a-zA-Z]{2}[a-zA-Z2-9]{3}")
 	@Column(name = "un_locode")
 	String unlocode
 ) {

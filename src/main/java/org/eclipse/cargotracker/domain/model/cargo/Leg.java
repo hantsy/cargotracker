@@ -66,6 +66,7 @@ public class Leg {
 		// are
 		// different in nanoseconds.
 		// any good idea to overcome this?
+		// https://github.com/jakartaee/persistence/issues/563
 		this.loadTime = loadTime.truncatedTo(ChronoUnit.SECONDS);
 		this.unloadTime = unloadTime.truncatedTo(ChronoUnit.SECONDS);
 	}
