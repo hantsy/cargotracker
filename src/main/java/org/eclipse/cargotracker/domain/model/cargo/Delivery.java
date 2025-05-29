@@ -87,55 +87,29 @@ public record Delivery(
 	HandlingEvent lastEvent
 ) {
 //@formatter:on
-
 	// Null object pattern
 	public static final LocalDateTime ETA_UNKOWN = null;
+    public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
 
-	public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
+    // Remove static factory methods and private static calculation methods
 
-	public static Delivery of(RouteSpecification routeSpecification, Itinerary itinerary, HandlingEvent lastEvent) {
-		var calculatedAt = LocalDateTime.now();
-		var misdirected = calculateMisdirectionStatus(itinerary, lastEvent);
-		var routingStatus = calculateRoutingStatus(itinerary, routeSpecification);
-		var transportStatus = calculateTransportStatus(lastEvent);
-		var lastKnownLocation = calculateLastKnownLocation(lastEvent);
-		var currentVoyage = calculateCurrentVoyage(transportStatus, lastEvent);
-		var eta = calculateEta(itinerary, routingStatus, misdirected);
-		var nextExpectedActivity = calculateNextExpectedActivity(routeSpecification, itinerary, lastEvent,
-				routingStatus, misdirected);
-		var isUnloadedAtDestination = calculateUnloadedAtDestination(routeSpecification, lastEvent);
+    /**
+     * Creates a new delivery snapshot based on the complete handling history of a cargo,
+     * as well as its route specification and itinerary.
+     * @param routeSpecification route specification
+     * @param itinerary itinerary
+     * @param handlingHistory delivery history
+     * @return An up to date delivery.
+     */
+    static Delivery create(RouteSpecification routeSpecification, Itinerary itinerary,
+            HandlingHistory handlingHistory) {
+        return DeliveryFactory.create(routeSpecification, itinerary, handlingHistory);
+    }
 
-		return new Delivery(transportStatus, lastKnownLocation, currentVoyage, misdirected, eta, nextExpectedActivity,
-				isUnloadedAtDestination, routingStatus, calculatedAt, lastEvent);
-	}
-
-	/**
-	 * Creates a new delivery snapshot based on the complete handling history of a cargo,
-	 * as well as its route specification and itinerary.
-	 * @param routeSpecification route specification
-	 * @param itinerary itinerary
-	 * @param handlingHistory delivery history
-	 * @return An up to date delivery.
-	 */
-	static Delivery derivedFrom(RouteSpecification routeSpecification, Itinerary itinerary,
-			HandlingHistory handlingHistory) {
-		Objects.requireNonNull(routeSpecification, "Route specification is required");
-		Objects.requireNonNull(handlingHistory, "Delivery history is required");
-
-		HandlingEvent lastEvent = handlingHistory.getMostRecentlyCompletedEvent();
-
-		return of(routeSpecification, itinerary, lastEvent);
-	}
-
-	/**
-	 * Creates a new delivery snapshot to reflect changes in routing, i.e. when the route
-	 * specification or the itinerary has changed but no additional handling of the cargo
-	 * has been performed.
-	 */
-	Delivery updateOnRouting(RouteSpecification routeSpecification, Itinerary itinerary) {
-		Objects.requireNonNull(routeSpecification, "Route specification is required");
-		return Delivery.of(routeSpecification, itinerary, this.lastEvent);
-	}
+    Delivery updateOnRouting(RouteSpecification routeSpecification, Itinerary itinerary) {
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
+        return DeliveryFactory.create(routeSpecification, itinerary, this.lastEvent);
+    }
 
 	public Location lastKnownLocation() {
 		return Objects.requireNonNullElse(lastKnownLocation, Location.UNKNOWN);
@@ -150,128 +124,9 @@ public record Delivery(
 	}
 
 	// Hibernate issue:
-	// After an empty HandlingActivity is persisted, when retrieving it from database it
-	// is a
-	// *NULL*.
+	// After an empty HandlingActivity is persisted, when retrieving it from database it is a NULL
 	public HandlingActivity nextExpectedActivity() {
 		return Objects.requireNonNullElse(nextExpectedActivity, NO_ACTIVITY);
-	}
-
-	private static TransportStatus calculateTransportStatus(HandlingEvent lastEvent) {
-		if (lastEvent == null) {
-			return NOT_RECEIVED;
-		}
-
-		return switch (lastEvent.getType()) {
-			case LOAD -> ONBOARD_CARRIER;
-			case UNLOAD, RECEIVE, CUSTOMS -> IN_PORT;
-			case CLAIM -> CLAIMED;
-			default -> UNKNOWN;
-		};
-	}
-
-	private static Location calculateLastKnownLocation(HandlingEvent lastEvent) {
-		if (lastEvent != null) {
-			return lastEvent.getLocation();
-		}
-		else {
-			return null;
-		}
-	}
-
-	private static Voyage calculateCurrentVoyage(TransportStatus transportStatus, HandlingEvent lastEvent) {
-		if (transportStatus.equals(ONBOARD_CARRIER) && lastEvent != null) {
-			return lastEvent.getVoyage();
-		}
-		else {
-			return null;
-		}
-	}
-
-	private static boolean calculateMisdirectionStatus(Itinerary itinerary, HandlingEvent lastEvent) {
-		if (lastEvent == null) {
-			return false;
-		}
-		else {
-			return !itinerary.isExpected(lastEvent);
-		}
-	}
-
-	private static LocalDateTime calculateEta(Itinerary itinerary, RoutingStatus routingStatus, boolean misdirected) {
-		if (onTrack(routingStatus, misdirected)) {
-			return itinerary.finalArrivalDate();
-		}
-		else {
-			return ETA_UNKOWN;
-		}
-	}
-
-	private static HandlingActivity calculateNextExpectedActivity(RouteSpecification routeSpecification,
-			Itinerary itinerary, HandlingEvent lastEvent, RoutingStatus routingStatus, boolean misdirected) {
-		if (!onTrack(routingStatus, misdirected)) {
-			return NO_ACTIVITY;
-		}
-
-		if (lastEvent == null) {
-			return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.origin());
-		}
-
-		return switch (lastEvent.getType()) {
-			case LOAD -> {
-				for (Leg leg : itinerary.legs()) {
-					if (leg.getLoadLocation().sameIdentityAs(lastEvent.getLocation())) {
-						yield new HandlingActivity(HandlingEvent.Type.UNLOAD, leg.getUnloadLocation(), leg.getVoyage());
-					}
-				}
-				yield NO_ACTIVITY;
-			}
-			case UNLOAD -> {
-				for (Iterator<Leg> iterator = itinerary.legs().iterator(); iterator.hasNext();) {
-					Leg leg = iterator.next();
-
-					if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {
-						if (iterator.hasNext()) {
-							Leg nextLeg = iterator.next();
-							yield new HandlingActivity(HandlingEvent.Type.LOAD, nextLeg.getLoadLocation(),
-									nextLeg.getVoyage());
-						}
-						else {
-							yield new HandlingActivity(HandlingEvent.Type.CLAIM, leg.getUnloadLocation());
-						}
-					}
-				}
-				yield NO_ACTIVITY;
-			}
-			case RECEIVE -> {
-				Leg firstLeg = itinerary.legs().iterator().next();
-				yield new HandlingActivity(HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
-			}
-			default -> NO_ACTIVITY;
-		};
-	}
-
-	private static RoutingStatus calculateRoutingStatus(Itinerary itinerary, RouteSpecification routeSpecification) {
-		if (itinerary == null || itinerary == Itinerary.EMPTY_ITINERARY) {
-			return NOT_ROUTED;
-		}
-		else {
-			if (routeSpecification.isSatisfiedBy(itinerary)) {
-				return ROUTED;
-			}
-			else {
-				return MISROUTED;
-			}
-		}
-	}
-
-	private static boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification,
-			HandlingEvent lastEvent) {
-		return lastEvent != null && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
-				&& routeSpecification.destination().sameIdentityAs(lastEvent.getLocation());
-	}
-
-	private static boolean onTrack(RoutingStatus routingStatus, boolean misdirected) {
-		return routingStatus.equals(ROUTED) && !misdirected;
 	}
 
 	private boolean sameValueAs(Delivery other) {
