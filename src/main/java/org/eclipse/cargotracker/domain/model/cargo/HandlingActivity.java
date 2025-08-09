@@ -43,7 +43,7 @@ public record HandlingActivity(
 	}
 
 	public HandlingActivity(HandlingEvent.Type type, Location location) {
-		this(type, Objects.requireNonNull(location, "Location is required"), null);
+		this(type, location, null);
 	}
 
 	public boolean isEmpty() {

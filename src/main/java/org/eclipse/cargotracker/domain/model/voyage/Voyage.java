@@ -52,33 +52,18 @@ public class Voyage {
 		return schedule;
 	}
 
-	@Override
-	public int hashCode() {
-		return voyageNumber.hashCode();
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Voyage voyage)) return false;
+        return Objects.equals(voyageNumber, voyage.voyageNumber);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null) {
-			return false;
-		}
-		if (!(o instanceof Voyage)) {
-			return false;
-		}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(voyageNumber);
+    }
 
-		Voyage that = (Voyage) o;
-
-		return sameIdentityAs(that);
-	}
-
-	public boolean sameIdentityAs(Voyage other) {
-		return other != null && this.getVoyageNumber().sameValueAs(other.getVoyageNumber());
-	}
-
-	@Override
+    @Override
 	public String toString() {
 		return "Voyage " + voyageNumber;
 	}
@@ -89,9 +74,9 @@ public class Voyage {
 	 */
 	public static class Builder {
 
-		private List<CarrierMovement> carrierMovements = new ArrayList<>();
+		private final List<CarrierMovement> carrierMovements = new ArrayList<>();
 
-		private VoyageNumber voyageNumber;
+		private final VoyageNumber voyageNumber;
 
 		private Location departureLocation;
 

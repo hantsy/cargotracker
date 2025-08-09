@@ -9,8 +9,6 @@ import java.util.List;
 @ApplicationScoped
 public class GraphDao implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     private final SecureRandom random = new SecureRandom();
 
     public List<String> listLocations() {

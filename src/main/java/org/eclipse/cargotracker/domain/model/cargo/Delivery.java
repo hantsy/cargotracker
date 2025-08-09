@@ -101,7 +101,7 @@ public record Delivery(
      * @param handlingHistory delivery history
      * @return An up to date delivery.
      */
-    static Delivery create(RouteSpecification routeSpecification, Itinerary itinerary,
+    static Delivery derivedFrom(RouteSpecification routeSpecification, Itinerary itinerary,
             HandlingHistory handlingHistory) {
         return DeliveryFactory.create(routeSpecification, itinerary, handlingHistory);
     }
@@ -131,29 +131,5 @@ public record Delivery(
 
 	private boolean sameValueAs(Delivery other) {
 		return other != null && Objects.equals(this, (Delivery) other);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || !(o instanceof Delivery)) {
-			return false;
-		}
-
-		Delivery other = (Delivery) o;
-
-		return sameValueAs(other);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(this);
-	}
-
-	@Override
-	public String toString() {
-		return Objects.toString(this);
 	}
 }

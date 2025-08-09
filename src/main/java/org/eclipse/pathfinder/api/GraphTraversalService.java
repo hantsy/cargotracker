@@ -68,7 +68,7 @@ public class GraphTraversalService {
 		for (int i = 0; i < candidateCount; i++) {
 			allVertices = getRandomChunkOfLocations(allVertices);
 			List<TransitEdge> transitEdges = new ArrayList<>(allVertices.size() - 1);
-			String firstLegTo = allVertices.get(0);
+			String firstLegTo = allVertices.getFirst();
 
 			LocalDateTime fromDate = nextDate(date);
 			LocalDateTime toDate = nextDate(fromDate);

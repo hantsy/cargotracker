@@ -8,7 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/** A voyage schedule. */
+/**
+ * A voyage schedule.
+ */
 @Embeddable
 //@formatter:off
 public record Schedule(
@@ -22,42 +24,31 @@ public record Schedule(
 ) {
 //@formatter:on
 
-	// Null object pattern.
-	public static final Schedule EMPTY = new Schedule(Collections.emptyList());
+    // Null object pattern.
+    public static final Schedule EMPTY = new Schedule(Collections.emptyList());
 
-	public Schedule {
-		Objects.requireNonNull(carrierMovements, "Carrier movements is required");
+    public Schedule {
+        Objects.requireNonNull(carrierMovements, "Carrier movements is required");
+        carrierMovements.forEach(Objects::requireNonNull);
+    }
 
-		if (carrierMovements.isEmpty()) {
-			throw new IllegalArgumentException("Carrier movements must not be empty");
-		}
-		carrierMovements.forEach(Objects::requireNonNull);
-	}
+    public List<CarrierMovement> getCarrierMovements() {
+        return List.copyOf(carrierMovements);
+    }
 
-	public List<CarrierMovement> getCarrierMovements() {
-		return Collections.unmodifiableList(carrierMovements);
-	}
+    private boolean sameValueAs(Schedule other) {
+        return other != null && Objects.equals(List.copyOf(carrierMovements), List.copyOf(other.carrierMovements));
+    }
 
-	private boolean sameValueAs(Schedule other) {
-		return other != null && Objects.equals(List.copyOf(carrierMovements), List.copyOf(other.carrierMovements));
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Schedule that = (Schedule) o;
+        return sameValueAs(that);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
-		Schedule that = (Schedule) o;
-
-		return sameValueAs(that);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(List.copyOf(this.carrierMovements));
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(List.copyOf(this.carrierMovements));
+    }
 }

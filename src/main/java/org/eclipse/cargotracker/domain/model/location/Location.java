@@ -19,7 +19,6 @@ import java.util.Objects;
 @NamedQuery(name = "Location.findByUnLocode", query = "Select l from Location l where l.unLocode = :unLocode")
 public class Location {
 
-	// Special Location object that marks an unknown location.
 	public static final Location UNKNOWN = new Location(new UnLocode("XXXXX"), "Unknown location");
 
 	@Id
@@ -66,36 +65,20 @@ public class Location {
 		return name;
 	}
 
-	/**
-	 * @param object to compare
-	 * @return Since this is an entiy this will be true iff UN locodes are equal.
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (object == null) {
-			return false;
-		}
-		if (this == object) {
-			return true;
-		}
-		if (!(object instanceof Location)) {
-			return false;
-		}
-		Location other = (Location) object;
-		return sameIdentityAs(other);
-	}
-
 	public boolean sameIdentityAs(Location other) {
 		return this.unLocode.equals(other.unLocode);
 	}
 
-	/**
-	 * @return Hash code of UN locode.
-	 */
-	@Override
-	public int hashCode() {
-		return unLocode.hashCode();
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Location location)) return false;
+        return Objects.equals(unLocode, location.unLocode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(unLocode);
+    }
 
 	@Override
 	public String toString() {

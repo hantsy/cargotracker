@@ -32,17 +32,9 @@ public class JpaLocationRepository implements LocationRepository, Serializable {
 
 	@Override
 	public Location find(UnLocode unLocode) {
-		Location location;
-		try {
-			location = entityManager.createNamedQuery("Location.findByUnLocode", Location.class)
+		return entityManager.createNamedQuery("Location.findByUnLocode", Location.class)
 				.setParameter("unLocode", unLocode)
-				.getSingleResult();
-		}
-		catch (NoResultException e) {
-			logger.log(Level.WARNING, "Can not find Location by code: {0}", e.getMessage());
-			location = null;
-		}
-		return location;
+				.getSingleResultOrNull();
 	}
 
 	@Override

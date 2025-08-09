@@ -37,9 +37,6 @@ public record Itinerary(
 
 	public Itinerary {
 		Objects.requireNonNull(legs, "Legs must not be null");
-		if (legs.isEmpty()) {
-			throw new IllegalArgumentException("Legs must not be empty");
-		}
 		if (legs.stream().anyMatch(Objects::isNull)) {
 			throw new IllegalArgumentException("Legs must not contain null elements");
 		}
@@ -64,8 +61,7 @@ public record Itinerary(
 				.anyMatch(leg -> leg.getLoadLocation().equals(event.getLocation())
 						&& leg.getVoyage().equals(event.getVoyage()));
 			case UNLOAD ->
-				// Check that the there is one leg with same unload location and
-				// voyage
+				// Check that the there is one leg with same unload location and voyage
 				legs.stream()
 					.anyMatch(leg -> leg.getUnloadLocation().equals(event.getLocation())
 							&& leg.getVoyage().equals(event.getVoyage()));

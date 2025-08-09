@@ -31,16 +31,9 @@ public class JpaVoyageRepository implements VoyageRepository, Serializable {
 
 	@Override
 	public Voyage find(VoyageNumber voyageNumber) {
-		Voyage voyage = null;
-		try {
-			voyage = entityManager.createNamedQuery("Voyage.findByVoyageNumber", Voyage.class)
+		return  entityManager.createNamedQuery("Voyage.findByVoyageNumber", Voyage.class)
 				.setParameter("voyageNumber", voyageNumber)
-				.getSingleResult();
-		}
-		catch (NoResultException e) {
-			logger.log(Level.WARNING, "Find called on non-existing voyageNumber: {0}.", e.getMessage());
-		}
-		return voyage;
+				.getSingleResultOrNull();
 	}
 
 	@Override

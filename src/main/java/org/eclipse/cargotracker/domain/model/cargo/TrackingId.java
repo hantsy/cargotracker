@@ -15,25 +15,6 @@ public record TrackingId(
 ) {
 //@formatter:on
 
-	// @Override
-	// public boolean equals(Object o) {
-	// if (this == o) {
-	// return true;
-	// }
-	// if (o == null || !(o instanceof TrackingId)) {
-	// return false;
-	// }
-	//
-	// TrackingId other = (TrackingId) o;
-	//
-	// return sameValueAs(other);
-	// }
-	//
-	// @Override
-	// public int hashCode() {
-	// return id.hashCode();
-	// }
-
 	boolean sameValueAs(TrackingId other) {
 		return other != null && this.id.equals(other.id);
 	}

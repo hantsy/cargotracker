@@ -3,11 +3,7 @@ package org.eclipse.cargotracker.domain.model.handling;
 import java.util.*;
 
 public class HandlingHistory {
-
-	// private static final Logger LOGGER =
-	// Logger.getLogger(HandlingHistory.class.getName());
-
-	// Null object pattern.
+    // Null object pattern.
 	public static final HandlingHistory EMPTY = new HandlingHistory(Collections.emptyList());
 
 	private static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR = Comparator
@@ -17,7 +13,6 @@ public class HandlingHistory {
 
 	public HandlingHistory(Collection<HandlingEvent> handlingEvents) {
 		Objects.requireNonNull(handlingEvents, "Handling events are required");
-
 		this.handlingEvents = new ArrayList<>(handlingEvents);
 	}
 
