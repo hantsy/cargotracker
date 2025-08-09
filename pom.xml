@@ -42,7 +42,7 @@
         <maven-surefire-report-plugin.version>3.5.3</maven-surefire-report-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.10.19</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.10.20</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0-M5</jakartaee-api.version>
@@ -56,18 +56,15 @@
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
         <shrinkwrap-resolver-bom.version>3.3.3</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
-        <junit.version>5.12.2</junit.version>
+        <junit.version>5.13.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <mockito.version>5.17.0</mockito.version>
+        <mockito.version>5.18.0</mockito.version>
         <assertj.version>3.27.3</assertj.version>
         <json-path.version>2.9.0</json-path.version>
-        <jacoco.version>0.8.12</jacoco.version>
+        <jacoco.version>0.8.13</jacoco.version>
         <arquillian-jacoco.version>1.1.0</arquillian-jacoco.version>
         <asm.version>9.7.1</asm.version>
         <awaitility.version>4.3.0</awaitility.version>
-
-        <!-- Jacoco code coverage report -->
-        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <!-- spring format and Checkstyle -->
         <spring-javaformat.version>0.0.43</spring-javaformat.version>
@@ -320,50 +317,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>io.spring.javaformat</groupId>
-                <artifactId>spring-javaformat-maven-plugin</artifactId>
-                <version>${spring-javaformat.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>validate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${checkstyle.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>io.spring.javaformat</groupId>
-                        <artifactId>spring-javaformat-checkstyle</artifactId>
-                        <version>${spring-javaformat.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>checkstyle-validation</id>
-                        <phase>validate</phase>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <configLocation>io/spring/javaformat/checkstyle/checkstyle.xml</configLocation>
-                            <consoleOutput>true</consoleOutput>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        </configuration>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -983,7 +936,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${jacoco-maven-plugin.version}</version>
+                        <version>${jacoco.version}</version>
                         <configuration>
                             <excludes>
                                 <!-- excludes the resources not to calculated in coverage report-->

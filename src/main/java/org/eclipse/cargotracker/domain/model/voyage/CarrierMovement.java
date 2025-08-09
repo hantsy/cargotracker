@@ -73,21 +73,19 @@ public class CarrierMovement {
         return arrivalTime;
     }
 
-    private boolean sameValueAs(CarrierMovement other) {
-        return other != null && Objects.equals(this, other);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof CarrierMovement that)) return false;
-        return sameValueAs(that);
+        return Objects.equals(departureLocation, that.departureLocation)
+                && Objects.equals(arrivalLocation, that.arrivalLocation)
+                && Objects.equals(departureTime, that.departureTime)
+                && Objects.equals(arrivalTime, that.arrivalTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this);
+        return Objects.hash(departureLocation, arrivalLocation, departureTime, arrivalTime);
     }
-
 
     @Override
     public String toString() {
