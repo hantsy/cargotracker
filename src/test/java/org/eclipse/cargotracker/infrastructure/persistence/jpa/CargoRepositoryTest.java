@@ -113,6 +113,7 @@ public class CargoRepositoryTest {
 		}
 		catch (Exception e) {
 			utx.rollback();
+            throw new RuntimeException("Transaction rolled back", e);
 		}
 	}
 
