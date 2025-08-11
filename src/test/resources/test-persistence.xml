@@ -4,8 +4,6 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd">
     <persistence-unit name="CargoTrackerUnit" transaction-type="JTA">
         <jta-data-source>java:app/jdbc/CargoTrackerDatabase</jta-data-source>
-        <scope>jakarta.enterprise.context.ApplicationScoped</scope>
-        <qualifier>jakarta.enterprise.inject.Default</qualifier>
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
 
