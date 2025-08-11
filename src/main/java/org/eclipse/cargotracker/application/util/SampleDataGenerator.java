@@ -222,8 +222,8 @@ public class SampleDataGenerator {
 		Cargo mno456 = new Cargo(trackingId4, routeSpecification4);
 
 		Itinerary itinerary4 = new Itinerary(
-				Arrays.asList(new Leg(SampleVoyages.NEW_YORK_TO_DALLAS, SampleLocations.NEWYORK, SampleLocations.DALLAS,
-						LocalDateTime.now().minusDays(34), LocalDateTime.now().minusDays(28))));
+                List.of(new Leg(SampleVoyages.NEW_YORK_TO_DALLAS, SampleLocations.NEWYORK, SampleLocations.DALLAS,
+                        LocalDateTime.now().minusDays(34), LocalDateTime.now().minusDays(28))));
 
 		mno456.assignToRoute(itinerary4);
 		entityManager.persist(mno456);
