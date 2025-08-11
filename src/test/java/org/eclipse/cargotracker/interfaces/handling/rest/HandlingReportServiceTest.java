@@ -99,7 +99,7 @@ public class HandlingReportServiceTest {
 		report.setEventType("LOAD");
 		report.setTrackingId("A001");
 		report.setVoyageNumber(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber().number());
-		report.setUnLocode(SampleLocations.HONGKONG.getUnLocode().getIdString());
+		report.setUnLocode(SampleLocations.HONGKONG.getUnLocode().value());
 
 		final WebTarget postReportTarget = client
 			.target(URI.create(base + "rest/handling/reports").toURL().toExternalForm());

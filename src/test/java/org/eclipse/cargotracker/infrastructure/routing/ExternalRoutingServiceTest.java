@@ -53,11 +53,11 @@ public class ExternalRoutingServiceTest {
 		when(locationRepository.find(SampleLocations.HELSINKI.getUnLocode())).thenReturn(SampleLocations.HELSINKI);
 		when(graphTraversalResourceClient.findShortestPath(anyString(), anyString()))
 			.thenReturn(List.of(new TransitPath(List.of(
-					new TransitEdge("CM002", SampleLocations.HONGKONG.getUnLocode().getIdString(),
-							SampleLocations.CHICAGO.getUnLocode().getIdString(), LocalDateTime.now().plusDays(1),
+					new TransitEdge("CM002", SampleLocations.HONGKONG.getUnLocode().value(),
+							SampleLocations.CHICAGO.getUnLocode().value(), LocalDateTime.now().plusDays(1),
 							LocalDateTime.now().plusDays(10)),
-					new TransitEdge("CM002", SampleLocations.CHICAGO.getUnLocode().getIdString(),
-							SampleLocations.HELSINKI.getUnLocode().getIdString(), LocalDateTime.now().plusDays(11),
+					new TransitEdge("CM002", SampleLocations.CHICAGO.getUnLocode().value(),
+							SampleLocations.HELSINKI.getUnLocode().value(), LocalDateTime.now().plusDays(11),
 							LocalDateTime.now().plusDays(30))))));
 
 		List<Itinerary> candidates = externalRoutingService.fetchRoutesForSpecification(routeSpecification);

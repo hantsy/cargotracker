@@ -230,7 +230,7 @@ public class CargoLifecycleScenarioTest {
 		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
 		assertThat(cargo.getDelivery().misdirected()).isFalse();
 		assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isNull();
-		assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
+		assertThat(cargo.getDelivery().nextExpectedActivity()).isNull();
 	}
 
 	/*
@@ -370,7 +370,7 @@ public class CargoLifecycleScenarioTest {
 		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.TOKYO);
 		assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
 		assertThat(cargo.getDelivery().misdirected()).isTrue();
-		assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
+		assertThat(cargo.getDelivery().nextExpectedActivity()).isNull();
 	}
 
 	// -- Cargo needs to be rerouted --
@@ -400,7 +400,7 @@ public class CargoLifecycleScenarioTest {
 
 		// The old itinerary does not satisfy the new specification
 		assertThat(result.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
-		assertThat(result.getDelivery().nextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
+		assertThat(result.getDelivery().nextExpectedActivity()).isNull();
 	}
 
 	// Repeat procedure of selecting one out of a number of possible routes
@@ -580,7 +580,7 @@ public class CargoLifecycleScenarioTest {
 		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
 		assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.CLAIMED);
 		assertThat(cargo.getDelivery().misdirected()).isFalse();
-		assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(HandlingActivity.EMPTY);
+		assertThat(cargo.getDelivery().nextExpectedActivity()).isNull();
 	}
 
 	/*

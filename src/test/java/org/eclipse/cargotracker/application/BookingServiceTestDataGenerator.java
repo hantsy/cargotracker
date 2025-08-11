@@ -49,10 +49,10 @@ public class BookingServiceTestDataGenerator {
 		// to it.
 		// TODO [Clean Code] See if there is a better way to do this.
 		List<Cargo> cargos = entityManager.createQuery("Select c from Cargo c", Cargo.class).getResultList();
-		cargos.forEach(cargo -> {
-			cargo.getDelivery().setLastEvent(null);
-			entityManager.merge(cargo);
-		});
+//		cargos.forEach(cargo -> {
+//			cargo.getDelivery().setLastEvent(null);
+//			entityManager.merge(cargo);
+//		});
 
 		entityManager.flush();
 

@@ -1,8 +1,5 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -18,318 +15,326 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class CargoTest {
 
-	private final List<HandlingEvent> events = new ArrayList<>();
-
-	private final Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), SampleLocations.STOCKHOLM)
-		.addMovement(SampleLocations.HAMBURG, LocalDateTime.now(), LocalDateTime.now())
-		.addMovement(SampleLocations.HONGKONG, LocalDateTime.now(), LocalDateTime.now())
-		.addMovement(SampleLocations.MELBOURNE, LocalDateTime.now(), LocalDateTime.now())
-		.build();
-
-	@Test
-	public void testConstruction() {
-		TrackingId trackingId = new TrackingId("XYZ");
-		LocalDate arrivalDeadline = LocalDate.now().minusYears(1).plusMonths(3).plusDays(3);
-		RouteSpecification routeSpecification = new RouteSpecification(SampleLocations.STOCKHOLM,
-				SampleLocations.MELBOURNE, arrivalDeadline);
-
-		Cargo cargo = new Cargo(trackingId, routeSpecification);
-
-		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
-		assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
-		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
-		assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
-	}
-
-	@Test
-	public void testRoutingStatus() {
-		Cargo cargo = new Cargo(new TrackingId("XYZ"),
-				new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
-		final Itinerary good = new Itinerary();
-		final Itinerary bad = new Itinerary();
-
-		RouteSpecification acceptOnlyGood = new RouteSpecification(cargo.getOrigin(),
-				cargo.getRouteSpecification().destination(), LocalDate.now()) {
-
-			@Override
-			public boolean isSatisfiedBy(Itinerary itinerary) {
-				return itinerary == good;
-			}
-		};
-
-		cargo.specifyNewRoute(acceptOnlyGood);
-
-		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
-
-		cargo.assignToRoute(bad);
-		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
-
-		cargo.assignToRoute(good);
-		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
-	}
-
-	@Test
-	public void testLastKnownLocationUnknownWhenNoEvents() {
-		Cargo cargo = new Cargo(new TrackingId("XYZ"),
-				new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
-
-		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
-	}
-
-	@Test
-	public void testLastKnownLocationReceived() throws Exception {
-		Cargo cargo = populateCargoReceivedStockholm();
-
-		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
-	}
-
-	@Test
-	public void testLastKnownLocationClaimed() throws Exception {
-		Cargo cargo = populateCargoClaimedMelbourne();
-
-		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.MELBOURNE);
-	}
-
-	@Test
-	public void testLastKnownLocationUnloaded() throws Exception {
-		Cargo cargo = populateCargoOffHongKong();
-
-		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HONGKONG);
-	}
-
-	@Test
-	public void testLastKnownLocationloaded() throws Exception {
-		Cargo cargo = populateCargoOnHamburg();
-
-		assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HAMBURG);
-	}
-
-	@Test
-	public void testIsUnloadedAtFinalDestination() {
-		Cargo cargo = setUpCargoWithItinerary(SampleLocations.HANGZHOU, SampleLocations.TOKYO, SampleLocations.NEWYORK);
-		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-
-		// Adding an event unrelated to unloading at final destination
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(40), LocalDateTime.now(),
-				HandlingEvent.Type.RECEIVE, SampleLocations.HANGZHOU));
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-
-		Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), SampleLocations.HANGZHOU)
-			.addMovement(SampleLocations.NEWYORK, LocalDateTime.now(), LocalDateTime.now())
-			.build();
-
-		// Adding an unload event, but not at the final destination
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(30), LocalDateTime.now(),
-				HandlingEvent.Type.UNLOAD, SampleLocations.TOKYO, voyage));
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-
-		// Adding an event in the final destination, but not unload
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(20), LocalDateTime.now(),
-				HandlingEvent.Type.CUSTOMS, SampleLocations.NEWYORK));
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-
-		// Finally, cargo is unloaded at final destination
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(10), LocalDateTime.now(),
-				HandlingEvent.Type.UNLOAD, SampleLocations.NEWYORK, voyage));
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isTrue();
-	}
-
-	// TODO [TDD] Generate test data some better way
-	private Cargo populateCargoReceivedStockholm() throws Exception {
-		Cargo cargo = new Cargo(new TrackingId("XYZ"),
-				new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
-
-		HandlingEvent event = new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1), HandlingEvent.Type.RECEIVE,
-				SampleLocations.STOCKHOLM);
-		events.add(event);
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-
-		return cargo;
-	}
-
-	private Cargo populateCargoClaimedMelbourne() throws Exception {
-		Cargo cargo = populateCargoOffMelbourne();
-
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(9),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(9), HandlingEvent.Type.CLAIM,
-				SampleLocations.MELBOURNE));
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-
-		return cargo;
-	}
-
-	private Cargo populateCargoOffHongKong() throws Exception {
-		Cargo cargo = new Cargo(new TrackingId("XYZ"),
-				new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
-
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1), HandlingEvent.Type.LOAD,
-				SampleLocations.STOCKHOLM, voyage));
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2), HandlingEvent.Type.UNLOAD,
-				SampleLocations.HAMBURG, voyage));
-
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3), HandlingEvent.Type.LOAD,
-				SampleLocations.HAMBURG, voyage));
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(4),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(4), HandlingEvent.Type.UNLOAD,
-				SampleLocations.HONGKONG, voyage));
-
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-
-		return cargo;
-	}
-
-	private Cargo populateCargoOnHamburg() throws Exception {
-		Cargo cargo = new Cargo(new TrackingId("XYZ"),
-				new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
-
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1), HandlingEvent.Type.LOAD,
-				SampleLocations.STOCKHOLM, voyage));
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2), HandlingEvent.Type.UNLOAD,
-				SampleLocations.HAMBURG, voyage));
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3), HandlingEvent.Type.LOAD,
-				SampleLocations.HAMBURG, voyage));
-
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-
-		return cargo;
-	}
-
-	private Cargo populateCargoOffMelbourne() throws Exception {
-		Cargo cargo = new Cargo(new TrackingId("XYZ"),
-				new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
-
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1), HandlingEvent.Type.LOAD,
-				SampleLocations.STOCKHOLM, voyage));
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2), HandlingEvent.Type.UNLOAD,
-				SampleLocations.HAMBURG, voyage));
-
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3), HandlingEvent.Type.LOAD,
-				SampleLocations.HAMBURG, voyage));
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(4),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(4), HandlingEvent.Type.UNLOAD,
-				SampleLocations.HONGKONG, voyage));
-
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(5),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(5), HandlingEvent.Type.LOAD,
-				SampleLocations.HONGKONG, voyage));
-		events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(7),
-				LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(7), HandlingEvent.Type.UNLOAD,
-				SampleLocations.MELBOURNE, voyage));
-
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-
-		return cargo;
-	}
-
-	@Test
-	public void testIsMisdirected() throws Exception {
-		// A cargo with no itinerary is not misdirected
-		Cargo cargo = new Cargo(new TrackingId("TRKID"),
-				new RouteSpecification(SampleLocations.SHANGHAI, SampleLocations.GOTHENBURG, LocalDate.now()));
-		assertFalse(cargo.getDelivery().misdirected());
-
-		cargo = setUpCargoWithItinerary(SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM,
-				SampleLocations.GOTHENBURG);
-
-		// A cargo with no handling events is not misdirected
-		assertFalse(cargo.getDelivery().misdirected());
-
-		Collection<HandlingEvent> handlingEvents = new ArrayList<>();
-
-		// Happy path
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(10),
-				LocalDateTime.now().minusDays(20), HandlingEvent.Type.RECEIVE, SampleLocations.SHANGHAI));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(30),
-				LocalDateTime.now().minusDays(40), HandlingEvent.Type.LOAD, SampleLocations.SHANGHAI, voyage));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(50),
-				LocalDateTime.now().minusDays(60), HandlingEvent.Type.UNLOAD, SampleLocations.ROTTERDAM, voyage));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(70),
-				LocalDateTime.now().minusDays(80), HandlingEvent.Type.LOAD, SampleLocations.ROTTERDAM, voyage));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(90),
-				LocalDateTime.now().minusDays(100), HandlingEvent.Type.UNLOAD, SampleLocations.GOTHENBURG, voyage));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(110),
-				LocalDateTime.now().minusDays(120), HandlingEvent.Type.CLAIM, SampleLocations.GOTHENBURG));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(130),
-				LocalDateTime.now().minusDays(140), HandlingEvent.Type.CUSTOMS, SampleLocations.GOTHENBURG));
-
-		events.addAll(handlingEvents);
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-		assertFalse(cargo.getDelivery().misdirected());
-
-		// Try a couple of failing ones
-		cargo = setUpCargoWithItinerary(SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM,
-				SampleLocations.GOTHENBURG);
-		handlingEvents = new ArrayList<>();
-
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(),
-				HandlingEvent.Type.RECEIVE, SampleLocations.HANGZHOU));
-		events.addAll(handlingEvents);
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-
-		assertTrue(cargo.getDelivery().misdirected());
-
-		cargo = setUpCargoWithItinerary(SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM,
-				SampleLocations.GOTHENBURG);
-		handlingEvents = new ArrayList<>();
-
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(10),
-				LocalDateTime.now().minusDays(20), HandlingEvent.Type.RECEIVE, SampleLocations.SHANGHAI));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(30),
-				LocalDateTime.now().minusDays(40), HandlingEvent.Type.LOAD, SampleLocations.SHANGHAI, voyage));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(50),
-				LocalDateTime.now().minusDays(60), HandlingEvent.Type.UNLOAD, SampleLocations.ROTTERDAM, voyage));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(70),
-				LocalDateTime.now().minusDays(80), HandlingEvent.Type.LOAD, SampleLocations.ROTTERDAM, voyage));
-
-		events.addAll(handlingEvents);
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-
-		assertTrue(cargo.getDelivery().misdirected());
-
-		cargo = setUpCargoWithItinerary(SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM,
-				SampleLocations.GOTHENBURG);
-		handlingEvents = new ArrayList<>();
-
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(10),
-				LocalDateTime.now().minusDays(20), HandlingEvent.Type.RECEIVE, SampleLocations.SHANGHAI));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(30),
-				LocalDateTime.now().minusDays(40), HandlingEvent.Type.LOAD, SampleLocations.SHANGHAI, voyage));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(50),
-				LocalDateTime.now().minusDays(60), HandlingEvent.Type.UNLOAD, SampleLocations.ROTTERDAM, voyage));
-		handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.CLAIM,
-				SampleLocations.ROTTERDAM));
-
-		events.addAll(handlingEvents);
-		cargo.deriveDeliveryProgress(new HandlingHistory(events));
-
-		assertTrue(cargo.getDelivery().misdirected());
-	}
-
-	private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
-		Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(origin, destination, LocalDate.now()));
-
-		Itinerary itinerary = new Itinerary(
-				Arrays.asList(new Leg(voyage, origin, midpoint, LocalDateTime.now(), LocalDateTime.now()),
-						new Leg(voyage, midpoint, destination, LocalDateTime.now(), LocalDateTime.now())));
-
-		cargo.assignToRoute(itinerary);
-		return cargo;
-	}
+    private final List<HandlingEvent> events = new ArrayList<>();
+
+    private final Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), SampleLocations.STOCKHOLM)
+            .addMovement(SampleLocations.HAMBURG, LocalDateTime.now(), LocalDateTime.now())
+            .addMovement(SampleLocations.HONGKONG, LocalDateTime.now(), LocalDateTime.now())
+            .addMovement(SampleLocations.MELBOURNE, LocalDateTime.now(), LocalDateTime.now())
+            .build();
+
+    @Test
+    public void testConstruction() {
+        TrackingId trackingId = new TrackingId("XYZ");
+        LocalDate arrivalDeadline = LocalDate.now().minusYears(1).plusMonths(3).plusDays(3);
+        RouteSpecification routeSpecification = new RouteSpecification(SampleLocations.STOCKHOLM,
+                SampleLocations.MELBOURNE, arrivalDeadline);
+
+        Cargo cargo = new Cargo(trackingId, routeSpecification);
+
+        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
+        assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
+        assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
+    }
+
+    @Test
+    public void testRoutingStatus() {
+        Cargo cargo = new Cargo(new TrackingId("XYZ"),
+                new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
+        final Itinerary good = new Itinerary(
+                List.of(new Leg(voyage, SampleLocations.STOCKHOLM, SampleLocations.HAMBURG, LocalDateTime.now().minusDays(30), LocalDateTime.now().minusDays(20)),
+                        new Leg(voyage, SampleLocations.HAMBURG, SampleLocations.HONGKONG, LocalDateTime.now().minusDays(20), LocalDateTime.now().minusDays(10)),
+                        new Leg(voyage, SampleLocations.HONGKONG, SampleLocations.MELBOURNE, LocalDateTime.now().minusDays(10), LocalDateTime.now().minusDays(1))
+                )
+        );
+        final Itinerary bad = new Itinerary(
+                List.of(new Leg(voyage, SampleLocations.STOCKHOLM, SampleLocations.HAMBURG, LocalDateTime.now().minusDays(30), LocalDateTime.now().minusDays(20)),
+                        new Leg(voyage, SampleLocations.HAMBURG, SampleLocations.HONGKONG, LocalDateTime.now().minusDays(20), LocalDateTime.now().minusDays(10)),
+                        new Leg(voyage, SampleLocations.HONGKONG, SampleLocations.MELBOURNE, LocalDateTime.now().minusDays(10), LocalDateTime.now().plusDays(1)) // bad
+                )
+        );
+
+        RouteSpecification acceptOnlyGood = new RouteSpecification(cargo.getOrigin(),
+                cargo.getRouteSpecification().destination(), LocalDate.now());
+
+        cargo.specifyNewRoute(acceptOnlyGood);
+
+        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
+
+        cargo.assignToRoute(bad);
+        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
+
+        cargo.assignToRoute(good);
+        assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
+    }
+
+    @Test
+    public void testLastKnownLocationUnknownWhenNoEvents() {
+        Cargo cargo = new Cargo(new TrackingId("XYZ"),
+                new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
+
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
+    }
+
+    @Test
+    public void testLastKnownLocationReceived() throws Exception {
+        Cargo cargo = populateCargoReceivedStockholm();
+
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.STOCKHOLM);
+    }
+
+    @Test
+    public void testLastKnownLocationClaimed() throws Exception {
+        Cargo cargo = populateCargoClaimedMelbourne();
+
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.MELBOURNE);
+    }
+
+    @Test
+    public void testLastKnownLocationUnloaded() throws Exception {
+        Cargo cargo = populateCargoOffHongKong();
+
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HONGKONG);
+    }
+
+    @Test
+    public void testLastKnownLocationloaded() throws Exception {
+        Cargo cargo = populateCargoOnHamburg();
+
+        assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HAMBURG);
+    }
+
+    @Test
+    public void testIsUnloadedAtFinalDestination() {
+        Cargo cargo = setUpCargoWithItinerary(SampleLocations.HANGZHOU, SampleLocations.TOKYO, SampleLocations.NEWYORK);
+        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+
+        // Adding an event unrelated to unloading at final destination
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(40), LocalDateTime.now(),
+                HandlingEvent.Type.RECEIVE, SampleLocations.HANGZHOU));
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+
+        Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), SampleLocations.HANGZHOU)
+                .addMovement(SampleLocations.NEWYORK, LocalDateTime.now(), LocalDateTime.now())
+                .build();
+
+        // Adding an unload event, but not at the final destination
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(30), LocalDateTime.now(),
+                HandlingEvent.Type.UNLOAD, SampleLocations.TOKYO, voyage));
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+
+        // Adding an event in the final destination, but not unload
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(20), LocalDateTime.now(),
+                HandlingEvent.Type.CUSTOMS, SampleLocations.NEWYORK));
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+
+        // Finally, cargo is unloaded at final destination
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(10), LocalDateTime.now(),
+                HandlingEvent.Type.UNLOAD, SampleLocations.NEWYORK, voyage));
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isTrue();
+    }
+
+    // TODO [TDD] Generate test data some better way
+    private Cargo populateCargoReceivedStockholm() throws Exception {
+        Cargo cargo = new Cargo(new TrackingId("XYZ"),
+                new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
+
+        HandlingEvent event = new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1), HandlingEvent.Type.RECEIVE,
+                SampleLocations.STOCKHOLM);
+        events.add(event);
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+
+        return cargo;
+    }
+
+    private Cargo populateCargoClaimedMelbourne() throws Exception {
+        Cargo cargo = populateCargoOffMelbourne();
+
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(9),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(9), HandlingEvent.Type.CLAIM,
+                SampleLocations.MELBOURNE));
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+
+        return cargo;
+    }
+
+    private Cargo populateCargoOffHongKong() throws Exception {
+        Cargo cargo = new Cargo(new TrackingId("XYZ"),
+                new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
+
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1), HandlingEvent.Type.LOAD,
+                SampleLocations.STOCKHOLM, voyage));
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2), HandlingEvent.Type.UNLOAD,
+                SampleLocations.HAMBURG, voyage));
+
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3), HandlingEvent.Type.LOAD,
+                SampleLocations.HAMBURG, voyage));
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(4),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(4), HandlingEvent.Type.UNLOAD,
+                SampleLocations.HONGKONG, voyage));
+
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+
+        return cargo;
+    }
+
+    private Cargo populateCargoOnHamburg() throws Exception {
+        Cargo cargo = new Cargo(new TrackingId("XYZ"),
+                new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
+
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1), HandlingEvent.Type.LOAD,
+                SampleLocations.STOCKHOLM, voyage));
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2), HandlingEvent.Type.UNLOAD,
+                SampleLocations.HAMBURG, voyage));
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3), HandlingEvent.Type.LOAD,
+                SampleLocations.HAMBURG, voyage));
+
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+
+        return cargo;
+    }
+
+    private Cargo populateCargoOffMelbourne() throws Exception {
+        Cargo cargo = new Cargo(new TrackingId("XYZ"),
+                new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, LocalDate.now()));
+
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(1), HandlingEvent.Type.LOAD,
+                SampleLocations.STOCKHOLM, voyage));
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(2), HandlingEvent.Type.UNLOAD,
+                SampleLocations.HAMBURG, voyage));
+
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(3), HandlingEvent.Type.LOAD,
+                SampleLocations.HAMBURG, voyage));
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(4),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(4), HandlingEvent.Type.UNLOAD,
+                SampleLocations.HONGKONG, voyage));
+
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(5),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(5), HandlingEvent.Type.LOAD,
+                SampleLocations.HONGKONG, voyage));
+        events.add(new HandlingEvent(cargo, LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(7),
+                LocalDateTime.now().minusYears(1).plusMonths(12).plusDays(7), HandlingEvent.Type.UNLOAD,
+                SampleLocations.MELBOURNE, voyage));
+
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+
+        return cargo;
+    }
+
+    @Test
+    public void testIsMisdirected() throws Exception {
+        // A cargo with no itinerary is not misdirected
+        Cargo cargo = new Cargo(new TrackingId("TRKID"),
+                new RouteSpecification(SampleLocations.SHANGHAI, SampleLocations.GOTHENBURG, LocalDate.now()));
+        assertFalse(cargo.getDelivery().misdirected());
+
+        cargo = setUpCargoWithItinerary(SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM,
+                SampleLocations.GOTHENBURG);
+
+        // A cargo with no handling events is not misdirected
+        assertFalse(cargo.getDelivery().misdirected());
+
+        Collection<HandlingEvent> handlingEvents = new ArrayList<>();
+
+        // Happy path
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(10),
+                LocalDateTime.now().minusDays(20), HandlingEvent.Type.RECEIVE, SampleLocations.SHANGHAI));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(30),
+                LocalDateTime.now().minusDays(40), HandlingEvent.Type.LOAD, SampleLocations.SHANGHAI, voyage));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(50),
+                LocalDateTime.now().minusDays(60), HandlingEvent.Type.UNLOAD, SampleLocations.ROTTERDAM, voyage));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(70),
+                LocalDateTime.now().minusDays(80), HandlingEvent.Type.LOAD, SampleLocations.ROTTERDAM, voyage));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(90),
+                LocalDateTime.now().minusDays(100), HandlingEvent.Type.UNLOAD, SampleLocations.GOTHENBURG, voyage));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(110),
+                LocalDateTime.now().minusDays(120), HandlingEvent.Type.CLAIM, SampleLocations.GOTHENBURG));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(130),
+                LocalDateTime.now().minusDays(140), HandlingEvent.Type.CUSTOMS, SampleLocations.GOTHENBURG));
+
+        events.addAll(handlingEvents);
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+        assertFalse(cargo.getDelivery().misdirected());
+
+        // Try a couple of failing ones
+        cargo = setUpCargoWithItinerary(SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM,
+                SampleLocations.GOTHENBURG);
+        handlingEvents = new ArrayList<>();
+
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(),
+                HandlingEvent.Type.RECEIVE, SampleLocations.HANGZHOU));
+        events.addAll(handlingEvents);
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+
+        assertTrue(cargo.getDelivery().misdirected());
+
+        cargo = setUpCargoWithItinerary(SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM,
+                SampleLocations.GOTHENBURG);
+        handlingEvents = new ArrayList<>();
+
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(10),
+                LocalDateTime.now().minusDays(20), HandlingEvent.Type.RECEIVE, SampleLocations.SHANGHAI));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(30),
+                LocalDateTime.now().minusDays(40), HandlingEvent.Type.LOAD, SampleLocations.SHANGHAI, voyage));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(50),
+                LocalDateTime.now().minusDays(60), HandlingEvent.Type.UNLOAD, SampleLocations.ROTTERDAM, voyage));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(70),
+                LocalDateTime.now().minusDays(80), HandlingEvent.Type.LOAD, SampleLocations.ROTTERDAM, voyage));
+
+        events.addAll(handlingEvents);
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+
+        assertTrue(cargo.getDelivery().misdirected());
+
+        cargo = setUpCargoWithItinerary(SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM,
+                SampleLocations.GOTHENBURG);
+        handlingEvents = new ArrayList<>();
+
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(10),
+                LocalDateTime.now().minusDays(20), HandlingEvent.Type.RECEIVE, SampleLocations.SHANGHAI));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(30),
+                LocalDateTime.now().minusDays(40), HandlingEvent.Type.LOAD, SampleLocations.SHANGHAI, voyage));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now().minusDays(50),
+                LocalDateTime.now().minusDays(60), HandlingEvent.Type.UNLOAD, SampleLocations.ROTTERDAM, voyage));
+        handlingEvents.add(new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.CLAIM,
+                SampleLocations.ROTTERDAM));
+
+        events.addAll(handlingEvents);
+        cargo.deriveDeliveryProgress(new HandlingHistory(events));
+
+        assertTrue(cargo.getDelivery().misdirected());
+    }
+
+    private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
+        Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(origin, destination, LocalDate.now()));
+
+        Itinerary itinerary = new Itinerary(
+                Arrays.asList(new Leg(voyage, origin, midpoint, LocalDateTime.now(), LocalDateTime.now()),
+                        new Leg(voyage, midpoint, destination, LocalDateTime.now(), LocalDateTime.now())));
+
+        cargo.assignToRoute(itinerary);
+        return cargo;
+    }
 
 }

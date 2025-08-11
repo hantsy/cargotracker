@@ -194,9 +194,9 @@ public class BookingServiceTest {
 		assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
 		assertThat(cargo.getDelivery().misdirected()).isFalse();
 		assertThat(cargo.getDelivery().estimatedTimeOfArrival().isBefore(deadline.atStartOfDay())).isTrue();
-		assertThat(cargo.getDelivery().nextExpectedActivity().getType()).isEqualTo(HandlingEvent.Type.RECEIVE);
-		assertThat(cargo.getDelivery().nextExpectedActivity().getLocation()).isEqualTo(SampleLocations.CHICAGO);
-		assertThat(cargo.getDelivery().nextExpectedActivity().getVoyage()).isNull();
+		assertThat(cargo.getDelivery().nextExpectedActivity().type()).isEqualTo(HandlingEvent.Type.RECEIVE);
+		assertThat(cargo.getDelivery().nextExpectedActivity().location()).isEqualTo(SampleLocations.CHICAGO);
+		assertThat(cargo.getDelivery().nextExpectedActivity().voyage()).isNull();
 		assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
 		assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
 	}

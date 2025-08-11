@@ -51,7 +51,7 @@ public class CargoStatusDtoAssembler {
 	private String getNextExpectedActivity(Cargo cargo) {
 		HandlingActivity activity = cargo.getDelivery().nextExpectedActivity();
 
-		if (activity == null || activity == HandlingActivity.EMPTY) {
+		if (activity == null) {
 			return "";
 		}
 
