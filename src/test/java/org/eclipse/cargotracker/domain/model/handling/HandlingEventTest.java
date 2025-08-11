@@ -28,7 +28,7 @@ public class HandlingEventTest {
 	public void testNewWithCarrierMovement() {
 		HandlingEvent event1 = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(),
 				HandlingEvent.Type.LOAD, SampleLocations.HONGKONG, SampleVoyages.CM003);
-		assertEquals(SampleLocations.HONGKONG, event1.getLocation());
+        assertThat( event1.getLocation()).isEqualTo(SampleLocations.HONGKONG);
 
 		HandlingEvent event2 = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(),
 				HandlingEvent.Type.UNLOAD, SampleLocations.NEWYORK, SampleVoyages.CM003);
@@ -60,9 +60,9 @@ public class HandlingEventTest {
 
 	@Test
 	public void testNewWithLocation() {
-		HandlingEvent event1 = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(),
+		HandlingEvent event = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(),
 				HandlingEvent.Type.CLAIM, SampleLocations.HELSINKI);
-		assertThat(event1.getLocation()).isEqualTo(SampleLocations.HELSINKI);
+		assertThat(event.getLocation()).isEqualTo(SampleLocations.HELSINKI);
 	}
 
 	@Test
@@ -75,10 +75,10 @@ public class HandlingEventTest {
 
 	@Test
 	public void testCurrentLocationUnloadEvent() throws Exception {
-		HandlingEvent ev = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.UNLOAD,
+		HandlingEvent event = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.UNLOAD,
 				SampleLocations.HAMBURG, SampleVoyages.CM004);
 
-		assertThat(ev.getLocation()).isEqualTo(SampleLocations.HAMBURG);
+		assertThat(event.getLocation()).isEqualTo(SampleLocations.HAMBURG);
 	}
 
 	@Test

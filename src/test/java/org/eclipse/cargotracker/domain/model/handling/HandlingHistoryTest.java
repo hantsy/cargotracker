@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
-// TODO [Jakarta EE 8] Move to the Java Date-Time API for date manipulation. Avoid hard-coded dates.
 public class HandlingHistoryTest {
 
 	Cargo cargo = new Cargo(new TrackingId("ABC"), new RouteSpecification(SampleLocations.SHANGHAI,
