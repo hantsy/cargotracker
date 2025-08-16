@@ -35,11 +35,11 @@ public record HandlingActivity(
 ) {
 //@formatter:on
 
-	//public static final HandlingActivity EMPTY = new HandlingActivity(null, null, null);
+	public static final HandlingActivity EMPTY = new HandlingActivity(null, null, null);
 
 	public HandlingActivity {
-		Objects.requireNonNull(type, "Handling event type is required");
-		Objects.requireNonNull(location, "Location is required");
+//		Objects.requireNonNull(type, "Handling event type is required");
+//		Objects.requireNonNull(location, "Location is required");
 	}
 
 	public HandlingActivity(HandlingEvent.Type type, Location location) {

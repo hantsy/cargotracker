@@ -14,7 +14,9 @@ import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
 
 public final class DeliveryFactory {
 
-    private DeliveryFactory() {}
+    private DeliveryFactory() {
+        // prevent it to instantiate
+    }
 
     public static Delivery create(RouteSpecification routeSpecification, Itinerary itinerary, HandlingEvent lastEvent) {
         var calculatedAt = LocalDateTime.now();
@@ -87,7 +89,7 @@ public final class DeliveryFactory {
     }
 
     static HandlingActivity calculateNextExpectedActivity(RouteSpecification routeSpecification,
-            Itinerary itinerary, HandlingEvent lastEvent, RoutingStatus routingStatus, boolean misdirected) {
+                                                          Itinerary itinerary, HandlingEvent lastEvent, RoutingStatus routingStatus, boolean misdirected) {
         if (!onTrack(routingStatus, misdirected)) {
             return Delivery.NO_ACTIVITY;
         }
@@ -106,7 +108,7 @@ public final class DeliveryFactory {
                 yield Delivery.NO_ACTIVITY;
             }
             case UNLOAD -> {
-                for (Iterator<Leg> iterator = itinerary.legs().iterator(); iterator.hasNext();) {
+                for (Iterator<Leg> iterator = itinerary.legs().iterator(); iterator.hasNext(); ) {
                     Leg leg = iterator.next();
 
                     if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {
@@ -142,7 +144,7 @@ public final class DeliveryFactory {
     }
 
     static boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification,
-            HandlingEvent lastEvent) {
+                                                  HandlingEvent lastEvent) {
         return lastEvent != null && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
                 && routeSpecification.destination().sameIdentityAs(lastEvent.getLocation());
     }

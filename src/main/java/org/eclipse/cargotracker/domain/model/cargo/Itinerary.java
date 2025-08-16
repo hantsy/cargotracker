@@ -7,6 +7,7 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,13 +33,13 @@ public record Itinerary(
 ) {
 //@formatter:on
 
-    public static final Itinerary EMPTY_ITINERARY = null;
+    public static final Itinerary EMPTY_ITINERARY = new Itinerary(Collections.emptyList());
 
     public Itinerary {
         Objects.requireNonNull(legs, "Legs must not be null");
-        if (legs.isEmpty()) {
-            throw new IllegalArgumentException("Legs must not be empty");
-        }
+//        if (legs.isEmpty()) {
+//            throw new IllegalArgumentException("Legs must not be empty");
+//        }
         if (legs.stream().anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException("Legs must not contain null elements");
         }

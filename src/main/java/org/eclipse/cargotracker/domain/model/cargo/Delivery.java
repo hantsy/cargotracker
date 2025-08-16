@@ -89,7 +89,7 @@ public record Delivery(
 //@formatter:on
 	// Null object pattern
 	public static final LocalDateTime ETA_UNKOWN = null;
-    public static final HandlingActivity NO_ACTIVITY = null;
+    public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
 
     // Remove static factory methods and private static calculation methods
 

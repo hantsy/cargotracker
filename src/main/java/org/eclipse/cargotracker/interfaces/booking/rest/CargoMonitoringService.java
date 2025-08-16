@@ -46,9 +46,9 @@ public class CargoMonitoringService {
 	private JsonObjectBuilder cargoToJson(Cargo cargo) {
 		return Json.createObjectBuilder()
 			.add("trackingId", cargo.getTrackingId().id())
-			.add("routingStatus", cargo.getDelivery().routingStatus().toString())
+			.add("routingStatus", cargo.getDelivery().routingStatus().name())
 			.add("misdirected", cargo.getDelivery().misdirected())
-			.add("transportStatus", cargo.getDelivery().transportStatus().toString())
+			.add("transportStatus", cargo.getDelivery().transportStatus().name())
 			.add("atDestination", cargo.getDelivery().isUnloadedAtDestination())
 			.add("origin", cargo.getOrigin().getUnLocode().value())
 			.add("lastKnownLocation", cargo.getDelivery().lastKnownLocation().equals(Location.UNKNOWN) ? "Unknown"

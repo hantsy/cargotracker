@@ -5,6 +5,7 @@ import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
 
 import org.eclipse.cargotracker.domain.model.cargo.*;
@@ -27,8 +28,8 @@ public class SampleDataGenerator {
 	// private @PersistenceContext EntityManager entityManager;
 	// private @Inject HandlingEventFactory handlingEventFactory;
 	// private @Inject HandlingEventRepository handlingEventRepository;
-
-	private @Inject EntityManager entityManager;
+    
+    private @Inject EntityManagerFactory entityManagerFactory;
 
 	private @Inject HandlingEventFactory handlingEventFactory;
 
@@ -53,9 +54,11 @@ public class SampleDataGenerator {
 		unLoadAll(); // Fail-safe in case of application restart that does not trigger a
 						// JPA schema
 		// drop.
-		loadSampleLocations();
-		loadSampleVoyages();
-		loadSampleCargos();
+        entityManagerFactory.runInTransaction(entityManager -> {
+            loadSampleLocations(entityManager);
+            loadSampleVoyages(entityManager);
+            loadSampleCargos(entityManager);
+        });
 	}
 
 	private void unLoadAll() {
@@ -67,21 +70,23 @@ public class SampleDataGenerator {
 		List<Cargo> cargos = entityManager.createQuery("Select c from Cargo c", Cargo.class).getResultList();
 		for (Cargo cargo : cargos) {
 			Delivery delivery = cargo.getDelivery();
+            delivery.lastEvent()
 			entityManager.merge(cargo);
 		}
 		entityManager.flush();
-
-		// Delete all entities
-		// TODO [Clean Code] See why cascade delete is not working.
-		entityManager.createQuery("Delete from HandlingEvent").executeUpdate();
-		entityManager.createQuery("Delete from Leg").executeUpdate();
-		entityManager.createQuery("Delete from Cargo").executeUpdate();
-		entityManager.createQuery("Delete from CarrierMovement").executeUpdate();
-		entityManager.createQuery("Delete from Voyage").executeUpdate();
-		entityManager.createQuery("Delete from Location").executeUpdate();
+//
+//		// Delete all entities
+//		// TODO [Clean Code] See why cascade delete is not working.
+//		entityManager.createQuery("Delete from HandlingEvent").executeUpdate();
+//		entityManager.createQuery("Delete from Leg").executeUpdate();
+//		entityManager.createQuery("Delete from Cargo").executeUpdate();
+//		entityManager.createQuery("Delete from CarrierMovement").executeUpdate();
+//		entityManager.createQuery("Delete from Voyage").executeUpdate();
+//		entityManager.createQuery("Delete from Location").executeUpdate();
+        entityManagerFactory.getSchemaManager().truncate();
 	}
 
-	private void loadSampleLocations() {
+	private void loadSampleLocations(EntityManager entityManager) {
 		LOGGER.info("Loading sample locations.");
 
 		entityManager.persist(SampleLocations.HONGKONG);
@@ -99,7 +104,7 @@ public class SampleDataGenerator {
 		entityManager.persist(SampleLocations.DALLAS);
 	}
 
-	private void loadSampleVoyages() {
+	private void loadSampleVoyages(EntityManager entityManager) {
 		LOGGER.info("Loading sample voyages.");
 
 		entityManager.persist(SampleVoyages.HONGKONG_TO_NEW_YORK);
@@ -109,7 +114,7 @@ public class SampleDataGenerator {
 		entityManager.persist(SampleVoyages.DALLAS_TO_HELSINKI_ALT);
 	}
 
-	private void loadSampleCargos() {
+	private void loadSampleCargos(EntityManager entityManager) {
 		LOGGER.info("Loading sample cargo data.");
 
 		// Cargo ABC123. This one is en-route.
