@@ -20,6 +20,7 @@ public final class DeliveryFactory {
 
     public static Delivery create(RouteSpecification routeSpecification, Itinerary itinerary, HandlingEvent lastEvent) {
         var calculatedAt = LocalDateTime.now();
+
         var misdirected = calculateMisdirectionStatus(itinerary, lastEvent);
         var routingStatus = calculateRoutingStatus(itinerary, routeSpecification);
         var transportStatus = calculateTransportStatus(lastEvent);
@@ -84,7 +85,7 @@ public final class DeliveryFactory {
         if (onTrack(routingStatus, misdirected)) {
             return itinerary.finalArrivalDate();
         } else {
-            return Delivery.ETA_UNKOWN;
+            return Delivery.ETA_UNKNOWN;
         }
     }
 

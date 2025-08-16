@@ -81,7 +81,7 @@
         <tyrus.version>2.2.0</tyrus.version>
 
         <!-- Wildfly server -->
-        <wildfly.version>34.0.0.Final</wildfly.version>
+        <wildfly.version>37.0.0.Final</wildfly.version>
         <wildfly-maven-plugin.version>5.1.1.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>5.0.1.Final</wildfly-arquillian.version>
         <!-- aligned to Wildfly version. -->
@@ -406,7 +406,7 @@
             <id>wildfly</id>
             <properties>
                 <!-- Wildfly server -->
-                <wildfly.artifactId>wildfly-dist</wildfly.artifactId>
+                <wildfly.artifactId>wildfly-preview-dist</wildfly.artifactId>
                 <wildfly.serverConfig>standalone-full.xml</wildfly.serverConfig>
                 <jboss-as.home>${project.build.directory}/wildfly-${wildfly.version}</jboss-as.home>
             </properties>
@@ -740,6 +740,7 @@
             <properties>
                 <skip.unit.tests>true</skip.unit.tests>
                 <skip.integration.tests>false</skip.integration.tests>
+                <wildfly.artifactId>wildfly-preview-dist</wildfly.artifactId>
                 <serverProfile>standalone-full.xml</serverProfile>
                 <serverRoot>${project.build.directory}/wildfly-${wildfly.version}</serverRoot>
             </properties>
@@ -799,7 +800,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.wildfly</groupId>
-                                            <artifactId>wildfly-dist</artifactId>
+                                            <artifactId>${wildfly.artifactId}</artifactId>
                                             <version>${wildfly.version}</version>
                                             <type>zip</type>
                                             <overWrite>false</overWrite>
@@ -816,7 +817,7 @@
                         <configuration>
                             <environmentVariables>
                                 <JBOSS_HOME>
-                                    ${project.build.directory}/wildfly-${wildfly.version}
+                                    ${project.build.directory}/wildfly-preview-${wildfly.version}
                                 </JBOSS_HOME>
                             </environmentVariables>
                             <systemPropertyVariables>
@@ -829,70 +830,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <!-- An optional Arquillian testing profile that executes tests in a remote
-                WildFly instance -->
-            <!-- Run with: mvn clean test -Parq-wildfly-remote -->
-            <id>arq-wildfly-remote</id>
-            <properties>
-                <skip.unit.tests>true</skip.unit.tests>
-                <skip.integration.tests>false</skip.integration.tests>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.tyrus.bundles</groupId>
-                    <artifactId>tyrus-standalone-client</artifactId>
-                    <version>${tyrus.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-client</artifactId>
-                    <version>${resteasy.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jackson2-provider</artifactId>
-                    <version>${resteasy.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.wildfly.arquillian</groupId>
-                    <artifactId>wildfly-arquillian-container-remote</artifactId>
-                    <version>${wildfly-arquillian.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <testResources>
-                    <testResource>
-                        <directory>src/test/arq-wildfly-remote</directory>
-                        <includes>
-                            <include>*</include>
-                        </includes>
-                    </testResource>
-                    <testResource>
-                        <directory>src/test/resources</directory>
-                    </testResource>
-                </testResources>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>${maven-failsafe-plugin.version}</version>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <arquillian.launch>wildfly-remote</arquillian.launch>
-                                <!--
-                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager> -->
-                            </systemPropertyVariables>
-                            <argLine>--add-opens java.base/java.io=ALL-UNNAMED</argLine>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <profile>
             <id>coverage</id>
             <dependencies>

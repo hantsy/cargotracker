@@ -37,9 +37,6 @@ public record Itinerary(
 
     public Itinerary {
         Objects.requireNonNull(legs, "Legs must not be null");
-//        if (legs.isEmpty()) {
-//            throw new IllegalArgumentException("Legs must not be empty");
-//        }
         if (legs.stream().anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException("Legs must not contain null elements");
         }

@@ -173,24 +173,23 @@ public class Cargo {
 	 */
 	public void deriveDeliveryProgress(HandlingHistory handlingHistory) {
 		this.delivery = Delivery.derivedFrom(getRouteSpecification(), getItinerary(), handlingHistory);
-		// LOGGER.log(Level.INFO, "deriveDeliveryProgress: {0}", this.delivery);
 	}
 
 	/**
-	 * @param object to compare
+	 * @param o to compare
 	 * @return True if they have the same identity
 	 * @see #sameIdentityAs(Cargo)
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (object == null || getClass() != object.getClass()) {
+		if (!(o instanceof Cargo)) {
 			return false;
 		}
 
-		Cargo other = (Cargo) object;
+		Cargo other = (Cargo) o;
 		return sameIdentityAs(other);
 	}
 

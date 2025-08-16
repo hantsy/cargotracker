@@ -1,12 +1,6 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
@@ -14,17 +8,7 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.Objects;
-
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.MISROUTED;
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.NOT_ROUTED;
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.ROUTED;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.CLAIMED;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.IN_PORT;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.NOT_RECEIVED;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.UNKNOWN;
 
 /**
  * The actual transportation of the cargo, as opposed to the customer requirement
@@ -87,22 +71,22 @@ public record Delivery(
 	HandlingEvent lastEvent
 ) {
 //@formatter:on
-	// Null object pattern
-	public static final LocalDateTime ETA_UNKOWN = null;
-    public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
 
-    // Remove static factory methods and private static calculation methods
+    // Null object pattern
+    public static final LocalDateTime ETA_UNKNOWN = null;
+    public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
 
     /**
      * Creates a new delivery snapshot based on the complete handling history of a cargo,
      * as well as its route specification and itinerary.
+     *
      * @param routeSpecification route specification
-     * @param itinerary itinerary
-     * @param handlingHistory delivery history
+     * @param itinerary          itinerary
+     * @param handlingHistory    delivery history
      * @return An up to date delivery.
      */
     static Delivery derivedFrom(RouteSpecification routeSpecification, Itinerary itinerary,
-            HandlingHistory handlingHistory) {
+                                HandlingHistory handlingHistory) {
         return DeliveryFactory.create(routeSpecification, itinerary, handlingHistory);
     }
 
@@ -111,25 +95,25 @@ public record Delivery(
         return DeliveryFactory.create(routeSpecification, itinerary, this.lastEvent);
     }
 
-	public Location lastKnownLocation() {
-		return Objects.requireNonNullElse(lastKnownLocation, Location.UNKNOWN);
-	}
+    public Location lastKnownLocation() {
+        return Objects.requireNonNullElse(lastKnownLocation, Location.UNKNOWN);
+    }
 
-	public Voyage currentVoyage() {
-		return Objects.requireNonNullElse(currentVoyage, Voyage.NONE);
-	}
+    public Voyage currentVoyage() {
+        return Objects.requireNonNullElse(currentVoyage, Voyage.NONE);
+    }
 
-	public LocalDateTime estimatedTimeOfArrival() {
-		return eta;
-	}
+    public LocalDateTime estimatedTimeOfArrival() {
+        return eta;
+    }
 
-	// Hibernate issue:
-	// After an empty HandlingActivity is persisted, when retrieving it from database it is a NULL
-	public HandlingActivity nextExpectedActivity() {
-		return Objects.requireNonNullElse(nextExpectedActivity, NO_ACTIVITY);
-	}
+    // Hibernate issue:
+    // After an empty HandlingActivity is persisted, when retrieving it from database it is a NULL
+    public HandlingActivity nextExpectedActivity() {
+        return Objects.requireNonNullElse(nextExpectedActivity, NO_ACTIVITY);
+    }
 
-	private boolean sameValueAs(Delivery other) {
-		return other != null && Objects.equals(this, (Delivery) other);
-	}
+    private boolean sameValueAs(Delivery other) {
+        return other != null && Objects.equals(this, (Delivery) other);
+    }
 }
