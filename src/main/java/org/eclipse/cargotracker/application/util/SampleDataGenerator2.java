@@ -1,74 +1,74 @@
 package org.eclipse.cargotracker.application.util;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.EntityManagerFactory;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Loads sample data for demo.
  */
-@Singleton
-@Startup
-public class SampleDataGenerator {
+@ApplicationScoped
+public class SampleDataGenerator2 {
+    private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator2.class.getName());
 
-    private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator.class.getName());
-
-    private @PersistenceContext EntityManager entityManager;
-    private @Inject HandlingEventFactory handlingEventFactory;
-    private @Inject HandlingEventRepository handlingEventRepository;
+    private EntityManagerFactory entityManagerFactory;
+    private HandlingEventFactory handlingEventFactory;
+    private HandlingEventRepository handlingEventRepository;
 
     // required by CDI
-    public SampleDataGenerator() {
+    public SampleDataGenerator2() {
     }
 
-    @PostConstruct
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void loadSampleData() {
-        LOGGER.info("Loading sample data.");
-        // Fail-safe in case of application restart that does not trigger a JPA schema drop.
-        unLoadAll();
-        loadSampleLocations();
-        loadSampleVoyages();
-        loadSampleCargos();
+    @Inject
+    public SampleDataGenerator2(
+            EntityManagerFactory emf,
+            HandlingEventFactory handlingEventFactory,
+            HandlingEventRepository handlingEventRepository) {
+        this.entityManagerFactory = emf;
+        this.handlingEventFactory = handlingEventFactory;
+        this.handlingEventRepository = handlingEventRepository;
+    }
 
+    public void loadSampleData(@Observes Startup startup) {
+        LOGGER.info("Loading sample data.");
+        unLoadAll2();
+        // Fail-safe in case of application restart that does not trigger a JPA schema drop.
+        entityManagerFactory.runInTransaction(entityManager -> {
+           // unLoadAll(entityManager);
+            loadSampleLocations(entityManager);
+            loadSampleVoyages(entityManager);
+            loadSampleCargos(entityManager);
+        });
         LOGGER.info("Sample data is loaded.");
     }
 
-    private void unLoadAll() {
+    private void unLoadAll(EntityManager entityManager) {
         LOGGER.info("Unloading all existing data.");
         // In order to remove handling events, must remove references in cargo.
         // Dropping cargo first won't work since handling events have references
         // to it.
-        // TODO [Clean Code] See if there is a better way to do this.
-//        List<Cargo> cargos = entityManager.createQuery("Select c from Cargo c", Cargo.class).getResultList();
-//        for (Cargo cargo : cargos) {
-//            Delivery delivery = cargo.getDelivery();
-//            delivery.setLastEvent(null);
-//            entityManager.merge(cargo);
-//        }
-//        entityManager.flush();
 
-        // connection is null
-        // entityManager.runWithConnection((Connection conn) ->
-        //                conn.prepareStatement("UPDATE cargos SET last_event_id=NULL").executeUpdate()
-        //        );
-        entityManager.createNativeQuery("UPDATE cargos SET last_event_id=NULL").executeUpdate();
+        // Why connection is null???
+        entityManager.runWithConnection((Connection conn) ->
+                conn.prepareStatement("UPDATE cargos SET last_event_id=NULL").executeUpdate()
+        );
 
+        //entityManager.createNativeQuery("UPDATE cargos SET last_event_id=NULL").executeUpdate();
         // Delete all entities
         // TODO [Clean Code] See why cascade delete is not working.
         entityManager.createQuery("Delete from HandlingEvent").executeUpdate();
@@ -77,10 +77,14 @@ public class SampleDataGenerator {
         entityManager.createQuery("Delete from CarrierMovement").executeUpdate();
         entityManager.createQuery("Delete from Voyage").executeUpdate();
         entityManager.createQuery("Delete from Location").executeUpdate();
-        // entityManagerFactory.getSchemaManager().truncate();
     }
 
-    private void loadSampleLocations() {
+    private void unLoadAll2() {
+        LOGGER.log(Level.INFO, ">>>empty sample data with SchemaManager.truncate().");
+        entityManagerFactory.getSchemaManager().truncate();
+    }
+
+    private void loadSampleLocations(EntityManager entityManager) {
         LOGGER.info("Loading sample locations.");
 
         entityManager.persist(SampleLocations.HONGKONG);
@@ -98,7 +102,7 @@ public class SampleDataGenerator {
         entityManager.persist(SampleLocations.DALLAS);
     }
 
-    private void loadSampleVoyages() {
+    private void loadSampleVoyages(EntityManager entityManager) {
         LOGGER.info("Loading sample voyages.");
 
         entityManager.persist(SampleVoyages.HONGKONG_TO_NEW_YORK);
@@ -108,7 +112,7 @@ public class SampleDataGenerator {
         entityManager.persist(SampleVoyages.DALLAS_TO_HELSINKI_ALT);
     }
 
-    private void loadSampleCargos() {
+    private void loadSampleCargos(EntityManager entityManager) {
         LOGGER.info("Loading sample cargo data.");
 
         // Cargo ABC123. This one is en-route.
