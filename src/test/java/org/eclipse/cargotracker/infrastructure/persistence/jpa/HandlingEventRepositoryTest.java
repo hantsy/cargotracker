@@ -104,6 +104,7 @@ public class HandlingEventRepositoryTest {
                     location);
 
             handlingEventRepository.store(event);
+            LOGGER.log(Level.INFO, "saved event: {0}", new Object[]{event});
 
             // Payara/EclipseLink issue:
             // In a native query, the named parameters like `:id` does not work on
@@ -117,7 +118,7 @@ public class HandlingEventRepositoryTest {
             // revert to use JPQL, it is standard and portable.
             HandlingEvent result = this.entityManager
                     .createQuery("select e from HandlingEvent e where e.id = :id", HandlingEvent.class)
-                    .setParameter("id", getLongId(event))
+                    .setParameter("id", event.getId())
                     .getSingleResult();
             assertThat(result.getCargo()).isEqualTo(cargo);
             assertThat(result.getCompletionTime().truncatedTo(ChronoUnit.SECONDS))
@@ -147,9 +148,9 @@ public class HandlingEventRepositoryTest {
         assertThat(handlingEvents).isEmpty();
 
         TrackingId existingTrackingId = new TrackingId("MNO456"); // existing cargo
-        List<HandlingEvent> existingHandlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId)
+        List<HandlingEvent> existingHandlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(existingTrackingId)
                 .getDistinctEventsByCompletionTime();
-        assertThat(existingHandlingEvents).isEmpty();
+        assertThat(existingHandlingEvents).isNotEmpty();
     }
 
 }

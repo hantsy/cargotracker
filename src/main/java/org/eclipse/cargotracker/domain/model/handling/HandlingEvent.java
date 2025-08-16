@@ -135,6 +135,10 @@ public class HandlingEvent {
         this.voyage = null;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Type getType() {
         return this.type;
     }

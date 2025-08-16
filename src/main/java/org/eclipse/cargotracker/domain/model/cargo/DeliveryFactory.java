@@ -124,7 +124,7 @@ public final class DeliveryFactory {
                 yield Delivery.NO_ACTIVITY;
             }
             case RECEIVE -> {
-                Leg firstLeg = itinerary.legs().iterator().next();
+                Leg firstLeg = itinerary.legs().getFirst();
                 yield new HandlingActivity(HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
             }
             default -> Delivery.NO_ACTIVITY;
