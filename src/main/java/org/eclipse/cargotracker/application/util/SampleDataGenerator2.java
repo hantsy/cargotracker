@@ -126,7 +126,7 @@ public class SampleDataGenerator2 {
                 SampleLocations.HELSINKI, LocalDate.now().plusDays(15));
         Cargo abc123 = new Cargo(trackingId1, routeSpecification1);
 
-        Itinerary itinerary1 = new Itinerary(Arrays.asList(
+        Itinerary itinerary1 = new Itinerary(List.of(
                 new Leg(SampleVoyages.HONGKONG_TO_NEW_YORK, SampleLocations.HONGKONG, SampleLocations.NEWYORK,
                         LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(1)),
                 new Leg(SampleVoyages.NEW_YORK_TO_DALLAS, SampleLocations.NEWYORK, SampleLocations.DALLAS,
@@ -168,7 +168,7 @@ public class SampleDataGenerator2 {
                 SampleLocations.STOCKHOLM, LocalDate.now().plusDays(18));
         Cargo jkl567 = new Cargo(trackingId2, routeSpecification2);
 
-        Itinerary itinerary2 = new Itinerary(Arrays.asList(
+        Itinerary itinerary2 = new Itinerary(List.of(
                 new Leg(SampleVoyages.HONGKONG_TO_NEW_YORK, SampleLocations.HANGZHOU, SampleLocations.NEWYORK,
                         LocalDateTime.now().minusDays(10), LocalDateTime.now().minusDays(3)),
                 new Leg(SampleVoyages.NEW_YORK_TO_DALLAS, SampleLocations.NEWYORK, SampleLocations.DALLAS,
