@@ -45,13 +45,13 @@
         <cargo-maven3-plugin.version>1.10.20</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
-        <jakartaee-api.version>11.0.0-M5</jakartaee-api.version>
+        <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.5</postgresql.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <omnifaces.version>4.6</omnifaces.version>
 
         <!-- Arquillian BOM -->
-        <arquillian-bom.version>1.9.2.Final</arquillian-bom.version>
+        <arquillian-bom.version>1.10.0.Final</arquillian-bom.version>
         <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
         <shrinkwrap-resolver-bom.version>3.3.3</shrinkwrap-resolver-bom.version>
@@ -73,9 +73,9 @@
         <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0-M12</glassfish.version>
+        <glassfish.version>8.0.0-M14</glassfish.version>
         <jersey.version>4.0.0-M2</jersey.version>
-        <eclipselink.version>5.0.0-B07</eclipselink.version>
+        <eclipselink.version>5.0.0-B09</eclipselink.version>
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>

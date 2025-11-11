@@ -58,35 +58,22 @@ public final class DeliveryFactory {
     }
 
     static Location calculateLastKnownLocation(HandlingEvent lastEvent) {
-        if (lastEvent != null) {
-            return lastEvent.getLocation();
-        } else {
-            return null;
-        }
+        return lastEvent != null ? lastEvent.getLocation() : null;
     }
 
     static Voyage calculateCurrentVoyage(TransportStatus transportStatus, HandlingEvent lastEvent) {
-        if (transportStatus.equals(ONBOARD_CARRIER) && lastEvent != null) {
-            return lastEvent.getVoyage();
-        } else {
-            return null;
-        }
+        return transportStatus.equals(ONBOARD_CARRIER) && lastEvent != null ? lastEvent.getVoyage() : null;
     }
 
     static boolean calculateMisdirectionStatus(Itinerary itinerary, HandlingEvent lastEvent) {
-        if (lastEvent == null) {
-            return false;
-        } else {
-            return !itinerary.isExpected(lastEvent);
-        }
+        return lastEvent != null && !itinerary.isExpected(lastEvent);
     }
 
     static LocalDateTime calculateEta(Itinerary itinerary, RoutingStatus routingStatus, boolean misdirected) {
         if (onTrack(routingStatus, misdirected)) {
             return itinerary.finalArrivalDate();
-        } else {
-            return Delivery.ETA_UNKNOWN;
         }
+        return Delivery.ETA_UNKNOWN;
     }
 
     static HandlingActivity calculateNextExpectedActivity(RouteSpecification routeSpecification,
@@ -135,18 +122,14 @@ public final class DeliveryFactory {
     static RoutingStatus calculateRoutingStatus(Itinerary itinerary, RouteSpecification routeSpecification) {
         if (itinerary == null || itinerary == Itinerary.EMPTY_ITINERARY) {
             return NOT_ROUTED;
-        } else {
-            if (routeSpecification.isSatisfiedBy(itinerary)) {
-                return ROUTED;
-            } else {
-                return MISROUTED;
-            }
         }
+
+        return routeSpecification.isSatisfiedBy(itinerary) ? ROUTED : MISROUTED;
     }
 
-    static boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification,
-                                                  HandlingEvent lastEvent) {
-        return lastEvent != null && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
+    static boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification, HandlingEvent lastEvent) {
+        return lastEvent != null
+                && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
                 && routeSpecification.destination().sameIdentityAs(lastEvent.getLocation());
     }
 
