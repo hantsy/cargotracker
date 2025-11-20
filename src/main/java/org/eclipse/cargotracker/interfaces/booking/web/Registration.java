@@ -1,92 +1,99 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
-import java.io.Serializable;
-import java.util.List;
-
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.annotation.PostConstruct;
+
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
- * Handles registering cargo. Operates against a dedicated service facade, and could easily be
- * rewritten as a thick Swing client. Completely separated from the domain layer, unlike the
- * tracking user interface.
+ * Handles registering cargo. Operates against a dedicated service facade, and could
+ * easily be rewritten as a thick Swing client. Completely separated from the domain
+ * layer, unlike the tracking user interface.
  *
- * <p>In order to successfully keep the domain model shielded from user interface considerations,
- * this approach is generally preferred to the one taken in the tracking controller. However, there
- * is never any one perfect solution for all situations, so we've chosen to demonstrate two
- * polarized ways to build user interfaces.
+ * <p>
+ * In order to successfully keep the domain model shielded from user interface
+ * considerations, this approach is generally preferred to the one taken in the tracking
+ * controller. However, there is never any one perfect solution for all situations, so
+ * we've chosen to demonstrate two polarized ways to build user interfaces.
  */
 @Named
 @ViewScoped
 public class Registration implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    // private static final String FORMAT = "yyyy-MM-dd";
+	// private static final String FORMAT = "yyyy-MM-dd";
 
-    List<LocationDto> locations;
-    private String arrivalDeadline;
-    private String originUnlocode;
-    private String destinationUnlocode;
+	List<LocationDto> locations;
 
-    @Inject private BookingServiceFacade bookingServiceFacade;
+	private String arrivalDeadline;
 
-    public List<LocationDto> getLocations() {
-        return locations;
-    }
+	private String originUnlocode;
 
-    public String getArrivalDeadline() {
-        return arrivalDeadline;
-    }
+	private String destinationUnlocode;
 
-    public void setArrivalDeadline(String arrivalDeadline) {
-        this.arrivalDeadline = arrivalDeadline;
-    }
+	@Inject
+	private BookingServiceFacade bookingServiceFacade;
 
-    public String getOriginUnlocode() {
-        return originUnlocode;
-    }
+	public List<LocationDto> getLocations() {
+		return locations;
+	}
 
-    public void setOriginUnlocode(String originUnlocode) {
-        this.originUnlocode = originUnlocode;
-    }
+	public String getArrivalDeadline() {
+		return arrivalDeadline;
+	}
 
-    public String getDestinationUnlocode() {
-        return destinationUnlocode;
-    }
+	public void setArrivalDeadline(String arrivalDeadline) {
+		this.arrivalDeadline = arrivalDeadline;
+	}
 
-    public void setDestinationUnlocode(String destinationUnlocode) {
-        this.destinationUnlocode = destinationUnlocode;
-    }
+	public String getOriginUnlocode() {
+		return originUnlocode;
+	}
 
-    @PostConstruct
-    public void init() {
-        locations = bookingServiceFacade.listShippingLocations();
-    }
+	public void setOriginUnlocode(String originUnlocode) {
+		this.originUnlocode = originUnlocode;
+	}
 
-    public String register() {
-        String trackingId = null;
+	public String getDestinationUnlocode() {
+		return destinationUnlocode;
+	}
 
-        if (!originUnlocode.equals(destinationUnlocode)) {
-            trackingId =
-                    bookingServiceFacade.bookNewCargo(
-                            originUnlocode, destinationUnlocode, DateUtil.toDate(arrivalDeadline));
-        } else {
-            // TODO [Jakarta EE 8] See if this can be injected.
-            FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage("Origin and destination cannot be the same.");
-            message.setSeverity(FacesMessage.SEVERITY_ERROR);
-            context.addMessage(null, message);
-            return null;
-        }
+	public void setDestinationUnlocode(String destinationUnlocode) {
+		this.destinationUnlocode = destinationUnlocode;
+	}
 
-        return "show.xhtml?faces-redirect=true&trackingId=" + trackingId;
-    }
+	@PostConstruct
+	public void init() {
+		locations = bookingServiceFacade.listShippingLocations();
+	}
+
+	public String register() {
+		String trackingId = null;
+
+		if (!originUnlocode.equals(destinationUnlocode)) {
+			trackingId = bookingServiceFacade.bookNewCargo(originUnlocode, destinationUnlocode,
+					DateUtil.toDate(arrivalDeadline));
+		}
+		else {
+			// TODO [Jakarta EE 8] See if this can be injected.
+			FacesContext context = FacesContext.getCurrentInstance();
+			FacesMessage message = new FacesMessage("Origin and destination cannot be the same.");
+			message.setSeverity(FacesMessage.SEVERITY_ERROR);
+			context.addMessage(null, message);
+			return null;
+		}
+
+		return "show.xhtml?faces-redirect=true&trackingId=" + trackingId;
+	}
+
 }

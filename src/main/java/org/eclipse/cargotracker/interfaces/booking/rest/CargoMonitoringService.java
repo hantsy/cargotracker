@@ -1,9 +1,6 @@
 package org.eclipse.cargotracker.interfaces.booking.rest;
 
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
-
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -13,45 +10,49 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
+import org.eclipse.cargotracker.domain.model.location.Location;
+
 import java.util.List;
 
-@Stateless
+@RequestScoped
 @Path("/cargo")
 public class CargoMonitoringService {
 
-    @Inject private CargoRepository cargoRepository;
+	private CargoRepository cargoRepository;
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonArray getAllCargo() {
-        List<Cargo> cargos = cargoRepository.findAll();
+	public CargoMonitoringService() {
+	}
 
-        JsonArrayBuilder builder = Json.createArrayBuilder();
+	@Inject
+	public CargoMonitoringService(CargoRepository cargoRepository) {
+		this.cargoRepository = cargoRepository;
+	}
 
-        cargos.stream().map(this::cargoToJson).forEach(builder::add);
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonArray getAllCargo() {
+		List<Cargo> cargos = cargoRepository.findAll();
 
-        return builder.build();
-    }
+		JsonArrayBuilder builder = Json.createArrayBuilder();
 
-    private JsonObjectBuilder cargoToJson(Cargo cargo) {
-        return Json.createObjectBuilder()
-                .add("trackingId", cargo.getTrackingId().getIdString())
-                .add("routingStatus", cargo.getDelivery().getRoutingStatus().toString())
-                .add("misdirected", cargo.getDelivery().isMisdirected())
-                .add("transportStatus", cargo.getDelivery().getTransportStatus().toString())
-                .add("atDestination", cargo.getDelivery().isUnloadedAtDestination())
-                .add("origin", cargo.getOrigin().getUnLocode().getIdString())
-                .add(
-                        "lastKnownLocation",
-                        cargo.getDelivery()
-                                        .getLastKnownLocation()
-                                        .getUnLocode()
-                                        .getIdString()
-                                        .equals("XXXXX")
-                                ? "Unknown"
-                                : cargo.getDelivery()
-                                        .getLastKnownLocation()
-                                        .getUnLocode()
-                                        .getIdString());
-    }
+		cargos.stream().map(this::cargoToJson).forEach(builder::add);
+
+		return builder.build();
+	}
+
+	private JsonObjectBuilder cargoToJson(Cargo cargo) {
+		return Json.createObjectBuilder()
+			.add("trackingId", cargo.getTrackingId().id())
+			.add("routingStatus", cargo.getDelivery().routingStatus().name())
+			.add("misdirected", cargo.getDelivery().misdirected())
+			.add("transportStatus", cargo.getDelivery().transportStatus().name())
+			.add("atDestination", cargo.getDelivery().isUnloadedAtDestination())
+			.add("origin", cargo.getOrigin().getUnLocode().value())
+			.add("lastKnownLocation", cargo.getDelivery().lastKnownLocation().equals(Location.UNKNOWN) ? "Unknown"
+					: cargo.getDelivery().lastKnownLocation().getUnLocode().value());
+	}
+
 }
