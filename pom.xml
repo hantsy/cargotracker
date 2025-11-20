@@ -69,7 +69,7 @@
         <!-- Wildfly server -->
         <wildfly.version>30.0.1.Final</wildfly.version>
         <wildfly-maven-plugin.version>4.2.2.Final</wildfly-maven-plugin.version>
-        <wildfly-arquillian.version>5.0.1.Final</wildfly-arquillian.version>
+        <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
         <!-- aligned to Wildfly version. -->
         <resteasy.version>6.2.14.Final</resteasy.version>
 
