@@ -42,7 +42,7 @@
         <maven-surefire-report-plugin.version>3.5.3</maven-surefire-report-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.10.20</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.10.25</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
@@ -74,8 +74,8 @@
 
         <!-- Glassfish server -->
         <glassfish.version>8.0.0-M14</glassfish.version>
-        <jersey.version>4.0.0-M2</jersey.version>
-        <eclipselink.version>5.0.0-B09</eclipselink.version>
+        <jersey.version>4.0.0</jersey.version>
+        <eclipselink.version>5.0.0-B11</eclipselink.version>
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>
