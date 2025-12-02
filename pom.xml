@@ -33,10 +33,10 @@
 
         <!-- Official Maven Plugins -->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+        <maven-war-plugin.version>3.5.1</maven-war-plugin.version>
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
+        <maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
         <maven-surefire-report-plugin.version>3.5.4</maven-surefire-report-plugin.version>
@@ -48,7 +48,7 @@
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.5</postgresql.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
-        <omnifaces.version>4.6</omnifaces.version>
+        <omnifaces.version>4.7</omnifaces.version>
 
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.10.0.Final</arquillian-bom.version>
@@ -56,12 +56,12 @@
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
         <shrinkwrap-resolver-bom.version>3.3.3</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
-        <junit.version>5.13.4</junit.version>
+        <junit.version>5.14.1</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>5.20.0</mockito.version>
         <assertj.version>3.27.6</assertj.version>
-        <json-path.version>2.9.0</json-path.version>
-        <jacoco.version>0.8.13</jacoco.version>
+        <json-path.version>2.10.0</json-path.version>
+        <jacoco.version>0.8.14</jacoco.version>
         <arquillian-jacoco.version>1.1.0</arquillian-jacoco.version>
         <asm.version>9.7.1</asm.version>
         <awaitility.version>4.3.0</awaitility.version>
@@ -81,11 +81,12 @@
         <tyrus.version>2.2.0</tyrus.version>
 
         <!-- Wildfly server -->
-        <wildfly.version>37.0.0.Final</wildfly.version>
+        <wildfly.version>38.0.1.Final</wildfly.version>
         <wildfly-maven-plugin.version>5.1.1.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>5.0.1.Final</wildfly-arquillian.version>
+
         <!-- aligned to Wildfly version. -->
-        <resteasy.version>6.2.14.Final</resteasy.version>
+        <resteasy.version>7.0.0.Final</resteasy.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>
