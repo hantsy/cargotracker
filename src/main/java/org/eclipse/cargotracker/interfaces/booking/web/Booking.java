@@ -1,15 +1,16 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
 import jakarta.annotation.PostConstruct;
-import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
-import org.omnifaces.util.Messages;
-
 import jakarta.enterprise.context.Conversation;
 import jakarta.enterprise.context.ConversationScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
+import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
+import org.omnifaces.util.Messages;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -19,116 +20,127 @@ import java.util.List;
 @ConversationScoped
 public class Booking implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private static final long MIN_JOURNEY_DURATION = 1; // Journey should be 1 day minimum.
+	private static final long MIN_JOURNEY_DURATION = 1; // Journey should be 1 day
+														// minimum.
 
-    private LocalDate today = null;
-    private List<LocationDto> locations;
+	private LocalDate today = null;
 
-    private String originUnlocode;
-    private String originName;
-    private String destinationName;
-    private String destinationUnlocode;
-    private LocalDate arrivalDeadline;
-    private long duration = -1;
+	private List<LocationDto> locations;
 
-    @Inject private BookingServiceFacade bookingServiceFacade;
+	private String originUnlocode;
 
-    @Inject private Conversation conversation;
+	private String originName;
 
-    @Inject private FacesContext facesContext;
+	private String destinationName;
 
-    @PostConstruct
-    public void init() {
-        today = LocalDate.now();
-        locations = bookingServiceFacade.listShippingLocations();
-    }
+	private String destinationUnlocode;
 
-    public void startConversation() {
-        if (!facesContext.isPostback() && conversation.isTransient()) {
-            conversation.begin();
-        }
-    }
+	private LocalDate arrivalDeadline;
 
-    public List<LocationDto> getLocations() {
-        return locations;
-    }
+	private long duration = -1;
 
-    public String getOriginUnlocode() {
-        return originUnlocode;
-    }
+	@Inject
+	private BookingServiceFacade bookingServiceFacade;
 
-    public void setOriginUnlocode(String originUnlocode) {
-        this.originUnlocode = originUnlocode;
-        for (LocationDto location : locations) {
-            if (location.code().equalsIgnoreCase(originUnlocode)) {
-                this.originName = location.name();
-            }
-        }
-    }
+	@Inject
+	private Conversation conversation;
 
-    public String getOriginName() {
-        return originName;
-    }
+	@Inject
+	private FacesContext facesContext;
 
-    public String getDestinationUnlocode() {
-        return destinationUnlocode;
-    }
+	@PostConstruct
+	public void init() {
+		today = LocalDate.now();
+		locations = bookingServiceFacade.listShippingLocations();
+	}
 
-    public void setDestinationUnlocode(String destinationUnlocode) {
-        this.destinationUnlocode = destinationUnlocode;
-        for (LocationDto location : locations) {
-            if (location.code().equalsIgnoreCase(destinationUnlocode)) {
-                destinationName = location.name();
-            }
-        }
-    }
+	public void startConversation() {
+		if (!facesContext.isPostback() && conversation.isTransient()) {
+			conversation.begin();
+		}
+	}
 
-    public String getDestinationName() {
-        return destinationName;
-    }
+	public List<LocationDto> getLocations() {
+		return locations;
+	}
 
-    public LocalDate getToday() {
-        return today;
-    }
+	public String getOriginUnlocode() {
+		return originUnlocode;
+	}
 
-    public LocalDate getArrivalDeadline() {
-        return arrivalDeadline;
-    }
+	public void setOriginUnlocode(String originUnlocode) {
+		this.originUnlocode = originUnlocode;
+		for (LocationDto location : locations) {
+			if (location.code().equalsIgnoreCase(originUnlocode)) {
+				this.originName = location.name();
+			}
+		}
+	}
 
-    public void setArrivalDeadline(LocalDate arrivalDeadline) {
-        this.arrivalDeadline = arrivalDeadline;
-        this.duration = ChronoUnit.DAYS.between(today, arrivalDeadline);
-    }
+	public String getOriginName() {
+		return originName;
+	}
 
-    public long getDuration() {
-        return duration;
-    }
+	public String getDestinationUnlocode() {
+		return destinationUnlocode;
+	}
 
-    public String submit() {
-        if (originUnlocode.equals(destinationUnlocode)) {
-            Messages.addGlobalError("Origin and destination cannot be the same.");
-            return null;
-        }
-        if (duration < MIN_JOURNEY_DURATION) {
-            Messages.addGlobalError("Journey duration must be at least 1 day.");
-            return null;
-        }
-        return "/admin/booking/confirm.xhtml";
-    }
+	public void setDestinationUnlocode(String destinationUnlocode) {
+		this.destinationUnlocode = destinationUnlocode;
+		for (LocationDto location : locations) {
+			if (location.code().equalsIgnoreCase(destinationUnlocode)) {
+				destinationName = location.name();
+			}
+		}
+	}
 
-    public String back() {
-        return "/admin/booking/booking.xhtml";
-    }
+	public String getDestinationName() {
+		return destinationName;
+	}
 
-    public String register() {
-        bookingServiceFacade.bookNewCargo(originUnlocode, destinationUnlocode, arrivalDeadline);
+	public LocalDate getToday() {
+		return today;
+	}
 
-        // end the conversation
-        if (!conversation.isTransient()) {
-            conversation.end();
-        }
-        return "/admin/dashboard.xhtml?faces-redirect=true";
-    }
+	public LocalDate getArrivalDeadline() {
+		return arrivalDeadline;
+	}
+
+	public void setArrivalDeadline(LocalDate arrivalDeadline) {
+		this.arrivalDeadline = arrivalDeadline;
+		this.duration = ChronoUnit.DAYS.between(today, arrivalDeadline);
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public String submit() {
+		if (originUnlocode.equals(destinationUnlocode)) {
+			Messages.addGlobalError("Origin and destination cannot be the same.");
+			return null;
+		}
+		if (duration < MIN_JOURNEY_DURATION) {
+			Messages.addGlobalError("Journey duration must be at least 1 day.");
+			return null;
+		}
+		return "/admin/booking/confirm.xhtml";
+	}
+
+	public String back() {
+		return "/admin/booking/booking.xhtml";
+	}
+
+	public String register() {
+		bookingServiceFacade.bookNewCargo(originUnlocode, destinationUnlocode, arrivalDeadline);
+
+		// end the conversation
+		if (!conversation.isTransient()) {
+			conversation.end();
+		}
+		return "/admin/dashboard.xhtml?faces-redirect=true";
+	}
+
 }

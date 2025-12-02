@@ -11,20 +11,22 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=alert_status)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=coverage)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 
-> **This is a personal fork of [Eclipse EE4J CargoTracker](https://github.com/eclipse-ee4j/cargotracker), I'm also [a contributor of the CargoTracker project](https://github.com/eclipse-ee4j/cargotracker/graphs/contributors).**
+> [!WARNING] 
+> This is my personal fork of [Eclipse EE4J CargoTracker](https://github.com/eclipse-ee4j/cargotracker). I am also [a contributor to the CargoTracker project](https://github.com/eclipse-ee4j/cargotracker/graphs/contributors).
 
-> For the detailed introduction to the CargoTracker project, go to the upstream project website: https://eclipse-ee4j.github.io/cargotracker/.
+> [!NOTE] 
+> For a detailed introduction to the CargoTracker project, visit the upstream project website: https://eclipse-ee4j.github.io/cargotracker/.
 
-There are some highlights when comparing to the upstream project.
+Here are some highlights compared to the upstream project:
 
-* Utilize Docker to run a Postgres Database in both development and production to erase the risk brought by different environments.
-* Add support to run application on WildFly.
-* Add several fine-grained Maven profiles for varied Arquillian Container adapters, which is derived from [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate).
-* Replace Primefaces with simple Bootstrap css style and plain Facelets templates, clean up and reorganize all Facelets templates.
-* Add a plenty of testing codes to cover more use cases.
-* Add GitHub Actions workflows to build the project and run testing codes, and generate code quality report via Jacoco, SonarCloud.
+* Utilizes Docker to run a PostgreSQL Database in both development and production environments, eliminating risks associated with different environments.
+* Adds support for running the application on WildFly.
+* Includes several fine-grained Maven profiles for various Arquillian Container adapters, derived from the [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate).
+* Replaces PrimeFaces with simple Bootstrap CSS styles and plain Facelets templates, cleaning up and reorganizing all Facelets templates.
+* Adds extensive testing code to cover more use cases.
+* Integrates GitHub Actions workflows to build the project, run tests, and generate code quality reports via Jacoco and SonarCloud.
 
-I have also ported the original [Cargotracker regapp](https://github.com/citerus/dddsample-regapp) which was written in Spring and Swing UI to Jakarta EE/CDI world, check the following projects.
+I have also ported the original [Cargotracker regapp](https://github.com/citerus/dddsample-regapp), originally written in Spring and Swing UI, to the Jakarta EE/CDI world. Check out the following projects:
 * [cargotracker-regapp](https://github.com/hantsy/cargotracker-regapp): CDI/Weld + JavaFX
 * [quarkus-cargotracker-regapp](https://github.com/hantsy/quarkus-cargotracker-regapp): Quarkus + Quarkus FX Extension/JavaFX
 
@@ -33,16 +35,16 @@ I have also ported the original [Cargotracker regapp](https://github.com/citerus
 ### Prerequisites
 
 * Java 21
-* Apache Maven 3.9.0
+* Apache Maven 3.9.0 +
 * Git
 * Docker
 * [GlassFish v7](https://github.com/eclipse-ee4j/glassfish) or [WildFly 30+](https://www.wildfly.org)
 
-### Startup PostgresSQL Database
+### Start PostgreSQL Database
 
-There is a *docker-compose.yaml* file available in the project root folder.
+A *docker-compose.yaml* file is available in the project root folder.
 
-In your terminal, switch to the project root folder, and run the following command to start a Postgres instance in Docker container.
+In your terminal, switch to the project root folder and run the following command to start a PostgreSQL instance in a Docker container:
 
 ```bash
 docker compose up postgres
@@ -50,47 +52,50 @@ docker compose up postgres
 
 ### GlassFish
 
-Run the following command to run the application on GlassFish v7 using cargo maven plugin.
+Run the following command to run the application on GlassFish v7 using the Cargo Maven plugin:
 
 ```bash
-mvn clean package cargo:run -Pglassifsh
+mvn clean package cargo:run -Pglassfish
 ```
+
 ### WildFly 
 
-Run the following command to run the application on WildFly using the official WildFly maven plugin.
+Run the following command to run the application on WildFly using the official WildFly Maven plugin:
 
 ```bash
 mvn clean wildfly:run -Pwildfly
 ```
-When the application is deployed sucessfully, open your browser, go to http://localhost:8080/cargo-tracker
+
+When the application is successfully deployed, open your browser and go to http://localhost:8080/cargo-tracker
 
 ## Testing
 
-Cargo Tracker's testing is done using [JUnit](https://junit.org) and [Arquillian](http://arquillian.org/). 
+Cargo Tracker's testing is done using [JUnit](https://junit.org) and [Arquillian](http://arquillian.org/).
 
-There are several Maven profiles configured for running the testing codes against varied Arquillian Container adapters.
+There are several Maven profiles configured for running the tests against various Arquillian Container adapters.
 
-> Note: Before running the Arquillian integration tests, make sure there is a running Postgres database ready for test, check the Build section for more details.
+> [!Note]
+> Before running the Arquillian integration tests, ensure there is a running PostgreSQL database ready for testing. Check the Build section for more details.
 
-###  GlassFish
+### GlassFish
 
-Open a terminal window, execute the following command to run Arquillian tests against Payara Managed Adapter.
+Open a terminal window and execute the following command to run Arquillian tests against the GlassFish Managed Adapter:
 
 ```bash
 mvn clean verify -Parq-glassfish-managed
 ```
 
-Or run this command instead to run tests against a Glassfish Remote adapter.
+Or run this command to run tests against a GlassFish Remote adapter:
 
-> Note: Make sure there is a running Glassfish server on your local machine.
+> Note: Ensure there is a running GlassFish server on your local machine.
 
 ```bash 
 mvn clean verify -Parq-glassfish-remote 
 ```
 
-###  WildFly
+### WildFly
 
-Run the following command to run Arquillian tests against WildFly Managed Adapter.
+Run the following command to run Arquillian tests against the WildFly Managed Adapter:
 
 ```bash
 mvn clean verify -Parq-wildfly-managed
@@ -99,4 +104,5 @@ mvn clean verify -Parq-wildfly-managed
 mvn clean verify -Parq-wildfly-remote 
 ```
 
-> More details about the Arquillian adapter's configuration, go to [Jakarta EE 9 template project](https://github.com/hantsy/jakartaee9-starter-boilerplate) or [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate), and follow [this comprehensive guide](https://hantsy.github.io/jakartaee9-starter-boilerplate/) to research them yourself.
+> [!NOTE] 
+> For more details about the Arquillian adapter's configuration, visit the [Jakarta EE 9 template project](https://github.com/hantsy/jakartaee9-starter-boilerplate) or the [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate), and follow [this comprehensive guide](https://hantsy.github.io/jakartaee9-starter-boilerplate/) to learn more.

@@ -1,123 +1,74 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.cargotracker.domain.shared.AbstractSpecification;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import java.io.Serializable;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.eclipse.cargotracker.domain.model.location.Location;
+import org.eclipse.cargotracker.domain.shared.Specification;
+
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
- * Route specification. Describes where a cargo origin and destination is, and the arrival deadline.
+ * Route specification. Describes where a cargo origin and destination is, and the arrival
+ * deadline.
+ *
+ * @param origin          origin location - can't be the same as the destination
+ * @param destination     destination location - can't be the same as the origin
+ * @param arrivalDeadline arrival deadline
  */
 @Embeddable
-public class RouteSpecification extends AbstractSpecification<Itinerary> implements Serializable {
+//@formatter:off
+public record RouteSpecification(
 
-    private static final long serialVersionUID = 1L;
+	/** Origin location - can't be the same as the destination. */
+	@ManyToOne
+	@JoinColumn(name = "spec_origin_id")
+	Location origin,
 
-    // private static final Logger LOGGER = Logger.getLogger(RouteSpecification.class.getName());
+	/** Destination location - can't be the same as the origin. */
+	@ManyToOne
+	@JoinColumn(name = "spec_destination_id")
+	Location destination,
 
-    @ManyToOne
-    @JoinColumn(name = "spec_origin_id")
-    private Location origin;
+	/** Arrival deadline. */
+	@Column(name = "spec_arrival_deadline")
+	@NotNull
+	LocalDate arrivalDeadline
+) implements Specification<Itinerary> {
+//@formatter:on
 
-    @ManyToOne
-    @JoinColumn(name = "spec_destination_id")
-    private Location destination;
-
-    // @Temporal(TemporalType.DATE)
-    @Column(name = "spec_arrival_deadline")
-    @NotNull
-    private LocalDate arrivalDeadline;
-
-    public RouteSpecification() {}
-
-    /**
-     * @param origin origin location - can't be the same as the destination
-     * @param destination destination location - can't be the same as the origin
-     * @param arrivalDeadline arrival deadline
-     */
-    public RouteSpecification(Location origin, Location destination, LocalDate arrivalDeadline) {
-        Validate.notNull(origin, "Origin is required");
-        Validate.notNull(destination, "Destination is required");
-        Validate.notNull(arrivalDeadline, "Arrival deadline is required");
-        Validate.isTrue(
-                !origin.sameIdentityAs(destination),
-                "Origin and destination can't be the same: " + origin);
-
-        this.origin = origin;
-        this.destination = destination;
-        this.arrivalDeadline = arrivalDeadline;
-    }
-
-    public Location getOrigin() {
-        return origin;
-    }
-
-    public Location getDestination() {
-        return destination;
-    }
-
-    public LocalDate getArrivalDeadline() {
-        return arrivalDeadline;
+    public RouteSpecification {
+        Objects.requireNonNull(origin, "Origin is required");
+        Objects.requireNonNull(destination, "Destination is required");
+        Objects.requireNonNull(arrivalDeadline, "Arrival deadline is required");
+        if (origin.sameIdentityAs(destination)) {
+            throw new IllegalArgumentException("Origin and destination can't be the same: " + origin);
+        }
     }
 
     @Override
     public boolean isSatisfiedBy(Itinerary itinerary) {
-        return itinerary != null
-                && getOrigin().sameIdentityAs(itinerary.getInitialDepartureLocation())
-                && getDestination().sameIdentityAs(itinerary.getFinalArrivalLocation())
-                && getArrivalDeadline().isAfter(itinerary.getFinalArrivalDate().toLocalDate());
-    }
-
-    private boolean sameValueAs(RouteSpecification other) {
-        return other != null
-                && new EqualsBuilder()
-                        .append(this.origin, other.origin)
-                        .append(this.destination, other.destination)
-                        .append(this.arrivalDeadline, other.arrivalDeadline)
-                        .isEquals();
+        return itinerary != null && origin.sameIdentityAs(itinerary.initialDepartureLocation())
+                && destination.sameIdentityAs(itinerary.finalArrivalLocation())
+                && arrivalDeadline.isAfter(itinerary.finalArrivalDate().toLocalDate());
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (o == null || getClass() != o.getClass()) return false;
         RouteSpecification that = (RouteSpecification) o;
-
-        return sameValueAs(that);
+        return Objects.equals(origin, that.origin)
+                && Objects.equals(destination, that.destination)
+                && Objects.equals(arrivalDeadline, that.arrivalDeadline);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.origin)
-                .append(this.destination)
-                .append(this.arrivalDeadline)
-                .toHashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "RouteSpecification{"
-                + "origin="
-                + origin
-                + ", destination="
-                + destination
-                + ", arrivalDeadline="
-                + arrivalDeadline
-                + '}';
+        return Objects.hash(origin, destination, arrivalDeadline);
     }
 }

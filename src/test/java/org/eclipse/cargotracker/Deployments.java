@@ -10,11 +10,12 @@ import org.eclipse.cargotracker.domain.model.location.LocationRepository;
 import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.*;
 import org.eclipse.cargotracker.domain.service.RoutingService;
-import org.eclipse.cargotracker.domain.shared.*;
+import org.eclipse.cargotracker.domain.shared.AndSpecification;
+import org.eclipse.cargotracker.domain.shared.NotSpecification;
+import org.eclipse.cargotracker.domain.shared.OrSpecification;
+import org.eclipse.cargotracker.domain.shared.Specification;
 import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 import org.eclipse.cargotracker.infrastructure.logging.LoggerProducer;
-import org.eclipse.cargotracker.infrastructure.messaging.JMSResourcesSetup;
-import org.eclipse.cargotracker.infrastructure.persistence.DatabaseSetup;
 import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaCargoRepository;
 import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaHandlingEventRepository;
 import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaLocationRepository;
@@ -32,22 +33,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Deployments {
+
     private static final Logger LOGGER = Logger.getLogger(Deployments.class.getName());
 
     public static void addExtraJars(WebArchive war) {
-        File[] extraJars =
-                Maven.resolver()
-                        .loadPomFromFile("pom.xml")
-                        .importCompileAndRuntimeDependencies()
-                        .resolve(
-                                "org.assertj:assertj-core",
-                                "org.hamcrest:hamcrest-core",
-                                "org.mockito:mockito-core",
-                                "org.awaitility:awaitility")
-                        .withTransitivity()
-                        .asFile();
-        LOGGER.log(
-                Level.FINE, "add test libs to deployment archive: {0}", new Object[] {extraJars});
+        File[] extraJars = Maven.resolver()
+                .loadPomFromFile("pom.xml")
+                .importCompileAndRuntimeDependencies()
+                .resolve("org.assertj:assertj-core", "org.hamcrest:hamcrest-core", "org.mockito:mockito-core",
+                        "org.awaitility:awaitility")
+                .withTransitivity()
+                .asFile();
+        LOGGER.log(Level.FINE, "add test libs to deployment archive: {0}", new Object[]{extraJars});
         war.addAsLibraries(extraJars);
     }
 
@@ -58,7 +55,7 @@ public class Deployments {
     // Infrastructure layer components.
     // Add persistence/JPA components.
     public static void addInfraPersistence(WebArchive war) {
-        war.addClass(DatabaseSetup.class)
+        war.addClass(org.eclipse.cargotracker.infrastructure.persistence.DatabaseResources.class)
                 .addClass(JpaCargoRepository.class)
                 .addClass(JpaVoyageRepository.class)
                 .addClass(JpaHandlingEventRepository.class)
@@ -70,12 +67,11 @@ public class Deployments {
     }
 
     public static void addApplicationService(WebArchive war) {
-        war.addPackage(BookingService.class.getPackage())
-                .addPackage(DefaultBookingService.class.getPackage());
+        war.addPackage(BookingService.class.getPackage()).addPackage(DefaultBookingService.class.getPackage());
     }
 
     public static void addInfraMessaging(WebArchive war) {
-        war.addPackages(true, JMSResourcesSetup.class.getPackage());
+        war.addPackages(true, org.eclipse.cargotracker.infrastructure.messaging.JMSResources.class.getPackage());
     }
 
     public static void addInfraRouting(WebArchive war) {
@@ -83,9 +79,8 @@ public class Deployments {
     }
 
     public static void addDomainModels(WebArchive war) {
-        war
-                // locations
-                .addClass(Location.class)
+        // locations
+        war.addClass(Location.class)
                 .addClass(UnLocode.class)
 
                 // voyage
@@ -97,6 +92,7 @@ public class Deployments {
                 // cargo models
                 .addClass(Cargo.class)
                 .addClass(Delivery.class)
+                .addClass(DeliveryFactory.class)
                 .addClass(HandlingActivity.class)
                 .addClass(Itinerary.class)
                 .addClass(Leg.class)
@@ -115,12 +111,10 @@ public class Deployments {
                 .addClass(UnknownLocationException.class)
 
                 // shared classes
-                .addClass(AbstractSpecification.class)
                 .addClass(Specification.class)
                 .addClass(AndSpecification.class)
                 .addClass(OrSpecification.class)
-                .addClass(NotSpecification.class)
-                .addClass(DomainObjectUtils.class);
+                .addClass(NotSpecification.class);
     }
 
     public static void addDomainRepositories(WebArchive war) {
@@ -143,4 +137,5 @@ public class Deployments {
     public static void addGraphTraversalService(WebArchive war) {
         war.addClass(GraphTraversalService.class).addClass(GraphDao.class);
     }
+
 }

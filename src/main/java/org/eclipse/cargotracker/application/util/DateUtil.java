@@ -7,30 +7,34 @@ import java.time.format.DateTimeFormatter;
 
 /** A few utilities for working with Date. */
 public class DateUtil {
-    public static final String DATE_FORMAT = "M/d/yyyy";
-    public static final String DATE_TIME_FORMAT = "M/d/yyyy h:m a";
 
-    private static final DateTimeFormatter DATE_FORMATTER =
-            DateTimeFormatter.ofPattern(DATE_FORMAT).withZone(ZoneId.systemDefault());
+	public static final String DATE_FORMAT = "M/d/yyyy";
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneId.systemDefault());
+	public static final String DATE_TIME_FORMAT = "M/d/yyyy h:m a";
 
-    private DateUtil() {}
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT)
+		.withZone(ZoneId.systemDefault());
 
-    public static LocalDate toDate(String date) {
-        return LocalDate.parse(date, DATE_FORMATTER);
-    }
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)
+		.withZone(ZoneId.systemDefault());
 
-    public static LocalDateTime toDateTime(String datetime) {
-        return LocalDateTime.parse(datetime, DATE_TIME_FORMATTER);
-    }
+	private DateUtil() {
+	}
 
-    public static String toString(LocalDateTime dateTime) {
-        return dateTime.format(DATE_TIME_FORMATTER);
-    }
+	public static LocalDate toDate(String date) {
+		return LocalDate.parse(date, DATE_FORMATTER);
+	}
 
-    public static String toString(LocalDate date) {
-        return date.format(DATE_FORMATTER);
-    }
+	public static LocalDateTime toDateTime(String datetime) {
+		return LocalDateTime.parse(datetime, DATE_TIME_FORMATTER);
+	}
+
+	public static String toString(LocalDateTime dateTime) {
+		return dateTime.format(DATE_TIME_FORMATTER);
+	}
+
+	public static String toString(LocalDate date) {
+		return date.format(DATE_FORMATTER);
+	}
+
 }

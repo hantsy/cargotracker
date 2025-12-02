@@ -1,16 +1,20 @@
-version: '3.7' # specify docker-compose version
-
 services:
   postgres:
-    image: postgres
+    image: postgres:latest
     ports:
       - "5432:5432"
-    restart: always
+    restart: on-failure
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: cargotracker
       POSTGRES_USER: user
     command: "--max_prepared_transactions=110"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     volumes:
       - ./data:/var/lib/postgresql
   #      - ./pg-initdb.d:/docker-entrypoint-initdb.d
