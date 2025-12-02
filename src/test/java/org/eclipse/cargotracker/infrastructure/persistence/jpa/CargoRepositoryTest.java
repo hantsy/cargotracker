@@ -19,6 +19,7 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.*;
@@ -35,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 import static org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type.LOAD;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
 public class CargoRepositoryTest {
@@ -60,12 +61,9 @@ public class CargoRepositoryTest {
     @Inject
     private EntityManager entityManager;
 
-    @Inject
-    private EntityManagerFactory emf;
-
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CargoRepositoryTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "CargoRepositoryTest.war");
 
         addExtraJars(war);
         addDomainModels(war);

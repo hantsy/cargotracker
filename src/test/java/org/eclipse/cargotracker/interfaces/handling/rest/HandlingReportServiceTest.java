@@ -20,6 +20,7 @@ import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -36,7 +37,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @Tag("arqtest")
 public class HandlingReportServiceTest {
 

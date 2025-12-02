@@ -76,21 +76,26 @@ public final class DeliveryFactory {
         return Delivery.ETA_UNKNOWN;
     }
 
-    static HandlingActivity calculateNextExpectedActivity(RouteSpecification routeSpecification,
-                                                          Itinerary itinerary, HandlingEvent lastEvent, RoutingStatus routingStatus, boolean misdirected) {
+    static HandlingActivity calculateNextExpectedActivity(
+            RouteSpecification routeSpecification,
+            Itinerary itinerary,
+            HandlingEvent lastEvent,
+            RoutingStatus routingStatus,
+            boolean misdirected
+    ) {
         if (!onTrack(routingStatus, misdirected)) {
             return Delivery.NO_ACTIVITY;
         }
 
         if (lastEvent == null) {
-            return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.origin());
+            return HandlingActivity.of(HandlingEvent.Type.RECEIVE, routeSpecification.origin());
         }
 
         return switch (lastEvent.getType()) {
             case LOAD -> {
                 for (Leg leg : itinerary.legs()) {
                     if (leg.getLoadLocation().sameIdentityAs(lastEvent.getLocation())) {
-                        yield new HandlingActivity(HandlingEvent.Type.UNLOAD, leg.getUnloadLocation(), leg.getVoyage());
+                        yield HandlingActivity.of(HandlingEvent.Type.UNLOAD, leg.getUnloadLocation(), leg.getVoyage());
                     }
                 }
                 yield Delivery.NO_ACTIVITY;
@@ -102,10 +107,10 @@ public final class DeliveryFactory {
                     if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {
                         if (iterator.hasNext()) {
                             Leg nextLeg = iterator.next();
-                            yield new HandlingActivity(HandlingEvent.Type.LOAD, nextLeg.getLoadLocation(),
+                            yield HandlingActivity.of(HandlingEvent.Type.LOAD, nextLeg.getLoadLocation(),
                                     nextLeg.getVoyage());
                         } else {
-                            yield new HandlingActivity(HandlingEvent.Type.CLAIM, leg.getUnloadLocation());
+                            yield HandlingActivity.of(HandlingEvent.Type.CLAIM, leg.getUnloadLocation());
                         }
                     }
                 }
@@ -113,7 +118,7 @@ public final class DeliveryFactory {
             }
             case RECEIVE -> {
                 Leg firstLeg = itinerary.legs().getFirst();
-                yield new HandlingActivity(HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
+                yield HandlingActivity.of(HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
             }
             default -> Delivery.NO_ACTIVITY;
         };

@@ -17,6 +17,7 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -33,7 +34,7 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
 public class HandlingEventRepositoryTest {

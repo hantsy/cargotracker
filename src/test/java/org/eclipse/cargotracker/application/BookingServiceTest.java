@@ -25,6 +25,7 @@ import org.eclipse.pathfinder.api.TransitPath;
 import org.eclipse.pathfinder.internal.GraphDao;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.*;
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
  * Application layer integration test covering a number of otherwise fairly trivial
  * components that largely do not warrant their own tests.
  */
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
 public class BookingServiceTest {

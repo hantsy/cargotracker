@@ -35,15 +35,22 @@ public record HandlingActivity(
 ) {
 //@formatter:on
 
-	public static final HandlingActivity EMPTY = new HandlingActivity(null, null, null);
+	public static final HandlingActivity EMPTY = null; //new HandlingActivity(null, null, null);
 
 	public HandlingActivity {
-        Objects.requireNonNull(type, "Handling event type is required");
-        Objects.requireNonNull(location, "Location is required");
 	}
 
-	public HandlingActivity(HandlingEvent.Type type, Location location) {
-		this(type, location, null);
+	public static HandlingActivity of(HandlingEvent.Type type, Location location) {
+		Objects.requireNonNull(type, "Handling event type is required");
+		Objects.requireNonNull(location, "Location is required");
+		return new HandlingActivity(type, location, null);
+	}
+
+	public static HandlingActivity of(HandlingEvent.Type type, Location location, Voyage voyage) {
+		Objects.requireNonNull(type, "Handling event type is required");
+		Objects.requireNonNull(location, "Location is required");
+		Objects.requireNonNull(voyage, "Voyage is required");
+		return new HandlingActivity(type, location, voyage);
 	}
 
 	public boolean isEmpty() {

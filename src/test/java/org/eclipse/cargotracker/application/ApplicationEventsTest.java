@@ -28,6 +28,7 @@ import org.eclipse.cargotracker.infrastructure.messaging.jms.JmsApplicationEvent
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Tag;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @Tag("arqtest")
 public class ApplicationEventsTest {
 
@@ -104,7 +105,7 @@ public class ApplicationEventsTest {
 	@Deployment
 	public static WebArchive createDeployment() {
 
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "test-ApplicationEventsTest.war");
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "ApplicationEventsTest.war");
 
 		addExtraJars(war);
 		addDomainModels(war);

@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres
+    image: postgres:latest
     ports:
       - "5432:5432"
     restart: on-failure

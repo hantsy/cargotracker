@@ -34,6 +34,7 @@ import org.eclipse.cargotracker.domain.service.RoutingService;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -46,7 +47,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
 public class CargoLifecycleScenarioTest {
@@ -57,11 +58,11 @@ public class CargoLifecycleScenarioTest {
 	 * Test setup: A cargo should be shipped from Hongkong to SampleLocations.STOCKHOLM,
 	 * and it should arrive in no more than two weeks.
 	 */
-	private static Location origin = SampleLocations.HONGKONG;
+	private static final Location origin = SampleLocations.HONGKONG;
 
-	private static Location destination = SampleLocations.STOCKHOLM;
+	private static final Location destination = SampleLocations.STOCKHOLM;
 
-	private static LocalDate arrivalDeadline = LocalDate.now().minusYears(1).plusMonths(3).plusDays(18);
+	private static final LocalDate arrivalDeadline = LocalDate.now().minusYears(1).plusMonths(3).plusDays(18);
 
 	private static TrackingId trackingId;
 
@@ -121,13 +122,13 @@ public class CargoLifecycleScenarioTest {
 	 */
 	RoutingService routingService;
 
-	@PersistenceContext
+	@Inject
 	private EntityManager entityManager;
 
 	@Deployment
 	public static WebArchive createDeployment() {
 
-		WebArchive war = ShrinkWrap.create(WebArchive.class);
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "CargoLifecycleScenarioTest.war");
 
 		addExtraJars(war);
 		addDomainModels(war);
@@ -262,7 +263,7 @@ public class CargoLifecycleScenarioTest {
 		assertThat(result.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
 		assertThat(result.getDelivery().estimatedTimeOfArrival()).isNotNull();
 		assertThat(result.getDelivery().nextExpectedActivity())
-			.isEqualTo(new HandlingActivity(HandlingEvent.Type.RECEIVE, SampleLocations.HONGKONG));
+			.isEqualTo(HandlingActivity.of(HandlingEvent.Type.RECEIVE, SampleLocations.HONGKONG));
 	}
 
 	/*
@@ -555,7 +556,7 @@ public class CargoLifecycleScenarioTest {
 		assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
 		assertThat(cargo.getDelivery().misdirected()).isFalse();
 		assertThat(cargo.getDelivery().nextExpectedActivity())
-			.isEqualTo(new HandlingActivity(HandlingEvent.Type.CLAIM, SampleLocations.STOCKHOLM));
+			.isEqualTo(HandlingActivity.of(HandlingEvent.Type.CLAIM, SampleLocations.STOCKHOLM));
 	}
 
 	// Finally, cargo is claimed in SampleLocations.STOCKHOLM. This ends the cargo

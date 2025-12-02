@@ -15,6 +15,7 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,7 +30,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @Tag("arqtest")
 public class CargoMonitoringServiceTest {
 

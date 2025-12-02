@@ -73,10 +73,10 @@
         <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0-M14</glassfish.version>
+        <glassfish.version>8.0.0-M13</glassfish.version>
         <jersey.version>4.0.0</jersey.version>
         <eclipselink.version>5.0.0-B11</eclipselink.version>
-        <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
+        <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>
 

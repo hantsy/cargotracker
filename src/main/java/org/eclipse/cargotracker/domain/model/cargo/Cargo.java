@@ -79,11 +79,11 @@ public class Cargo {
 	private RouteSpecification routeSpecification;
 
 	@Embedded
-	@NotNull
+	//@NotNull
 	private Itinerary itinerary;
 
 	@Embedded
-	@NotNull
+	//@NotNull
 	private Delivery delivery;
 
 	public Cargo() {
