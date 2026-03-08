@@ -23,69 +23,88 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ItineraryCandidateDtoAssemblerTest {
+    @Test
+    public void testToDto() {
+        final ItineraryCandidateDtoAssembler assembler = new ItineraryCandidateDtoAssembler();
 
-	@Test
-	public void testToDto() {
-		final ItineraryCandidateDtoAssembler assembler = new ItineraryCandidateDtoAssembler();
+        final Location origin = SampleLocations.STOCKHOLM;
+        final Location destination = SampleLocations.MELBOURNE;
 
-		final Location origin = SampleLocations.STOCKHOLM;
-		final Location destination = SampleLocations.MELBOURNE;
+        final Itinerary itinerary =
+                new Itinerary(
+                        Arrays.asList(
+                                new Leg(
+                                        SampleVoyages.CM001,
+                                        origin,
+                                        SampleLocations.SHANGHAI,
+                                        LocalDateTime.now(),
+                                        LocalDateTime.now()),
+                                new Leg(
+                                        SampleVoyages.CM001,
+                                        SampleLocations.ROTTERDAM,
+                                        destination,
+                                        LocalDateTime.now(),
+                                        LocalDateTime.now())));
 
-		final Itinerary itinerary = new Itinerary(Arrays.asList(
-				new Leg(SampleVoyages.CM001, origin, SampleLocations.SHANGHAI, LocalDateTime.now(),
-						LocalDateTime.now()),
-				new Leg(SampleVoyages.CM001, SampleLocations.ROTTERDAM, destination, LocalDateTime.now(),
-						LocalDateTime.now())));
+        final RouteCandidateDto dto = assembler.toDto(itinerary);
 
-		final RouteCandidateDto dto = assembler.toDto(itinerary);
+        assertThat(dto.legs()).hasSize(2);
+        var legDTO = dto.legs().get(0);
+        assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
+        assertThat(legDTO.fromNameAndUnLcode()).contains("SESTO");
+        assertThat(legDTO.toNameAndUnLocode()).contains("CNSHA");
 
-		assertThat(dto.legs()).hasSize(2);
-		var legDTO = dto.legs().get(0);
-		assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
-		assertThat(legDTO.fromNameAndUnLcode()).contains("SESTO");
-		assertThat(legDTO.toNameAndUnLocode()).contains("CNSHA");
+        legDTO = dto.legs().get(1);
+        assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
+        assertThat(legDTO.fromNameAndUnLcode()).contains("NLRTM");
+        assertThat(legDTO.toNameAndUnLocode()).contains("AUMEL");
+    }
 
-		legDTO = dto.legs().get(1);
-		assertThat(legDTO.voyageNumber()).isEqualTo("CM001");
-		assertThat(legDTO.fromNameAndUnLcode()).contains("NLRTM");
-		assertThat(legDTO.toNameAndUnLocode()).contains("AUMEL");
-	}
+    @Test
+    public void testFromDto() {
+        final ItineraryCandidateDtoAssembler assembler = new ItineraryCandidateDtoAssembler();
 
-	@Test
-	public void testFromDto() {
-		final ItineraryCandidateDtoAssembler assembler = new ItineraryCandidateDtoAssembler();
+        var legs = new ArrayList<LegDto>();
+        legs.add(
+                new LegDto(
+                        "CM001",
+                        new LocationDto("AAAAA", "A"),
+                        new LocationDto("BBBBB", "B"),
+                        LocalDateTime.now(),
+                        LocalDateTime.now()));
+        legs.add(
+                new LegDto(
+                        "CM001",
+                        new LocationDto("BBBBB", "B"),
+                        new LocationDto("CCCCC", "C"),
+                        LocalDateTime.now(),
+                        LocalDateTime.now()));
 
-		var legs = new ArrayList<LegDto>();
-		legs.add(new LegDto("CM001", new LocationDto("AAAAA", "A"), new LocationDto("BBBBB", "B"), LocalDateTime.now(),
-				LocalDateTime.now()));
-		legs.add(new LegDto("CM001", new LocationDto("BBBBB", "B"), new LocationDto("CCCCC", "C"), LocalDateTime.now(),
-				LocalDateTime.now()));
+        final LocationRepository locationRepository = mock(LocationRepository.class);
+        when(locationRepository.find(new UnLocode("AAAAA"))).thenReturn(SampleLocations.HONGKONG);
+        when(locationRepository.find(new UnLocode("BBBBB"))).thenReturn(SampleLocations.TOKYO);
+        when(locationRepository.find(new UnLocode("CCCCC"))).thenReturn(SampleLocations.CHICAGO);
 
-		final LocationRepository locationRepository = mock(LocationRepository.class);
-		when(locationRepository.find(new UnLocode("AAAAA"))).thenReturn(SampleLocations.HONGKONG);
-		when(locationRepository.find(new UnLocode("BBBBB"))).thenReturn(SampleLocations.TOKYO);
-		when(locationRepository.find(new UnLocode("CCCCC"))).thenReturn(SampleLocations.CHICAGO);
+        final VoyageRepository voyageRepository = mock(VoyageRepository.class);
+        when(voyageRepository.find(new VoyageNumber("CM001"))).thenReturn(SampleVoyages.CM001);
 
-		final VoyageRepository voyageRepository = mock(VoyageRepository.class);
-		when(voyageRepository.find(new VoyageNumber("CM001"))).thenReturn(SampleVoyages.CM001);
+        // Tested call
+        final Itinerary itinerary =
+                assembler.fromDto(
+                        new RouteCandidateDto(legs), voyageRepository, locationRepository);
 
-		// Tested call
-		final Itinerary itinerary = assembler.fromDto(new RouteCandidateDto(legs), voyageRepository,
-				locationRepository);
+        assertThat(itinerary).isNotNull();
+        assertThat(itinerary.getLegs()).isNotNull();
+        assertThat(itinerary.getLegs()).hasSize(2);
 
-		assertThat(itinerary).isNotNull();
-		assertThat(itinerary.legs()).isNotNull();
-		assertThat(itinerary.legs()).hasSize(2);
+        final Leg leg1 = itinerary.getLegs().get(0);
+        assertThat(leg1).isNotNull();
+        assertThat(leg1.getLoadLocation()).isEqualTo(SampleLocations.HONGKONG);
+        assertThat(leg1.getUnloadLocation()).isEqualTo(SampleLocations.TOKYO);
 
-		final Leg leg1 = itinerary.legs().get(0);
-		assertThat(leg1).isNotNull();
-		assertThat(leg1.getLoadLocation()).isEqualTo(SampleLocations.HONGKONG);
-		assertThat(leg1.getUnloadLocation()).isEqualTo(SampleLocations.TOKYO);
-
-		final Leg leg2 = itinerary.legs().get(1);
-		assertThat(leg2).isNotNull();
-		assertThat(leg2.getLoadLocation()).isEqualTo(SampleLocations.TOKYO);
-		assertThat(leg2.getUnloadLocation()).isEqualTo(SampleLocations.CHICAGO);
-	}
-
+        final Leg leg2 = itinerary.getLegs().get(1);
+        assertThat(leg2).isNotNull();
+        assertThat(leg2.getLoadLocation()).isEqualTo(SampleLocations.TOKYO);
+        assertThat(leg2.getUnloadLocation()).isEqualTo(SampleLocations.CHICAGO);
+    }
 }

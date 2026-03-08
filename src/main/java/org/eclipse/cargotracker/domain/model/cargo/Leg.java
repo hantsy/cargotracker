@@ -2,15 +2,24 @@ package org.eclipse.cargotracker.domain.model.cargo;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.time.temporal.ChronoUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Entity
 @Table(name = "legs")
-public class Leg {
+public class Leg implements Serializable {
+    private static final Logger LOGGER = Logger.getLogger(Leg.class.getName());
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
@@ -32,11 +41,13 @@ public class Leg {
     @NotNull
     private Location unloadLocation;
 
-    @Column(name = "load_time", secondPrecision = 3)
+    // @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "load_time")
     @NotNull
     private LocalDateTime loadTime;
 
-    @Column(name = "unload_time", secondPrecision = 3)
+    // @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "unload_time")
     @NotNull
     private LocalDateTime unloadTime;
 
@@ -44,27 +55,26 @@ public class Leg {
         // Nothing to initialize.
     }
 
-    public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, LocalDateTime loadTime,
-               LocalDateTime unloadTime) {
-        Objects.requireNonNull(voyage, "voyage must not be null");
-        Objects.requireNonNull(loadLocation, "loadLocation must not be null");
-        Objects.requireNonNull(unloadLocation, "unloadLocation must not be null");
-        Objects.requireNonNull(loadTime, "loadTime must not be null");
-        Objects.requireNonNull(unloadTime, "unloadTime must not be null");
+    public Leg(
+            Voyage voyage,
+            Location loadLocation,
+            Location unloadLocation,
+            LocalDateTime loadTime,
+            LocalDateTime unloadTime) {
+        Validate.noNullElements(
+                new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
 
         this.voyage = voyage;
         this.loadLocation = loadLocation;
         this.unloadLocation = unloadLocation;
 
         // Hibernate issue:
-        // when the `LocalDateTime` field is persisted into db, and retrieved from db, the
-        // values
+        // when the `LocalDateTime` field is persisted into db, and retrieved from db, the values
         // are
         // different in nanoseconds.
         // any good idea to overcome this?
-        // https://github.com/jakartaee/persistence/issues/563
-        this.loadTime = loadTime;
-        this.unloadTime = unloadTime;
+        this.loadTime = loadTime.truncatedTo(ChronoUnit.SECONDS);
+        this.unloadTime = unloadTime.truncatedTo(ChronoUnit.SECONDS);
     }
 
     public Voyage getVoyage() {
@@ -87,29 +97,70 @@ public class Leg {
         return this.unloadTime;
     }
 
+    private boolean sameValueAs(Leg other) {
+        LOGGER.log(
+                Level.INFO,
+                "this.loadTime == other.loadTime:{0}",
+                this.loadTime.equals(other.loadTime));
+        LOGGER.log(
+                Level.INFO,
+                "this.unloadTime == other.unloadTime:{0}",
+                this.unloadTime.equals(other.unloadTime));
+        return other != null
+                && new EqualsBuilder()
+                        .append(this.voyage, other.voyage)
+                        .append(this.loadLocation, other.loadLocation)
+                        .append(this.unloadLocation, other.unloadLocation)
+                        // use truncatedTo to remove nanoseconds fields in timestamp.
+                        .append(this.loadTime, other.loadTime)
+                        .append(this.unloadTime, other.unloadTime)
+                        .isEquals();
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Leg leg)) return false;
-        return Objects.equals(voyage, leg.voyage)
-                && Objects.equals(loadLocation, leg.loadLocation)
-                && Objects.equals(unloadLocation, leg.unloadLocation)
-                && Objects.equals(loadTime, leg.loadTime)
-                && Objects.equals(unloadTime, leg.unloadTime);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !(o instanceof Leg)) {
+            return false;
+        }
+
+        Leg leg = (Leg) o;
+
+        return sameValueAs(leg);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(voyage, loadLocation, unloadLocation, loadTime, unloadTime);
+        return new HashCodeBuilder()
+                .append(this.voyage)
+                .append(this.loadLocation)
+                .append(this.unloadLocation)
+                .append(this.loadTime)
+                .append(this.unloadTime)
+                .toHashCode();
     }
 
     @Override
     public String toString() {
-        return "Leg{" + "id=" + id + ", voyage=" + voyage + ", loadLocation=" + loadLocation + ", unloadLocation="
-                + unloadLocation + ", loadTime=" + loadTime + ", unloadTime=" + unloadTime + '}';
+        return "Leg{"
+                + "id="
+                + id
+                + ", voyage="
+                + voyage
+                + ", loadLocation="
+                + loadLocation
+                + ", unloadLocation="
+                + unloadLocation
+                + ", loadTime="
+                + loadTime
+                + ", unloadTime="
+                + unloadTime
+                + '}';
     }
 
     public boolean isNew() {
         return this.id == null;
     }
-
 }

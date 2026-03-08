@@ -1,10 +1,5 @@
 package org.eclipse.cargotracker.interfaces.handling.mobile;
 
-import jakarta.faces.model.SelectItem;
-import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -21,6 +16,11 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.omnifaces.util.Messages;
 
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,164 +30,154 @@ import java.util.List;
 @ViewScoped
 public class EventLogger implements Serializable {
 
-	private CargoRepository cargoRepository;
+    private static final long serialVersionUID = 1L;
 
-	private LocationRepository locationRepository;
+    @Inject private CargoRepository cargoRepository;
 
-	private VoyageRepository voyageRepository;
+    @Inject private LocationRepository locationRepository;
 
-	private ApplicationEvents applicationEvents;
+    @Inject private VoyageRepository voyageRepository;
 
-	public EventLogger() {
-	}
+    @Inject private ApplicationEvents applicationEvents;
 
-	@Inject
-	public EventLogger(CargoRepository cargoRepository, LocationRepository locationRepository,
-			VoyageRepository voyageRepository, ApplicationEvents applicationEvents) {
-		this.cargoRepository = cargoRepository;
-		this.locationRepository = locationRepository;
-		this.voyageRepository = voyageRepository;
-		this.applicationEvents = applicationEvents;
-	}
+    private List<SelectItem> trackingIds;
+    private List<SelectItem> locations;
+    private List<SelectItem> voyages;
 
-	private List<SelectItem> trackingIds;
+    private String trackingId;
+    private String location;
+    private String eventType;
+    private String voyageNumber;
+    private LocalDateTime completionTime;
 
-	private List<SelectItem> locations;
+    public String getTrackingId() {
+        return trackingId;
+    }
 
-	private List<SelectItem> voyages;
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
+    }
 
-	private String trackingId;
+    public List<SelectItem> getTrackingIds() {
+        return trackingIds;
+    }
 
-	private String location;
+    public String getLocation() {
+        return location;
+    }
 
-	private String eventType;
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-	private String voyageNumber;
+    public List<SelectItem> getLocations() {
+        return locations;
+    }
 
-	private LocalDateTime completionTime;
+    public String getEventType() {
+        return eventType;
+    }
 
-	public String getTrackingId() {
-		return trackingId;
-	}
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
 
-	public void setTrackingId(String trackingId) {
-		this.trackingId = trackingId;
-	}
+    public String getVoyageNumber() {
+        return voyageNumber;
+    }
 
-	public List<SelectItem> getTrackingIds() {
-		return trackingIds;
-	}
+    public void setVoyageNumber(String voyageNumber) {
+        this.voyageNumber = voyageNumber;
+    }
 
-	public String getLocation() {
-		return location;
-	}
+    public List<SelectItem> getVoyages() {
+        return voyages;
+    }
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
+    public LocalDateTime getCompletionTime() {
+        return completionTime;
+    }
 
-	public List<SelectItem> getLocations() {
-		return locations;
-	}
+    public void setCompletionTime(LocalDateTime completionTime) {
+        this.completionTime = completionTime;
+    }
 
-	public String getEventType() {
-		return eventType;
-	}
+    public String getCompletionTimeValue() {
+        return DateUtil.toString(completionTime);
+    }
 
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
-	}
+    public String getCompletionTimePattern() {
+        return DateUtil.DATE_TIME_FORMAT;
+    }
 
-	public String getVoyageNumber() {
-		return voyageNumber;
-	}
+    @Transactional
+    public void init() {
+        List<Cargo> cargos = cargoRepository.findAll();
 
-	public void setVoyageNumber(String voyageNumber) {
-		this.voyageNumber = voyageNumber;
-	}
+        trackingIds = new ArrayList<>(cargos.size());
+        for (Cargo cargo : cargos) {
+            // List only routed cargo that is not claimed yet.
+            if (!cargo.getItinerary().getLegs().isEmpty()
+                    && !(cargo.getDelivery()
+                            .getTransportStatus()
+                            .sameValueAs(TransportStatus.CLAIMED))) {
+                String trackingId = cargo.getTrackingId().getIdString();
+                trackingIds.add(new SelectItem(trackingId, trackingId));
+            }
+        }
 
-	public List<SelectItem> getVoyages() {
-		return voyages;
-	}
+        List<Location> locations = locationRepository.findAll();
 
-	public LocalDateTime getCompletionTime() {
-		return completionTime;
-	}
+        this.locations = new ArrayList<>(locations.size());
+        for (Location location : locations) {
+            String locationCode = location.getUnLocode().getIdString();
+            this.locations.add(
+                    new SelectItem(locationCode, location.getName() + " (" + locationCode + ")"));
+        }
 
-	public void setCompletionTime(LocalDateTime completionTime) {
-		this.completionTime = completionTime;
-	}
+        List<Voyage> voyages = voyageRepository.findAll();
 
-	public String getCompletionTimeValue() {
-		return DateUtil.toString(completionTime);
-	}
+        this.voyages = new ArrayList<>(voyages.size());
+        for (Voyage voyage : voyages) {
+            this.voyages.add(
+                    new SelectItem(
+                            voyage.getVoyageNumber().getIdString(),
+                            voyage.getVoyageNumber().getIdString()));
+        }
+    }
 
-	public String getCompletionTimePattern() {
-		return DateUtil.DATE_TIME_FORMAT;
-	}
+    private boolean validate(final String step) {
+        if ("voyageTab".equals(step)
+                && ("LOAD".equals(eventType) || "UNLOAD".equals(eventType))
+                && voyageNumber == null) {
+            Messages.addGlobalError(
+                    "When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix errors to continue.");
+            return false;
+        }
 
-	@Transactional
-	public void init() {
-		List<Cargo> cargos = cargoRepository.findAll();
+        return true;
+    }
 
-		trackingIds = new ArrayList<>(cargos.size());
-		for (Cargo cargo : cargos) {
-			// List only routed cargo that is not claimed yet.
-			if (!cargo.getItinerary().legs().isEmpty()
-					&& !(cargo.getDelivery().transportStatus().sameValueAs(TransportStatus.CLAIMED))) {
-				String trackingId = cargo.getTrackingId().id();
-				trackingIds.add(new SelectItem(trackingId, trackingId));
-			}
-		}
+    public void submit() {
+        VoyageNumber voyage;
 
-		List<Location> locations = locationRepository.findAll();
+        TrackingId trackingId = new TrackingId(this.trackingId);
+        UnLocode location = new UnLocode(this.location);
+        HandlingEvent.Type type = HandlingEvent.Type.valueOf(eventType);
 
-		this.locations = new ArrayList<>(locations.size());
-		for (Location location : locations) {
-			String locationCode = location.getUnLocode().value();
-			this.locations.add(new SelectItem(locationCode, location.getName() + " (" + locationCode + ")"));
-		}
+        // Only Load & Unload could have a Voyage set
+        if ("LOAD".equals(eventType) || "UNLOAD".equals(eventType)) {
+            voyage = new VoyageNumber(voyageNumber);
+        } else {
+            voyage = null;
+        }
 
-		List<Voyage> voyages = voyageRepository.findAll();
+        HandlingEventRegistrationAttempt attempt =
+                new HandlingEventRegistrationAttempt(
+                        LocalDateTime.now(), completionTime, trackingId, voyage, type, location);
 
-		this.voyages = new ArrayList<>(voyages.size());
-		for (Voyage voyage : voyages) {
-			this.voyages.add(new SelectItem(voyage.getVoyageNumber().number(), voyage.getVoyageNumber().number()));
-		}
-	}
+        applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
 
-	private boolean validate(final String step) {
-		if ("voyageTab".equals(step) && ("LOAD".equals(eventType) || "UNLOAD".equals(eventType))
-				&& voyageNumber == null) {
-			Messages.addGlobalError("When a cargo is LOADed or UNLOADed a Voyage should be selected, please fix"
-					+ " errors to continue.");
-			return false;
-		}
-
-		return true;
-	}
-
-	public void submit() {
-		VoyageNumber voyage;
-
-		TrackingId trackingId = new TrackingId(this.trackingId);
-		UnLocode location = new UnLocode(this.location);
-		HandlingEvent.Type type = HandlingEvent.Type.valueOf(eventType);
-
-		// Only Load & Unload could have a Voyage set
-		if ("LOAD".equals(eventType) || "UNLOAD".equals(eventType)) {
-			voyage = new VoyageNumber(voyageNumber);
-		}
-		else {
-			voyage = null;
-		}
-
-		HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(LocalDateTime.now(),
-				completionTime, trackingId, voyage, type, location);
-
-		applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
-
-		Messages.addGlobalInfo("Event submitted");
-	}
-
+        Messages.addGlobalInfo("Event submitted");
+    }
 }

@@ -5,6 +5,4 @@ import jakarta.ws.rs.core.Application;
 
 /** JAX-RS configuration. */
 @ApplicationPath("rest")
-public class RestActivator extends Application {
-
-}
+public class RestActivator extends Application {}

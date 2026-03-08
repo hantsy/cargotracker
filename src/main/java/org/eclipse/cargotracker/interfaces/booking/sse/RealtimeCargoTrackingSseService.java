@@ -76,11 +76,11 @@ public class RealtimeCargoTrackingSseService {
 		Writer writer = new StringWriter();
 		try (JsonGenerator generator = Json.createGenerator(writer)) {
 			generator.writeStartObject()
-				.write("trackingId", cargo.getTrackingId().id())
+				.write("trackingId", cargo.getTrackingId().getIdString())
 				.write("origin", cargo.getOrigin().getName())
-				.write("destination", cargo.getRouteSpecification().destination().getName())
-				.write("lastKnownLocation", cargo.getDelivery().lastKnownLocation().getName())
-				.write("transportStatus", cargo.getDelivery().transportStatus().name())
+				.write("destination", cargo.getRouteSpecification().getDestination().getName())
+				.write("lastKnownLocation", cargo.getDelivery().getLastKnownLocation().getName())
+				.write("transportStatus", cargo.getDelivery().getTransportStatus().name())
 				.writeEnd();
 		}
 		String jsonValue = writer.toString();

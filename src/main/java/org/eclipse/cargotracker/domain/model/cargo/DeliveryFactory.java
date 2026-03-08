@@ -31,8 +31,9 @@ public final class DeliveryFactory {
                 routingStatus, misdirected);
         var isUnloadedAtDestination = calculateUnloadedAtDestination(routeSpecification, lastEvent);
 
-        return new Delivery(transportStatus, lastKnownLocation, currentVoyage, misdirected, eta, nextExpectedActivity,
-                isUnloadedAtDestination, routingStatus, calculatedAt, lastEvent);
+        return new Delivery(lastEvent, itinerary, routeSpecification);
+//        return new Delivery(transportStatus, lastKnownLocation, currentVoyage, misdirected, eta, nextExpectedActivity,
+//                isUnloadedAtDestination, routingStatus, calculatedAt, lastEvent);
     }
 
     public static Delivery create(RouteSpecification routeSpecification, Itinerary itinerary, HandlingHistory handlingHistory) {
@@ -71,9 +72,9 @@ public final class DeliveryFactory {
 
     static LocalDateTime calculateEta(Itinerary itinerary, RoutingStatus routingStatus, boolean misdirected) {
         if (onTrack(routingStatus, misdirected)) {
-            return itinerary.finalArrivalDate();
+            return itinerary.getFinalArrivalDate();
         }
-        return Delivery.ETA_UNKNOWN;
+        return Delivery.ETA_UNKOWN;
     }
 
     static HandlingActivity calculateNextExpectedActivity(
@@ -88,37 +89,37 @@ public final class DeliveryFactory {
         }
 
         if (lastEvent == null) {
-            return HandlingActivity.of(HandlingEvent.Type.RECEIVE, routeSpecification.origin());
+            return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.getOrigin());
         }
 
         return switch (lastEvent.getType()) {
             case LOAD -> {
-                for (Leg leg : itinerary.legs()) {
+                for (Leg leg : itinerary.getLegs()) {
                     if (leg.getLoadLocation().sameIdentityAs(lastEvent.getLocation())) {
-                        yield HandlingActivity.of(HandlingEvent.Type.UNLOAD, leg.getUnloadLocation(), leg.getVoyage());
+                        yield new HandlingActivity(HandlingEvent.Type.UNLOAD, leg.getUnloadLocation(), leg.getVoyage());
                     }
                 }
                 yield Delivery.NO_ACTIVITY;
             }
             case UNLOAD -> {
-                for (Iterator<Leg> iterator = itinerary.legs().iterator(); iterator.hasNext(); ) {
+                for (Iterator<Leg> iterator = itinerary.getLegs().iterator(); iterator.hasNext(); ) {
                     Leg leg = iterator.next();
 
                     if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {
                         if (iterator.hasNext()) {
                             Leg nextLeg = iterator.next();
-                            yield HandlingActivity.of(HandlingEvent.Type.LOAD, nextLeg.getLoadLocation(),
+                            yield new HandlingActivity(HandlingEvent.Type.LOAD, nextLeg.getLoadLocation(),
                                     nextLeg.getVoyage());
                         } else {
-                            yield HandlingActivity.of(HandlingEvent.Type.CLAIM, leg.getUnloadLocation());
+                            yield new HandlingActivity(HandlingEvent.Type.CLAIM, leg.getUnloadLocation());
                         }
                     }
                 }
                 yield Delivery.NO_ACTIVITY;
             }
             case RECEIVE -> {
-                Leg firstLeg = itinerary.legs().getFirst();
-                yield HandlingActivity.of(HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
+                Leg firstLeg = itinerary.getLegs().getFirst();
+                yield new HandlingActivity(HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
             }
             default -> Delivery.NO_ACTIVITY;
         };
@@ -135,7 +136,7 @@ public final class DeliveryFactory {
     static boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification, HandlingEvent lastEvent) {
         return lastEvent != null
                 && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
-                && routeSpecification.destination().sameIdentityAs(lastEvent.getLocation());
+                && routeSpecification.getDestination().sameIdentityAs(lastEvent.getLocation());
     }
 
     static boolean onTrack(RoutingStatus routingStatus, boolean misdirected) {

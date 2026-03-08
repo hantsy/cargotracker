@@ -1,8 +1,5 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -13,97 +10,106 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 @ApplicationScoped
-public class HandlingEventFactory {
+public class HandlingEventFactory implements Serializable {
 
-	private static final Logger LOGGER = Logger.getLogger(HandlingEventFactory.class.getName());
+    private static final long serialVersionUID = 1L;
 
-	private CargoRepository cargoRepository;
+    private static final Logger LOGGER = Logger.getLogger(HandlingEventFactory.class.getName());
 
-	private VoyageRepository voyageRepository;
+    private CargoRepository cargoRepository;
 
-	private LocationRepository locationRepository;
+    private VoyageRepository voyageRepository;
 
-	// no-args constructor required by CDI
-	public HandlingEventFactory() {
-	}
+    private LocationRepository locationRepository;
 
-	@Inject
-	public HandlingEventFactory(CargoRepository cargoRepository, VoyageRepository voyageRepository,
-			LocationRepository locationRepository) {
-		this.cargoRepository = cargoRepository;
-		this.voyageRepository = voyageRepository;
-		this.locationRepository = locationRepository;
-	}
+    // no-args constructor required by CDI
+    public HandlingEventFactory() {}
 
-	/**
-	 * @param registrationTime time when this event was received by the system
-	 * @param completionTime when the event was completed, for example finished loading
-	 * @param trackingId cargo tracking id
-	 * @param voyageNumber voyage number
-	 * @param unlocode United Nations Location Code for the location of the event
-	 * @param type type of event
-	 * @return A handling event.
-	 * @throws UnknownVoyageException if there's no voyage with this number
-	 * @throws UnknownCargoException if there's no cargo with this tracking id
-	 * @throws UnknownLocationException if there's no location with this UN Locode
-	 */
-	// TODO [Clean Code] Look at the exception handling more seriously.
-	public HandlingEvent createHandlingEvent(LocalDateTime registrationTime, LocalDateTime completionTime,
-			TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
-			throws CannotCreateHandlingEventException {
-		Cargo cargo = findCargo(trackingId);
-		Voyage voyage = findVoyage(voyageNumber);
-		Location location = findLocation(unlocode);
+    @Inject
+    public HandlingEventFactory(
+            CargoRepository cargoRepository,
+            VoyageRepository voyageRepository,
+            LocationRepository locationRepository) {
+        this.cargoRepository = cargoRepository;
+        this.voyageRepository = voyageRepository;
+        this.locationRepository = locationRepository;
+    }
 
-		try {
-			if (voyage == null) {
-				return new HandlingEvent(cargo, completionTime, registrationTime, type, location);
-			}
-			else {
-				return new HandlingEvent(cargo, completionTime, registrationTime, type, location, voyage);
-			}
-		}
-		catch (Exception e) {
-			throw new CannotCreateHandlingEventException(e);
-		}
-	}
+    /**
+     * @param registrationTime time when this event was received by the system
+     * @param completionTime when the event was completed, for example finished loading
+     * @param trackingId cargo tracking id
+     * @param voyageNumber voyage number
+     * @param unlocode United Nations Location Code for the location of the event
+     * @param type type of event
+     * @return A handling event.
+     * @throws UnknownVoyageException if there's no voyage with this number
+     * @throws UnknownCargoException if there's no cargo with this tracking id
+     * @throws UnknownLocationException if there's no location with this UN Locode
+     */
+    // TODO [Clean Code] Look at the exception handling more seriously.
+    public HandlingEvent createHandlingEvent(
+            LocalDateTime registrationTime,
+            LocalDateTime completionTime,
+            TrackingId trackingId,
+            VoyageNumber voyageNumber,
+            UnLocode unlocode,
+            HandlingEvent.Type type)
+            throws CannotCreateHandlingEventException {
+        Cargo cargo = findCargo(trackingId);
+        Voyage voyage = findVoyage(voyageNumber);
+        Location location = findLocation(unlocode);
 
-	private Cargo findCargo(TrackingId trackingId) throws UnknownCargoException {
-		Cargo cargo = cargoRepository.find(trackingId);
+        try {
+            if (voyage == null) {
+                return new HandlingEvent(cargo, completionTime, registrationTime, type, location);
+            } else {
+                return new HandlingEvent(
+                        cargo, completionTime, registrationTime, type, location, voyage);
+            }
+        } catch (Exception e) {
+            throw new CannotCreateHandlingEventException(e);
+        }
+    }
 
-		if (cargo == null) {
-			throw new UnknownCargoException(trackingId);
-		}
+    private Cargo findCargo(TrackingId trackingId) throws UnknownCargoException {
+        Cargo cargo = cargoRepository.find(trackingId);
 
-		return cargo;
-	}
+        if (cargo == null) {
+            throw new UnknownCargoException(trackingId);
+        }
 
-	private Voyage findVoyage(VoyageNumber voyageNumber) throws UnknownVoyageException {
-		if (voyageNumber == null) {
-			return null;
-		}
+        return cargo;
+    }
 
-		Voyage voyage = voyageRepository.find(voyageNumber);
+    private Voyage findVoyage(VoyageNumber voyageNumber) throws UnknownVoyageException {
+        if (voyageNumber == null) {
+            return null;
+        }
 
-		if (voyage == null) {
-			throw new UnknownVoyageException(voyageNumber);
-		}
+        Voyage voyage = voyageRepository.find(voyageNumber);
 
-		return voyage;
-	}
+        if (voyage == null) {
+            throw new UnknownVoyageException(voyageNumber);
+        }
 
-	private Location findLocation(UnLocode unlocode) throws UnknownLocationException {
-		Location location = locationRepository.find(unlocode);
+        return voyage;
+    }
 
-		if (location == null) {
-			throw new UnknownLocationException(unlocode);
-		}
+    private Location findLocation(UnLocode unlocode) throws UnknownLocationException {
+        Location location = locationRepository.find(unlocode);
 
-		return location;
-	}
+        if (location == null) {
+            throw new UnknownLocationException(unlocode);
+        }
 
+        return location;
+    }
 }

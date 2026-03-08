@@ -3,30 +3,30 @@ package org.eclipse.cargotracker.infrastructure.logging;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
-
 import java.io.Serializable;
 import java.util.logging.Logger;
 
 @ApplicationScoped
 public class LoggerProducer implements Serializable {
 
-	@Produces
-	public Logger produceLogger(InjectionPoint injectionPoint) {
-		String loggerName = extractLoggerName(injectionPoint);
+    private static final long serialVersionUID = 1L;
 
-		return Logger.getLogger(loggerName);
-	}
+    @Produces
+    public Logger produceLogger(InjectionPoint injectionPoint) {
+        String loggerName = extractLoggerName(injectionPoint);
 
-	private String extractLoggerName(InjectionPoint injectionPoint) {
-		if (injectionPoint.getBean() == null) {
-			return injectionPoint.getMember().getDeclaringClass().getName();
-		}
+        return Logger.getLogger(loggerName);
+    }
 
-		if (injectionPoint.getBean().getName() == null) {
-			return injectionPoint.getBean().getBeanClass().getName();
-		}
+    private String extractLoggerName(InjectionPoint injectionPoint) {
+        if (injectionPoint.getBean() == null) {
+            return injectionPoint.getMember().getDeclaringClass().getName();
+        }
 
-		return injectionPoint.getBean().getName();
-	}
+        if (injectionPoint.getBean().getName() == null) {
+            return injectionPoint.getBean().getBeanClass().getName();
+        }
 
+        return injectionPoint.getBean().getName();
+    }
 }

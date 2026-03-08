@@ -101,7 +101,7 @@ public class SampleDataGenerator2 {
         entityManager.persist(SampleLocations.SHANGHAI);
         entityManager.persist(SampleLocations.ROTTERDAM);
         entityManager.persist(SampleLocations.GOTHENBURG);
-        entityManager.persist(SampleLocations.HANGZHOU);
+        entityManager.persist(SampleLocations.HANGZOU);
         entityManager.persist(SampleLocations.NEWYORK);
         entityManager.persist(SampleLocations.DALLAS);
     }
@@ -164,12 +164,12 @@ public class SampleDataGenerator2 {
         // Cargo JKL567. This one was loaded on the wrong voyage.
         TrackingId trackingId2 = new TrackingId("JKL567");
 
-        RouteSpecification routeSpecification2 = new RouteSpecification(SampleLocations.HANGZHOU,
+        RouteSpecification routeSpecification2 = new RouteSpecification(SampleLocations.HANGZOU,
                 SampleLocations.STOCKHOLM, LocalDate.now().plusDays(18));
         Cargo jkl567 = new Cargo(trackingId2, routeSpecification2);
 
         Itinerary itinerary2 = new Itinerary(List.of(
-                new Leg(SampleVoyages.HONGKONG_TO_NEW_YORK, SampleLocations.HANGZHOU, SampleLocations.NEWYORK,
+                new Leg(SampleVoyages.HONGKONG_TO_NEW_YORK, SampleLocations.HANGZOU, SampleLocations.NEWYORK,
                         LocalDateTime.now().minusDays(10), LocalDateTime.now().minusDays(3)),
                 new Leg(SampleVoyages.NEW_YORK_TO_DALLAS, SampleLocations.NEWYORK, SampleLocations.DALLAS,
                         LocalDateTime.now().minusDays(2), LocalDateTime.now().plusDays(2)),
@@ -181,13 +181,13 @@ public class SampleDataGenerator2 {
 
         try {
             HandlingEvent event1 = handlingEventFactory.createHandlingEvent(LocalDateTime.now(),
-                    LocalDateTime.now().minusDays(15), trackingId2, null, SampleLocations.HANGZHOU.getUnLocode(),
+                    LocalDateTime.now().minusDays(15), trackingId2, null, SampleLocations.HANGZOU.getUnLocode(),
                     HandlingEvent.Type.RECEIVE);
             entityManager.persist(event1);
 
             HandlingEvent event2 = handlingEventFactory.createHandlingEvent(LocalDateTime.now(),
                     LocalDateTime.now().minusDays(10), trackingId2,
-                    SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber(), SampleLocations.HANGZHOU.getUnLocode(),
+                    SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber(), SampleLocations.HANGZOU.getUnLocode(),
                     HandlingEvent.Type.LOAD);
             entityManager.persist(event2);
 

@@ -1,10 +1,5 @@
 package org.eclipse.cargotracker.interfaces.handling.file;
 
-import jakarta.batch.api.chunk.AbstractItemReader;
-import jakarta.batch.runtime.context.JobContext;
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -12,13 +7,17 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
+import jakarta.batch.api.chunk.AbstractItemReader;
+import jakarta.batch.runtime.context.JobContext;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import java.io.File;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,133 +25,141 @@ import java.util.logging.Logger;
 @Named("EventItemReader")
 public class EventItemReader extends AbstractItemReader {
 
-	private static final String UPLOAD_DIRECTORY = "upload_directory";
+    private static final String UPLOAD_DIRECTORY = "upload_directory";
 
-	@Inject
-	private Logger logger;
+    @Inject private Logger logger;
 
-	@Inject
-	private JobContext jobContext;
+    @Inject private JobContext jobContext;
+    private EventFilesCheckpoint checkpoint;
+    private RandomAccessFile currentFile;
 
-	private EventFilesCheckpoint checkpoint;
+    @Override
+    public void open(Serializable checkpoint) throws Exception {
+        File uploadDirectory = new File(jobContext.getProperties().getProperty(UPLOAD_DIRECTORY));
 
-	private RandomAccessFile currentFile;
+        if (checkpoint == null) {
+            this.checkpoint = new EventFilesCheckpoint();
+            logger.log(Level.INFO, "Scanning upload directory: {0}", uploadDirectory);
 
-	@Override
-	public void open(Serializable checkpoint) throws Exception {
-		Path uploadDirectory = Paths.get(jobContext.getProperties().getProperty(UPLOAD_DIRECTORY));
+            if (!uploadDirectory.exists()) {
+                logger.log(Level.INFO, "Upload directory does not exist, creating it");
+                uploadDirectory.mkdirs();
+            } else {
+                this.checkpoint.setFiles(Arrays.asList(uploadDirectory.listFiles()));
+            }
+        } else {
+            logger.log(Level.INFO, "Starting from previous checkpoint");
+            this.checkpoint = (EventFilesCheckpoint) checkpoint;
+        }
 
-		if (checkpoint == null) {
-			this.checkpoint = new EventFilesCheckpoint();
-			logger.log(Level.INFO, "Scanning upload directory: {0}", uploadDirectory);
+        File file = this.checkpoint.currentFile();
 
-			if (Files.notExists(uploadDirectory)) {
-				logger.log(Level.INFO, "Upload directory does not exist, creating it");
-				Files.createDirectories(uploadDirectory);
-			}
-			else {
-				this.checkpoint.setFiles(Files.list(uploadDirectory).toList());
-			}
-		}
-		else {
-			logger.log(Level.INFO, "Starting from previous checkpoint");
-			this.checkpoint = (EventFilesCheckpoint) checkpoint;
-		}
+        if (file == null) {
+            logger.log(Level.INFO, "No files to process");
+            currentFile = null;
+        } else {
+            currentFile = new RandomAccessFile(file, "r");
+            logger.log(Level.INFO, "Processing file: {0}", file);
+            currentFile.seek(this.checkpoint.getFilePointer());
+        }
+    }
 
-		Path file = this.checkpoint.currentFile();
+    @Override
+    public Object readItem() throws Exception {
+        if (currentFile != null) {
+            String line = currentFile.readLine();
 
-		if (file == null) {
-			logger.log(Level.INFO, "No files to process");
-			currentFile = null;
-		}
-		else {
-			currentFile = new RandomAccessFile(file.toFile(), "r");
-			logger.log(Level.INFO, "Processing file: {0}", file);
-			currentFile.seek(this.checkpoint.getFilePointer());
-		}
-	}
+            if (line != null) {
+                this.checkpoint.setFilePointer(currentFile.getFilePointer());
+                return parseLine(line);
+            } else {
+                logger.log(
+                        Level.INFO,
+                        "Finished processing file, deleting: {0}",
+                        this.checkpoint.currentFile());
+                currentFile.close();
+                if (this.checkpoint.currentFile().delete()) {
+                    logger.log(Level.INFO, "File was deleted");
+                }
+                File nextFile = this.checkpoint.nextFile();
 
-	@Override
-	public Object readItem() throws Exception {
-		if (currentFile != null) {
-			String line = currentFile.readLine();
+                if (nextFile == null) {
+                    logger.log(Level.INFO, "No more files to process");
+                    return null;
+                } else {
+                    currentFile = new RandomAccessFile(nextFile, "r");
+                    logger.log(Level.INFO, "Processing file: {0}", nextFile);
+                    return readItem();
+                }
+            }
+        } else {
+            return null;
+        }
+    }
 
-			if (line != null) {
-				this.checkpoint.setFilePointer(currentFile.getFilePointer());
-				return parseLine(line);
-			}
-			else {
-				logger.log(Level.INFO, "Finished processing file, deleting: {0}", this.checkpoint.currentFile());
-				currentFile.close();
-				if (Files.deleteIfExists(this.checkpoint.currentFile())) {
-					logger.log(Level.INFO, "File was deleted");
-				}
-				Path nextFile = this.checkpoint.nextFile();
+    private Object parseLine(String line) throws EventLineParseException {
+        String[] result = line.split(",");
 
-				if (nextFile == null) {
-					logger.log(Level.INFO, "No more files to process");
-					return null;
-				}
-				else {
-					currentFile = new RandomAccessFile(nextFile.toFile(), "r");
-					logger.log(Level.INFO, "Processing file: {0}", nextFile);
-					return readItem();
-				}
-			}
-		}
-		else {
-			return null;
-		}
-	}
+        if (result.length != 5) {
+            throw new EventLineParseException("Wrong number of data elements", line);
+        }
 
-	private Object parseLine(String line) throws EventLineParseException {
-		String[] result = line.split(",");
+        LocalDateTime completionTime = null;
 
-		if (result.length != 5) {
-			throw new EventLineParseException("Wrong number of data elements", line);
-		}
+        try {
+            completionTime = DateUtil.toDateTime(result[0]);
+        } catch (DateTimeParseException e) {
+            throw new EventLineParseException("Cannot parse completion time", e, line);
+        }
 
-		LocalDateTime completionTime;
-		try {
-			completionTime = DateUtil.toDateTime(result[0]);
-		}
-		catch (DateTimeParseException e) {
-			throw new EventLineParseException("Cannot parse completion time", e, line);
-		}
+        TrackingId trackingId = null;
 
-		TrackingId trackingId;
-		try {
-			trackingId = new TrackingId(result[1]);
-		}
-		catch (NullPointerException e) {
-			throw new EventLineParseException("Cannot parse tracking ID", e, line);
-		}
+        try {
+            trackingId = new TrackingId(result[1]);
+        } catch (NullPointerException e) {
+            throw new EventLineParseException("Cannot parse tracking ID", e, line);
+        }
 
-		VoyageNumber voyageNumber = result[2].isEmpty() ? null : new VoyageNumber(result[2]);
+        VoyageNumber voyageNumber = null;
 
-		UnLocode unLocode;
-		try {
-			unLocode = new UnLocode(result[3]);
-		}
-		catch (IllegalArgumentException | NullPointerException e) {
-			throw new EventLineParseException("Cannot parse UN location code", e, line);
-		}
+        try {
+            if (!result[2].isEmpty()) {
+                voyageNumber = new VoyageNumber(result[2]);
+            }
+        } catch (NullPointerException e) {
+            throw new EventLineParseException("Cannot parse voyage number", e, line);
+        }
 
-		HandlingEvent.Type eventType;
-		try {
-			eventType = HandlingEvent.Type.valueOf(result[4]);
-		}
-		catch (IllegalArgumentException | NullPointerException e) {
-			throw new EventLineParseException("Cannot parse event type", e, line);
-		}
+        UnLocode unLocode = null;
 
-		return new HandlingEventRegistrationAttempt(LocalDateTime.now(), completionTime, trackingId, voyageNumber,
-				eventType, unLocode);
-	}
+        try {
+            unLocode = new UnLocode(result[3]);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new EventLineParseException("Cannot parse UN location code", e, line);
+        }
 
-	@Override
-	public Serializable checkpointInfo() throws Exception {
-		return this.checkpoint;
-	}
+        HandlingEvent.Type eventType = null;
 
+        try {
+            eventType = HandlingEvent.Type.valueOf(result[4]);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new EventLineParseException("Cannot parse event type", e, line);
+        }
+
+        HandlingEventRegistrationAttempt attempt =
+                new HandlingEventRegistrationAttempt(
+                        LocalDateTime.now(),
+                        completionTime,
+                        trackingId,
+                        voyageNumber,
+                        eventType,
+                        unLocode);
+
+        return attempt;
+    }
+
+    @Override
+    public Serializable checkpointInfo() throws Exception {
+        return this.checkpoint;
+    }
 }
