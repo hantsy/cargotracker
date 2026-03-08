@@ -62,7 +62,7 @@
         <glassfish.version>7.0.25</glassfish.version>
         <jersey.version>3.1.10</jersey.version>
         <eclipselink.version>4.0.1</eclipselink.version>
-        <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
+        <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.0</tyrus.version>
 
@@ -553,9 +553,9 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.github.hantsy.arquillian-container-glassfish-jakarta</groupId>
-                    <artifactId>arquillian-glassfish-managed-jakarta</artifactId>
-                    <version>${arquillian-glassfish-jakarta.version}</version>
+                    <groupId>io.github.hantsy.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-managed</artifactId>
+                    <version>${arquillian-glassfish.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -671,9 +671,9 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.github.hantsy.arquillian-container-glassfish-jakarta</groupId>
-                    <artifactId>arquillian-glassfish-remote-jakarta</artifactId>
-                    <version>${arquillian-glassfish-jakarta.version}</version>
+                    <groupId>io.github.hantsy.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-remote</artifactId>
+                    <version>${arquillian-glassfish.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
