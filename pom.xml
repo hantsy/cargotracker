@@ -56,7 +56,7 @@
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
         <shrinkwrap-resolver-bom.version>3.3.3</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
-        <junit.version>5.14.2</junit.version>
+        <junit.version>5.14.3</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>5.22.0</mockito.version>
         <assertj.version>3.27.7</assertj.version>
