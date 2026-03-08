@@ -1,12 +1,6 @@
 # Eclipse Cargo Tracker - Applied Domain-Driven Design Blueprints for Jakarta EE
 
-[![build](https://github.com/hantsy/cargotracker/actions/workflows/build.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/build.yml)
-
-[![arq-glassfish-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml)
-[![arq-glassfish-remote](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-remote.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-remote.yml)
-
-[![arq-wildfly-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml)
-[![arq-wildfly-remote](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-remote.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-remote.yml)
+[![build](https://github.com/hantsy/cargotracker/actions/workflows/build.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/build.yml)[![arq-glassfish-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml)[![arq-wildfly-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=alert_status)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=coverage)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
@@ -38,7 +32,7 @@ I have also ported the original [Cargotracker regapp](https://github.com/citerus
 * Apache Maven 3.9.0 +
 * Git
 * Docker
-* [GlassFish v7](https://github.com/eclipse-ee4j/glassfish) or [WildFly 30+](https://www.wildfly.org)
+* [GlassFish v8](https://github.com/eclipse-ee4j/glassfish) or [WildFly (wait for a release for Jakarta EE 11)](https://www.wildfly.org)
 
 ### Start PostgreSQL Database
 
@@ -52,7 +46,7 @@ docker compose up postgres
 
 ### GlassFish
 
-Run the following command to run the application on GlassFish v7 using the Cargo Maven plugin:
+Run the following command to run the application on GlassFish using the Cargo Maven plugin:
 
 ```bash
 mvn clean package cargo:run -Pglassfish
@@ -85,13 +79,6 @@ Open a terminal window and execute the following command to run Arquillian tests
 mvn clean verify -Parq-glassfish-managed
 ```
 
-Or run this command to run tests against a GlassFish Remote adapter:
-
-> Note: Ensure there is a running GlassFish server on your local machine.
-
-```bash 
-mvn clean verify -Parq-glassfish-remote 
-```
 
 ### WildFly
 
@@ -99,10 +86,8 @@ Run the following command to run Arquillian tests against the WildFly Managed Ad
 
 ```bash
 mvn clean verify -Parq-wildfly-managed
-
-// or run on a remote WildFly server
-mvn clean verify -Parq-wildfly-remote 
 ```
 
 > [!NOTE] 
 > For more details about the Arquillian adapter's configuration, visit the [Jakarta EE 9 template project](https://github.com/hantsy/jakartaee9-starter-boilerplate) or the [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate), and follow [this comprehensive guide](https://hantsy.github.io/jakartaee9-starter-boilerplate/) to learn more.
+
