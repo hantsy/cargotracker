@@ -91,7 +91,7 @@ public class RoutingServiceStub implements RoutingService {
 	@Override
 	public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
 		LOGGER.log(Level.INFO, "fetchRoutesForSpecification:: {0}", routeSpecification);
-		if (routeSpecification.origin().equals(SampleLocations.HONGKONG)) {
+		if (routeSpecification.getOrigin().equals(SampleLocations.HONGKONG)) {
 			// Hongkong - NYC - Chicago - SampleLocations.STOCKHOLM, initial routing
 			return Arrays.asList(new Itinerary(Arrays.asList(
 					new Leg(voyageRepository.find(SampleVoyages.v100.getVoyageNumber()),

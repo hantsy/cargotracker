@@ -43,9 +43,9 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v5
         with:
-          distribution: 'zulu'
-          java-version: '21'
-          cache: 'maven'
+          distribution: "zulu"
+          java-version: "21"
+          cache: "maven"
       - name: Build with Maven
         run: mvn clean package --file pom.xml
 
@@ -57,9 +57,9 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v5
         with:
-          distribution: 'zulu'
-          java-version: '21'
-          cache: 'maven'
+          distribution: "zulu"
+          java-version: "21"
+          cache: "maven"
       - name: Set up Database
         run: |
           docker compose up -d postgres 
