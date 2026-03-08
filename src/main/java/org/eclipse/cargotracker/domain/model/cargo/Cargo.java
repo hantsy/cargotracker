@@ -101,8 +101,8 @@ public class Cargo {
 		this.origin = routeSpecification.origin();
 		this.routeSpecification = routeSpecification;
 
-		this.delivery = Delivery.derivedFrom(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
 		this.itinerary = Itinerary.EMPTY_ITINERARY;
+		this.delivery = Delivery.derivedFrom(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
 	}
 
 	public TrackingId getTrackingId() {

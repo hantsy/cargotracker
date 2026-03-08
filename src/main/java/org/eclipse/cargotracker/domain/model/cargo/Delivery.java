@@ -7,6 +7,7 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -69,7 +70,7 @@ public record Delivery(
 	@ManyToOne
 	@JoinColumn(name = "last_event_id")
 	HandlingEvent lastEvent
-) {
+) implements Serializable {
 //@formatter:on
 
     // Null object pattern

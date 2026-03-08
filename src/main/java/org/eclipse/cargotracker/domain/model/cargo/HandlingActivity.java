@@ -35,7 +35,7 @@ public record HandlingActivity(
 ) {
 //@formatter:on
 
-	public static final HandlingActivity EMPTY = null; //new HandlingActivity(null, null, null);
+	public static final HandlingActivity EMPTY = new HandlingActivity(null, null, null);
 
 	public HandlingActivity {
 	}
