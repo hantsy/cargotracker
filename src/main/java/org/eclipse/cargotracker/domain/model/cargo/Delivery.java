@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,8 +11,6 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Iterator;
@@ -25,12 +25,13 @@ import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
  */
 @Embeddable
 public class Delivery implements Serializable {
+    private static final Logger LOGGER = Logger.getLogger(Delivery.class.getName());
+    private static final long serialVersionUID = 1L;
+
     // Null object pattern.
     public static final LocalDateTime ETA_UNKOWN = null;
     // Null object pattern
     public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
-    private static final Logger LOGGER = Logger.getLogger(Delivery.class.getName());
-    private static final long serialVersionUID = 1L;
 
     // public static final HandlingActivity NO_ACTIVITY = null;
     @Enumerated(EnumType.STRING)
@@ -53,7 +54,8 @@ public class Delivery implements Serializable {
     @Column(name = "eta")
     private LocalDateTime eta;
 
-    @Embedded private HandlingActivity nextExpectedActivity = null;
+    @Embedded
+    private HandlingActivity nextExpectedActivity = null;
 
     @Column(name = "unloaded_at_dest")
     @NotNull
@@ -77,8 +79,7 @@ public class Delivery implements Serializable {
         // Nothing to initialize
     }
 
-    public Delivery(
-            HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
+    public Delivery(HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
         this.calculatedAt = LocalDateTime.now();
         this.lastEvent = lastEvent;
 
@@ -98,8 +99,8 @@ public class Delivery implements Serializable {
      * its route specification and itinerary.
      *
      * @param routeSpecification route specification
-     * @param itinerary itinerary
-     * @param handlingHistory delivery history
+     * @param itinerary          itinerary
+     * @param handlingHistory    delivery history
      * @return An up to date delivery.
      */
     static Delivery derivedFrom(
@@ -278,7 +279,7 @@ public class Delivery implements Serializable {
             }
             case UNLOAD -> {
                 for (Iterator<Leg> iterator = itinerary.getLegs().iterator();
-                        iterator.hasNext(); ) {
+                     iterator.hasNext(); ) {
                     Leg leg = iterator.next();
 
                     if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {
@@ -331,17 +332,17 @@ public class Delivery implements Serializable {
     private boolean sameValueAs(Delivery other) {
         return other != null
                 && new EqualsBuilder()
-                        .append(this.transportStatus, other.transportStatus)
-                        .append(this.lastKnownLocation, other.lastKnownLocation)
-                        .append(this.currentVoyage, other.currentVoyage)
-                        .append(this.misdirected, other.misdirected)
-                        .append(this.eta, other.eta)
-                        .append(this.nextExpectedActivity, other.nextExpectedActivity)
-                        .append(this.isUnloadedAtDestination, other.isUnloadedAtDestination)
-                        .append(this.routingStatus, other.routingStatus)
-                        .append(this.calculatedAt, other.calculatedAt)
-                        .append(this.lastEvent, other.lastEvent)
-                        .isEquals();
+                .append(this.transportStatus, other.transportStatus)
+                .append(this.lastKnownLocation, other.lastKnownLocation)
+                .append(this.currentVoyage, other.currentVoyage)
+                .append(this.misdirected, other.misdirected)
+                .append(this.eta, other.eta)
+                .append(this.nextExpectedActivity, other.nextExpectedActivity)
+                .append(this.isUnloadedAtDestination, other.isUnloadedAtDestination)
+                .append(this.routingStatus, other.routingStatus)
+                .append(this.calculatedAt, other.calculatedAt)
+                .append(this.lastEvent, other.lastEvent)
+                .isEquals();
     }
 
     @Override

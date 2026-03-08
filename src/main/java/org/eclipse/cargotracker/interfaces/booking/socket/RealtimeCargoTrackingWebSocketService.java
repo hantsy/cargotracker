@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /** WebSocket service for tracking all cargoes in real time. */
 @Singleton
 @ServerEndpoint("/tracking")
-public class RealtimeCargoTrackingService {
+public class RealtimeCargoTrackingWebSocketService {
 
     private final Set<Session> sessions = new HashSet<>();
     @Inject private Logger logger;
