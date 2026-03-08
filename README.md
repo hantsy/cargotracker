@@ -1,93 +1,92 @@
-# Eclipse Cargo Tracker - Applied Domain-Driven Design Blueprints for Jakarta EE
+# Eclipse Cargo Tracker – Applied Domain‑Driven Design Blueprints for Jakarta EE
 
-[![build](https://github.com/hantsy/cargotracker/actions/workflows/build.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/build.yml)[![arq-glassfish-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml)[![arq-wildfly-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml)
+[![build](https://github.com/hantsy/cargotracker/actions/workflows/build.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/build.yml) [![arq-glassfish-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-glassfish-managed.yml) [![arq-wildfly-managed](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml/badge.svg)](https://github.com/hantsy/cargotracker/actions/workflows/arq-wildfly-managed.yml)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=alert_status)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=coverage)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=alert_status)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hantsy_cargotracker&metric=coverage)](https://sonarcloud.io/dashboard?id=hantsy_cargotracker)
 
-> [!WARNING] 
+Eclipse Cargo Tracker is based on the sample application from Eric Evans’ Domain-Driven Design book and demonstrates how to apply DDD principles in a Jakarta EE context.
+
+> [!WARNING]
 > This is my personal fork of [Eclipse EE4J CargoTracker](https://github.com/eclipse-ee4j/cargotracker). I am also [a contributor to the CargoTracker project](https://github.com/eclipse-ee4j/cargotracker/graphs/contributors).
 
-> [!NOTE] 
-> For a detailed introduction to the CargoTracker project, visit the upstream project website: https://eclipse-ee4j.github.io/cargotracker/.
+> [!NOTE]
+> For a detailed introduction to the CargoTracker project, see the upstream website: <https://eclipse-ee4j.github.io/cargotracker/>.
 
-Here are some highlights compared to the upstream project:
+This fork adds a number of practical improvements while keeping the original domain‑driven design examples intact.
 
-* Utilizes Docker to run a PostgreSQL Database in both development and production environments, eliminating risks associated with different environments.
-* Adds support for running the application on WildFly.
-* Includes several fine-grained Maven profiles for various Arquillian Container adapters, derived from the [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate).
-* Replaces PrimeFaces with simple Bootstrap CSS styles and plain Facelets templates, cleaning up and reorganizing all Facelets templates.
-* Adds extensive testing code to cover more use cases.
-* Integrates GitHub Actions workflows to build the project, run tests, and generate code quality reports via Jacoco and SonarCloud.
+### What’s different in this fork
 
-I have also ported the original [Cargotracker regapp](https://github.com/citerus/dddsample-regapp), originally written in Spring and Swing UI, to the Jakarta EE/CDI world. Check out the following projects:
-* [cargotracker-regapp](https://github.com/hantsy/cargotracker-regapp): CDI/Weld + JavaFX
-* [quarkus-cargotracker-regapp](https://github.com/hantsy/quarkus-cargotracker-regapp): Quarkus + Quarkus FX Extension/JavaFX
+* **Consistent PostgreSQL environment** – Docker configuration lets you run the database identically in development and production.
+* **WildFly support** – in addition to GlassFish the app can now start on WildFly via the official Maven plugin.
+* **More flexible testing** – fine‑grained Maven profiles based on the [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate) make it easy to switch between Arquillian adapters.
+* **Cleaner UI** – PrimeFaces is replaced with lightweight Bootstrap CSS and plain Facelets templates; all views were reorganised and tidied.
+* **Expanded test coverage** – additional unit and integration tests exercise more use cases.
+* **GitHub Actions automation** – builds, tests and code‑quality reports (Jacoco/SonarCloud) run on every push.
 
-## Build and Run 
+Eric’s book also featured a companion client application, the [ddd sample regapp](https://github.com/citerus/dddsample-regapp), originally built with Spring and Swing.  I’ve since ported that sample to the Jakarta EE ecosystem using the following stacks:
 
-### Prerequisites
+* [cargotracker-regapp](https://github.com/hantsy/cargotracker-regapp) – CDI/Weld + JavaFX
+* [quarkus-cargotracker-regapp](https://github.com/hantsy/quarkus-cargotracker-regapp) – Quarkus + Quarkus‑FX extension/JavaFX
 
-* Java 21
-* Apache Maven 3.9.0 +
+---
+
+## Getting started
+
+### Requirements
+
+* Java 21
+* Apache Maven 3.9+
 * Git
-* Docker
-* [GlassFish v8](https://github.com/eclipse-ee4j/glassfish) or [WildFly (wait for a release for Jakarta EE 11)](https://www.wildfly.org)
+* Docker (for PostgreSQL)
+* Application server:
+  * [GlassFish v8](https://github.com/eclipse-ee4j/glassfish) **or**
+  * [WildFly](https://www.wildfly.org/) (wait for a Jakarta EE 11‑compatible release)
 
-### Start PostgreSQL Database
+### Starting the database
 
-A *docker-compose.yaml* file is available in the project root folder.
-
-In your terminal, switch to the project root folder and run the following command to start a PostgreSQL instance in a Docker container:
+A `docker-compose.yaml` file sits at the project root. To launch PostgreSQL:
 
 ```bash
+cd /path/to/cargotracker
 docker compose up postgres
 ```
 
-### GlassFish
+You only need this step once per terminal session; the tests and the running application both rely on the same container.
 
-Run the following command to run the application on GlassFish using the Cargo Maven plugin:
+### Running the application
+
+#### GlassFish
 
 ```bash
 mvn clean package cargo:run -Pglassfish
 ```
 
-### WildFly 
-
-Run the following command to run the application on WildFly using the official WildFly Maven plugin:
+#### WildFly
 
 ```bash
 mvn clean wildfly:run -Pwildfly
 ```
 
-When the application is successfully deployed, open your browser and go to http://localhost:8080/cargo-tracker
+Once deployment finishes, open your browser at <http://localhost:8080/cargo-tracker>.
 
 ## Testing
 
-Cargo Tracker's testing is done using [JUnit](https://junit.org) and [Arquillian](http://arquillian.org/).
-
-There are several Maven profiles configured for running the tests against various Arquillian Container adapters.
+Tests are written with [JUnit](https://junit.org) and executed by [Arquillian](http://arquillian.org/). Multiple Maven profiles allow you to choose the target container.
 
 > [!Note]
-> Before running the Arquillian integration tests, ensure there is a running PostgreSQL database ready for testing. Check the Build section for more details.
+> Make sure the PostgreSQL container is running before launching any integration tests (see “Starting the database” above).
 
-### GlassFish
-
-Open a terminal window and execute the following command to run Arquillian tests against the GlassFish Managed Adapter:
+### Execute tests against GlassFish
 
 ```bash
 mvn clean verify -Parq-glassfish-managed
 ```
 
-
-### WildFly
-
-Run the following command to run Arquillian tests against the WildFly Managed Adapter:
+### Execute tests against WildFly
 
 ```bash
 mvn clean verify -Parq-wildfly-managed
 ```
 
-> [!NOTE] 
-> For more details about the Arquillian adapter's configuration, visit the [Jakarta EE 9 template project](https://github.com/hantsy/jakartaee9-starter-boilerplate) or the [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate), and follow [this comprehensive guide](https://hantsy.github.io/jakartaee9-starter-boilerplate/) to learn more.
-
+> [!NOTE]
+> For detailed configuration examples refer to the [Jakarta EE 9 template project](https://github.com/hantsy/jakartaee9-starter-boilerplate) or the [Jakarta EE 10 template project](https://github.com/hantsy/jakartaee10-starter-boilerplate) and the accompanying [guide](https://hantsy.github.io/jakartaee9-starter-boilerplate/).
