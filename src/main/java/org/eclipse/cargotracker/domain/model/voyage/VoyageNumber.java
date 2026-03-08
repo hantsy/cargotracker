@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
@@ -13,7 +14,7 @@ public record VoyageNumber(
 	@Column(name = "voyage_number")
 	@NotBlank(message = "Voyage number cannot be blank")
 	String number
-) {
+) implements Serializable {
 //@formatter:on
 
 	public VoyageNumber {

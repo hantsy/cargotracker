@@ -5,6 +5,8 @@ import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 
+import java.io.Serializable;
+
 /**
  * United nations location code.
  *
@@ -20,7 +22,7 @@ public record UnLocode(
 	@Pattern(regexp = "[a-zA-Z]{2}[a-zA-Z2-9]{3}")
 	@Column(name = "un_locode")
 	String unlocode
-) {
+) implements Serializable {
 //@formatter:on
 
 	private static final java.util.regex.Pattern VALID_PATTERN = java.util.regex.Pattern
