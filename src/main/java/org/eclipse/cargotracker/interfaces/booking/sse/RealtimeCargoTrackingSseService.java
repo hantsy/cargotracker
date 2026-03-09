@@ -37,10 +37,8 @@ public class RealtimeCargoTrackingSseService {
 
 	private SseBroadcaster sseBroadcaster;
 
-	// constructor injection does not work withe EJB Singleton/Stateful and
-	// CDI Singleton/ApplicationScoped
+	// constructor injection does not work withe EJB Singleton/Stateful and CDI Singleton/ApplicationScoped
 	// public RealtimeCargoTrackingSseService(@Context Sse sse) {}
-
 	@PostConstruct
 	public void init() {
 		this.sseBroadcaster = sse.newBroadcaster();

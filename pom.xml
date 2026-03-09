@@ -40,6 +40,7 @@
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
         <maven-surefire-report-plugin.version>3.5.5</maven-surefire-report-plugin.version>
+        <sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
 
         <!-- Cargo maven plugin -->
         <cargo-maven3-plugin.version>1.10.26</cargo-maven3-plugin.version>
@@ -303,6 +304,11 @@
                     <artifactId>cargo-maven3-plugin</artifactId>
                     <version>${cargo-maven3-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven-plugin.version}</version>
+                </plugin>
 
                 <!-- Maven 4.0 requires locking clean/resources plugins in project -->
                 <plugin>
@@ -323,6 +329,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <parameters>true</parameters>
                     <showDeprecation>true</showDeprecation>
                     <annotationProcessorPaths>
                         <annotationProcessorPath>
