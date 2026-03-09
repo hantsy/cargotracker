@@ -1,3 +1,4 @@
+
 name: build
 
 on:
@@ -6,13 +7,79 @@ on:
       - "docs/**"
     branches:
       - master
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
 
 jobs:
+  jacoco-ut:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
+      - name: Build with Maven
+        run: mvn clean jacoco:prepare-agent test -Punit-test,coverage
+      - uses: actions/upload-artifact@v7
+        with:
+          name: jacoco
+          path: target/jacoco.exec
+  jacoco-it:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
+      - name: Set up Database
+        run: |
+          docker compose up -d postgres 
+          sleep 5 
+          docker ps -a    
+      - name: Build with Maven
+        run: mvn clean  jacoco:prepare-agent-integration integration-test -Parq-glassfish-managed,coverage
+      - uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-it
+          path: target/jacoco-it.exec
+  jacoco-report:
+    runs-on: ubuntu-latest
+    needs:
+      - jacoco-ut
+      - jacoco-it
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
+      - uses: actions/download-artifact@v8
+        with:
+          path: target/
+          merge-multiple: true
+      - name: Display structure of downloaded files
+        run: ls -R target/
+      - name: Build with Maven
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn verify sonar:sonar -Pcoverage \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.token=$SONAR_TOKEN \
+          -Dsonar.organization=hantsy \
+          -Dsonar.projectKey=hantsy_cargotracker \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/*/jacoco.xml \
+          -Dsonar.coverage.exclusions=**/dto/*,**/*Configuration.*,**/SampleDataGenerator.*
+
 #  formatting:
 #    runs-on: ubuntu-latest
 #    steps:
@@ -35,48 +102,4 @@ jobs:
 #          githubToken: ${{ secrets.GITHUB_TOKEN }}
 #          set dry-run and will not commit by default
 #          skipCommit: false
-  build:
-    runs-on: ubuntu-latest
-    ##needs: [ formatting ]
-    steps:
-      - uses: actions/checkout@v6
-      - name: Set up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: "zulu"
-          java-version: "21"
-          cache: "maven"
-      - name: Build with Maven
-        run: mvn clean package --file pom.xml
-
-  coverage:
-    runs-on: ubuntu-latest
-    needs: [ build ]
-    steps:
-      - uses: actions/checkout@v6
-      - name: Set up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: "zulu"
-          java-version: "21"
-          cache: "maven"
-      - name: Set up Database
-        run: |
-          docker compose up -d postgres 
-          sleep 5 
-          docker ps -a
-      - name: Build with Maven
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          mvn clean test -Punit-test,coverage
-          mvn clean verify -Parq-wildfly-managed,coverage jacoco:report \
-            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=$SONAR_TOKEN \
-            -Dsonar.organization=hantsy \
-            -Dsonar.projectKey=hantsy_cargotracker \
-            -Dsonar.coverage.exclusions=**/dto/*,**/*Configuration.*,**/SampleDataGenerator.* \
-            -Dsonar.jacoco.reportPath=target/jacoco.exec \
-            -Dsonar.jacoco.itReportPath=target/jacoco-it.exec 
+ 
