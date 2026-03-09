@@ -78,7 +78,7 @@
         <eclipselink.version>5.0.0-B13</eclipselink.version>
         <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
         <!-- websocket client for test-->
-        <tyrus.version>2.2.0</tyrus.version>
+        <tyrus.version>2.2.2</tyrus.version>
 
         <!-- Wildfly server -->
         <wildfly.version>39.0.1.Final</wildfly.version>
