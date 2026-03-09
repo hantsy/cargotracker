@@ -47,7 +47,7 @@
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.10</postgresql.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
         <omnifaces.version>4.7.1</omnifaces.version>
 
         <!-- Arquillian BOM -->
