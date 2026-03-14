@@ -8,7 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -19,10 +18,18 @@ import java.util.logging.Logger;
 public class JpaCargoRepository implements CargoRepository, Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(JpaCargoRepository.class.getName());
 
-    @Inject private Logger logger;
+    private EntityManager entityManager;
 
-    @PersistenceContext private EntityManager entityManager;
+    // No-arg constructor required by CDI
+    public JpaCargoRepository() {
+    }
+
+    @Inject
+    public JpaCargoRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Cargo find(TrackingId trackingId) {
@@ -35,7 +42,7 @@ public class JpaCargoRepository implements CargoRepository, Serializable {
                             .setParameter("trackingId", trackingId)
                             .getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.FINE, "Find called on non-existant tracking ID.", e);
+            LOGGER.log(Level.FINE, "Find called on non-existant tracking ID.", e);
             cargo = null;
         }
 

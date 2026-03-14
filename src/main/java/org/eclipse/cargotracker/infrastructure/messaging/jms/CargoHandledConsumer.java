@@ -30,7 +30,7 @@ import java.util.logging.Logger;
         })
 public class CargoHandledConsumer implements MessageListener {
 
-    @Inject private Logger logger;
+    private static final Logger LOGGER = Logger.getLogger(CargoHandledConsumer.class.getName());
 
     @Inject private CargoInspectionService cargoInspectionService;
 
@@ -42,7 +42,7 @@ public class CargoHandledConsumer implements MessageListener {
 
             cargoInspectionService.inspectCargo(new TrackingId(trackingIdString));
         } catch (JMSException e) {
-            logger.log(Level.SEVERE, "Error procesing JMS message", e);
+            LOGGER.log(Level.SEVERE, "Error procesing JMS message", e);
         }
     }
 }

@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.application.internal;
 
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -7,7 +8,7 @@ import org.eclipse.cargotracker.domain.model.location.LocationRepository;
 import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.service.RoutingService;
 
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -15,13 +16,29 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Stateless
+@ApplicationScoped
+@Transactional
 public class DefaultBookingService implements BookingService {
 
-    @Inject private CargoRepository cargoRepository;
-    @Inject private LocationRepository locationRepository;
-    @Inject private RoutingService routingService;
-    @Inject private Logger logger;
+    private static final Logger LOGGER = Logger.getLogger(DefaultBookingService.class.getName());
+
+    private CargoRepository cargoRepository;
+    private LocationRepository locationRepository;
+    private RoutingService routingService;
+
+    // No-arg constructor required by CDI
+    public DefaultBookingService() {
+    }
+
+    @Inject
+    public DefaultBookingService(
+            CargoRepository cargoRepository,
+            LocationRepository locationRepository,
+            RoutingService routingService) {
+        this.cargoRepository = cargoRepository;
+        this.locationRepository = locationRepository;
+        this.routingService = routingService;
+    }
 
     @Override
     public TrackingId bookNewCargo(
@@ -35,7 +52,7 @@ public class DefaultBookingService implements BookingService {
         Cargo cargo = new Cargo(trackingId, routeSpecification);
 
         cargoRepository.store(cargo);
-        logger.log(
+        LOGGER.log(
                 Level.INFO,
                 "Booked new cargo with tracking ID {0}",
                 cargo.getTrackingId().getIdString());
@@ -61,7 +78,7 @@ public class DefaultBookingService implements BookingService {
         cargo.assignToRoute(itinerary);
         cargoRepository.store(cargo);
 
-        logger.log(Level.INFO, "Assigned cargo {0} to new route", trackingId);
+        LOGGER.log(Level.INFO, "Assigned cargo {0} to new route", trackingId);
     }
 
     @Override
@@ -78,7 +95,7 @@ public class DefaultBookingService implements BookingService {
 
         cargoRepository.store(cargo);
 
-        logger.log(
+        LOGGER.log(
                 Level.INFO,
                 "Changed destination for cargo {0} to {1}",
                 new Object[] {trackingId, routeSpecification.getDestination()});
@@ -97,7 +114,7 @@ public class DefaultBookingService implements BookingService {
 
         cargoRepository.store(cargo);
 
-        logger.log(
+        LOGGER.log(
                 Level.INFO,
                 "Changed deadline for cargo {0} to {1}",
                 new Object[] {trackingId, newDeadline});

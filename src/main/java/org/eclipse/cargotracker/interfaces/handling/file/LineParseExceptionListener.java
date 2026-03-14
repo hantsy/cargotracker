@@ -16,9 +16,8 @@ import jakarta.inject.Named;
 @Named("LineParseExceptionListener")
 public class LineParseExceptionListener implements SkipReadListener {
 
+    private static final Logger LOGGER = Logger.getLogger(LineParseExceptionListener.class.getName());
     private static final String FAILED_DIRECTORY = "failed_directory";
-
-    @Inject private Logger logger;
 
     @Inject private JobContext jobContext;
 
@@ -32,7 +31,7 @@ public class LineParseExceptionListener implements SkipReadListener {
 
         EventLineParseException parseException = (EventLineParseException) e;
 
-        logger.log(Level.WARNING, "Problem parsing event file line", parseException);
+        LOGGER.log(Level.WARNING, "Problem parsing event file line", parseException);
 
         try (PrintWriter failed =
                 new PrintWriter(

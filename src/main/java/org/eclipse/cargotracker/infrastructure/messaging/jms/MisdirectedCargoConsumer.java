@@ -2,7 +2,6 @@ package org.eclipse.cargotracker.infrastructure.messaging.jms;
 
 import jakarta.ejb.ActivationConfigProperty;
 import jakarta.ejb.MessageDriven;
-import jakarta.inject.Inject;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
@@ -20,17 +19,17 @@ import java.util.logging.Logger;
         })
 public class MisdirectedCargoConsumer implements MessageListener {
 
-    @Inject private Logger logger;
+    private static final Logger LOGGER = Logger.getLogger(MisdirectedCargoConsumer.class.getName());
 
     @Override
     public void onMessage(Message message) {
         try {
-            logger.log(
+            LOGGER.log(
                     Level.INFO,
                     "Cargo with tracking ID {0} misdirected.",
                     message.getBody(String.class));
         } catch (JMSException ex) {
-            logger.log(Level.WARNING, "Error processing message.", ex);
+            LOGGER.log(Level.WARNING, "Error processing message.", ex);
         }
     }
 }

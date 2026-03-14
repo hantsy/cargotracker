@@ -3,7 +3,7 @@ package org.eclipse.cargotracker.interfaces.booking.rest;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
 
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -15,11 +15,20 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
-@Stateless
+@RequestScoped
 @Path("/cargo")
 public class CargoMonitoringService {
 
-    @Inject private CargoRepository cargoRepository;
+    private CargoRepository cargoRepository;
+
+    // No-arg constructor required by CDI
+    public CargoMonitoringService() {
+    }
+
+    @Inject
+    public CargoMonitoringService(CargoRepository cargoRepository) {
+        this.cargoRepository = cargoRepository;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

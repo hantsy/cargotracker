@@ -1,36 +1,33 @@
 package org.eclipse.cargotracker.scenario;
 
-import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // WildFly issue:
 // EJB can not be an inner class.
-@Singleton
-@Startup
+@ApplicationScoped
+@Transactional
 public class CargoLifecycleScenarioTestDataGenerator {
 
-    @Inject Logger logger;
+    private final Logger LOGGER = Logger.getLogger(CargoLifecycleScenarioTestDataGenerator.class.getName());
 
-    @PersistenceContext EntityManager entityManager;
+    @PersistenceContext
+    EntityManager entityManager;
 
-    @PostConstruct
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void loadSampleData() {
-        logger.info("Loading sample data.");
+    public void loadSampleData(@Observes Startup startup) {
+        LOGGER.info("Loading sample data.");
         unLoadAll(); // Fail-safe in case of application restart that does not
         // trigger a JPA schema drop.
         loadSampleLocations();
@@ -39,11 +36,11 @@ public class CargoLifecycleScenarioTestDataGenerator {
         entityManager
                 .createQuery("select v from Voyage v ", Voyage.class)
                 .getResultList()
-                .forEach(voyage -> logger.log(Level.INFO, "saved voyage: {0}", voyage));
+                .forEach(voyage -> LOGGER.log(Level.INFO, "saved voyage: {0}", voyage));
     }
 
     private void unLoadAll() {
-        logger.info("Unloading all existing data.");
+        LOGGER.info("Unloading all existing data.");
         // In order to remove handling events, must remove references in cargo.
         // Dropping cargo first won't work since handling events have references
         // to it.
@@ -68,7 +65,7 @@ public class CargoLifecycleScenarioTestDataGenerator {
     }
 
     private void loadSampleLocations() {
-        logger.info("Loading sample locations.");
+        LOGGER.info("Loading sample locations.");
 
         entityManager.persist(SampleLocations.HONGKONG);
         entityManager.persist(SampleLocations.MELBOURNE);
@@ -86,7 +83,7 @@ public class CargoLifecycleScenarioTestDataGenerator {
     }
 
     private void loadSampleVoyages() {
-        logger.info("Loading sample voyages.");
+        LOGGER.info("Loading sample voyages.");
 
         // voyages
         entityManager.persist(SampleVoyages.v100);

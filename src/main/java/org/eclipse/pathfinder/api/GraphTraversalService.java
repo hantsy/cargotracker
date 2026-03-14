@@ -1,8 +1,6 @@
 package org.eclipse.pathfinder.api;
 
-import org.eclipse.pathfinder.internal.GraphDao;
-
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,6 +8,9 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import org.eclipse.pathfinder.internal.GraphDao;
+
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,44 +18,56 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Stateless
+@RequestScoped
 @Path("/graph-traversal")
 public class GraphTraversalService {
-
     private static final long ONE_MIN_MS = 1000L * 60;
     private static final long ONE_DAY_MS = ONE_MIN_MS * 60 * 24;
     private final SecureRandom random = new SecureRandom();
-    @Inject private GraphDao dao;
+
+    private GraphDao dao;
+
+    // No-arg constructor required by CDI
+    public GraphTraversalService() {
+    }
+
+    @Inject
+    public GraphTraversalService(GraphDao dao) {
+        this.dao = dao;
+    }
 
     @GET
     @Path("/shortest-path")
-    @Produces({"application/json", "application/xml; qs=.75"})
+    @Produces(MediaType.APPLICATION_JSON)
     public List<TransitPath> findShortestPath(
             @NotBlank(message = "Missing origin UN location code.")
-                    @Size(
-                            min = 5,
-                            max = 5,
-                            message = "Origin UN location code value must be five characters long.")
-                    @QueryParam("origin")
-                    String originUnLocode,
-            @NotBlank(message = "Missing destination UN location code.")
-                    @Size(
-                            min = 5,
-                            max = 5,
-                            message =
-                                    "Destination UN location code value must be five characters long.")
-                    @QueryParam("destination")
-                    String destinationUnLocode,
             @Size(
-                            min = 8,
-                            max = 10,
-                            message =
-                                    "Deadline value must be between eight and ten characters long.")
-                    @QueryParam("deadline")
-                    String deadline) {
+                    min = 5,
+                    max = 5,
+                    message = "Origin UN location code value must be five characters long."
+            )
+            @QueryParam("origin")
+            String originUnLocode,
+
+            @NotBlank(message = "Missing destination UN location code.")
+            @Size(
+                    min = 5,
+                    max = 5,
+                    message = "Destination UN location code value must be five characters long."
+            )
+            @QueryParam("destination")
+            String destinationUnLocode,
+
+            @Size(
+                    min = 8,
+                    max = 10,
+                    message = "Deadline value must be between eight and ten characters long."
+            )
+            @QueryParam("deadline")
+            String deadline) {
         LocalDateTime date = nextDate(LocalDateTime.now());
 
-        List<String> allVertices = dao.listLocations();
+        List<String> allVertices = new ArrayList<>(dao.listLocations());
         allVertices.remove(originUnLocode);
         allVertices.remove(destinationUnLocode);
 
@@ -64,7 +77,7 @@ public class GraphTraversalService {
         for (int i = 0; i < candidateCount; i++) {
             allVertices = getRandomChunkOfLocations(allVertices);
             List<TransitEdge> transitEdges = new ArrayList<>(allVertices.size() - 1);
-            String firstLegTo = allVertices.get(0);
+            String firstLegTo = allVertices.getFirst();
 
             LocalDateTime fromDate = nextDate(date);
             LocalDateTime toDate = nextDate(fromDate);
@@ -93,7 +106,7 @@ public class GraphTraversalService {
                                 toDate));
             }
 
-            String lastLegFrom = allVertices.get(allVertices.size() - 1);
+            String lastLegFrom = allVertices.getLast();
             fromDate = nextDate(date);
             toDate = nextDate(fromDate);
             transitEdges.add(

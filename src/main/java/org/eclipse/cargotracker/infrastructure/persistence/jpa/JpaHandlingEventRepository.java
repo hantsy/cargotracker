@@ -6,8 +6,8 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEventRepository;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.io.Serializable;
 
 @ApplicationScoped
@@ -15,7 +15,16 @@ public class JpaHandlingEventRepository implements HandlingEventRepository, Seri
 
     private static final long serialVersionUID = 1L;
 
-    @PersistenceContext private EntityManager entityManager;
+    private EntityManager entityManager;
+
+    // No-arg constructor required by CDI
+    public JpaHandlingEventRepository() {
+    }
+
+    @Inject
+    public JpaHandlingEventRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public void store(HandlingEvent event) {
