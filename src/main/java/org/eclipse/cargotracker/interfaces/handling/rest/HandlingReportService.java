@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -30,15 +30,21 @@ import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAtt
  * case of a valid registration attempt, sends an asynchronous message with the information to the
  * handling event registration system for proper registration.
  */
-@Stateless
+@RequestScoped
 @Path("handling")
 public class HandlingReportService {
-    public static final Logger LOGGER = Logger.getLogger(HandlingReportService.class.getName());
-    // public static final String ISO_8601_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final Logger LOGGER = Logger.getLogger(HandlingReportService.class.getName());
 
-    @Inject private ApplicationEvents applicationEvents;
+    private ApplicationEvents applicationEvents;
 
-    public HandlingReportService() {}
+    // No-arg constructor required by CDI
+    public HandlingReportService() {
+    }
+
+    @Inject
+    public HandlingReportService(ApplicationEvents applicationEvents) {
+        this.applicationEvents = applicationEvents;
+    }
 
     @POST
     @Path("reports")

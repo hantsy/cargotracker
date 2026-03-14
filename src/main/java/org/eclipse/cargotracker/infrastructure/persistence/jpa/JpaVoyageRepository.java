@@ -8,7 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,10 +17,18 @@ import java.util.logging.Logger;
 public class JpaVoyageRepository implements VoyageRepository, Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(JpaVoyageRepository.class.getName());
 
-    @Inject Logger logger;
+    private EntityManager entityManager;
 
-    @PersistenceContext private EntityManager entityManager;
+    // No-arg constructor required by CDI
+    public JpaVoyageRepository() {
+    }
+
+    @Inject
+    public JpaVoyageRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Voyage find(VoyageNumber voyageNumber) {
@@ -33,7 +40,7 @@ public class JpaVoyageRepository implements VoyageRepository, Serializable {
                             .setParameter("voyageNumber", voyageNumber)
                             .getSingleResult();
         } catch (NoResultException e) {
-            logger.log(
+            LOGGER.log(
                     Level.WARNING,
                     "Find called on non-existing voyageNumber: {0}.",
                     e.getMessage());

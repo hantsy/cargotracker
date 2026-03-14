@@ -1,17 +1,16 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
-
 import jakarta.ejb.Singleton;
 import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -20,13 +19,16 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** WebSocket service for tracking all cargoes in real time. */
+/**
+ * WebSocket service for tracking all cargoes in real time.
+ */
 @Singleton
 @ServerEndpoint("/tracking")
 public class RealtimeCargoTrackingWebSocketService {
 
+    private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingWebSocketService.class.getName());
+
     private final Set<Session> sessions = new HashSet<>();
-    @Inject private Logger logger;
 
     @OnOpen
     public void onOpen(final Session session) {
@@ -49,9 +51,7 @@ public class RealtimeCargoTrackingWebSocketService {
                     .write("trackingId", cargo.getTrackingId().getIdString())
                     .write("origin", cargo.getOrigin().getName())
                     .write("destination", cargo.getRouteSpecification().getDestination().getName())
-                    .write(
-                            "lastKnownLocation",
-                            cargo.getDelivery().getLastKnownLocation().getName())
+                    .write("lastKnownLocation", cargo.getDelivery().getLastKnownLocation().getName())
                     .write("transportStatus", cargo.getDelivery().getTransportStatus().toString())
                     .writeEnd();
         }
@@ -62,7 +62,7 @@ public class RealtimeCargoTrackingWebSocketService {
             try {
                 session.getBasicRemote().sendText(jsonValue);
             } catch (IOException ex) {
-                logger.log(Level.WARNING, "Unable to publish WebSocket message", ex);
+                LOGGER.log(Level.WARNING, "Unable to publish WebSocket message", ex);
             }
         }
     }

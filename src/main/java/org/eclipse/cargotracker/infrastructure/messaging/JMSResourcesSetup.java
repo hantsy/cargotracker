@@ -2,8 +2,7 @@ package org.eclipse.cargotracker.infrastructure.messaging;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSDestinationDefinition;
 
@@ -37,8 +36,7 @@ import java.util.logging.Logger;
         // resourceAdapter = "jmsra",
         interfaceName = "jakarta.jms.Queue",
         destinationName = "HandlingEventRegistrationAttemptQueue")
-@Startup
-@Singleton
+@ApplicationScoped
 public class JMSResourcesSetup {
     private static final Logger LOGGER = Logger.getLogger(JMSResourcesSetup.class.getName());
 
