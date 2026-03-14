@@ -1,5 +1,8 @@
 package org.eclipse.cargotracker.infrastructure.routing;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
 import org.eclipse.cargotracker.domain.model.cargo.Leg;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
@@ -12,8 +15,6 @@ import org.eclipse.cargotracker.infrastructure.routing.client.GraphTraversalReso
 import org.eclipse.pathfinder.api.TransitEdge;
 import org.eclipse.pathfinder.api.TransitPath;
 
-import jakarta.ejb.Stateless;
-import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,20 +26,21 @@ import java.util.stream.Collectors;
  * domain model and the API put forward by the routing team, which operates in a different context
  * from us.
  */
-@Stateless
+@ApplicationScoped
+@Transactional
 public class ExternalRoutingService implements RoutingService {
 
     private static final Logger LOGGER = Logger.getLogger(ExternalRoutingService.class.getName());
 
-    @Inject private LocationRepository locationRepository;
-
-    @Inject private VoyageRepository voyageRepository;
-
-    @Inject private GraphTraversalResourceClient graphTraversalResource;
+    private LocationRepository locationRepository;
+    private VoyageRepository voyageRepository;
+    private GraphTraversalResourceClient graphTraversalResource;
 
     // reserved by CDI.
-    public ExternalRoutingService() {}
+    public ExternalRoutingService() {
+    }
 
+    @Inject
     public ExternalRoutingService(
             LocationRepository locationRepository,
             VoyageRepository voyageRepository,
@@ -48,12 +50,6 @@ public class ExternalRoutingService implements RoutingService {
         this.graphTraversalResource = graphTraversalResource;
     }
 
-    //    @PostConstruct
-    //    public void init() {
-    //        // this.graphTraversalResource = new GraphTraversalResourceClient();
-    //        //graphTraversalResource.register(new MoxyJsonFeature()).register(new
-    // JsonMoxyConfigurationContextResolver());
-    //    }
 
     @Override
     public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
@@ -61,8 +57,7 @@ public class ExternalRoutingService implements RoutingService {
         String origin = routeSpecification.getOrigin().getUnLocode().getIdString();
         String destination = routeSpecification.getDestination().getUnLocode().getIdString();
 
-        List<TransitPath> transitPaths =
-                this.graphTraversalResource.findShortestPath(origin, destination);
+        List<TransitPath> transitPaths = this.graphTraversalResource.findShortestPath(origin, destination);
 
         // The returned result is then translated back into our domain model.
         List<Itinerary> itineraries = new ArrayList<>();
@@ -89,7 +84,7 @@ public class ExternalRoutingService implements RoutingService {
         List<Leg> legs =
                 transitPath.getTransitEdges().stream()
                         .map(this::toLeg)
-                        .collect(Collectors.toList());
+                        .toList();
         return new Itinerary(legs);
     }
 

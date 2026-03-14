@@ -8,7 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,10 +17,18 @@ import java.util.logging.Logger;
 public class JpaLocationRepository implements LocationRepository, Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(JpaLocationRepository.class.getName());
 
-    @Inject Logger logger;
+    private EntityManager entityManager;
 
-    @PersistenceContext private EntityManager entityManager;
+    // No-arg constructor required by CDI
+    public JpaLocationRepository() {
+    }
+
+    @Inject
+    public JpaLocationRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Location find(UnLocode unLocode) {
@@ -33,7 +40,7 @@ public class JpaLocationRepository implements LocationRepository, Serializable {
                             .setParameter("unLocode", unLocode)
                             .getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.WARNING, "Can not find Location by code: {0}", e.getMessage());
+            LOGGER.log(Level.WARNING, "Can not find Location by code: {0}", e.getMessage());
             location = null;
         }
         return location;

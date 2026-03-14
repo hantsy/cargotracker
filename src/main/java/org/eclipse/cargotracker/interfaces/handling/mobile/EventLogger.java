@@ -1,5 +1,10 @@
 package org.eclipse.cargotracker.interfaces.handling.mobile;
 
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -16,11 +21,6 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.omnifaces.util.Messages;
 
-import jakarta.faces.model.SelectItem;
-import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,13 +32,17 @@ public class EventLogger implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject private CargoRepository cargoRepository;
+    @Inject
+    private CargoRepository cargoRepository;
 
-    @Inject private LocationRepository locationRepository;
+    @Inject
+    private LocationRepository locationRepository;
 
-    @Inject private VoyageRepository voyageRepository;
+    @Inject
+    private VoyageRepository voyageRepository;
 
-    @Inject private ApplicationEvents applicationEvents;
+    @Inject
+    private ApplicationEvents applicationEvents;
 
     private List<SelectItem> trackingIds;
     private List<SelectItem> locations;
@@ -118,9 +122,7 @@ public class EventLogger implements Serializable {
         for (Cargo cargo : cargos) {
             // List only routed cargo that is not claimed yet.
             if (!cargo.getItinerary().getLegs().isEmpty()
-                    && !(cargo.getDelivery()
-                            .getTransportStatus()
-                            .sameValueAs(TransportStatus.CLAIMED))) {
+                    && !(cargo.getDelivery().getTransportStatus().sameValueAs(TransportStatus.CLAIMED))) {
                 String trackingId = cargo.getTrackingId().getIdString();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }
@@ -142,7 +144,9 @@ public class EventLogger implements Serializable {
             this.voyages.add(
                     new SelectItem(
                             voyage.getVoyageNumber().getIdString(),
-                            voyage.getVoyageNumber().getIdString()));
+                            voyage.getVoyageNumber().getIdString()
+                    )
+            );
         }
     }
 
@@ -172,9 +176,14 @@ public class EventLogger implements Serializable {
             voyage = null;
         }
 
-        HandlingEventRegistrationAttempt attempt =
-                new HandlingEventRegistrationAttempt(
-                        LocalDateTime.now(), completionTime, trackingId, voyage, type, location);
+        HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(
+                LocalDateTime.now(),
+                completionTime,
+                trackingId,
+                voyage,
+                type,
+                location
+        );
 
         applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
 

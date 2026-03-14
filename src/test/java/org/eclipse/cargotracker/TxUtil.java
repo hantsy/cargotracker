@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 public class TxUtil {
     private static final Logger LOGGER = Logger.getLogger(TxUtil.class.getName());
-    final UserTransaction ux;
-    final EntityManager em;
+    private final UserTransaction ux;
+    private final EntityManager em;
 
     public TxUtil(UserTransaction ux, EntityManager em) {
         Objects.requireNonNull(ux, "UserTransaction must not be null");
