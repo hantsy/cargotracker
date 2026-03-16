@@ -19,24 +19,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-    - name: Set up JDK
-      uses: actions/setup-java@v5
-      with:
-        distribution: "zulu"
-        java-version: "21"
-        cache: "maven"
-    - name: Set up Database
-      run: |
-        docker compose up -d postgres 
-        sleep 5 
-        docker ps -a
-    - name: Build with Maven
-      run: |
-        mvn -B -q clean verify -Parq-glassfish-managed
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: "zulu"
+          java-version: "21"
+          cache: "maven"
+      - name: Set up Database
+        run: |
+          docker compose up -d postgres 
+          sleep 5 
+          docker ps -a
+      - name: Build with Maven
+        run: |
+          mvn -B -q clean verify -Parq-glassfish-managed
 
-    - uses: actions/upload-artifact@v7
-      if: failure()
-      with:
-        name: ServerLog
-        path: target/**/server.log
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: ServerLog
+          path: target/**/server.log

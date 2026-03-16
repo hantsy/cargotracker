@@ -1,7 +1,5 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
-                xmlns:f="jakarta.faces.core"
-                xmlns:h="jakarta.faces.html"
+<ui:composition xmlns:ui="jakarta.faces.facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
                 template="/WEB-INF/layout/base.xhtml">
     <ui:define name="nav">
         <ui:include src="/WEB-INF/layout/admin-nav.xhtml"/>
@@ -10,7 +8,9 @@
         <h1 class="mt-5 mb-2 fs-1 fw-bold">
             <ui:insert name="title"></ui:insert>
         </h1>
-        <div class="mb-3 text-muted"><ui:insert name="subtitle"></ui:insert></div>
+        <div class="mb-3 text-muted">
+            <ui:insert name="subtitle"></ui:insert>
+        </div>
         <div class="my-2">
             <ui:insert name="content"></ui:insert>
         </div>

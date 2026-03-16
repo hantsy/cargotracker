@@ -1,24 +1,25 @@
 package org.eclipse.cargotracker.application.util;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Initialized;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-/** Loads sample data for demo. */
+/**
+ * Loads sample data for demo.
+ */
 @ApplicationScoped
 @Transactional
 public class SampleDataGenerator {

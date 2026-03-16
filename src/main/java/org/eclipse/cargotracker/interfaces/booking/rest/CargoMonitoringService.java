@@ -1,8 +1,5 @@
 package org.eclipse.cargotracker.interfaces.booking.rest;
 
-import org.eclipse.cargotracker.domain.model.cargo.Cargo;
-import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
-
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
@@ -13,6 +10,9 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
+
 import java.util.List;
 
 @RequestScoped
@@ -53,14 +53,14 @@ public class CargoMonitoringService {
                 .add(
                         "lastKnownLocation",
                         cargo.getDelivery()
-                                        .getLastKnownLocation()
-                                        .getUnLocode()
-                                        .getIdString()
-                                        .equals("XXXXX")
+                                .getLastKnownLocation()
+                                .getUnLocode()
+                                .getIdString()
+                                .equals("XXXXX")
                                 ? "Unknown"
                                 : cargo.getDelivery()
-                                        .getLastKnownLocation()
-                                        .getUnLocode()
-                                        .getIdString());
+                                .getLastKnownLocation()
+                                .getUnLocode()
+                                .getIdString());
     }
 }

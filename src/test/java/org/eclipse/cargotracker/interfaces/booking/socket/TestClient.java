@@ -1,6 +1,7 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
 import jakarta.websocket.*;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +34,7 @@ public class TestClient {
         LOGGER.log(
                 Level.INFO,
                 "disconnected id: {0}, reason: {1} ",
-                new Object[] {session.getId(), reason.getReasonPhrase()});
+                new Object[]{session.getId(), reason.getReasonPhrase()});
     }
 
     @OnError

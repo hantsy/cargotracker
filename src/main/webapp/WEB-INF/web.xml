@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="6.1"
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         version="6.1"
          xmlns="https://jakarta.ee/xml/ns/jakartaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd">
 
     <context-param>
@@ -84,16 +84,16 @@
         <resource-adapter>jmsra</resource-adapter>
         <destination-name>HandlingEventRegistrationAttemptQueue</destination-name>
     </jms-destination>-->
-    
-<!--    <security-constraint>
-        <display-name>Protected Resources</display-name>
-        <web-resource-collection>
-            <web-resource-name>Dashboard</web-resource-name>
-            <url-pattern>/admin/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>ADMIN</role-name>
-            <role-name>USER</role-name>
-        </auth-constraint>
-    </security-constraint>-->
+
+    <!--    <security-constraint>
+            <display-name>Protected Resources</display-name>
+            <web-resource-collection>
+                <web-resource-name>Dashboard</web-resource-name>
+                <url-pattern>/admin/*</url-pattern>
+            </web-resource-collection>
+            <auth-constraint>
+                <role-name>ADMIN</role-name>
+                <role-name>USER</role-name>
+            </auth-constraint>
+        </security-constraint>-->
 </web-app>

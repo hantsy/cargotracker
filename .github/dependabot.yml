@@ -18,10 +18,10 @@ updates:
       # Ignore some updates to the 'resteasy' package
       # Ignore only new versions for 4.x
       - dependency-name: "org.jboss.resteasy:resteasy-client"
-        update-types: [ "version-update:semver-major", "version-update:semver-minor"]
+        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
       - dependency-name: "jakarta.platform:jakarta.jakartaee-api"
         versions: [ "11.x" ]
       - dependency-name: "org.glassfish.jaxb:jaxb-runtime"
         versions: [ "4.x" ]
-      - dependency-name: "*"  
-        update-types: [ "version-update:semver-major"]      
+      - dependency-name: "*"
+        update-types: [ "version-update:semver-major" ]

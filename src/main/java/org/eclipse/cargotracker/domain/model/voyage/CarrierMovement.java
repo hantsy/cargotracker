@@ -2,7 +2,6 @@ package org.eclipse.cargotracker.domain.model.voyage;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -11,7 +10,9 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/** A carrier movement is a vessel voyage from one location to another. */
+/**
+ * A carrier movement is a vessel voyage from one location to another.
+ */
 @Entity
 @Table(name = "carrier_movements")
 public class CarrierMovement implements Serializable {
@@ -57,7 +58,7 @@ public class CarrierMovement implements Serializable {
             LocalDateTime departureTime,
             LocalDateTime arrivalTime) {
         Validate.noNullElements(
-                new Object[] {departureLocation, arrivalLocation, departureTime, arrivalTime});
+                new Object[]{departureLocation, arrivalLocation, departureTime, arrivalTime});
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.departureLocation = departureLocation;
@@ -107,10 +108,10 @@ public class CarrierMovement implements Serializable {
     private boolean sameValueAs(CarrierMovement other) {
         return other != null
                 && new EqualsBuilder()
-                        .append(this.departureLocation, other.departureLocation)
-                        .append(this.departureTime, other.departureTime)
-                        .append(this.arrivalLocation, other.arrivalLocation)
-                        .append(this.arrivalTime, other.arrivalTime)
-                        .isEquals();
+                .append(this.departureLocation, other.departureLocation)
+                .append(this.departureTime, other.departureTime)
+                .append(this.arrivalLocation, other.arrivalLocation)
+                .append(this.arrivalTime, other.arrivalTime)
+                .isEquals();
     }
 }

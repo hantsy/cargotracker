@@ -26,71 +26,71 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static jakarta.ws.rs.core.MediaType.SERVER_SENT_EVENTS;
 import static java.util.logging.Level.INFO;
 
-/** SSE service for tracking all cargoes in real time. */
+/**
+ * SSE service for tracking all cargoes in real time.
+ */
 @ApplicationScoped
 @Path("tracking")
 public class RealtimeCargoTrackingSseService {
 
-	private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingSseService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingSseService.class.getName());
 
-	private @Context Sse sse;
+    private @Context Sse sse;
 
-	private SseBroadcaster sseBroadcaster;
+    private SseBroadcaster sseBroadcaster;
 
-	// constructor injection does not work withe EJB Singleton/Stateful and CDI Singleton/ApplicationScoped
-	// public RealtimeCargoTrackingSseService(@Context Sse sse) {}
-	@PostConstruct
-	public void init() {
-		this.sseBroadcaster = sse.newBroadcaster();
-		this.sseBroadcaster.onClose(sseEventSink -> {
-			try {
-				sseEventSink.close();
-			}
-			catch (IOException e) {
-				LOGGER.log(Level.WARNING, e.getMessage(), e);
-			}
-		});
-		this.sseBroadcaster.onError((sseEventSink, throwable) -> {
-			sseEventSink.send(sse.newEvent("error", throwable.getMessage()));
-			try {
-				sseEventSink.close();
-			}
-			catch (IOException e) {
-				LOGGER.log(Level.WARNING, e.getMessage(), e);
-			}
-		});
-	}
+    // constructor injection does not work withe EJB Singleton/Stateful and CDI Singleton/ApplicationScoped
+    // public RealtimeCargoTrackingSseService(@Context Sse sse) {}
+    @PostConstruct
+    public void init() {
+        this.sseBroadcaster = sse.newBroadcaster();
+        this.sseBroadcaster.onClose(sseEventSink -> {
+            try {
+                sseEventSink.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, e.getMessage(), e);
+            }
+        });
+        this.sseBroadcaster.onError((sseEventSink, throwable) -> {
+            sseEventSink.send(sse.newEvent("error", throwable.getMessage()));
+            try {
+                sseEventSink.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, e.getMessage(), e);
+            }
+        });
+    }
 
-	@GET
-	@Produces(SERVER_SENT_EVENTS)
-	public void register(@Context SseEventSink sink) {
-		LOGGER.log(Level.INFO, "register sink: {0}", sink);
-		this.sseBroadcaster.register(sink);
-	}
+    @GET
+    @Produces(SERVER_SENT_EVENTS)
+    public void register(@Context SseEventSink sink) {
+        LOGGER.log(Level.INFO, "register sink: {0}", sink);
+        this.sseBroadcaster.register(sink);
+    }
 
-	public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
-		LOGGER.log(INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
+    public void onCargoInspected(@Observes @CargoInspected Cargo cargo) {
+        LOGGER.log(INFO, "observers cargo inspected event of cargo: {0}", cargo.getTrackingId());
 
-		Writer writer = new StringWriter();
-		try (JsonGenerator generator = Json.createGenerator(writer)) {
-			generator.writeStartObject()
-				.write("trackingId", cargo.getTrackingId().getIdString())
-				.write("origin", cargo.getOrigin().getName())
-				.write("destination", cargo.getRouteSpecification().getDestination().getName())
-				.write("lastKnownLocation", cargo.getDelivery().getLastKnownLocation().getName())
-				.write("transportStatus", cargo.getDelivery().getTransportStatus().name())
-				.writeEnd();
-		}
-		String jsonValue = writer.toString();
-		LOGGER.log(INFO, "sending message to client: {0}", jsonValue);
+        Writer writer = new StringWriter();
+        try (JsonGenerator generator = Json.createGenerator(writer)) {
+            generator.writeStartObject()
+                    .write("trackingId", cargo.getTrackingId().getIdString())
+                    .write("origin", cargo.getOrigin().getName())
+                    .write("destination", cargo.getRouteSpecification().getDestination().getName())
+                    .write("lastKnownLocation", cargo.getDelivery().getLastKnownLocation().getName())
+                    .write("transportStatus", cargo.getDelivery().getTransportStatus().name())
+                    .writeEnd();
+        }
+        String jsonValue = writer.toString();
+        LOGGER.log(INFO, "sending message to client: {0}", jsonValue);
 
-		OutboundSseEvent event = sse.newEventBuilder()
-			.name("event")
-			.mediaType(APPLICATION_JSON_TYPE)
-			.data(jsonValue)
-			.build();
-		LOGGER.log(INFO, "broadcast event: {0}", event);
-		this.sseBroadcaster.broadcast(event);
-	}
+        OutboundSseEvent event = sse.newEventBuilder()
+                .name("event")
+                .mediaType(APPLICATION_JSON_TYPE)
+                .data(jsonValue)
+                .build();
+        LOGGER.log(INFO, "broadcast event: {0}", event);
+        this.sseBroadcaster.broadcast(event);
+    }
 
 }

@@ -1,11 +1,5 @@
 package org.eclipse.cargotracker.interfaces.handling.file;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.util.List;
 import jakarta.batch.api.chunk.AbstractItemWriter;
 import jakarta.batch.runtime.context.JobContext;
 import jakarta.enterprise.context.Dependent;
@@ -16,14 +10,19 @@ import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
+import java.io.*;
+import java.util.List;
+
 @Dependent
 @Named("EventItemWriter")
 public class EventItemWriter extends AbstractItemWriter {
 
     private static final String ARCHIVE_DIRECTORY = "archive_directory";
 
-    @Inject private JobContext jobContext;
-    @Inject private ApplicationEvents applicationEvents;
+    @Inject
+    private JobContext jobContext;
+    @Inject
+    private ApplicationEvents applicationEvents;
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
@@ -38,19 +37,19 @@ public class EventItemWriter extends AbstractItemWriter {
     @Transactional
     public void writeItems(List<Object> items) throws Exception {
         try (PrintWriter archive =
-                new PrintWriter(
-                        new BufferedWriter(
-                                new FileWriter(
-                                        new File(
-                                                jobContext
-                                                                .getProperties()
-                                                                .getProperty(ARCHIVE_DIRECTORY)
-                                                        + "/archive_"
-                                                        + jobContext.getJobName()
-                                                        + "_"
-                                                        + jobContext.getInstanceId()
-                                                        + ".csv"),
-                                        true)))) {
+                     new PrintWriter(
+                             new BufferedWriter(
+                                     new FileWriter(
+                                             new File(
+                                                     jobContext
+                                                             .getProperties()
+                                                             .getProperty(ARCHIVE_DIRECTORY)
+                                                             + "/archive_"
+                                                             + jobContext.getJobName()
+                                                             + "_"
+                                                             + jobContext.getInstanceId()
+                                                             + ".csv"),
+                                             true)))) {
             for (Object item : items) {
                 HandlingEventRegistrationAttempt attempt = (HandlingEventRegistrationAttempt) item;
                 applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);

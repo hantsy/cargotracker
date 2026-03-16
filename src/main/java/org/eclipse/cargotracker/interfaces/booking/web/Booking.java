@@ -1,15 +1,15 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
 import jakarta.annotation.PostConstruct;
-import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
-import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
-import org.omnifaces.util.Messages;
-
 import jakarta.enterprise.context.Conversation;
 import jakarta.enterprise.context.ConversationScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
+import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
+import org.omnifaces.util.Messages;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -33,11 +33,14 @@ public class Booking implements Serializable {
     private LocalDate arrivalDeadline;
     private long duration = -1;
 
-    @Inject private BookingServiceFacade bookingServiceFacade;
+    @Inject
+    private BookingServiceFacade bookingServiceFacade;
 
-    @Inject private Conversation conversation;
+    @Inject
+    private Conversation conversation;
 
-    @Inject private FacesContext facesContext;
+    @Inject
+    private FacesContext facesContext;
 
     @PostConstruct
     public void init() {

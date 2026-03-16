@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.application.internal;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.domain.model.cargo.*;
@@ -8,8 +10,6 @@ import org.eclipse.cargotracker.domain.model.location.LocationRepository;
 import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.service.RoutingService;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -98,7 +98,7 @@ public class DefaultBookingService implements BookingService {
         LOGGER.log(
                 Level.INFO,
                 "Changed destination for cargo {0} to {1}",
-                new Object[] {trackingId, routeSpecification.getDestination()});
+                new Object[]{trackingId, routeSpecification.getDestination()});
     }
 
     @Override
@@ -117,6 +117,6 @@ public class DefaultBookingService implements BookingService {
         LOGGER.log(
                 Level.INFO,
                 "Changed deadline for cargo {0} to {1}",
-                new Object[] {trackingId, newDeadline});
+                new Object[]{trackingId, newDeadline});
     }
 }

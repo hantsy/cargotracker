@@ -1,5 +1,8 @@
 package org.eclipse.cargotracker.interfaces.booking.facade.internal;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.BookingService;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
@@ -21,9 +24,6 @@ import org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler.Car
 import org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler.ItineraryCandidateDtoAssembler;
 import org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler.LocationDtoAssembler;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,15 +35,20 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
 
     private static final long serialVersionUID = 1L;
 
-    @Inject private BookingService bookingService;
+    @Inject
+    private BookingService bookingService;
 
-    @Inject private LocationRepository locationRepository;
+    @Inject
+    private LocationRepository locationRepository;
 
-    @Inject private CargoRepository cargoRepository;
+    @Inject
+    private CargoRepository cargoRepository;
 
-    @Inject private VoyageRepository voyageRepository;
+    @Inject
+    private VoyageRepository voyageRepository;
 
-    @Inject private HandlingEventRepository handlingEventRepository;
+    @Inject
+    private HandlingEventRepository handlingEventRepository;
 
     @Override
     public List<LocationDto> listShippingLocations() {

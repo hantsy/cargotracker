@@ -1,17 +1,17 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
-import java.io.Serializable;
-import java.util.List;
-
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.annotation.PostConstruct;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Handles registering cargo. Operates against a dedicated service facade, and could easily be
@@ -36,7 +36,8 @@ public class Registration implements Serializable {
     private String originUnlocode;
     private String destinationUnlocode;
 
-    @Inject private BookingServiceFacade bookingServiceFacade;
+    @Inject
+    private BookingServiceFacade bookingServiceFacade;
 
     public List<LocationDto> getLocations() {
         return locations;

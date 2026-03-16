@@ -3,7 +3,6 @@ package org.eclipse.cargotracker.domain.model.location;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-
 import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
@@ -31,7 +30,9 @@ public class Location implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @NotNull @Embedded private UnLocode unLocode;
+    @NotNull
+    @Embedded
+    private UnLocode unLocode;
 
     @NotEmpty
     @Column(name = "name")
@@ -43,7 +44,7 @@ public class Location implements Serializable {
 
     /**
      * @param unLocode UN Locode
-     * @param name Location name
+     * @param name     Location name
      * @throws IllegalArgumentException if the UN Locode or name is null
      */
     public Location(UnLocode unLocode, String name) {

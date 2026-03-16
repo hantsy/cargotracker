@@ -1,10 +1,10 @@
 <ui:composition
-        xmlns="http://www.w3.org/1999/xhtml"
         xmlns:h="jakarta.faces.html"
         xmlns:f="jakarta.faces.core"
         xmlns:jsf="jakarta.faces"
         xmlns:ui="jakarta.faces.facelets"
         xmlns:p="jakarta.faces.passthrough"
+        xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="metadata">
         <f:metadata>
@@ -15,12 +15,12 @@
     <ui:define name="title">Change Destination</ui:define>
     <ui:define name="subtitle">Change Destination for Cargo #{changeDestination.cargo.trackingId}</ui:define>
     <ui:define name="contnet">
-           <h:form id="changeDestinationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
+        <h:form id="changeDestinationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
             <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
             <div class="col-12 col-md-6">#{changeDestination.cargo.originName}
             </div>
             <div class="col-12 col-md-4 fw-bolder float-right">Current Destination</div>
-            <div class="col-12 col-md-6">#{changeDestination.cargo.finalDestinationName}            </div>
+            <div class="col-12 col-md-6">#{changeDestination.cargo.finalDestinationName}</div>
             <div class="col-12 col-md-4 fw-bolder float-right">New Destination</div>
             <div class="col-12 col-md-6">
                 <h:selectOneMenu id="destination"

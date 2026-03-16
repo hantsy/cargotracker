@@ -1,16 +1,15 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
-import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 
-/** Sample carrier movements, for demo/test purposes. */
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.util.*;
+
+/**
+ * Sample carrier movements, for demo/test purposes.
+ */
 public class SampleVoyages {
 
     public static final Voyage CM001 =

@@ -1,12 +1,12 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -61,7 +61,9 @@ public class Itinerary implements Serializable {
         return Collections.unmodifiableList(this.legs);
     }
 
-    /** Test if the given handling event is expected when executing this itinerary. */
+    /**
+     * Test if the given handling event is expected when executing this itinerary.
+     */
     public boolean isExpected(HandlingEvent event) {
         if (legs.isEmpty()) {
             return true;
@@ -75,15 +77,14 @@ public class Itinerary implements Serializable {
                 Leg leg = legs.get(0);
                 yield leg.getLoadLocation().equals(event.getLocation());
             }
-            case LOAD ->
-                    legs.stream()
-                            .anyMatch(
-                                    leg ->
-                                            leg.getLoadLocation().equals(event.getLocation())
-                                                    && leg.getVoyage().equals(event.getVoyage()));
+            case LOAD -> legs.stream()
+                    .anyMatch(
+                            leg ->
+                                    leg.getLoadLocation().equals(event.getLocation())
+                                            && leg.getVoyage().equals(event.getVoyage()));
             case UNLOAD ->
-                    // Check that the there is one leg with same unload location and
-                    // voyage
+                // Check that the there is one leg with same unload location and
+                // voyage
                     legs.stream()
                             .anyMatch(
                                     leg ->

@@ -1,16 +1,16 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.shared.AbstractSpecification;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -37,11 +37,12 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     @NotNull
     private LocalDate arrivalDeadline;
 
-    public RouteSpecification() {}
+    public RouteSpecification() {
+    }
 
     /**
-     * @param origin origin location - can't be the same as the destination
-     * @param destination destination location - can't be the same as the origin
+     * @param origin          origin location - can't be the same as the destination
+     * @param destination     destination location - can't be the same as the origin
      * @param arrivalDeadline arrival deadline
      */
     public RouteSpecification(Location origin, Location destination, LocalDate arrivalDeadline) {
@@ -80,10 +81,10 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     private boolean sameValueAs(RouteSpecification other) {
         return other != null
                 && new EqualsBuilder()
-                        .append(this.origin, other.origin)
-                        .append(this.destination, other.destination)
-                        .append(this.arrivalDeadline, other.arrivalDeadline)
-                        .isEquals();
+                .append(this.origin, other.origin)
+                .append(this.destination, other.destination)
+                .append(this.arrivalDeadline, other.arrivalDeadline)
+                .isEquals();
     }
 
     @Override

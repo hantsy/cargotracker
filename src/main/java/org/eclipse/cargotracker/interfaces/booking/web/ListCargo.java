@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 
@@ -31,7 +30,8 @@ public class ListCargo {
     private List<CargoRouteDto> claimedCargos;
     private List<CargoRouteDto> routedUnclaimedCargos;
 
-    @Inject private BookingServiceFacade bookingServiceFacade;
+    @Inject
+    private BookingServiceFacade bookingServiceFacade;
 
     public List<CargoRouteDto> getCargos() {
         return cargos;

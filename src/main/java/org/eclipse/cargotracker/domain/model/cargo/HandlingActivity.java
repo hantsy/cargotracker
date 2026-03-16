@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -8,7 +9,6 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -35,7 +35,8 @@ public class HandlingActivity implements Serializable {
     @JoinColumn(name = "next_expected_voyage_id")
     private Voyage voyage;
 
-    public HandlingActivity() {}
+    public HandlingActivity() {
+    }
 
     public HandlingActivity(HandlingEvent.Type type, Location location) {
         Validate.notNull(type, "Handling event type is required");
@@ -70,10 +71,10 @@ public class HandlingActivity implements Serializable {
     private boolean sameValueAs(HandlingActivity other) {
         return other != null
                 && new EqualsBuilder()
-                        .append(this.type, other.type)
-                        .append(this.location, other.location)
-                        .append(this.voyage, other.voyage)
-                        .isEquals();
+                .append(this.type, other.type)
+                .append(this.location, other.location)
+                .append(this.voyage, other.voyage)
+                .isEquals();
     }
 
     @Override

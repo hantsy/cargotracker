@@ -25,7 +25,7 @@ public class HandlingHistory {
 
     /**
      * @return A distinct list (no duplicate registrations) of handling events, ordered by
-     *     completion time.
+     * completion time.
      */
     public List<HandlingEvent> getDistinctEventsByCompletionTime() {
         List<HandlingEvent> ordered = new ArrayList<>(new HashSet<>(handlingEvents));

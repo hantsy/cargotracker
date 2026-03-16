@@ -5,17 +5,18 @@ import jakarta.ejb.MessageDriven;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @MessageDriven(
         activationConfig = {
-            @ActivationConfigProperty(
-                    propertyName = "destinationType",
-                    propertyValue = "jakarta.jms.Queue"),
-            @ActivationConfigProperty(
-                    propertyName = "destinationLookup",
-                    propertyValue = "java:app/jms/MisdirectedCargoQueue")
+                @ActivationConfigProperty(
+                        propertyName = "destinationType",
+                        propertyValue = "jakarta.jms.Queue"),
+                @ActivationConfigProperty(
+                        propertyName = "destinationLookup",
+                        propertyValue = "java:app/jms/MisdirectedCargoQueue")
         })
 public class MisdirectedCargoConsumer implements MessageListener {
 

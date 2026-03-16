@@ -44,12 +44,12 @@ public class HandlingEventServiceTest {
     public void testRegisterEvent() throws Exception {
         // assume
         when(handlingEventFactory.createHandlingEvent(
-                        any(LocalDateTime.class),
-                        any(LocalDateTime.class),
-                        any(TrackingId.class),
-                        any(VoyageNumber.class),
-                        any(UnLocode.class),
-                        any(HandlingEvent.Type.class)))
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(TrackingId.class),
+                any(VoyageNumber.class),
+                any(UnLocode.class),
+                any(HandlingEvent.Type.class)))
                 .thenReturn(
                         new HandlingEvent(
                                 cargo,

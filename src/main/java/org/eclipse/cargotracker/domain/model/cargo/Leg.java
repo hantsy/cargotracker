@@ -2,7 +2,6 @@ package org.eclipse.cargotracker.domain.model.cargo;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -62,7 +61,7 @@ public class Leg implements Serializable {
             LocalDateTime loadTime,
             LocalDateTime unloadTime) {
         Validate.noNullElements(
-                new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
+                new Object[]{voyage, loadLocation, unloadLocation, loadTime, unloadTime});
 
         this.voyage = voyage;
         this.loadLocation = loadLocation;
@@ -108,13 +107,13 @@ public class Leg implements Serializable {
                 this.unloadTime.equals(other.unloadTime));
         return other != null
                 && new EqualsBuilder()
-                        .append(this.voyage, other.voyage)
-                        .append(this.loadLocation, other.loadLocation)
-                        .append(this.unloadLocation, other.unloadLocation)
-                        // use truncatedTo to remove nanoseconds fields in timestamp.
-                        .append(this.loadTime, other.loadTime)
-                        .append(this.unloadTime, other.unloadTime)
-                        .isEquals();
+                .append(this.voyage, other.voyage)
+                .append(this.loadLocation, other.loadLocation)
+                .append(this.unloadLocation, other.unloadLocation)
+                // use truncatedTo to remove nanoseconds fields in timestamp.
+                .append(this.loadTime, other.loadTime)
+                .append(this.unloadTime, other.unloadTime)
+                .isEquals();
     }
 
     @Override

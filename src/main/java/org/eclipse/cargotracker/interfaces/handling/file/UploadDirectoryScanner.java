@@ -16,17 +16,15 @@ import jakarta.enterprise.event.Startup;
  * <p>
  * An example using ManagedScheduledExecutorService
  * <code>
- * @ApplicationScoped
- * public class UploadDirectoryScanner {
+ *
+ * @ApplicationScoped public class UploadDirectoryScanner {
  * private final JobOperator jobOperator = BatchRuntime.getJobOperator();
  * private ManagedScheduledExecutorService scheduler;
  * <p>
  * // No-arg constructor required by CDI
  * public UploadDirectoryScanner() {
  * }
- *
- * @Inject
- * public UploadDirectoryScanner(ManagedScheduledExecutorService scheduler) {
+ * @Inject public UploadDirectoryScanner(ManagedScheduledExecutorService scheduler) {
  * this.scheduler = scheduler;
  * }
  * <p>

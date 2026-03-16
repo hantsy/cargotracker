@@ -1,17 +1,19 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
 import jakarta.annotation.Nonnull;
-import org.apache.commons.lang3.Validate;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.apache.commons.lang3.Validate;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/** A voyage schedule. */
+/**
+ * A voyage schedule.
+ */
 @Embeddable
 public class Schedule implements Serializable {
 
@@ -49,7 +51,7 @@ public class Schedule implements Serializable {
     private boolean sameValueAs(Schedule other) {
         return other != null
                 && Objects.equals(
-                        List.copyOf(carrierMovements), List.copyOf(other.carrierMovements));
+                List.copyOf(carrierMovements), List.copyOf(other.carrierMovements));
     }
 
     @Override

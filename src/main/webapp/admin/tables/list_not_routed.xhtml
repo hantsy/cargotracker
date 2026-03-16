@@ -1,7 +1,7 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
+<ui:composition xmlns:ui="jakarta.faces.facelets"
                 xmlns:f="jakarta.faces.core"
-                xmlns:h="jakarta.faces.html">
+                xmlns:h="jakarta.faces.html"
+                xmlns="http://www.w3.org/1999/xhtml">
     <h2 class="fs-2 fw-bold">Not Routed Cargo</h2>
     <ui:fragment rendered="#{empty listCargo.notRoutedCargos}">
         <p> No NotRouted Cargos.</p>
@@ -28,12 +28,14 @@
                             <i class="bi bi-info-circle" style="color:#999999;"></i>
                         </h:link>
                     </td>
-                    <td><h:outputText value="#{cargo.origin.name}  "/>
+                    <td>
+                        <h:outputText value="#{cargo.origin.name}  "/>
                         <br/>
                         <h:outputText value="#{cargo.origin.code}"
                                       style="color: #999999;font-size:.8em;"/>
                     </td>
-                    <td><h:outputText value="#{cargo.finalDestination.name}"/>
+                    <td>
+                        <h:outputText value="#{cargo.finalDestination.name}"/>
                         <br/>
                         <h:outputText value="#{cargo.finalDestination.code}"
                                       style="color: #999999;font-size:.8em;"/>

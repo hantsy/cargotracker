@@ -1,11 +1,11 @@
 package org.eclipse.cargotracker.domain.model.location;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import org.apache.commons.lang3.Validate;
 
-import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 
 /**

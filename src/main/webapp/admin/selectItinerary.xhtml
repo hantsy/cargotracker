@@ -1,7 +1,7 @@
 <ui:composition
-        xmlns="http://www.w3.org/1999/xhtml"
         xmlns:f="jakarta.faces.core"
         xmlns:ui="jakarta.faces.facelets"
+        xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="title">Cargo Administration</ui:define>
     <ui:define name="metadate">
@@ -14,9 +14,9 @@
 
     <ui:define name="body">
         <ui:fragment rendered="#{empty itinerarySelection.routeCandidates}">
-                <p>No routes found that satisfy the route specification. Try
-                    setting an arrival deadline further into the future (a few weeks at
-                    least).</p>
+            <p>No routes found that satisfy the route specification. Try
+                setting an arrival deadline further into the future (a few weeks at
+                least).</p>
         </ui:fragment>
     </ui:define>
 </ui:composition>

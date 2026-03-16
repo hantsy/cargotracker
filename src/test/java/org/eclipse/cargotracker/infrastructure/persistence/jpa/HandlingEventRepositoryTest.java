@@ -40,14 +40,19 @@ import static org.eclipse.cargotracker.Deployments.*;
 public class HandlingEventRepositoryTest {
     private static final Logger LOGGER =
             Logger.getLogger(HandlingEventRepositoryTest.class.getName());
-    @Inject UserTransaction utx;
-    @Inject private LocationRepository locationRepository;
+    @Inject
+    UserTransaction utx;
+    @Inject
+    private LocationRepository locationRepository;
 
-    @Inject private HandlingEventRepository handlingEventRepository;
+    @Inject
+    private HandlingEventRepository handlingEventRepository;
 
-    @Inject private CargoRepository cargoRepository;
+    @Inject
+    private CargoRepository cargoRepository;
 
-    @PersistenceContext private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -81,7 +86,8 @@ public class HandlingEventRepositoryTest {
     }
 
     @BeforeEach
-    public void setup() {}
+    public void setup() {
+    }
 
     public void startTransaction() throws Exception {
         utx.begin();

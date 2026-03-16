@@ -12,10 +12,12 @@ import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAtt
 @ApplicationScoped
 public class SynchronousApplicationEventsStub implements ApplicationEvents {
 
-    @Inject Instance<CargoInspectionService> cargoInspectionServiceInstance;
+    @Inject
+    Instance<CargoInspectionService> cargoInspectionServiceInstance;
 
     // no-args constructor required by CDI
-    public SynchronousApplicationEventsStub() {}
+    public SynchronousApplicationEventsStub() {
+    }
 
     @Override
     public void cargoWasHandled(HandlingEvent event) {

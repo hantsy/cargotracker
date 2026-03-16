@@ -3,7 +3,9 @@ package org.eclipse.pathfinder.api;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/** Represents an edge in a path through a graph, describing the route of a cargo. */
+/**
+ * Represents an edge in a path through a graph, describing the route of a cargo.
+ */
 public class TransitEdge implements Serializable {
 
     private static final long serialVersionUID = 1L;

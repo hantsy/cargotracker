@@ -1,9 +1,9 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="jakarta.faces.html"
-    xmlns:f="jakarta.faces.core"
-    xmlns:ui="jakarta.faces.facelets"
-    template="/WEB-INF/layout/admin.xhtml">
+        xmlns:h="jakarta.faces.html"
+        xmlns:f="jakarta.faces.core"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns="http://www.w3.org/1999/xhtml"
+        template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="title">Cargo Details</ui:define>
     <ui:define name="metadata">
         <f:metadata>
@@ -38,28 +38,28 @@
             <h3 class="mb-2 fs-3 fw-bolder">Itinerary</h3>
             <table class="mb-5 table table-hover">
                 <thead>
-                    <tr>
-                        <th>Voyage</th>
-                        <th>Load</th>
-                        <th>Time</th>
-                        <th>UnLoad</th>
-                        <th>Time</th>
-                    </tr>
+                <tr>
+                    <th>Voyage</th>
+                    <th>Load</th>
+                    <th>Time</th>
+                    <th>UnLoad</th>
+                    <th>Time</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <ui:repeat var="leg" value="#{cargoDetails.cargo.legs}">
-                        <tr>
-                            <td>#{leg.voyageNumber}</td>
-                            <td>#{leg.from.name} <br/>
-                                <span class="text-secondary">#{leg.from.code}</span>
-                            </td>
-                            <td>#{leg.loadTime}</td>
-                            <td>#{leg.to.name}<br/>
-                                <span class="text-secondary">#{leg.to.code}</span>
-                            </td>
-                            <td>#{leg.unloadTime}</td>
-                        </tr>
-                    </ui:repeat>
+                <ui:repeat var="leg" value="#{cargoDetails.cargo.legs}">
+                    <tr>
+                        <td>#{leg.voyageNumber}</td>
+                        <td>#{leg.from.name} <br/>
+                            <span class="text-secondary">#{leg.from.code}</span>
+                        </td>
+                        <td>#{leg.loadTime}</td>
+                        <td>#{leg.to.name}<br/>
+                            <span class="text-secondary">#{leg.to.code}</span>
+                        </td>
+                        <td>#{leg.unloadTime}</td>
+                    </tr>
+                </ui:repeat>
                 </tbody>
             </table>
 

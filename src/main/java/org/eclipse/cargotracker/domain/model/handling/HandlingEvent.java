@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,8 +11,6 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -72,20 +72,21 @@ public class HandlingEvent implements Serializable {
     @JoinColumn(name = "cargo_id")
     private Cargo cargo;
 
-    @Transient private String summary;
+    @Transient
+    private String summary;
 
     public HandlingEvent() {
         // Nothing to initialize.
     }
 
     /**
-     * @param cargo The cargo
-     * @param completionTime completion time, the reported time that the event actually happened
-     *     (e.g. the receive took place).
+     * @param cargo            The cargo
+     * @param completionTime   completion time, the reported time that the event actually happened
+     *                         (e.g. the receive took place).
      * @param registrationTime registration time, the time the message is received
-     * @param type type of event
-     * @param location where the event took place
-     * @param voyage the voyage
+     * @param type             type of event
+     * @param location         where the event took place
+     * @param voyage           the voyage
      */
     public HandlingEvent(
             Cargo cargo,
@@ -114,12 +115,12 @@ public class HandlingEvent implements Serializable {
     }
 
     /**
-     * @param cargo cargo
-     * @param completionTime completion time, the reported time that the event actually happened
-     *     (e.g. the receive took place).
+     * @param cargo            cargo
+     * @param completionTime   completion time, the reported time that the event actually happened
+     *                         (e.g. the receive took place).
      * @param registrationTime registration time, the time the message is received
-     * @param type type of event
-     * @param location where the event took place
+     * @param type             type of event
+     * @param location         where the event took place
      */
     public HandlingEvent(
             Cargo cargo,
@@ -205,12 +206,12 @@ public class HandlingEvent implements Serializable {
     private boolean sameEventAs(HandlingEvent other) {
         return other != null
                 && new EqualsBuilder()
-                        .append(this.cargo, other.cargo)
-                        .append(this.voyage, other.voyage)
-                        .append(this.completionTime, other.completionTime)
-                        .append(this.location, other.location)
-                        .append(this.type, other.type)
-                        .isEquals();
+                .append(this.cargo, other.cargo)
+                .append(this.voyage, other.voyage)
+                .append(this.completionTime, other.completionTime)
+                .append(this.location, other.location)
+                .append(this.type, other.type)
+                .isEquals();
     }
 
     @Override

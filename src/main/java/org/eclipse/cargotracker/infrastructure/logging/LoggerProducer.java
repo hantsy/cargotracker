@@ -3,6 +3,7 @@ package org.eclipse.cargotracker.infrastructure.logging;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
+
 import java.io.Serializable;
 import java.util.logging.Logger;
 

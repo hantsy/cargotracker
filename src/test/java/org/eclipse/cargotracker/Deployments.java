@@ -47,7 +47,7 @@ public class Deployments {
                         .withTransitivity()
                         .asFile();
         LOGGER.log(
-                Level.FINE, "add test libs to deployment archive: {0}", new Object[] {extraJars});
+                Level.FINE, "add test libs to deployment archive: {0}", new Object[]{extraJars});
         war.addAsLibraries(extraJars);
     }
 

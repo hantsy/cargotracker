@@ -1,6 +1,8 @@
 package org.eclipse.cargotracker.interfaces.booking.facade.dto;
 
-/** Location DTO. */
+/**
+ * Location DTO.
+ */
 public record LocationDto(String code, String name) {
 
     public String nameAndCode() {

@@ -15,7 +15,6 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,7 +52,7 @@ public class SampleDataGenerator2 {
         unLoadAll2();
 
         entityManagerFactory.runInTransaction(entityManager -> {
-           // unLoadAll(entityManager);
+            // unLoadAll(entityManager);
             loadSampleLocations(entityManager);
             loadSampleVoyages(entityManager);
             loadSampleCargos(entityManager);

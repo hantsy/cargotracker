@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/** DTO for registering and routing a cargo. */
+/**
+ * DTO for registering and routing a cargo.
+ */
 public record CargoRouteDto(
         String trackingId,
         LocationDto origin,

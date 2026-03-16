@@ -14,7 +14,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDateTime;
@@ -31,9 +33,12 @@ import static org.eclipse.cargotracker.Deployments.*;
 public class CarrierMovementRepositoryTest {
     private static final Logger LOGGER =
             Logger.getLogger(CarrierMovementRepositoryTest.class.getName());
-    @Inject VoyageRepository voyageRepository;
-    @PersistenceContext EntityManager entityManager;
-    @Inject UserTransaction utx;
+    @Inject
+    VoyageRepository voyageRepository;
+    @PersistenceContext
+    EntityManager entityManager;
+    @Inject
+    UserTransaction utx;
     String voyageNumberIdString = "007";
     Voyage voyage;
     Location from = SampleLocations.HONGKONG;

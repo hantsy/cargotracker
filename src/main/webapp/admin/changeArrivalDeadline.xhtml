@@ -1,11 +1,11 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="jakarta.faces.html"
-    xmlns:f="jakarta.faces.core"
-    xmlns:jsf="jakarta.faces"
-    xmlns:ui="jakarta.faces.facelets"
-    xmlns:p="jakarta.faces.passthrough"
-    template="/WEB-INF/layout/admin.xhtml">
+        xmlns:h="jakarta.faces.html"
+        xmlns:f="jakarta.faces.core"
+        xmlns:jsf="jakarta.faces"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns:p="jakarta.faces.passthrough"
+        xmlns="http://www.w3.org/1999/xhtml"
+        template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="trackingId" value="#{changeArrivalDeadline.trackingId}"/>
@@ -21,7 +21,7 @@
             <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.origin.name}
             </div>
             <div class="col-12 col-md-4 fw-bolder float-right">Destination</div>
-            <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.finalDestination.name}            </div>
+            <div class="col-12 col-md-6">#{changeArrivalDeadline.cargo.finalDestination.name}</div>
             <div class="col-12 col-md-4 fw-bolder float-right">Arrival Deadline</div>
             <div class="col-12 col-md-6">
                 <h:inputText id="deadline"

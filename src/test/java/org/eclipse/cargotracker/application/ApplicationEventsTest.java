@@ -1,9 +1,5 @@
 package org.eclipse.cargotracker.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.*;
-import static org.eclipse.cargotracker.Deployments.*;
-
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,7 +7,6 @@ import jakarta.jms.Destination;
 import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
 import jakarta.transaction.UserTransaction;
-
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
@@ -42,6 +37,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.eclipse.cargotracker.Deployments.*;
+
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
 public class ApplicationEventsTest {
@@ -53,10 +52,14 @@ public class ApplicationEventsTest {
     //    private DeliveredCargoConsumer deliveredCargoConsumer;
     private static LocalDate deadline;
     private static Itinerary assigned;
-    @Inject UserTransaction utx;
-    @Inject CargoInspectionServiceStub cargoInspectionService;
-    @Inject HandlingEventServiceStub handlingEventService;
-    @Inject JMSContext jmsContext;
+    @Inject
+    UserTransaction utx;
+    @Inject
+    CargoInspectionServiceStub cargoInspectionService;
+    @Inject
+    HandlingEventServiceStub handlingEventService;
+    @Inject
+    JMSContext jmsContext;
     // MSB can not be injected as normal CDI beans.
     // https://rmannibucau.metawerx.net/post/cdi-proxy-interceptor-support-with-interceptionfactory
     //
@@ -79,7 +82,8 @@ public class ApplicationEventsTest {
     //
     //        assertThat(argumentCaptor.getValue().toString()).contains("AAA");
     //    }
-    @Inject private ApplicationEvents applicationEvents;
+    @Inject
+    private ApplicationEvents applicationEvents;
 
     @Resource(lookup = "java:app/jms/MisdirectedCargoQueue")
     private Destination misdirectedCargoQueue;
@@ -229,7 +233,8 @@ public class ApplicationEventsTest {
 
     @ApplicationScoped
     public static class CargoInspectionServiceStub implements CargoInspectionService {
-        @Inject Logger logger;
+        @Inject
+        Logger logger;
 
         private TrackingId trackingId;
 
@@ -246,7 +251,8 @@ public class ApplicationEventsTest {
 
     @ApplicationScoped
     public static class HandlingEventServiceStub implements HandlingEventService {
-        @Inject Logger logger;
+        @Inject
+        Logger logger;
         private LocalDateTime completionTime;
         private TrackingId trackingId;
         private VoyageNumber voyageNumber;
@@ -270,7 +276,7 @@ public class ApplicationEventsTest {
                             voyageNumber: {2}
                             code: {3}
                             type: {4}""",
-                    new Object[] {completionTime, trackingId, voyageNumber, unLocode, type});
+                    new Object[]{completionTime, trackingId, voyageNumber, unLocode, type});
             this.completionTime = completionTime;
             this.trackingId = trackingId;
             this.voyageNumber = voyageNumber;

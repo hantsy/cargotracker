@@ -25,14 +25,12 @@ import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
  */
 @Embeddable
 public class Delivery implements Serializable {
-    private static final Logger LOGGER = Logger.getLogger(Delivery.class.getName());
-    private static final long serialVersionUID = 1L;
-
     // Null object pattern.
     public static final LocalDateTime ETA_UNKOWN = null;
     // Null object pattern
     public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
-
+    private static final Logger LOGGER = Logger.getLogger(Delivery.class.getName());
+    private static final long serialVersionUID = 1L;
     // public static final HandlingActivity NO_ACTIVITY = null;
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_status")

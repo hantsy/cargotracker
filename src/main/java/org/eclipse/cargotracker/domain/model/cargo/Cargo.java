@@ -2,7 +2,6 @@ package org.eclipse.cargotracker.domain.model.cargo;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -79,8 +78,12 @@ public class Cargo implements Serializable {
     @NotNull(message = "Route specification is required")
     private RouteSpecification routeSpecification;
 
-    @Embedded @NotNull private Itinerary itinerary;
-    @Embedded @NotNull private Delivery delivery;
+    @Embedded
+    @NotNull
+    private Itinerary itinerary;
+    @Embedded
+    @NotNull
+    private Delivery delivery;
 
     public Cargo() {
         // Nothing to initialize.
@@ -133,7 +136,9 @@ public class Cargo implements Serializable {
         return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
     }
 
-    /** Specifies a new route for this cargo. */
+    /**
+     * Specifies a new route for this cargo.
+     */
     public void specifyNewRoute(RouteSpecification routeSpecification) {
         Validate.notNull(routeSpecification, "Route specification is required");
 

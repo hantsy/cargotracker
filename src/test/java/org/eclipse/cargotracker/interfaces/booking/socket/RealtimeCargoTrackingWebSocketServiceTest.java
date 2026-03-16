@@ -33,7 +33,8 @@ public class RealtimeCargoTrackingWebSocketServiceTest {
 
     private static final Logger LOGGER =
             Logger.getLogger(RealtimeCargoTrackingWebSocketServiceTest.class.getName());
-    @ArquillianResource URL base;
+    @ArquillianResource
+    URL base;
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {

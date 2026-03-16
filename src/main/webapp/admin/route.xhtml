@@ -1,9 +1,9 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="jakarta.faces.html"
-    xmlns:f="jakarta.faces.core"
-    xmlns:ui="jakarta.faces.facelets"
-    template="/WEB-INF/layout/admin.xhtml">
+        xmlns:h="jakarta.faces.html"
+        xmlns:f="jakarta.faces.core"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns="http://www.w3.org/1999/xhtml"
+        template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="metadate">
         <f:metadata>
             <f:viewParam name="trackingId" value="#{cargoDetails.trackingId}"/>
@@ -44,50 +44,51 @@
 
                     <div class="row row-cols-lg-auto mb-2 g-3 justify-content-start align-items-center">
                         <div class="col-12 col-md-4 fs-3 fw-bolder">
-                            Route option ##{itineraryStatus.index + 1}</div>
+                            Route option ##{itineraryStatus.index + 1}
+                        </div>
                         <div class="col-12 col-md-6 mx-auto">
                             <h:commandLink
-                                action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}"
-                                styleClass="btn btn-primary float-right">
+                                    action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}"
+                                    styleClass="btn btn-primary float-right">
                                 Select
                             </h:commandLink>
                         </div>
                     </div>
                     <table class="mb-5 table table-hover">
                         <thead>
-                            <tr>
-                                <th>Voyage</th>
-                                <th>Load</th>
-                                <th>Time</th>
-                                <th>UnLoad</th>
-                                <th>Time</th>
-                            </tr>
+                        <tr>
+                            <th>Voyage</th>
+                            <th>Load</th>
+                            <th>Time</th>
+                            <th>UnLoad</th>
+                            <th>Time</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <ui:repeat var="leg" value="#{itinerary.legs}">
-                                <tr>
-                                    <td>#{leg.voyageNumber}</td>
-                                    <td>#{leg.from.name}
-                                        <br/>
-                                        <span class="text-secondary">#{leg.from.code}</span>
-                                        <ui:fragment
+                        <ui:repeat var="leg" value="#{itinerary.legs}">
+                            <tr>
+                                <td>#{leg.voyageNumber}</td>
+                                <td>#{leg.from.name}
+                                    <br/>
+                                    <span class="text-secondary">#{leg.from.code}</span>
+                                    <ui:fragment
                                             rendered="#{cargoDetails.cargo.origin.name.startsWith(leg.from.name)}">
-                                            <i class="bi bi-arrow-right-square"/>
-                                        </ui:fragment>
-                                    </td>
-                                    <td>#{leg.loadTime}</td>
-                                    <td>
-                                        <ui:fragment
+                                        <i class="bi bi-arrow-right-square"/>
+                                    </ui:fragment>
+                                </td>
+                                <td>#{leg.loadTime}</td>
+                                <td>
+                                    <ui:fragment
                                             rendered="#{cargoDetails.cargo.finalDestination.name.startsWith(leg.to.name)}">
-                                            <i class="bi bi-arrow-right-square"/>
-                                        </ui:fragment>
-                                        #{leg.toName}
-                                        <br/>
-                                        <span class="text-secondary">#{leg.to.code}</span>
-                                    </td>
-                                    <td>#{leg.unloadTime}</td>
-                                </tr>
-                            </ui:repeat>
+                                        <i class="bi bi-arrow-right-square"/>
+                                    </ui:fragment>
+                                    #{leg.toName}
+                                    <br/>
+                                    <span class="text-secondary">#{leg.to.code}</span>
+                                </td>
+                                <td>#{leg.unloadTime}</td>
+                            </tr>
+                        </ui:repeat>
                         </tbody>
                     </table>
                 </ui:repeat>

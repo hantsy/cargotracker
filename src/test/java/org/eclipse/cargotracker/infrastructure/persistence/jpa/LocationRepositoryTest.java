@@ -27,7 +27,8 @@ import static org.eclipse.cargotracker.Deployments.*;
 @Tag("arqtest")
 public class LocationRepositoryTest {
     private static final Logger LOGGER = Logger.getLogger(LocationRepositoryTest.class.getName());
-    @Inject private LocationRepository locationRepository;
+    @Inject
+    private LocationRepository locationRepository;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -60,7 +61,8 @@ public class LocationRepositoryTest {
     }
 
     @BeforeEach
-    public void setup() {}
+    public void setup() {
+    }
 
     @Test
     public void testFind() {

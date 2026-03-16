@@ -63,7 +63,9 @@ public class CargoLifecycleScenarioTest {
     private static LocalDate arrivalDeadline =
             LocalDate.now().minusYears(1).plusMonths(3).plusDays(18);
     private static TrackingId trackingId;
-    @Inject UserTransaction utx;
+
+    @Inject
+    UserTransaction utx;
 
     /**
      * Repository implementations are part of the infrastructure layer, which in this test is
@@ -71,8 +73,10 @@ public class CargoLifecycleScenarioTest {
      */
     HandlingEventRepository handlingEventRepository;
 
-    @Inject CargoRepository cargoRepository;
-    @Inject LocationRepository locationRepository;
+    @Inject
+    CargoRepository cargoRepository;
+    @Inject
+    LocationRepository locationRepository;
     VoyageRepository voyageRepository;
 
     /**
@@ -88,9 +92,11 @@ public class CargoLifecycleScenarioTest {
      * application. The "real" implementations are used in this lifecycle test, but wired with
      * stubbed infrastructure.
      */
-    @Inject BookingService bookingService;
+    @Inject
+    BookingService bookingService;
 
-    @Inject HandlingEventService handlingEventService;
+    @Inject
+    HandlingEventService handlingEventService;
     CargoInspectionService cargoInspectionService;
 
     /**
@@ -108,7 +114,8 @@ public class CargoLifecycleScenarioTest {
      */
     RoutingService routingService;
 
-    @PersistenceContext private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -354,14 +361,14 @@ public class CargoLifecycleScenarioTest {
         UnLocode noSuchUnLocode = new UnLocode("ZZZZZ");
 
         assertThatThrownBy(
-                        () ->
-                                handlingEventService.registerHandlingEvent(
-                                        LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(5),
-                                        trackingId,
-                                        noSuchVoyageNumber,
-                                        noSuchUnLocode,
-                                        HandlingEvent.Type.LOAD),
-                        "Should not be able to register a handling event with invalid location and voyage")
+                () ->
+                        handlingEventService.registerHandlingEvent(
+                                LocalDateTime.now().minusYears(1).plusMonths(3).plusDays(5),
+                                trackingId,
+                                noSuchVoyageNumber,
+                                noSuchUnLocode,
+                                HandlingEvent.Type.LOAD),
+                "Should not be able to register a handling event with invalid location and voyage")
                 .isInstanceOf(CannotCreateHandlingEventException.class);
     }
 
@@ -667,7 +674,8 @@ public class CargoLifecycleScenarioTest {
 
     //    @Before
     //    public void setUp() throws Exception {
-    ////        routingService = routeSpecification -> {
+
+    /// /        routingService = routeSpecification -> {
     //            if (routeSpecification.getOrigin().equals(SampleLocations.HONGKONG)) {
     //                // Hongkong - NYC - Chicago - SampleLocations.STOCKHOLM, initial routing
     //                return Arrays.asList(new Itinerary(Arrays.asList(
@@ -725,9 +733,11 @@ public class CargoLifecycleScenarioTest {
 
         private static final Logger LOGGER = Logger.getLogger(RoutingServiceStub.class.getName());
 
-        @Inject private LocationRepository locationRepository;
+        @Inject
+        private LocationRepository locationRepository;
 
-        @Inject private VoyageRepository voyageRepository;
+        @Inject
+        private VoyageRepository voyageRepository;
 
         @Override
         public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {

@@ -10,7 +10,7 @@ public interface RoutingService {
     /**
      * @param routeSpecification Route specification
      * @return A list of itineraries that satisfy the specification. May be an empty list if no
-     *     route is found.
+     * route is found.
      */
     List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification);
 }

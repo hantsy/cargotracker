@@ -41,6 +41,11 @@ public class HandlingReportServiceTest {
 
     private static final Logger LOGGER =
             Logger.getLogger(HandlingReportServiceTest.class.getName());
+    @ArquillianResource
+    URL base;
+    @Inject
+    ApplicationEventsStub applicationEventsStub;
+    private Client client;
 
     @Deployment()
     public static WebArchive createDeployment() {
@@ -73,12 +78,6 @@ public class HandlingReportServiceTest {
         return war;
     }
 
-    @ArquillianResource URL base;
-
-    @Inject ApplicationEventsStub applicationEventsStub;
-
-    private Client client;
-
     @BeforeEach
     public void setup() {
         this.client = ClientBuilder.newClient();
@@ -105,7 +104,7 @@ public class HandlingReportServiceTest {
 
         // Response is an autocloseable resource.
         try (final Response postReportResponse =
-                postReportTarget.request().post(Entity.json(report))) {
+                     postReportTarget.request().post(Entity.json(report))) {
             assertThat(postReportResponse.getStatus()).isEqualTo(202);
             LOGGER.log(
                     Level.INFO,

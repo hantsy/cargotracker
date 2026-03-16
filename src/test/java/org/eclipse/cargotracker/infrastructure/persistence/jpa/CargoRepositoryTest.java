@@ -18,11 +18,9 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -43,16 +41,22 @@ import static org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type.
 @Tag("arqtest")
 public class CargoRepositoryTest {
     private static final Logger LOGGER = Logger.getLogger(CargoRepositoryTest.class.getName());
-    @Inject UserTransaction utx;
-    @Inject private LocationRepository locationRepository;
+    @Inject
+    UserTransaction utx;
+    @Inject
+    private LocationRepository locationRepository;
 
-    @Inject private HandlingEventRepository handlingEventRepository;
+    @Inject
+    private HandlingEventRepository handlingEventRepository;
 
-    @Inject private CargoRepository cargoRepository;
+    @Inject
+    private CargoRepository cargoRepository;
 
-    @Inject private VoyageRepository voyageRepository;
+    @Inject
+    private VoyageRepository voyageRepository;
 
-    @PersistenceContext private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -85,7 +89,8 @@ public class CargoRepositoryTest {
     }
 
     @BeforeEach
-    public void setup() {}
+    public void setup() {
+    }
 
     public void startTransaction() throws Exception {
         utx.begin();
@@ -288,7 +293,7 @@ public class CargoRepositoryTest {
         LOGGER.log(
                 Level.INFO,
                 "query cargo by tracking id: {0}, \n result: {1}",
-                new Object[] {trackingId, result.toString(true)});
+                new Object[]{trackingId, result.toString(true)});
         assertThat(result.getTrackingId()).isEqualTo(trackingId);
         assertThat(result.getRouteSpecification().getOrigin()).isEqualTo(origin);
         assertThat(result.getRouteSpecification().getDestination()).isEqualTo(destination);

@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-/** A few utilities for working with Date. */
+/**
+ * A few utilities for working with Date.
+ */
 public class DateUtil {
     public static final String DATE_FORMAT = "M/d/yyyy";
     public static final String DATE_TIME_FORMAT = "M/d/yyyy h:m a";
@@ -16,7 +18,8 @@ public class DateUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneId.systemDefault());
 
-    private DateUtil() {}
+    private DateUtil() {
+    }
 
     public static LocalDate toDate(String date) {
         return LocalDate.parse(date, DATE_FORMATTER);

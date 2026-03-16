@@ -2,7 +2,9 @@ package org.eclipse.cargotracker.interfaces.booking.facade.dto;
 
 import java.time.LocalDateTime;
 
-/** DTO for a leg in an itinerary. */
+/**
+ * DTO for a leg in an itinerary.
+ */
 public record LegDto(
         String voyageNumber,
         LocationDto from,

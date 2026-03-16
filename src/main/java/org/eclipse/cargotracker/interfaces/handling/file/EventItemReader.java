@@ -1,5 +1,10 @@
 package org.eclipse.cargotracker.interfaces.handling.file;
 
+import jakarta.batch.api.chunk.AbstractItemReader;
+import jakarta.batch.runtime.context.JobContext;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -7,11 +12,6 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import jakarta.batch.api.chunk.AbstractItemReader;
-import jakarta.batch.runtime.context.JobContext;
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
@@ -28,7 +28,8 @@ public class EventItemReader extends AbstractItemReader {
     private static final Logger LOGGER = Logger.getLogger(EventItemReader.class.getName());
     private static final String UPLOAD_DIRECTORY = "upload_directory";
 
-    @Inject private JobContext jobContext;
+    @Inject
+    private JobContext jobContext;
     private EventFilesCheckpoint checkpoint;
     private RandomAccessFile currentFile;
 

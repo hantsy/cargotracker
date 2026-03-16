@@ -8,4 +8,5 @@ public record CargoStatusDto(
         boolean misdirected,
         String eta,
         String nextExpectedActivity,
-        List<TrackingEventsDto> events) {}
+        List<TrackingEventsDto> events) {
+}

@@ -33,7 +33,8 @@ import static org.eclipse.cargotracker.Deployments.*;
 public class CargoMonitoringServiceTest {
     private static final Logger LOGGER =
             Logger.getLogger(CargoMonitoringServiceTest.class.getName());
-    @ArquillianResource private URL base;
+    @ArquillianResource
+    private URL base;
     private Client client;
 
     @Deployment(testable = false)
@@ -86,7 +87,7 @@ public class CargoMonitoringServiceTest {
 
         // Response is an autocloseable resource.
         try (final Response getAllPostsResponse =
-                getCargoStatus.request().accept(MediaType.APPLICATION_JSON).get()) {
+                     getCargoStatus.request().accept(MediaType.APPLICATION_JSON).get()) {
             assertThat(getAllPostsResponse.getStatus()).isEqualTo(200);
             // TODO: use POJO to assert the response body.
         }

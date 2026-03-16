@@ -1,48 +1,50 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-				xmlns:ui="jakarta.faces.facelets"
-				xmlns:f="jakarta.faces.core"
-				xmlns:h="jakarta.faces.html">
-	<h2 class="fs-2 fw-bold">Claimed Cargo</h2>
+<ui:composition xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <h2 class="fs-2 fw-bold">Claimed Cargo</h2>
 
-	<ui:fragment rendered="#{empty listCargo.claimedCargos}">
-		<p> No Claimed Cargos.</p>
-	</ui:fragment>
+    <ui:fragment rendered="#{empty listCargo.claimedCargos}">
+        <p> No Claimed Cargos.</p>
+    </ui:fragment>
 
-	<ui:fragment rendered="#{not empty listCargo.claimedCargos}">
-		<table class="table">
-			<thead>
-			<tr>
-				<th scope="col">Tracking ID</th>
-				<th scope="col">Origin</th>
-				<th scope="col">Destination</th>
-				<th scope="col">Deadline</th>
-			</tr>
-			</thead>
-			<tbody>
-			<ui:repeat var="cargo" value="#{listCargo.claimedCargos}">
-				<tr>
-					<td>
-						<h:link value="#{cargo.trackingId}"
-								outcome="show.xhtml?faces-redirect=true"
-								styleClass="text-decoration-none">
-							<f:param name="trackingId" value="#{cargo.trackingId}"/>
-							<i class="bi bi-info-circle" style="color: #999999;"></i>
-						</h:link>
-					</td>
-					<td><h:outputText value="#{cargo.origin.name}  "/>
-						<br/>
-						<h:outputText value="#{cargo.origin.code}"
-									  style="color: #999999;font-size:.8em;"/>
-					</td>
-					<td><h:outputText value="#{cargo.finalDestination.name}"/>
-						<br/>
-						<h:outputText value="#{cargo.finalDestination.code}"
-									  style="color: #999999;font-size:.8em;"/>
-					</td>
-					<td>#{cargo.arrivalDeadline}</td>
-				</tr>
-			</ui:repeat>
-			</tbody>
-		</table>
-	</ui:fragment>
+    <ui:fragment rendered="#{not empty listCargo.claimedCargos}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Tracking ID</th>
+                <th scope="col">Origin</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Deadline</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ui:repeat var="cargo" value="#{listCargo.claimedCargos}">
+                <tr>
+                    <td>
+                        <h:link value="#{cargo.trackingId}"
+                                outcome="show.xhtml?faces-redirect=true"
+                                styleClass="text-decoration-none">
+                            <f:param name="trackingId" value="#{cargo.trackingId}"/>
+                            <i class="bi bi-info-circle" style="color: #999999;"></i>
+                        </h:link>
+                    </td>
+                    <td>
+                        <h:outputText value="#{cargo.origin.name}  "/>
+                        <br/>
+                        <h:outputText value="#{cargo.origin.code}"
+                                      style="color: #999999;font-size:.8em;"/>
+                    </td>
+                    <td>
+                        <h:outputText value="#{cargo.finalDestination.name}"/>
+                        <br/>
+                        <h:outputText value="#{cargo.finalDestination.code}"
+                                      style="color: #999999;font-size:.8em;"/>
+                    </td>
+                    <td>#{cargo.arrivalDeadline}</td>
+                </tr>
+            </ui:repeat>
+            </tbody>
+        </table>
+    </ui:fragment>
 </ui:composition>

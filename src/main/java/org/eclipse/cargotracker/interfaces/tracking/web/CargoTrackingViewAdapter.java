@@ -5,13 +5,16 @@ import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.Delivery;
 import org.eclipse.cargotracker.domain.model.cargo.HandlingActivity;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
+import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/** View adapter for displaying a cargo in a tracking context. */
+/**
+ * View adapter for displaying a cargo in a tracking context.
+ */
 public class CargoTrackingViewAdapter {
 
     // public static final String DT_PATTERN = "MM/dd/yyyy hh:mm a z";
@@ -49,10 +52,10 @@ public class CargoTrackingViewAdapter {
 
     public String getLastKnownLocationName() {
         return cargo.getDelivery()
-                        .getLastKnownLocation()
-                        .getUnLocode()
-                        .getIdString()
-                        .equals("XXXXX")
+                .getLastKnownLocation()
+                .getUnLocode()
+                .getIdString()
+                .equals("XXXXX")
                 ? "Unknown"
                 : cargo.getDelivery().getLastKnownLocation().getName();
     }
@@ -85,8 +88,7 @@ public class CargoTrackingViewAdapter {
 
         return switch (delivery.getTransportStatus()) {
             case IN_PORT -> "In port " + cargo.getRouteSpecification().getDestination().getName();
-            case ONBOARD_CARRIER ->
-                    "Onboard voyage " + delivery.getCurrentVoyage().getVoyageNumber().getIdString();
+            case ONBOARD_CARRIER -> "Onboard voyage " + delivery.getCurrentVoyage().getVoyageNumber().getIdString();
             case CLAIMED -> "Claimed";
             case NOT_RECEIVED -> "Not received";
             case UNKNOWN -> "Unknown";
@@ -108,7 +110,7 @@ public class CargoTrackingViewAdapter {
         }
     }
 
-    public String getNextExpectedActivity() {
+    public String getNextExpectedActivityText() {
         HandlingActivity activity = cargo.getDelivery().getNextExpectedActivity();
 
         if ((activity == null) || (activity.isEmpty())) {
@@ -117,27 +119,14 @@ public class CargoTrackingViewAdapter {
 
         String text = "Next expected activity is to ";
         HandlingEvent.Type type = activity.getType();
-
-        if (type.sameValueAs(HandlingEvent.Type.LOAD)) {
-            return text
-                    + type.name().toLowerCase()
-                    + " cargo onto voyage "
-                    + activity.getVoyage().getVoyageNumber()
-                    + " in "
-                    + activity.getLocation().getName();
-        } else if (type.sameValueAs(HandlingEvent.Type.UNLOAD)) {
-            return text
-                    + type.name().toLowerCase()
-                    + " cargo off of "
-                    + activity.getVoyage().getVoyageNumber()
-                    + " in "
-                    + activity.getLocation().getName();
-        } else {
-            return text
-                    + type.name().toLowerCase()
-                    + " cargo in "
-                    + activity.getLocation().getName();
-        }
+        final String typeName = type.name().toLowerCase();
+        final VoyageNumber voyageNumber = activity.getVoyage().getVoyageNumber();
+        final String locationName = activity.getLocation().getName();
+        return switch (type) {
+            case LOAD -> "%s%s cargo onto voyage %s in %s".formatted(text, typeName, voyageNumber, locationName);
+            case UNLOAD -> "%s%s cargo off of %s in %s".formatted(text, typeName, voyageNumber, locationName);
+            default -> "%s%s cargo in %s".formatted(text, typeName, locationName);
+        };
     }
 
     /**
@@ -147,12 +136,14 @@ public class CargoTrackingViewAdapter {
         return Collections.unmodifiableList(events);
     }
 
-    /** Handling event view adapter component. */
+    /**
+     * Handling event view adapter component.
+     */
     public class HandlingEventViewAdapter {
 
         private final HandlingEvent handlingEvent;
 
-        private boolean expected;
+        private final boolean expected;
 
         public HandlingEventViewAdapter(HandlingEvent handlingEvent) {
             this.handlingEvent = handlingEvent;
@@ -176,26 +167,16 @@ public class CargoTrackingViewAdapter {
         }
 
         public String getDescription() {
-            switch (handlingEvent.getType()) {
-                case LOAD:
-                    return "Loaded onto voyage "
-                            + handlingEvent.getVoyage().getVoyageNumber().getIdString()
-                            + " in "
-                            + handlingEvent.getLocation().getName();
-                case UNLOAD:
-                    return "Unloaded off voyage "
-                            + handlingEvent.getVoyage().getVoyageNumber().getIdString()
-                            + " in "
-                            + handlingEvent.getLocation().getName();
-                case RECEIVE:
-                    return "Received in " + handlingEvent.getLocation().getName();
-                case CLAIM:
-                    return "Claimed in " + handlingEvent.getLocation().getName();
-                case CUSTOMS:
-                    return "Cleared customs in " + handlingEvent.getLocation().getName();
-                default:
-                    return "[Unknown]";
-            }
+            final String locationName = handlingEvent.getLocation().getName();
+            final String voyageNumber = handlingEvent.getVoyage().getVoyageNumber().getIdString();
+            return switch (handlingEvent.getType()) {
+                case LOAD -> "Loaded onto voyage %s in %s".formatted(voyageNumber, locationName);
+                case UNLOAD -> "Unloaded off voyage %s in %s".formatted(voyageNumber, locationName);
+                case RECEIVE -> "Received in %s".formatted(locationName);
+                case CLAIM -> "Claimed in %s".formatted(locationName);
+                case CUSTOMS -> "Cleared customs in %s".formatted(locationName);
+                default -> "[Unknown]";
+            };
         }
     }
 }

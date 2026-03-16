@@ -6,7 +6,6 @@ import jakarta.enterprise.event.Event;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
-
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -21,26 +20,26 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class CargoInspectedSseEventStub {
 
-	private static final Logger LOGGER = Logger.getLogger(CargoInspectedSseEventStub.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CargoInspectedSseEventStub.class.getName());
 
-	@Inject
-	@CargoInspected
-	Event<Cargo> cargoEvent;
+    @Inject
+    @CargoInspected
+    Event<Cargo> cargoEvent;
 
-	@Inject
-	ManagedScheduledExecutorService scheduledExecutorService;
+    @Inject
+    ManagedScheduledExecutorService scheduledExecutorService;
 
-	// @PostConstruct
-	public void initialize(@Observes Startup startup) {
-		LOGGER.log(Level.INFO, "raise event after 5 seconds...: {0}", startup);
-		scheduledExecutorService.schedule(this::raiseEvent, 5000, TimeUnit.MILLISECONDS);
-	}
+    // @PostConstruct
+    public void initialize(@Observes Startup startup) {
+        LOGGER.log(Level.INFO, "raise event after 5 seconds...: {0}", startup);
+        scheduledExecutorService.schedule(this::raiseEvent, 5000, TimeUnit.MILLISECONDS);
+    }
 
-	private void raiseEvent() {
-		Cargo cargo = new Cargo(new TrackingId("AAA"), new RouteSpecification(SampleLocations.HONGKONG,
-				SampleLocations.NEWYORK, LocalDate.now().plusMonths(6)));
-		LOGGER.log(Level.INFO, "raise event: {0}", cargo);
-		this.cargoEvent.fire(cargo);
-	}
+    private void raiseEvent() {
+        Cargo cargo = new Cargo(new TrackingId("AAA"), new RouteSpecification(SampleLocations.HONGKONG,
+                SampleLocations.NEWYORK, LocalDate.now().plusMonths(6)));
+        LOGGER.log(Level.INFO, "raise event: {0}", cargo);
+        this.cargoEvent.fire(cargo);
+    }
 
 }

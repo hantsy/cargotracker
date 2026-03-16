@@ -1,5 +1,7 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -10,8 +12,6 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
@@ -30,7 +30,8 @@ public class HandlingEventFactory implements Serializable {
     private LocationRepository locationRepository;
 
     // no-args constructor required by CDI
-    public HandlingEventFactory() {}
+    public HandlingEventFactory() {
+    }
 
     @Inject
     public HandlingEventFactory(
@@ -44,14 +45,14 @@ public class HandlingEventFactory implements Serializable {
 
     /**
      * @param registrationTime time when this event was received by the system
-     * @param completionTime when the event was completed, for example finished loading
-     * @param trackingId cargo tracking id
-     * @param voyageNumber voyage number
-     * @param unlocode United Nations Location Code for the location of the event
-     * @param type type of event
+     * @param completionTime   when the event was completed, for example finished loading
+     * @param trackingId       cargo tracking id
+     * @param voyageNumber     voyage number
+     * @param unlocode         United Nations Location Code for the location of the event
+     * @param type             type of event
      * @return A handling event.
-     * @throws UnknownVoyageException if there's no voyage with this number
-     * @throws UnknownCargoException if there's no cargo with this tracking id
+     * @throws UnknownVoyageException   if there's no voyage with this number
+     * @throws UnknownCargoException    if there's no cargo with this tracking id
      * @throws UnknownLocationException if there's no location with this UN Locode
      */
     // TODO [Clean Code] Look at the exception handling more seriously.

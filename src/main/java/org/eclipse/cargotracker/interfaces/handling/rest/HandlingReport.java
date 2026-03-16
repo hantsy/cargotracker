@@ -3,7 +3,9 @@ package org.eclipse.cargotracker.interfaces.handling.rest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/** Transfer object for handling reports. */
+/**
+ * Transfer object for handling reports.
+ */
 public class HandlingReport {
 
     @NotBlank(message = "Missing completion time.")

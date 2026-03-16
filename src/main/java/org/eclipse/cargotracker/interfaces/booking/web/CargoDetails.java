@@ -22,7 +22,8 @@ public class CargoDetails {
 
     private String trackingId;
     private CargoRouteDto cargo;
-    @Inject private BookingServiceFacade bookingServiceFacade;
+    @Inject
+    private BookingServiceFacade bookingServiceFacade;
 
     public String getTrackingId() {
         return trackingId;

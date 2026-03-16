@@ -1,8 +1,8 @@
 <ui:composition
-        xmlns="http://www.w3.org/1999/xhtml"
         xmlns:jsf="jakarta.faces"
         xmlns:h="jakarta.faces.html"
         xmlns:ui="jakarta.faces.facelets"
+        xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/public.xhtml">
     <ui:define name="title">Public Tracking</ui:define>
     <ui:define name="headIncludes">
@@ -11,7 +11,8 @@
     </ui:define>
     <ui:define name="body">
 
-        <h:form prependId="false" id="trackingForm" styleClass="row row-cols-lg-auto g-3 justify-content-center align-items-center">
+        <h:form prependId="false" id="trackingForm"
+                styleClass="row row-cols-lg-auto g-3 justify-content-center align-items-center">
             <div class="col-12">
                 <label class="visually-hidden" for="trackingIdInput">Enter your tracking ID:</label>
                 <input type="text" jsf:id="trackingIdInput"

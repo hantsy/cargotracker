@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.application;
 
+import jakarta.enterprise.event.Event;
 import org.eclipse.cargotracker.application.internal.DefaultCargoInspectionService;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -10,8 +11,6 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import jakarta.enterprise.event.Event;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
