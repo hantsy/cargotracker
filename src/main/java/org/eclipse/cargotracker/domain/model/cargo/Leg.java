@@ -11,6 +11,7 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -116,29 +117,45 @@ public class Leg implements Serializable {
                 .isEquals();
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || !(o instanceof Leg)) {
+//            return false;
+//        }
+//
+//        Leg leg = (Leg) o;
+//
+//        return sameValueAs(leg);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return new HashCodeBuilder()
+//                .append(this.voyage)
+//                .append(this.loadLocation)
+//                .append(this.unloadLocation)
+//                .append(this.loadTime)
+//                .append(this.unloadTime)
+//                .toHashCode();
+//    }
+
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof Leg)) {
-            return false;
-        }
-
-        Leg leg = (Leg) o;
-
-        return sameValueAs(leg);
+        if (!(o instanceof Leg leg)) return false;
+        return Objects.equals(voyage, leg.voyage)
+                && Objects.equals(loadLocation, leg.loadLocation)
+                && Objects.equals(unloadLocation, leg.unloadLocation)
+                && Objects.equals(loadTime, leg.loadTime)
+                && Objects.equals(unloadTime, leg.unloadTime);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.voyage)
-                .append(this.loadLocation)
-                .append(this.unloadLocation)
-                .append(this.loadTime)
-                .append(this.unloadTime)
-                .toHashCode();
+        return Objects.hash(voyage, loadLocation, unloadLocation, loadTime, unloadTime);
     }
 
     @Override

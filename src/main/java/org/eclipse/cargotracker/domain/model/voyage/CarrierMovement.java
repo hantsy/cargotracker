@@ -9,6 +9,7 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * A carrier movement is a vessel voyage from one location to another.
@@ -81,28 +82,43 @@ public class CarrierMovement implements Serializable {
         return arrivalTime;
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || !(o instanceof CarrierMovement)) {
+//            return false;
+//        }
+//
+//        CarrierMovement that = (CarrierMovement) o;
+//
+//        return sameValueAs(that);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return new HashCodeBuilder()
+//                .append(this.departureLocation)
+//                .append(this.departureTime)
+//                .append(this.arrivalLocation)
+//                .append(this.arrivalTime)
+//                .toHashCode();
+//    }
+
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof CarrierMovement)) {
-            return false;
-        }
-
-        CarrierMovement that = (CarrierMovement) o;
-
-        return sameValueAs(that);
+        if (!(o instanceof CarrierMovement that)) return false;
+        return Objects.equals(departureLocation, that.departureLocation)
+                && Objects.equals(arrivalLocation, that.arrivalLocation)
+                && Objects.equals(departureTime, that.departureTime)
+                && Objects.equals(arrivalTime, that.arrivalTime);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.departureLocation)
-                .append(this.departureTime)
-                .append(this.arrivalLocation)
-                .append(this.arrivalTime)
-                .toHashCode();
+        return Objects.hash(departureLocation, arrivalLocation, departureTime, arrivalTime);
     }
 
     private boolean sameValueAs(CarrierMovement other) {

@@ -51,21 +51,33 @@ public class HandlingHistory {
         return other != null && this.handlingEvents.equals(other.handlingEvents);
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//
+//        HandlingHistory other = (HandlingHistory) o;
+//        return sameValueAs(other);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return handlingEvents.hashCode();
+//    }
+
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        HandlingHistory other = (HandlingHistory) o;
-        return sameValueAs(other);
+        if (!(o instanceof HandlingHistory that)) return false;
+        return Objects.equals(handlingEvents, that.handlingEvents);
     }
 
     @Override
     public int hashCode() {
-        return handlingEvents.hashCode();
+        return Objects.hashCode(handlingEvents);
     }
 }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A location in our model is stops on a journey, such as cargo origin or destination, or carrier
@@ -69,36 +70,51 @@ public class Location implements Serializable {
         return name;
     }
 
-    /**
-     * @param object to compare
-     * @return Since this is an entiy this will be true iff UN locodes are equal.
-     */
-    @Override
-    public boolean equals(Object object) {
-        if (object == null) {
-            return false;
-        }
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof Location)) {
-            return false;
-        }
-        Location other = (Location) object;
-        return sameIdentityAs(other);
-    }
-
     public boolean sameIdentityAs(Location other) {
         return this.unLocode.sameValueAs(other.unLocode);
     }
 
-    /**
-     * @return Hash code of UN locode.
-     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Location location)) return false;
+        return Objects.equals(unLocode, location.unLocode);
+    }
+
     @Override
     public int hashCode() {
-        return unLocode.hashCode();
+        return Objects.hashCode(unLocode);
     }
+
+//    /**
+//     * @param object to compare
+//     * @return Since this is an entiy this will be true iff UN locodes are equal.
+//     */
+//    @Override
+//    public boolean equals(Object object) {
+//        if (object == null) {
+//            return false;
+//        }
+//        if (this == object) {
+//            return true;
+//        }
+//        if (!(object instanceof Location)) {
+//            return false;
+//        }
+//        Location other = (Location) object;
+//        return sameIdentityAs(other);
+//    }
+//
+//
+//
+//    /**
+//     * @return Hash code of UN locode.
+//     */
+//    @Override
+//    public int hashCode() {
+//        return unLocode.hashCode();
+//    }
+
+
 
     @Override
     public String toString() {

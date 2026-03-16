@@ -1,10 +1,19 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -189,20 +198,6 @@ public class HandlingEvent implements Serializable {
         return builder.toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof HandlingEvent)) {
-            return false;
-        }
-
-        HandlingEvent event = (HandlingEvent) o;
-
-        return sameEventAs(event);
-    }
-
     private boolean sameEventAs(HandlingEvent other) {
         return other != null
                 && new EqualsBuilder()
@@ -214,15 +209,47 @@ public class HandlingEvent implements Serializable {
                 .isEquals();
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || !(o instanceof HandlingEvent)) {
+//            return false;
+//        }
+//
+//        HandlingEvent event = (HandlingEvent) o;
+//
+//        return sameEventAs(event);
+//    }
+//
+//
+//
+//    @Override
+//    public int hashCode() {
+//        return new HashCodeBuilder()
+//                .append(cargo)
+//                .append(voyage)
+//                .append(completionTime)
+//                .append(location)
+//                .append(type)
+//                .toHashCode();
+//    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof HandlingEvent that)) return false;
+        return type == that.type
+                && Objects.equals(voyage, that.voyage)
+                && Objects.equals(location, that.location)
+                && Objects.equals(completionTime, that.completionTime)
+                && Objects.equals(cargo, that.cargo);
+    }
+
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(cargo)
-                .append(voyage)
-                .append(completionTime)
-                .append(location)
-                .append(type)
-                .toHashCode();
+        return Objects.hash(type, voyage, location, completionTime, cargo);
     }
 
     @Override

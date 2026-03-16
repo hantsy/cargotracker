@@ -1,10 +1,15 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -16,8 +21,14 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.*;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
+import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.MISROUTED;
+import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.NOT_ROUTED;
+import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.ROUTED;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.CLAIMED;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.IN_PORT;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.NOT_RECEIVED;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.UNKNOWN;
 
 /**
  * The actual transportation of the cargo, as opposed to the customer requirement
@@ -343,59 +354,93 @@ public class Delivery implements Serializable {
                 .isEquals();
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || !(o instanceof Delivery)) {
+//            return false;
+//        }
+//
+//        Delivery other = (Delivery) o;
+//
+//        return sameValueAs(other);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return new HashCodeBuilder()
+//                .append(transportStatus)
+//                .append(lastKnownLocation)
+//                .append(currentVoyage)
+//                .append(misdirected)
+//                .append(eta)
+//                .append(nextExpectedActivity)
+//                .append(isUnloadedAtDestination)
+//                .append(routingStatus)
+//                .append(calculatedAt)
+//                .append(lastEvent)
+//                .toHashCode();
+//    }
+
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof Delivery)) {
-            return false;
-        }
-
-        Delivery other = (Delivery) o;
-
-        return sameValueAs(other);
+        if (!(o instanceof Delivery delivery)) return false;
+        return misdirected == delivery.misdirected
+                && isUnloadedAtDestination == delivery.isUnloadedAtDestination
+                && transportStatus == delivery.transportStatus
+                && Objects.equals(lastKnownLocation, delivery.lastKnownLocation)
+                && Objects.equals(currentVoyage, delivery.currentVoyage)
+                && Objects.equals(eta, delivery.eta)
+                && Objects.equals(nextExpectedActivity, delivery.nextExpectedActivity)
+                && routingStatus == delivery.routingStatus
+                && Objects.equals(calculatedAt, delivery.calculatedAt)
+                && Objects.equals(lastEvent, delivery.lastEvent);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(transportStatus)
-                .append(lastKnownLocation)
-                .append(currentVoyage)
-                .append(misdirected)
-                .append(eta)
-                .append(nextExpectedActivity)
-                .append(isUnloadedAtDestination)
-                .append(routingStatus)
-                .append(calculatedAt)
-                .append(lastEvent)
-                .toHashCode();
+        return Objects.hash(
+                transportStatus,
+                lastKnownLocation,
+                currentVoyage,
+                misdirected,
+                eta,
+                nextExpectedActivity,
+                isUnloadedAtDestination,
+                routingStatus,
+                calculatedAt,
+                lastEvent
+        );
     }
 
-    @Override
-    public String toString() {
-        return "Delivery{"
-                + "transportStatus="
-                + transportStatus
-                + ", lastKnownLocation="
-                + lastKnownLocation
-                + ", currentVoyage="
-                + currentVoyage
-                + ", misdirected="
-                + misdirected
-                + ", eta="
-                + eta
-                + ", nextExpectedActivity="
-                + nextExpectedActivity
-                + ", isUnloadedAtDestination="
-                + isUnloadedAtDestination
-                + ", routingStatus="
-                + routingStatus
-                + ", calculatedAt="
-                + calculatedAt
-                + ", lastEvent="
-                + lastEvent
-                + '}';
-    }
+
+
+    //    @Override
+//    public String toString() {
+//        return "Delivery{"
+//                + "transportStatus="
+//                + transportStatus
+//                + ", lastKnownLocation="
+//                + lastKnownLocation
+//                + ", currentVoyage="
+//                + currentVoyage
+//                + ", misdirected="
+//                + misdirected
+//                + ", eta="
+//                + eta
+//                + ", nextExpectedActivity="
+//                + nextExpectedActivity
+//                + ", isUnloadedAtDestination="
+//                + isUnloadedAtDestination
+//                + ", routingStatus="
+//                + routingStatus
+//                + ", calculatedAt="
+//                + calculatedAt
+//                + ", lastEvent="
+//                + lastEvent
+//                + '}';
+//    }
 }

@@ -7,18 +7,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.cargotracker.domain.shared.AbstractSpecification;
+import org.eclipse.cargotracker.domain.shared.Specification;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * Route specification. Describes where a cargo origin and destination is, and the arrival deadline.
  */
 @Embeddable
-public class RouteSpecification extends AbstractSpecification<Itinerary> implements Serializable {
+public class RouteSpecification implements Specification<Itinerary>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -87,27 +87,41 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
                 .isEquals();
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//
+//        RouteSpecification that = (RouteSpecification) o;
+//
+//        return sameValueAs(that);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return new HashCodeBuilder()
+//                .append(this.origin)
+//                .append(this.destination)
+//                .append(this.arrivalDeadline)
+//                .toHashCode();
+//    }
+
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        RouteSpecification that = (RouteSpecification) o;
-
-        return sameValueAs(that);
+        if (!(o instanceof RouteSpecification that)) return false;
+        return Objects.equals(origin, that.origin)
+                && Objects.equals(destination, that.destination)
+                && Objects.equals(arrivalDeadline, that.arrivalDeadline);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.origin)
-                .append(this.destination)
-                .append(this.arrivalDeadline)
-                .toHashCode();
+        return Objects.hash(origin, destination, arrivalDeadline);
     }
 
     @Override

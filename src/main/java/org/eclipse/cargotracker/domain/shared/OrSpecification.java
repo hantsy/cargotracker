@@ -3,7 +3,7 @@ package org.eclipse.cargotracker.domain.shared;
 /**
  * OR specification, used to create a new specification that is the OR of two other specifications.
  */
-public class OrSpecification<T> extends AbstractSpecification<T> {
+public class OrSpecification<T> implements Specification<T> {
 
     private final Specification<T> spec1;
     private final Specification<T> spec2;

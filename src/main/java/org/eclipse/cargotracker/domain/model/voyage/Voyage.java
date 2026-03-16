@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "voyages")
@@ -55,26 +56,38 @@ public class Voyage implements Serializable {
         return schedule;
     }
 
-    @Override
-    public int hashCode() {
-        return voyageNumber.hashCode();
-    }
+//    @Override
+//    public int hashCode() {
+//        return voyageNumber.hashCode();
+//    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null) {
+//            return false;
+//        }
+//        if (!(o instanceof Voyage)) {
+//            return false;
+//        }
+//
+//        Voyage that = (Voyage) o;
+//
+//        return sameIdentityAs(that);
+//    }
+
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof Voyage)) {
-            return false;
-        }
+        if (!(o instanceof Voyage voyage)) return false;
+        return Objects.equals(voyageNumber, voyage.voyageNumber);
+    }
 
-        Voyage that = (Voyage) o;
-
-        return sameIdentityAs(that);
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(voyageNumber);
     }
 
     public boolean sameIdentityAs(Voyage other) {
