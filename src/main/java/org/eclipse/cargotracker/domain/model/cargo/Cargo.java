@@ -8,9 +8,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
-import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -133,7 +133,7 @@ public class Cargo implements Serializable {
      * @return The itinerary. Never null.
      */
     public Itinerary getItinerary() {
-        return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
+        return Objects.requireNonNullElse(this.itinerary, Itinerary.EMPTY_ITINERARY);
     }
 
     /**

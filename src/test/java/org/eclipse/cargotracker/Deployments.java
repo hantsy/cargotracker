@@ -119,8 +119,7 @@ public class Deployments {
                 .addClass(Specification.class)
                 .addClass(AndSpecification.class)
                 .addClass(OrSpecification.class)
-                .addClass(NotSpecification.class)
-                .addClass(DomainObjectUtils.class);
+                .addClass(NotSpecification.class);
     }
 
     public static void addDomainRepositories(WebArchive war) {
