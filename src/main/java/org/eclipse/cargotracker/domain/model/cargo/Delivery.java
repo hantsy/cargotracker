@@ -9,11 +9,11 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
-import org.eclipse.cargotracker.domain.shared.DomainObjectUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.*;
@@ -133,7 +133,7 @@ public class Delivery implements Serializable {
     }
 
     public Location getLastKnownLocation() {
-        return DomainObjectUtils.nullSafe(lastKnownLocation, Location.UNKNOWN);
+        return Objects.requireNonNullElse(lastKnownLocation, Location.UNKNOWN);
     }
 
     public void setLastKnownLocation(Location lastKnownLocation) {
@@ -145,7 +145,7 @@ public class Delivery implements Serializable {
     }
 
     public Voyage getCurrentVoyage() {
-        return DomainObjectUtils.nullSafe(currentVoyage, Voyage.NONE);
+        return Objects.requireNonNullElse(currentVoyage, Voyage.NONE);
     }
 
     /**
@@ -178,7 +178,7 @@ public class Delivery implements Serializable {
     // *NULL*.
     public HandlingActivity getNextExpectedActivity() {
         // return nextExpectedActivity;
-        return DomainObjectUtils.nullSafe(nextExpectedActivity, NO_ACTIVITY);
+        return Objects.requireNonNullElse(nextExpectedActivity, NO_ACTIVITY);
     }
 
     /**
