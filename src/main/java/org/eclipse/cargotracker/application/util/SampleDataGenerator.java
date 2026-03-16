@@ -1,18 +1,17 @@
 package org.eclipse.cargotracker.application.util;
 
+import jakarta.enterprise.event.Startup;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.*;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.Singleton;
-import jakarta.ejb.Startup;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -20,19 +19,31 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /** Loads sample data for demo. */
-@Singleton
-@Startup
+@ApplicationScoped
+@Transactional
 public class SampleDataGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(SampleDataGenerator.class.getName());
 
-    @PersistenceContext private EntityManager entityManager;
-    @Inject private HandlingEventFactory handlingEventFactory;
-    @Inject private HandlingEventRepository handlingEventRepository;
+    private EntityManager entityManager;
+    private HandlingEventFactory handlingEventFactory;
+    private HandlingEventRepository handlingEventRepository;
 
-    @PostConstruct
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void loadSampleData() {
+    // No-arg constructor required by CDI
+    public SampleDataGenerator() {
+    }
+
+    @Inject
+    public SampleDataGenerator(
+            EntityManager entityManager,
+            HandlingEventFactory handlingEventFactory,
+            HandlingEventRepository handlingEventRepository) {
+        this.entityManager = entityManager;
+        this.handlingEventFactory = handlingEventFactory;
+        this.handlingEventRepository = handlingEventRepository;
+    }
+
+    public void loadSampleData(@Observes Startup startup) {
         LOGGER.info("Loading sample data.");
         unLoadAll(); // Fail-safe in case of application restart that does not trigger a JPA schema
         // drop.

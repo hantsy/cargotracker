@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.application.internal;
 
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.CargoInspectionService;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -9,36 +10,34 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEventRepository;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Stateless
+@ApplicationScoped
+@Transactional
 public class DefaultCargoInspectionService implements CargoInspectionService {
 
     private static final Logger LOGGER =
             Logger.getLogger(DefaultCargoInspectionService.class.getName());
 
-    @Inject private ApplicationEvents applicationEvents;
+    private ApplicationEvents applicationEvents;
+    private CargoRepository cargoRepository;
+    private HandlingEventRepository handlingEventRepository;
+    private Event<Cargo> cargoInspected;
 
-    @Inject private CargoRepository cargoRepository;
+    // No-arg constructor required by CDI
+    public DefaultCargoInspectionService() {
+    }
 
-    @Inject private HandlingEventRepository handlingEventRepository;
-
-    @Inject @CargoInspected private Event<Cargo> cargoInspected;
-
-    // no-args constructor required by CDI
-    public DefaultCargoInspectionService() {}
-
-    // @Inject
+    @Inject
     public DefaultCargoInspectionService(
             ApplicationEvents applicationEvents,
             CargoRepository cargoRepository,
             HandlingEventRepository handlingEventRepository,
-            // @CargoInspected
-            Event<Cargo> cargoInspected) {
+            @CargoInspected Event<Cargo> cargoInspected) {
         this.applicationEvents = applicationEvents;
         this.cargoRepository = cargoRepository;
         this.handlingEventRepository = handlingEventRepository;

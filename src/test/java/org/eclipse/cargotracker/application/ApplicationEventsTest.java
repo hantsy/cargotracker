@@ -264,11 +264,12 @@ public class ApplicationEventsTest {
 
             logger.log(
                     Level.INFO,
-                    "completionTime: {0}\n"
-                            + "tracking id: {1}\n"
-                            + "voyageNumber: {2}\n"
-                            + "code: {3}\n"
-                            + "type: {4}",
+                    """
+                            completionTime: {0}
+                            tracking id: {1}
+                            voyageNumber: {2}
+                            code: {3}
+                            type: {4}""",
                     new Object[] {completionTime, trackingId, voyageNumber, unLocode, type});
             this.completionTime = completionTime;
             this.trackingId = trackingId;

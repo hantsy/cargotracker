@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.UserTransaction;
+import org.eclipse.cargotracker.TxUtil;
 import org.eclipse.cargotracker.application.internal.DefaultBookingService;
 import org.eclipse.cargotracker.domain.model.cargo.*;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
@@ -51,13 +52,21 @@ public class BookingServiceTest {
     private static List<Itinerary> candidates;
     private static LocalDate deadline;
     private static Itinerary assigned;
-    @Inject UserTransaction utx;
-    @Inject private BookingService bookingService;
-    @PersistenceContext private EntityManager entityManager;
+
+    @Inject
+    UserTransaction utx;
+
+    @Inject
+    private BookingService bookingService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    private TxUtil txUtil;
 
     @Deployment
     public static WebArchive createDeployment() {
-
+        // use the fixed cargo-tracker-test as part of the routing service url defined in the test-web.xml.
         WebArchive war = ShrinkWrap.create(WebArchive.class, "cargo-tracker-test.war");
 
         addExtraJars(war);
@@ -87,6 +96,9 @@ public class BookingServiceTest {
                 .addClass(SampleVoyages.class)
                 .addClass(RestActivator.class)
 
+                // add TxUtil
+                .addClass(TxUtil.class)
+
                 // add persistence unit descriptor
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
 
@@ -107,22 +119,14 @@ public class BookingServiceTest {
     // in test.
     @BeforeEach
     public void setUp() throws Exception {
-        startTransaction();
+        this.txUtil = new TxUtil(utx, entityManager);
     }
 
     @AfterEach
     public void tearDown() throws Exception {
-        commitTransaction();
+        this.txUtil = null;
     }
 
-    public void startTransaction() throws Exception {
-        utx.begin();
-        entityManager.joinTransaction();
-    }
-
-    public void commitTransaction() throws Exception {
-        utx.commit();
-    }
 
     @Test
     @Order(1)
@@ -134,127 +138,125 @@ public class BookingServiceTest {
 
         deadline = LocalDate.now().plusMonths(6);
 
-        trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, deadline);
+        txUtil.runInTx(() -> {
+            trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, deadline);
+        });
 
-        Cargo cargo =
-                entityManager
-                        .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                        .setParameter("trackingId", trackingId)
-                        .getSingleResult();
 
-        assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-        assertThat(cargo.getRouteSpecification().getDestination())
-                .isEqualTo(SampleLocations.STOCKHOLM);
-        assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(deadline);
-        assertThat(cargo.getDelivery().getTransportStatus())
-                .isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getEstimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
-        assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
-        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
-        assertThat(cargo.getItinerary()).isEqualTo(Itinerary.EMPTY_ITINERARY);
+        txUtil.runInTx(() -> {
+            Cargo cargo = entityManager
+                    .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+                    .setParameter("trackingId", trackingId)
+                    .getSingleResult();
+
+            assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
+            assertThat(cargo.getRouteSpecification().getDestination()).isEqualTo(SampleLocations.STOCKHOLM);
+            assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(deadline);
+            assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+            assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
+            assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
+            assertThat(cargo.getDelivery().isMisdirected()).isFalse();
+            assertThat(cargo.getDelivery().getEstimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+            assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
+            assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+            assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
+            assertThat(cargo.getItinerary()).isEqualTo(Itinerary.EMPTY_ITINERARY);
+        });
     }
 
     @Test
     @Order(2)
-    // @Transactional
     public void testRouteCandidates() {
-        candidates = bookingService.requestPossibleRoutesForCargo(trackingId);
+        txUtil.runInTx(() -> {
+            candidates = bookingService.requestPossibleRoutesForCargo(trackingId);
+        });
 
         assertThat(candidates).isNotEmpty();
     }
 
     @Test
     @Order(3)
-    // @Transactional
     public void testAssignRoute() {
         assigned = candidates.get(new Random().nextInt(candidates.size()));
 
-        bookingService.assignCargoToRoute(assigned, trackingId);
+        txUtil.runInTx(() -> {
+            bookingService.assignCargoToRoute(assigned, trackingId);
+        });
 
-        Cargo cargo =
-                entityManager
-                        .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                        .setParameter("trackingId", trackingId)
-                        .getSingleResult();
+        txUtil.runInTx(() -> {
+            Cargo cargo = entityManager
+                    .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+                    .setParameter("trackingId", trackingId)
+                    .getSingleResult();
 
-        assertThat(cargo.getItinerary()).isEqualTo(assigned);
-        assertThat(cargo.getDelivery().getTransportStatus())
-                .isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(
-                        cargo.getDelivery()
-                                .getEstimatedTimeOfArrival()
-                                .isBefore(deadline.atStartOfDay()))
-                .isTrue();
-        assertThat(cargo.getDelivery().getNextExpectedActivity().getType())
-                .isEqualTo(HandlingEvent.Type.RECEIVE);
-        assertThat(cargo.getDelivery().getNextExpectedActivity().getLocation())
-                .isEqualTo(SampleLocations.CHICAGO);
-        assertThat(cargo.getDelivery().getNextExpectedActivity().getVoyage()).isNull();
-        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.ROUTED);
+            assertThat(cargo.getItinerary()).isEqualTo(assigned);
+            assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+            assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
+            assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
+            assertThat(cargo.getDelivery().isMisdirected()).isFalse();
+            assertThat(cargo.getDelivery().getEstimatedTimeOfArrival().isBefore(deadline.atStartOfDay())).isTrue();
+            assertThat(cargo.getDelivery().getNextExpectedActivity().getType()).isEqualTo(HandlingEvent.Type.RECEIVE);
+            assertThat(cargo.getDelivery().getNextExpectedActivity().getLocation()).isEqualTo(SampleLocations.CHICAGO);
+            assertThat(cargo.getDelivery().getNextExpectedActivity().getVoyage()).isNull();
+            assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+            assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.ROUTED);
+        });
     }
 
     @Test
     @Order(4)
-    // @Transactional
     public void testChangeDestination() {
-        bookingService.changeDestination(trackingId, new UnLocode("FIHEL"));
+        txUtil.runInTx(() -> {
+            bookingService.changeDestination(trackingId, new UnLocode("FIHEL"));
+        });
 
-        Cargo cargo =
-                entityManager
-                        .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                        .setParameter("trackingId", trackingId)
-                        .getSingleResult();
+        txUtil.runInTx(() -> {
+            Cargo cargo = entityManager
+                    .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+                    .setParameter("trackingId", trackingId)
+                    .getSingleResult();
 
-        assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-        assertThat(cargo.getRouteSpecification().getDestination())
-                .isEqualTo(SampleLocations.HELSINKI);
-        assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(deadline);
-        assertThat(cargo.getItinerary()).isEqualTo(assigned);
-        assertThat(cargo.getDelivery().getTransportStatus())
-                .isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getEstimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
-        assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
-        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.MISROUTED);
+            assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
+            assertThat(cargo.getRouteSpecification().getDestination()).isEqualTo(SampleLocations.HELSINKI);
+            assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(deadline);
+            assertThat(cargo.getItinerary()).isEqualTo(assigned);
+            assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+            assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
+            assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
+            assertThat(cargo.getDelivery().isMisdirected()).isFalse();
+            assertThat(cargo.getDelivery().getEstimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+            assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
+            assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+            assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.MISROUTED);
+        });
     }
 
     @Test
     @Order(5)
-    // @Transactional
     public void testChangeDeadline() {
         LocalDate newDeadline = deadline.plusMonths(1);
-        bookingService.changeDeadline(trackingId, newDeadline);
+        txUtil.runInTx(() -> {
+            bookingService.changeDeadline(trackingId, newDeadline);
+        });
 
-        Cargo cargo =
-                entityManager
-                        .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                        .setParameter("trackingId", trackingId)
-                        .getSingleResult();
+        txUtil.runInTx(() -> {
+            Cargo cargo = entityManager
+                    .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+                    .setParameter("trackingId", trackingId)
+                    .getSingleResult();
 
-        assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-        assertThat(cargo.getRouteSpecification().getDestination())
-                .isEqualTo(SampleLocations.HELSINKI);
-        assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(newDeadline);
-        assertThat(cargo.getItinerary()).isEqualTo(assigned);
-        assertThat(cargo.getDelivery().getTransportStatus())
-                .isEqualTo(TransportStatus.NOT_RECEIVED);
-        assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
-        assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
-        assertThat(cargo.getDelivery().isMisdirected()).isFalse();
-        assertThat(cargo.getDelivery().getEstimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
-        assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
-        assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
-        assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.MISROUTED);
+            assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
+            assertThat(cargo.getRouteSpecification().getDestination()).isEqualTo(SampleLocations.HELSINKI);
+            assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(newDeadline);
+            assertThat(cargo.getItinerary()).isEqualTo(assigned);
+            assertThat(cargo.getDelivery().getTransportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
+            assertThat(cargo.getDelivery().getLastKnownLocation()).isEqualTo(Location.UNKNOWN);
+            assertThat(cargo.getDelivery().getCurrentVoyage()).isEqualTo(Voyage.NONE);
+            assertThat(cargo.getDelivery().isMisdirected()).isFalse();
+            assertThat(cargo.getDelivery().getEstimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+            assertThat(cargo.getDelivery().getNextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
+            assertThat(cargo.getDelivery().isUnloadedAtDestination()).isFalse();
+            assertThat(cargo.getDelivery().getRoutingStatus()).isEqualTo(RoutingStatus.MISROUTED);
+        });
     }
 }
