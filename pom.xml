@@ -379,7 +379,7 @@
                 <version>${maven-failsafe-plugin.version}</version>
                 <configuration>
                     <skipITs>${skip.integration.tests}</skipITs>
-                    <argLine>@argLine ${jacocoArgLine}</argLine>
+                    <argLine>${jacocoArgLine}</argLine>
                 </configuration>
                 <executions>
                     <execution>
