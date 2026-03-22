@@ -98,6 +98,7 @@
         <!-- By default, skip tests -->
         <skip.unit.tests>true</skip.unit.tests>
         <skip.integration.tests>true</skip.integration.tests>
+        <jacocoArgLine></jacocoArgLine>
     </properties>
 
     <dependencyManagement>
@@ -378,6 +379,7 @@
                 <version>${maven-failsafe-plugin.version}</version>
                 <configuration>
                     <skipITs>${skip.integration.tests}</skipITs>
+                    <argLine>@argLine ${jacocoArgLine}</argLine>
                 </configuration>
                 <executions>
                     <execution>
@@ -902,6 +904,9 @@
                                 </goals>
                                 <configuration>
                                     <append>true</append>
+                                    <output>tcpserver</output>
+                                    <port>6300</port>
+                                    <propertyName>jacocoArgLine</propertyName>
                                 </configuration>
                             </execution>
                             <execution>
