@@ -39,10 +39,9 @@ public interface Specification<T> {
     /**
      * Create a new specification that is the NOT operation of {@code this} specification.
      *
-     * @param specification Specification to NOT.
      * @return A new specification.
      */
-    default Specification<T> not(Specification<T> specification) {
-        return new NotSpecification<>(specification);
+    default Specification<T> not() {
+        return new NotSpecification<>(this);
     }
 }
