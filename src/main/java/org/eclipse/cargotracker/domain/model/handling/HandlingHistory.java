@@ -1,7 +1,5 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
-import org.apache.commons.lang3.Validate;
-
 import java.util.*;
 
 public class HandlingHistory {
@@ -14,7 +12,7 @@ public class HandlingHistory {
     private final List<HandlingEvent> handlingEvents;
 
     public HandlingHistory(Collection<HandlingEvent> handlingEvents) {
-        Validate.notNull(handlingEvents, "Handling events are required");
+        Objects.requireNonNull(handlingEvents, "Handling events are required");
 
         this.handlingEvents = new ArrayList<>(handlingEvents);
     }

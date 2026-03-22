@@ -7,7 +7,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -44,17 +43,17 @@ public class HandlingActivity implements Serializable {
     }
 
     public HandlingActivity(HandlingEvent.Type type, Location location) {
-        Validate.notNull(type, "Handling event type is required");
-        Validate.notNull(location, "Location is required");
+        Objects.requireNonNull(type, "Handling event type is required");
+        Objects.requireNonNull(location, "Location is required");
 
         this.type = type;
         this.location = location;
     }
 
     public HandlingActivity(HandlingEvent.Type type, Location location, Voyage voyage) {
-        Validate.notNull(type, "Handling event type is required");
-        Validate.notNull(location, "Location is required");
-        Validate.notNull(voyage, "Voyage is required");
+        Objects.requireNonNull(type, "Handling event type is required");
+        Objects.requireNonNull(location, "Location is required");
+        Objects.requireNonNull(voyage, "Voyage is required");
 
         this.type = type;
         this.location = location;

@@ -4,7 +4,6 @@ import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -37,9 +36,13 @@ public class Schedule implements Serializable {
     }
 
     public Schedule(@Nonnull List<CarrierMovement> carrierMovements) {
-        Validate.notNull(carrierMovements, "Carrier movements is required");
-        Validate.noNullElements(carrierMovements);
-        Validate.notEmpty(carrierMovements);
+        Objects.requireNonNull(carrierMovements, "Carrier movements is required");
+        if (carrierMovements.isEmpty()) {
+            throw new IllegalArgumentException("Carrier movements must not be empty");
+        }
+        if (carrierMovements.contains(null)) {
+            throw new IllegalArgumentException("Carrier movements must not contain null elements");
+        }
 
         this.carrierMovements = carrierMovements;
     }

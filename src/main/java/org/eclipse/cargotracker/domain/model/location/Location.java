@@ -3,7 +3,6 @@ package org.eclipse.cargotracker.domain.model.location;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -49,8 +48,8 @@ public class Location implements Serializable {
      * @throws IllegalArgumentException if the UN Locode or name is null
      */
     public Location(UnLocode unLocode, String name) {
-        Validate.notNull(unLocode, "Location unlocode is required");
-        Validate.notNull(name, "Location name is required");
+        Objects.requireNonNull(unLocode, "Location unlocode is required");
+        Objects.requireNonNull(name, "Location name is required");
 
         this.unLocode = unLocode;
         this.name = name;

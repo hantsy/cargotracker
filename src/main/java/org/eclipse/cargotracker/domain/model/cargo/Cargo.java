@@ -10,7 +10,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -96,8 +95,8 @@ public class Cargo implements Serializable {
     }
 
     public Cargo(TrackingId trackingId, RouteSpecification routeSpecification) {
-        Validate.notNull(trackingId, "Tracking ID is required");
-        Validate.notNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(trackingId, "Tracking ID is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         this.trackingId = trackingId;
         // Cargo origin never changes, even if the route specification changes.
@@ -146,7 +145,7 @@ public class Cargo implements Serializable {
      * Specifies a new route for this cargo.
      */
     public void specifyNewRoute(RouteSpecification routeSpecification) {
-        Validate.notNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         this.routeSpecification = routeSpecification;
         // Handling consistency within the Cargo aggregate synchronously
@@ -154,7 +153,7 @@ public class Cargo implements Serializable {
     }
 
     public void assignToRoute(Itinerary itinerary) {
-        Validate.notNull(itinerary, "Itinerary is required for assignment");
+        Objects.requireNonNull(itinerary, "Itinerary is required for assignment");
 
         this.itinerary = itinerary;
 

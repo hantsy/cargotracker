@@ -2,7 +2,6 @@ package org.eclipse.cargotracker.domain.model.voyage;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
@@ -41,8 +40,8 @@ public class Voyage implements Serializable {
     }
 
     public Voyage(VoyageNumber voyageNumber, Schedule schedule) {
-        Validate.notNull(voyageNumber, "Voyage number is required");
-        Validate.notNull(schedule, "Schedule is required");
+        Objects.requireNonNull(voyageNumber, "Voyage number is required");
+        Objects.requireNonNull(schedule, "Schedule is required");
 
         this.voyageNumber = voyageNumber;
         this.schedule = schedule;
@@ -110,8 +109,8 @@ public class Voyage implements Serializable {
         private Location departureLocation;
 
         public Builder(VoyageNumber voyageNumber, Location departureLocation) {
-            Validate.notNull(voyageNumber, "Voyage number is required");
-            Validate.notNull(departureLocation, "Departure location is required");
+            Objects.requireNonNull(voyageNumber, "Voyage number is required");
+            Objects.requireNonNull(departureLocation, "Departure location is required");
 
             this.voyageNumber = voyageNumber;
             this.departureLocation = departureLocation;

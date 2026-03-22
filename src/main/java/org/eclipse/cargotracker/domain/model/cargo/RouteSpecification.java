@@ -5,7 +5,6 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.shared.Specification;
@@ -46,12 +45,12 @@ public class RouteSpecification implements Specification<Itinerary>, Serializabl
      * @param arrivalDeadline arrival deadline
      */
     public RouteSpecification(Location origin, Location destination, LocalDate arrivalDeadline) {
-        Validate.notNull(origin, "Origin is required");
-        Validate.notNull(destination, "Destination is required");
-        Validate.notNull(arrivalDeadline, "Arrival deadline is required");
-        Validate.isTrue(
-                !origin.sameIdentityAs(destination),
-                "Origin and destination can't be the same: " + origin);
+        Objects.requireNonNull(origin, "Origin is required");
+        Objects.requireNonNull(destination, "Destination is required");
+        Objects.requireNonNull(arrivalDeadline, "Arrival deadline is required");
+        if (origin.sameIdentityAs(destination)) {
+            throw new IllegalArgumentException("Origin and destination can't be the same: " + origin);
+        }
 
         this.origin = origin;
         this.destination = destination;

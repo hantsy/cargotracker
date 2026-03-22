@@ -4,9 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
-import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * United nations location code.
@@ -38,10 +38,10 @@ public class UnLocode implements Serializable {
      * @param countryAndLocation Location string.
      */
     public UnLocode(String countryAndLocation) {
-        Validate.notNull(countryAndLocation, "Country and location may not be null");
-        Validate.isTrue(
-                VALID_PATTERN.matcher(countryAndLocation).matches(),
-                countryAndLocation + " is not a valid UN/LOCODE (does not match pattern)");
+        Objects.requireNonNull(countryAndLocation, "Country and location may not be null");
+        if (!VALID_PATTERN.matcher(countryAndLocation).matches()) {
+            throw new IllegalArgumentException(countryAndLocation + " is not a valid UN/LOCODE (does not match pattern)");
+        }
 
         this.unlocode = countryAndLocation.toUpperCase();
     }

@@ -8,7 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
@@ -116,8 +115,8 @@ public class Delivery implements Serializable {
             RouteSpecification routeSpecification,
             Itinerary itinerary,
             HandlingHistory handlingHistory) {
-        Validate.notNull(routeSpecification, "Route specification is required");
-        Validate.notNull(handlingHistory, "Delivery history is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(handlingHistory, "Delivery history is required");
 
         HandlingEvent lastEvent = handlingHistory.getMostRecentlyCompletedEvent();
 
@@ -130,7 +129,7 @@ public class Delivery implements Serializable {
      * performed.
      */
     Delivery updateOnRouting(RouteSpecification routeSpecification, Itinerary itinerary) {
-        Validate.notNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         return new Delivery(this.lastEvent, itinerary, routeSpecification);
     }
