@@ -58,17 +58,17 @@ public class EventItemWriter extends AbstractItemWriter {
                 HandlingEventRegistrationAttempt attempt = (HandlingEventRegistrationAttempt) item;
                 applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
                 archive.println(
-                        DateUtil.toString(attempt.getRegistrationTime())
+                        DateUtil.toString(attempt.registrationTime())
                                 + ","
-                                + DateUtil.toString(attempt.getCompletionTime())
+                                + DateUtil.toString(attempt.completionTime())
                                 + ","
-                                + attempt.getTrackingId()
+                                + attempt.trackingId()
                                 + ","
-                                + attempt.getVoyageNumber()
+                                + attempt.voyageNumber()
                                 + ","
-                                + attempt.getUnLocode()
+                                + attempt.unLocode()
                                 + ","
-                                + attempt.getType());
+                                + attempt.type());
             }
         }
     }

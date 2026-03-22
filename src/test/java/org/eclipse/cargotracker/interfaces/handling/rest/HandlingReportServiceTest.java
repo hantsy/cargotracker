@@ -117,9 +117,9 @@ public class HandlingReportServiceTest {
             assertThat(applicationEventsStub.getAttempt()).isNotNull();
             var attempt = applicationEventsStub.getAttempt();
 
-            assertThat(attempt.getTrackingId()).isEqualTo(new TrackingId("A001"));
-            assertThat(attempt.getType()).isEqualTo(Type.LOAD);
-            assertThat(attempt.getVoyageNumber())
+            assertThat(attempt.trackingId()).isEqualTo(new TrackingId("A001"));
+            assertThat(attempt.type()).isEqualTo(Type.LOAD);
+            assertThat(attempt.voyageNumber())
                     .isEqualTo(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber());
         }
     }
