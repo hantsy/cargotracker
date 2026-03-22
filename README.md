@@ -37,7 +37,7 @@ ported that sample to the Jakarta EE ecosystem using the following stacks:
 * [cargotracker-regapp-javafx](https://github.com/hantsy/cargotracker-regapp) – CDI/Weld + JavaFX
 * [cargotracker-regapp-quarkus-javafx](https://github.com/hantsy/quarkus-cargotracker-regapp) – Quarkus + Quarkus‑FX
   extension/JavaFX
-* [cargotracker-regapp-kotlin-multiplatform](https://github.com/hantsy/cargotracker-regapp-kotlin-multiplatform) – Kotlin Multipleplatform(KMP)
+* [cargotracker-regapp-kotlin-multiplatform](https://github.com/hantsy/cargotracker-regapp-kotlin-multiplatform) – Kotlin Multipleplatform(KMP) for Android, ios, Desktop(Swing) and Web.
 
 ---
 
