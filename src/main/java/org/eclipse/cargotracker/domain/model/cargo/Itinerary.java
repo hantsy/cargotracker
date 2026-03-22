@@ -57,7 +57,7 @@ public class Itinerary implements Serializable {
         if (legs.isEmpty()) {
             throw new IllegalArgumentException("Legs must not be empty");
         }
-        if (legs.contains(null)) {
+        if (legs.stream().anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException("Legs must not contain null elements");
         }
 

@@ -44,7 +44,7 @@ public class Schedule implements Serializable {
         if (carrierMovements.isEmpty()) {
             throw new IllegalArgumentException("Carrier movements must not be empty");
         }
-        if (carrierMovements.contains(null)) {
+        if (carrierMovements.stream().anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException("Carrier movements must not contain null elements");
         }
 

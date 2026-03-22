@@ -38,8 +38,7 @@ public class CargoInspectionServiceTest {
     //
     private final ApplicationEvents applicationEvents = mock(ApplicationEvents.class);
     private final CargoRepository cargoRepository = mock(CargoRepository.class);
-    private final HandlingEventRepository handlingEventRepository =
-            mock(HandlingEventRepository.class);
+    private final HandlingEventRepository handlingEventRepository = mock(HandlingEventRepository.class);
 
     @SuppressWarnings("unchecked")
     private final Event<Cargo> cargoEvent = (Event<Cargo>) mock(Event.class);
@@ -49,9 +48,7 @@ public class CargoInspectionServiceTest {
 
     @BeforeEach
     public void setUp() {
-        service =
-                new DefaultCargoInspectionService(
-                        applicationEvents, cargoRepository, handlingEventRepository, cargoEvent);
+        service = new DefaultCargoInspectionService(applicationEvents, cargoRepository, handlingEventRepository, cargoEvent);
     }
 
     @AfterEach
@@ -72,11 +69,10 @@ public class CargoInspectionServiceTest {
 
     @Test
     public void testCargoIsInspected() {
-        Cargo cargo =
-                new Cargo(
-                        new TrackingId("ABC"),
-                        new RouteSpecification(
-                                SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now()));
+        Cargo cargo = new Cargo(
+                new TrackingId("ABC"),
+                new RouteSpecification(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
+        );
         when(cargoRepository.find(any(TrackingId.class))).thenReturn(cargo);
         when(handlingEventRepository.lookupHandlingHistoryOfCargo(any(TrackingId.class)))
                 .thenReturn(new HandlingHistory(Collections.emptyList()));
@@ -97,11 +93,10 @@ public class CargoInspectionServiceTest {
 
     @Test
     public void testCargoWasArrivedAsExpected() {
-        Cargo cargo =
-                new Cargo(
-                        new TrackingId("ABC"),
-                        new RouteSpecification(
-                                SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now()));
+        Cargo cargo = new Cargo(
+                new TrackingId("ABC"),
+                new RouteSpecification(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
+        );
         cargo.assignToRoute(
                 new Itinerary(
                         Arrays.asList(
@@ -116,12 +111,15 @@ public class CargoInspectionServiceTest {
                                         SampleLocations.HELSINKI,
                                         SampleLocations.HONGKONG,
                                         LocalDateTime.now().minusDays(9),
-                                        LocalDateTime.now().minusDays(9)))));
+                                        LocalDateTime.now().minusDays(9))
+                        )
+                )
+        );
         when(cargoRepository.find(any(TrackingId.class))).thenReturn(cargo);
         when(handlingEventRepository.lookupHandlingHistoryOfCargo(any(TrackingId.class)))
                 .thenReturn(
                         new HandlingHistory(
-                                Arrays.asList(
+                                List.of(
                                         new HandlingEvent(
                                                 cargo,
                                                 LocalDateTime.now().minusDays(10),
@@ -155,7 +153,10 @@ public class CargoInspectionServiceTest {
                                                 LocalDateTime.now().minusDays(5),
                                                 HandlingEvent.Type.UNLOAD,
                                                 SampleLocations.HONGKONG,
-                                                SampleVoyages.HELSINKI_TO_HONGKONG))));
+                                                SampleVoyages.HELSINKI_TO_HONGKONG)
+                                )
+                        )
+                );
         doNothing().when(applicationEvents).cargoWasMisdirected(any(Cargo.class));
         doNothing().when(applicationEvents).cargoHasArrived(any(Cargo.class));
         doNothing().when(cargoRepository).store(any(Cargo.class));
@@ -174,11 +175,10 @@ public class CargoInspectionServiceTest {
 
     @Test
     public void testCargoWasMisredirected() {
-        Cargo cargo =
-                new Cargo(
-                        new TrackingId("ABC"),
-                        new RouteSpecification(
-                                SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now()));
+        Cargo cargo = new Cargo(
+                new TrackingId("ABC"),
+                new RouteSpecification(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
+        );
         cargo.assignToRoute(
                 new Itinerary(
                         List.of(
@@ -187,13 +187,18 @@ public class CargoInspectionServiceTest {
                                         SampleLocations.DALLAS,
                                         SampleLocations.HELSINKI,
                                         LocalDateTime.now().minusDays(9),
-                                        LocalDateTime.now().minusDays(9)),
+                                        LocalDateTime.now().minusDays(9)
+                                ),
                                 new Leg(
                                         SampleVoyages.HELSINKI_TO_HONGKONG,
                                         SampleLocations.HELSINKI,
                                         SampleLocations.HONGKONG,
                                         LocalDateTime.now().minusDays(9),
-                                        LocalDateTime.now().minusDays(9)))));
+                                        LocalDateTime.now().minusDays(9)
+                                )
+                        )
+                )
+        );
         when(cargoRepository.find(any(TrackingId.class))).thenReturn(cargo);
         when(handlingEventRepository.lookupHandlingHistoryOfCargo(any(TrackingId.class)))
                 .thenReturn(
