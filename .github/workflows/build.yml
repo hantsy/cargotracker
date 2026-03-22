@@ -78,7 +78,7 @@ jobs:
           -Dsonar.token=$SONAR_TOKEN \
           -Dsonar.organization=hantsy \
           -Dsonar.projectKey=hantsy_cargotracker \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/*/jacoco.xml \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/*/jacoco*.xml \
           -Dsonar.coverage.exclusions=**/dto/*,**/*Configuration.*,**/SampleDataGenerator.*
 
   #  formatting:

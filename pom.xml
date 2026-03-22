@@ -904,11 +904,11 @@
                                 </goals>
                                 <configuration>
                                     <append>true</append>
-                                    <dumpOnExit>true</dumpOnExit>
+                                    <!--<dumpOnExit>true</dumpOnExit>
                                     <destFile>${project.build.directory}/jacoco-it.exec</destFile>
                                     <address>172.17.0.1</address>
                                     <output>tcpserver</output>
-                                    <port>6300</port>
+                                    <port>6300</port>-->
                                     <propertyName>jacocoArgLine</propertyName>
                                 </configuration>
                             </execution>
