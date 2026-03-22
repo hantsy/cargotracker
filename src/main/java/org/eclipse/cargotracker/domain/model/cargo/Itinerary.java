@@ -53,7 +53,8 @@ public class Itinerary implements Serializable {
     }
 
     public Itinerary(List<Leg> legs) {
-        if (legs == null || legs.isEmpty()) {
+        Objects.requireNonNull(legs, "Legs is required");
+        if (legs.isEmpty()) {
             throw new IllegalArgumentException("Legs must not be empty");
         }
         if (legs.contains(null)) {
@@ -65,7 +66,7 @@ public class Itinerary implements Serializable {
 
     public List<Leg> getLegs() {
         // this.legs.sort(Comparator.comparing(Leg::getLoadTime));
-        return Collections.unmodifiableList(this.legs);
+        return List.copyOf(this.legs);
     }
 
     /**
@@ -144,9 +145,6 @@ public class Itinerary implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (!(o instanceof Itinerary itinerary)) {
             return false;
         }
