@@ -1,10 +1,15 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -90,8 +95,8 @@ public class Cargo implements Serializable {
     }
 
     public Cargo(TrackingId trackingId, RouteSpecification routeSpecification) {
-        Validate.notNull(trackingId, "Tracking ID is required");
-        Validate.notNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(trackingId, "Tracking ID is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         this.trackingId = trackingId;
         // Cargo origin never changes, even if the route specification changes.
@@ -100,9 +105,7 @@ public class Cargo implements Serializable {
         this.origin = routeSpecification.getOrigin();
         this.routeSpecification = routeSpecification;
 
-        this.delivery =
-                Delivery.derivedFrom(
-                        this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
+        this.delivery = Delivery.derivedFrom(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
         this.itinerary = Itinerary.EMPTY_ITINERARY;
     }
 
@@ -140,7 +143,7 @@ public class Cargo implements Serializable {
      * Specifies a new route for this cargo.
      */
     public void specifyNewRoute(RouteSpecification routeSpecification) {
-        Validate.notNull(routeSpecification, "Route specification is required");
+        Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         this.routeSpecification = routeSpecification;
         // Handling consistency within the Cargo aggregate synchronously
@@ -148,7 +151,7 @@ public class Cargo implements Serializable {
     }
 
     public void assignToRoute(Itinerary itinerary) {
-        Validate.notNull(itinerary, "Itinerary is required for assignment");
+        Objects.requireNonNull(itinerary, "Itinerary is required for assignment");
 
         this.itinerary = itinerary;
 
@@ -172,39 +175,19 @@ public class Cargo implements Serializable {
      * @param handlingHistory handling history
      */
     public void deriveDeliveryProgress(HandlingHistory handlingHistory) {
-        this.delivery =
-                Delivery.derivedFrom(getRouteSpecification(), getItinerary(), handlingHistory);
+        this.delivery = Delivery.derivedFrom(getRouteSpecification(), getItinerary(), handlingHistory);
         // LOGGER.log(Level.INFO, "deriveDeliveryProgress: {0}", this.delivery);
     }
 
-    /**
-     * @param object to compare
-     * @return True if they have the same identity
-     * @see #sameIdentityAs(Cargo)
-     */
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
-
-        Cargo other = (Cargo) object;
-        return sameIdentityAs(other);
+    public boolean equals(Object o) {
+        if (!(o instanceof Cargo cargo)) return false;
+        return Objects.equals(trackingId, cargo.trackingId);
     }
 
-    private boolean sameIdentityAs(Cargo other) {
-        return other != null && trackingId.sameValueAs(other.trackingId);
-    }
-
-    /**
-     * @return Hash code of tracking id.
-     */
     @Override
     public int hashCode() {
-        return trackingId.hashCode();
+        return Objects.hashCode(trackingId);
     }
 
     @Override
@@ -214,7 +197,14 @@ public class Cargo implements Serializable {
 
     public String toString(boolean verbose) {
         return verbose
-                ? ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE)
+                ? "Cargo{" +
+                "id=" + id +
+                ", trackingId=" + trackingId +
+                ", origin=" + origin +
+                ", routeSpecification=" + routeSpecification +
+                ", itinerary=" + itinerary +
+                ", delivery=" + delivery +
+                '}'
                 : trackingId.toString();
     }
 

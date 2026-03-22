@@ -1,11 +1,17 @@
 package org.eclipse.cargotracker.domain.model.location;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A location in our model is stops on a journey, such as cargo origin or destination, or carrier
@@ -18,7 +24,8 @@ import java.io.Serializable;
 @NamedQuery(name = "Location.findAll", query = "Select l from Location l")
 @NamedQuery(
         name = "Location.findByUnLocode",
-        query = "Select l from Location l where l.unLocode = :unLocode")
+        query = "Select l from Location l where l.unLocode = :unLocode"
+)
 public class Location implements Serializable {
 
     // Special Location object that marks an unknown location.
@@ -48,8 +55,8 @@ public class Location implements Serializable {
      * @throws IllegalArgumentException if the UN Locode or name is null
      */
     public Location(UnLocode unLocode, String name) {
-        Validate.notNull(unLocode, "Location unlocode is required");
-        Validate.notNull(name, "Location name is required");
+        Objects.requireNonNull(unLocode, "Location unlocode is required");
+        Objects.requireNonNull(name, "Location name is required");
 
         this.unLocode = unLocode;
         this.name = name;
@@ -69,35 +76,19 @@ public class Location implements Serializable {
         return name;
     }
 
-    /**
-     * @param object to compare
-     * @return Since this is an entiy this will be true iff UN locodes are equal.
-     */
-    @Override
-    public boolean equals(Object object) {
-        if (object == null) {
-            return false;
-        }
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof Location)) {
-            return false;
-        }
-        Location other = (Location) object;
-        return sameIdentityAs(other);
-    }
-
     public boolean sameIdentityAs(Location other) {
-        return this.unLocode.sameValueAs(other.unLocode);
+        return this.equals(other);
     }
 
-    /**
-     * @return Hash code of UN locode.
-     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Location location)) return false;
+        return Objects.equals(unLocode, location.unLocode);
+    }
+
     @Override
     public int hashCode() {
-        return unLocode.hashCode();
+        return Objects.hashCode(unLocode);
     }
 
     @Override

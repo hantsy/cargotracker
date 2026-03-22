@@ -1,8 +1,12 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
-import org.apache.commons.lang3.Validate;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
 public class HandlingHistory {
     // private static final Logger LOGGER = Logger.getLogger(HandlingHistory.class.getName());
@@ -14,7 +18,7 @@ public class HandlingHistory {
     private final List<HandlingEvent> handlingEvents;
 
     public HandlingHistory(Collection<HandlingEvent> handlingEvents) {
-        Validate.notNull(handlingEvents, "Handling events are required");
+        Objects.requireNonNull(handlingEvents, "Handling events are required");
 
         this.handlingEvents = new ArrayList<>(handlingEvents);
     }
@@ -40,32 +44,17 @@ public class HandlingHistory {
     public HandlingEvent getMostRecentlyCompletedEvent() {
         List<HandlingEvent> distinctEvents = getDistinctEventsByCompletionTime();
         // LOGGER.log(Level.INFO, "distinct events: {0}", distinctEvents);
-        if (distinctEvents.isEmpty()) {
-            return null;
-        } else {
-            return distinctEvents.get(distinctEvents.size() - 1);
-        }
-    }
-
-    private boolean sameValueAs(HandlingHistory other) {
-        return other != null && this.handlingEvents.equals(other.handlingEvents);
+        return distinctEvents.isEmpty() ? null : distinctEvents.getLast();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        HandlingHistory other = (HandlingHistory) o;
-        return sameValueAs(other);
+        if (!(o instanceof HandlingHistory that)) return false;
+        return Objects.equals(handlingEvents, that.handlingEvents);
     }
 
     @Override
     public int hashCode() {
-        return handlingEvents.hashCode();
+        return Objects.hashCode(handlingEvents);
     }
 }

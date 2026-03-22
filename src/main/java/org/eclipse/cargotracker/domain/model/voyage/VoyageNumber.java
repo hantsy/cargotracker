@@ -3,9 +3,9 @@ package org.eclipse.cargotracker.domain.model.voyage;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotEmpty;
-import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class VoyageNumber implements Serializable {
@@ -21,35 +21,23 @@ public class VoyageNumber implements Serializable {
     }
 
     public VoyageNumber(String number) {
-        Validate.notNull(number, "Voyage number is required");
+        Objects.requireNonNull(number, "Voyage number is required");
 
         this.number = number;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof VoyageNumber)) {
+        if (!(o instanceof VoyageNumber other)) {
             return false;
         }
 
-        VoyageNumber other = (VoyageNumber) o;
-
-        return sameValueAs(other);
+        return Objects.equals(number, other.number);
     }
 
     @Override
     public int hashCode() {
-        return number.hashCode();
-    }
-
-    boolean sameValueAs(VoyageNumber other) {
-        return other != null && this.number.equals(other.number);
+        return Objects.hashCode(number);
     }
 
     @Override

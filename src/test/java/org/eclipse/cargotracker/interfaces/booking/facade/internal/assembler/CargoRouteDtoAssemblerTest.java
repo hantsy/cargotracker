@@ -1,6 +1,10 @@
 package org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler;
 
-import org.eclipse.cargotracker.domain.model.cargo.*;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
+import org.eclipse.cargotracker.domain.model.cargo.Leg;
+import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
+import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;

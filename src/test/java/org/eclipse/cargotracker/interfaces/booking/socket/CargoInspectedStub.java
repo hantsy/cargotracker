@@ -2,7 +2,11 @@ package org.eclipse.cargotracker.interfaces.booking.socket;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
-import jakarta.ejb.*;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.ejb.Timeout;
+import jakarta.ejb.Timer;
+import jakarta.ejb.TimerService;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;

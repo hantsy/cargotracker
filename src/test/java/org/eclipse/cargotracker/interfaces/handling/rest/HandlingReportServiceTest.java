@@ -33,7 +33,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
+import static org.eclipse.cargotracker.Deployments.addApplicationBase;
+import static org.eclipse.cargotracker.Deployments.addDomainModels;
+import static org.eclipse.cargotracker.Deployments.addExtraJars;
+import static org.eclipse.cargotracker.Deployments.addInfraBase;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
@@ -114,9 +117,9 @@ public class HandlingReportServiceTest {
             assertThat(applicationEventsStub.getAttempt()).isNotNull();
             var attempt = applicationEventsStub.getAttempt();
 
-            assertThat(attempt.getTrackingId()).isEqualTo(new TrackingId("A001"));
-            assertThat(attempt.getType()).isEqualTo(Type.LOAD);
-            assertThat(attempt.getVoyageNumber())
+            assertThat(attempt.trackingId()).isEqualTo(new TrackingId("A001"));
+            assertThat(attempt.type()).isEqualTo(Type.LOAD);
+            assertThat(attempt.voyageNumber())
                     .isEqualTo(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber());
         }
     }

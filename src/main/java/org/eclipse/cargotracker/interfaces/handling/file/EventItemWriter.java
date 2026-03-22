@@ -10,7 +10,11 @@ import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.List;
 
 @Dependent
@@ -54,17 +58,17 @@ public class EventItemWriter extends AbstractItemWriter {
                 HandlingEventRegistrationAttempt attempt = (HandlingEventRegistrationAttempt) item;
                 applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
                 archive.println(
-                        DateUtil.toString(attempt.getRegistrationTime())
+                        DateUtil.toString(attempt.registrationTime())
                                 + ","
-                                + DateUtil.toString(attempt.getCompletionTime())
+                                + DateUtil.toString(attempt.completionTime())
                                 + ","
-                                + attempt.getTrackingId()
+                                + attempt.trackingId()
                                 + ","
-                                + attempt.getVoyageNumber()
+                                + attempt.voyageNumber()
                                 + ","
-                                + attempt.getUnLocode()
+                                + attempt.unLocode()
                                 + ","
-                                + attempt.getType());
+                                + attempt.type());
             }
         }
     }

@@ -1,14 +1,20 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "voyages")
@@ -40,8 +46,8 @@ public class Voyage implements Serializable {
     }
 
     public Voyage(VoyageNumber voyageNumber, Schedule schedule) {
-        Validate.notNull(voyageNumber, "Voyage number is required");
-        Validate.notNull(schedule, "Schedule is required");
+        Objects.requireNonNull(voyageNumber, "Voyage number is required");
+        Objects.requireNonNull(schedule, "Schedule is required");
 
         this.voyageNumber = voyageNumber;
         this.schedule = schedule;
@@ -56,29 +62,14 @@ public class Voyage implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return voyageNumber.hashCode();
+    public boolean equals(Object o) {
+        if (!(o instanceof Voyage voyage)) return false;
+        return Objects.equals(voyageNumber, voyage.voyageNumber);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof Voyage)) {
-            return false;
-        }
-
-        Voyage that = (Voyage) o;
-
-        return sameIdentityAs(that);
-    }
-
-    public boolean sameIdentityAs(Voyage other) {
-        return other != null && this.getVoyageNumber().sameValueAs(other.getVoyageNumber());
+    public int hashCode() {
+        return Objects.hashCode(voyageNumber);
     }
 
     @Override
@@ -97,8 +88,8 @@ public class Voyage implements Serializable {
         private Location departureLocation;
 
         public Builder(VoyageNumber voyageNumber, Location departureLocation) {
-            Validate.notNull(voyageNumber, "Voyage number is required");
-            Validate.notNull(departureLocation, "Departure location is required");
+            Objects.requireNonNull(voyageNumber, "Voyage number is required");
+            Objects.requireNonNull(departureLocation, "Departure location is required");
 
             this.voyageNumber = voyageNumber;
             this.departureLocation = departureLocation;

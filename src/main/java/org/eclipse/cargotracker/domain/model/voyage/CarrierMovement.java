@@ -1,14 +1,18 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * A carrier movement is a vessel voyage from one location to another.
@@ -38,13 +42,13 @@ public class CarrierMovement implements Serializable {
     @NotNull
     private Location arrivalLocation;
 
-    // @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "departure_time")
+    
+    @Column(name = "departure_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime departureTime;
 
-    // @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "arrival_time")
+    
+    @Column(name = "arrival_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime arrivalTime;
 
@@ -57,8 +61,11 @@ public class CarrierMovement implements Serializable {
             Location arrivalLocation,
             LocalDateTime departureTime,
             LocalDateTime arrivalTime) {
-        Validate.noNullElements(
-                new Object[]{departureLocation, arrivalLocation, departureTime, arrivalTime});
+        Objects.requireNonNull(departureLocation, "Departure location is required");
+        Objects.requireNonNull(arrivalLocation, "Arrival location is required");
+        Objects.requireNonNull(departureTime, "Departure time is required");
+        Objects.requireNonNull(arrivalTime, "Arrival time is required");
+
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.departureLocation = departureLocation;
@@ -83,35 +90,15 @@ public class CarrierMovement implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof CarrierMovement)) {
-            return false;
-        }
-
-        CarrierMovement that = (CarrierMovement) o;
-
-        return sameValueAs(that);
+        if (!(o instanceof CarrierMovement that)) return false;
+        return Objects.equals(departureLocation, that.departureLocation)
+                && Objects.equals(arrivalLocation, that.arrivalLocation)
+                && Objects.equals(departureTime, that.departureTime)
+                && Objects.equals(arrivalTime, that.arrivalTime);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.departureLocation)
-                .append(this.departureTime)
-                .append(this.arrivalLocation)
-                .append(this.arrivalTime)
-                .toHashCode();
-    }
-
-    private boolean sameValueAs(CarrierMovement other) {
-        return other != null
-                && new EqualsBuilder()
-                .append(this.departureLocation, other.departureLocation)
-                .append(this.departureTime, other.departureTime)
-                .append(this.arrivalLocation, other.arrivalLocation)
-                .append(this.arrivalTime, other.arrivalTime)
-                .isEquals();
+        return Objects.hash(departureLocation, arrivalLocation, departureTime, arrivalTime);
     }
 }

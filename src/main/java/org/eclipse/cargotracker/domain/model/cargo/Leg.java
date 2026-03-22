@@ -1,17 +1,19 @@
 package org.eclipse.cargotracker.domain.model.cargo;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.logging.Level;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 @Entity
@@ -40,13 +42,11 @@ public class Leg implements Serializable {
     @NotNull
     private Location unloadLocation;
 
-    // @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "load_time")
+    @Column(name = "load_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime loadTime;
 
-    // @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "unload_time")
+    @Column(name = "unload_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime unloadTime;
 
@@ -60,20 +60,17 @@ public class Leg implements Serializable {
             Location unloadLocation,
             LocalDateTime loadTime,
             LocalDateTime unloadTime) {
-        Validate.noNullElements(
-                new Object[]{voyage, loadLocation, unloadLocation, loadTime, unloadTime});
+        Objects.requireNonNull(voyage, "Voyage is required");
+        Objects.requireNonNull(loadLocation, "Load location is required");
+        Objects.requireNonNull(unloadLocation, "Unload location is required");
+        Objects.requireNonNull(loadTime, "Load time is required");
+        Objects.requireNonNull(unloadTime, "Unload time is required");
 
         this.voyage = voyage;
         this.loadLocation = loadLocation;
         this.unloadLocation = unloadLocation;
-
-        // Hibernate issue:
-        // when the `LocalDateTime` field is persisted into db, and retrieved from db, the values
-        // are
-        // different in nanoseconds.
-        // any good idea to overcome this?
-        this.loadTime = loadTime.truncatedTo(ChronoUnit.SECONDS);
-        this.unloadTime = unloadTime.truncatedTo(ChronoUnit.SECONDS);
+        this.loadTime = loadTime;
+        this.unloadTime = unloadTime;
     }
 
     public Voyage getVoyage() {
@@ -96,49 +93,19 @@ public class Leg implements Serializable {
         return this.unloadTime;
     }
 
-    private boolean sameValueAs(Leg other) {
-        LOGGER.log(
-                Level.INFO,
-                "this.loadTime == other.loadTime:{0}",
-                this.loadTime.equals(other.loadTime));
-        LOGGER.log(
-                Level.INFO,
-                "this.unloadTime == other.unloadTime:{0}",
-                this.unloadTime.equals(other.unloadTime));
-        return other != null
-                && new EqualsBuilder()
-                .append(this.voyage, other.voyage)
-                .append(this.loadLocation, other.loadLocation)
-                .append(this.unloadLocation, other.unloadLocation)
-                // use truncatedTo to remove nanoseconds fields in timestamp.
-                .append(this.loadTime, other.loadTime)
-                .append(this.unloadTime, other.unloadTime)
-                .isEquals();
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof Leg)) {
-            return false;
-        }
-
-        Leg leg = (Leg) o;
-
-        return sameValueAs(leg);
+        if (!(o instanceof Leg leg)) return false;
+        return Objects.equals(voyage, leg.voyage)
+                && Objects.equals(loadLocation, leg.loadLocation)
+                && Objects.equals(unloadLocation, leg.unloadLocation)
+                && Objects.equals(loadTime, leg.loadTime)
+                && Objects.equals(unloadTime, leg.unloadTime);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.voyage)
-                .append(this.loadLocation)
-                .append(this.unloadLocation)
-                .append(this.loadTime)
-                .append(this.unloadTime)
-                .toHashCode();
+        return Objects.hash(voyage, loadLocation, unloadLocation, loadTime, unloadTime);
     }
 
     @Override

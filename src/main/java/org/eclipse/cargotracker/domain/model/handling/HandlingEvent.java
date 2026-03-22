@@ -1,10 +1,17 @@
 package org.eclipse.cargotracker.domain.model.handling;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -57,14 +64,14 @@ public class HandlingEvent implements Serializable {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    // @Temporal(TemporalType.DATE)
+    
     @NotNull
-    @Column(name = "completion_time")
+    @Column(name = "completion_time", secondPrecision = 0)
     private LocalDateTime completionTime;
 
-    // @Temporal(TemporalType.DATE)
+    
     @NotNull
-    @Column(name = "registration_time")
+    @Column(name = "registration_time", secondPrecision = 0)
     private LocalDateTime registrationTime;
 
     @NotNull
@@ -95,12 +102,12 @@ public class HandlingEvent implements Serializable {
             Type type,
             Location location,
             Voyage voyage) {
-        Validate.notNull(cargo, "Cargo is required");
-        Validate.notNull(completionTime, "Completion time is required");
-        Validate.notNull(registrationTime, "Registration time is required");
-        Validate.notNull(type, "Handling event type is required");
-        Validate.notNull(location, "Location is required");
-        Validate.notNull(voyage, "Voyage is required");
+        Objects.requireNonNull(cargo, "Cargo is required");
+        Objects.requireNonNull(completionTime, "Completion time is required");
+        Objects.requireNonNull(registrationTime, "Registration time is required");
+        Objects.requireNonNull(type, "Handling event type is required");
+        Objects.requireNonNull(location, "Location is required");
+        Objects.requireNonNull(voyage, "Voyage is required");
 
         if (type.prohibitsVoyage()) {
             throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
@@ -128,11 +135,11 @@ public class HandlingEvent implements Serializable {
             LocalDateTime registrationTime,
             Type type,
             Location location) {
-        Validate.notNull(cargo, "Cargo is required");
-        Validate.notNull(completionTime, "Completion time is required");
-        Validate.notNull(registrationTime, "Registration time is required");
-        Validate.notNull(type, "Handling event type is required");
-        Validate.notNull(location, "Location is required");
+        Objects.requireNonNull(cargo, "Cargo is required");
+        Objects.requireNonNull(completionTime, "Completion time is required");
+        Objects.requireNonNull(registrationTime, "Registration time is required");
+        Objects.requireNonNull(type, "Handling event type is required");
+        Objects.requireNonNull(location, "Location is required");
 
         if (type.requiresVoyage()) {
             throw new IllegalArgumentException("Voyage is required for event type " + type);
@@ -191,38 +198,17 @@ public class HandlingEvent implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof HandlingEvent)) {
-            return false;
-        }
-
-        HandlingEvent event = (HandlingEvent) o;
-
-        return sameEventAs(event);
-    }
-
-    private boolean sameEventAs(HandlingEvent other) {
-        return other != null
-                && new EqualsBuilder()
-                .append(this.cargo, other.cargo)
-                .append(this.voyage, other.voyage)
-                .append(this.completionTime, other.completionTime)
-                .append(this.location, other.location)
-                .append(this.type, other.type)
-                .isEquals();
+        if (!(o instanceof HandlingEvent that)) return false;
+        return type == that.type
+                && Objects.equals(voyage, that.voyage)
+                && Objects.equals(location, that.location)
+                && Objects.equals(completionTime, that.completionTime)
+                && Objects.equals(cargo, that.cargo);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(cargo)
-                .append(voyage)
-                .append(completionTime)
-                .append(location)
-                .append(type)
-                .toHashCode();
+        return Objects.hash(type, voyage, location, completionTime, cargo);
     }
 
     @Override
