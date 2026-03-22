@@ -34,9 +34,10 @@ Eric’s book also featured a companion client application,
 the [ddd sample regapp](https://github.com/citerus/dddsample-regapp), originally built with Spring and Swing. I’ve since
 ported that sample to the Jakarta EE ecosystem using the following stacks:
 
-* [cargotracker-regapp](https://github.com/hantsy/cargotracker-regapp) – CDI/Weld + JavaFX
-* [quarkus-cargotracker-regapp](https://github.com/hantsy/quarkus-cargotracker-regapp) – Quarkus + Quarkus‑FX
+* [cargotracker-regapp-javafx](https://github.com/hantsy/cargotracker-regapp) – CDI/Weld + JavaFX
+* [cargotracker-regapp-quarkus-javafx](https://github.com/hantsy/quarkus-cargotracker-regapp) – Quarkus + Quarkus‑FX
   extension/JavaFX
+* [cargotracker-regapp-kotlin-multiplatform](https://github.com/hantsy/cargotracker-regapp-kotlin-multiplatform) – Kotlin Multipleplatform(KMP)
 
 ---
 
