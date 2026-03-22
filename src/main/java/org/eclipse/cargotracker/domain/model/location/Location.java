@@ -24,7 +24,8 @@ import java.util.Objects;
 @NamedQuery(name = "Location.findAll", query = "Select l from Location l")
 @NamedQuery(
         name = "Location.findByUnLocode",
-        query = "Select l from Location l where l.unLocode = :unLocode")
+        query = "Select l from Location l where l.unLocode = :unLocode"
+)
 public class Location implements Serializable {
 
     // Special Location object that marks an unknown location.

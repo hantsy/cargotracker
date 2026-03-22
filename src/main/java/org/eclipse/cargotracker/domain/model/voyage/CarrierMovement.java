@@ -42,13 +42,13 @@ public class CarrierMovement implements Serializable {
     @NotNull
     private Location arrivalLocation;
 
-    // @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "departure_time")
+    
+    @Column(name = "departure_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime departureTime;
 
-    // @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "arrival_time")
+    
+    @Column(name = "arrival_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime arrivalTime;
 

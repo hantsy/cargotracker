@@ -73,7 +73,7 @@ public class Delivery implements Serializable {
     @NotNull
     private RoutingStatus routingStatus;
 
-    // @Temporal(TemporalType.TIMESTAMP)
+    
     @Column(name = "calculated_at")
     @NotNull
     private LocalDateTime calculatedAt;

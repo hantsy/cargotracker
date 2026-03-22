@@ -42,11 +42,11 @@ public class Leg implements Serializable {
     @NotNull
     private Location unloadLocation;
 
-    @Column(name = "load_time")
+    @Column(name = "load_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime loadTime;
 
-    @Column(name = "unload_time")
+    @Column(name = "unload_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime unloadTime;
 
@@ -69,11 +69,6 @@ public class Leg implements Serializable {
         this.voyage = voyage;
         this.loadLocation = loadLocation;
         this.unloadLocation = unloadLocation;
-
-        // Hibernate issue:
-        // when the `LocalDateTime` field is persisted into db, and retrieved from db, the values
-        // are different in nanoseconds.
-        // UPDATE: Jakarta Persistence 3.2 add a `secondPrecision` attribute to the Column annotation.
         this.loadTime = loadTime;
         this.unloadTime = unloadTime;
     }

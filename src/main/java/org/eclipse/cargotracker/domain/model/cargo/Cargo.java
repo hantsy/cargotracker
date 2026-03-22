@@ -105,9 +105,7 @@ public class Cargo implements Serializable {
         this.origin = routeSpecification.getOrigin();
         this.routeSpecification = routeSpecification;
 
-        this.delivery =
-                Delivery.derivedFrom(
-                        this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
+        this.delivery = Delivery.derivedFrom(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
         this.itinerary = Itinerary.EMPTY_ITINERARY;
     }
 
@@ -177,8 +175,7 @@ public class Cargo implements Serializable {
      * @param handlingHistory handling history
      */
     public void deriveDeliveryProgress(HandlingHistory handlingHistory) {
-        this.delivery =
-                Delivery.derivedFrom(getRouteSpecification(), getItinerary(), handlingHistory);
+        this.delivery = Delivery.derivedFrom(getRouteSpecification(), getItinerary(), handlingHistory);
         // LOGGER.log(Level.INFO, "deriveDeliveryProgress: {0}", this.delivery);
     }
 

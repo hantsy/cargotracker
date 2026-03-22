@@ -30,7 +30,7 @@ public class RouteSpecification implements Specification<Itinerary>, Serializabl
     @JoinColumn(name = "spec_destination_id")
     private Location destination;
 
-    // @Temporal(TemporalType.DATE)
+    
     @Column(name = "spec_arrival_deadline")
     @NotNull
     private LocalDate arrivalDeadline;

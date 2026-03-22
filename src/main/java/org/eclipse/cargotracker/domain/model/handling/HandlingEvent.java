@@ -64,14 +64,14 @@ public class HandlingEvent implements Serializable {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    // @Temporal(TemporalType.DATE)
+    
     @NotNull
-    @Column(name = "completion_time")
+    @Column(name = "completion_time", secondPrecision = 0)
     private LocalDateTime completionTime;
 
-    // @Temporal(TemporalType.DATE)
+    
     @NotNull
-    @Column(name = "registration_time")
+    @Column(name = "registration_time", secondPrecision = 0)
     private LocalDateTime registrationTime;
 
     @NotNull
