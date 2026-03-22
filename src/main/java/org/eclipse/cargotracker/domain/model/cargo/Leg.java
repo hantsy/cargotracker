@@ -13,7 +13,6 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -43,12 +42,10 @@ public class Leg implements Serializable {
     @NotNull
     private Location unloadLocation;
 
-    // @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "load_time")
     @NotNull
     private LocalDateTime loadTime;
 
-    // @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "unload_time")
     @NotNull
     private LocalDateTime unloadTime;
@@ -75,11 +72,10 @@ public class Leg implements Serializable {
 
         // Hibernate issue:
         // when the `LocalDateTime` field is persisted into db, and retrieved from db, the values
-        // are
-        // different in nanoseconds.
-        // any good idea to overcome this?
-        this.loadTime = loadTime.truncatedTo(ChronoUnit.SECONDS);
-        this.unloadTime = unloadTime.truncatedTo(ChronoUnit.SECONDS);
+        // are different in nanoseconds.
+        // UPDATE: Jakarta Persistence 3.2 add a `secondPrecision` attribute to the Column annotation.
+        this.loadTime = loadTime;
+        this.unloadTime = unloadTime;
     }
 
     public Voyage getVoyage() {
