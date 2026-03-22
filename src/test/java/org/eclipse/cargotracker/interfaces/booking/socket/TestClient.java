@@ -1,6 +1,14 @@
 package org.eclipse.cargotracker.interfaces.booking.socket;
 
-import jakarta.websocket.*;
+import jakarta.websocket.ClientEndpoint;
+import jakarta.websocket.ClientEndpointConfig;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;

@@ -9,8 +9,14 @@ import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Objects;
 
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.*;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.*;
+import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.MISROUTED;
+import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.NOT_ROUTED;
+import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.ROUTED;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.CLAIMED;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.IN_PORT;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.NOT_RECEIVED;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
+import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.UNKNOWN;
 
 public final class DeliveryFactory {
 

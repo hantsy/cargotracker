@@ -5,7 +5,6 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.shared.Specification;
 
@@ -48,7 +47,7 @@ public class RouteSpecification implements Specification<Itinerary>, Serializabl
         Objects.requireNonNull(origin, "Origin is required");
         Objects.requireNonNull(destination, "Destination is required");
         Objects.requireNonNull(arrivalDeadline, "Arrival deadline is required");
-        if (origin.sameIdentityAs(destination)) {
+        if (origin.equals(destination)) {
             throw new IllegalArgumentException("Origin and destination can't be the same: " + origin);
         }
 
@@ -72,43 +71,10 @@ public class RouteSpecification implements Specification<Itinerary>, Serializabl
     @Override
     public boolean isSatisfiedBy(Itinerary itinerary) {
         return itinerary != null
-                && getOrigin().sameIdentityAs(itinerary.getInitialDepartureLocation())
-                && getDestination().sameIdentityAs(itinerary.getFinalArrivalLocation())
+                && getOrigin().equals(itinerary.getInitialDepartureLocation())
+                && getDestination().equals(itinerary.getFinalArrivalLocation())
                 && getArrivalDeadline().isAfter(itinerary.getFinalArrivalDate().toLocalDate());
     }
-
-    private boolean sameValueAs(RouteSpecification other) {
-        return other != null
-                && new EqualsBuilder()
-                .append(this.origin, other.origin)
-                .append(this.destination, other.destination)
-                .append(this.arrivalDeadline, other.arrivalDeadline)
-                .isEquals();
-    }
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        }
-//        if (o == null || getClass() != o.getClass()) {
-//            return false;
-//        }
-//
-//        RouteSpecification that = (RouteSpecification) o;
-//
-//        return sameValueAs(that);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return new HashCodeBuilder()
-//                .append(this.origin)
-//                .append(this.destination)
-//                .append(this.arrivalDeadline)
-//                .toHashCode();
-//    }
-
 
     @Override
     public boolean equals(Object o) {

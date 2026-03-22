@@ -8,7 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -276,7 +275,7 @@ public class Delivery implements Serializable {
         return switch (lastEvent.getType()) {
             case LOAD -> {
                 for (Leg leg : itinerary.getLegs()) {
-                    if (leg.getLoadLocation().sameIdentityAs(lastEvent.getLocation())) {
+                    if (leg.getLoadLocation().equals(lastEvent.getLocation())) {
                         yield new HandlingActivity(
                                 HandlingEvent.Type.UNLOAD,
                                 leg.getUnloadLocation(),
@@ -290,7 +289,7 @@ public class Delivery implements Serializable {
                      iterator.hasNext(); ) {
                     Leg leg = iterator.next();
 
-                    if (leg.getUnloadLocation().sameIdentityAs(lastEvent.getLocation())) {
+                    if (leg.getUnloadLocation().equals(lastEvent.getLocation())) {
                         if (iterator.hasNext()) {
                             Leg nextLeg = iterator.next();
                             yield new HandlingActivity(
@@ -329,60 +328,13 @@ public class Delivery implements Serializable {
 
     private boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification) {
         return lastEvent != null
-                && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
-                && routeSpecification.getDestination().sameIdentityAs(lastEvent.getLocation());
+                && HandlingEvent.Type.UNLOAD.equals(lastEvent.getType())
+                && routeSpecification.getDestination().equals(lastEvent.getLocation());
     }
 
     private boolean onTrack() {
         return routingStatus.equals(ROUTED) && !misdirected;
     }
-
-    private boolean sameValueAs(Delivery other) {
-        return other != null
-                && new EqualsBuilder()
-                .append(this.transportStatus, other.transportStatus)
-                .append(this.lastKnownLocation, other.lastKnownLocation)
-                .append(this.currentVoyage, other.currentVoyage)
-                .append(this.misdirected, other.misdirected)
-                .append(this.eta, other.eta)
-                .append(this.nextExpectedActivity, other.nextExpectedActivity)
-                .append(this.isUnloadedAtDestination, other.isUnloadedAtDestination)
-                .append(this.routingStatus, other.routingStatus)
-                .append(this.calculatedAt, other.calculatedAt)
-                .append(this.lastEvent, other.lastEvent)
-                .isEquals();
-    }
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        }
-//        if (o == null || !(o instanceof Delivery)) {
-//            return false;
-//        }
-//
-//        Delivery other = (Delivery) o;
-//
-//        return sameValueAs(other);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return new HashCodeBuilder()
-//                .append(transportStatus)
-//                .append(lastKnownLocation)
-//                .append(currentVoyage)
-//                .append(misdirected)
-//                .append(eta)
-//                .append(nextExpectedActivity)
-//                .append(isUnloadedAtDestination)
-//                .append(routingStatus)
-//                .append(calculatedAt)
-//                .append(lastEvent)
-//                .toHashCode();
-//    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -414,32 +366,4 @@ public class Delivery implements Serializable {
                 lastEvent
         );
     }
-
-
-
-    //    @Override
-//    public String toString() {
-//        return "Delivery{"
-//                + "transportStatus="
-//                + transportStatus
-//                + ", lastKnownLocation="
-//                + lastKnownLocation
-//                + ", currentVoyage="
-//                + currentVoyage
-//                + ", misdirected="
-//                + misdirected
-//                + ", eta="
-//                + eta
-//                + ", nextExpectedActivity="
-//                + nextExpectedActivity
-//                + ", isUnloadedAtDestination="
-//                + isUnloadedAtDestination
-//                + ", routingStatus="
-//                + routingStatus
-//                + ", calculatedAt="
-//                + calculatedAt
-//                + ", lastEvent="
-//                + lastEvent
-//                + '}';
-//    }
 }

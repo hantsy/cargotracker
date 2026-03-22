@@ -55,25 +55,16 @@ public class UnLocode implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof UnLocode)) {
+        if (!(o instanceof UnLocode other)) {
             return false;
         }
 
-        UnLocode other = (UnLocode) o;
-
-        return sameValueAs(other);
+        return Objects.equals(unlocode, other.unlocode);
     }
 
     @Override
     public int hashCode() {
-        return unlocode.hashCode();
-    }
-
-    boolean sameValueAs(UnLocode other) {
-        return other != null && this.unlocode.equals(other.unlocode);
+        return Objects.hashCode(unlocode);
     }
 
     @Override

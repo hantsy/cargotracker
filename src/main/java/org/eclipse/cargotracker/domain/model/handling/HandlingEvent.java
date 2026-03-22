@@ -12,7 +12,6 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.location.Location;
@@ -196,45 +195,6 @@ public class HandlingEvent implements Serializable {
         }
         return builder.toString();
     }
-
-    private boolean sameEventAs(HandlingEvent other) {
-        return other != null
-                && new EqualsBuilder()
-                .append(this.cargo, other.cargo)
-                .append(this.voyage, other.voyage)
-                .append(this.completionTime, other.completionTime)
-                .append(this.location, other.location)
-                .append(this.type, other.type)
-                .isEquals();
-    }
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        }
-//        if (o == null || !(o instanceof HandlingEvent)) {
-//            return false;
-//        }
-//
-//        HandlingEvent event = (HandlingEvent) o;
-//
-//        return sameEventAs(event);
-//    }
-//
-//
-//
-//    @Override
-//    public int hashCode() {
-//        return new HashCodeBuilder()
-//                .append(cargo)
-//                .append(voyage)
-//                .append(completionTime)
-//                .append(location)
-//                .append(type)
-//                .toHashCode();
-//    }
-
 
     @Override
     public boolean equals(Object o) {

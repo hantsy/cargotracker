@@ -28,28 +28,16 @@ public class VoyageNumber implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof VoyageNumber)) {
+        if (!(o instanceof VoyageNumber other)) {
             return false;
         }
 
-        VoyageNumber other = (VoyageNumber) o;
-
-        return sameValueAs(other);
+        return Objects.equals(number, other.number);
     }
 
     @Override
     public int hashCode() {
-        return number.hashCode();
-    }
-
-    boolean sameValueAs(VoyageNumber other) {
-        return other != null && this.number.equals(other.number);
+        return Objects.hashCode(number);
     }
 
     @Override

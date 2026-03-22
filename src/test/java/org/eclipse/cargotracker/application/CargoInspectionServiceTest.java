@@ -2,7 +2,12 @@ package org.eclipse.cargotracker.application;
 
 import jakarta.enterprise.event.Event;
 import org.eclipse.cargotracker.application.internal.DefaultCargoInspectionService;
-import org.eclipse.cargotracker.domain.model.cargo.*;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
+import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
+import org.eclipse.cargotracker.domain.model.cargo.Leg;
+import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
+import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEventRepository;
 import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
@@ -19,7 +24,14 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class CargoInspectionServiceTest {
 

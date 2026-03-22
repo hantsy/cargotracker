@@ -1,14 +1,18 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * A carrier movement is a vessel voyage from one location to another.
@@ -84,31 +88,6 @@ public class CarrierMovement implements Serializable {
         return arrivalTime;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        }
-//        if (o == null || !(o instanceof CarrierMovement)) {
-//            return false;
-//        }
-//
-//        CarrierMovement that = (CarrierMovement) o;
-//
-//        return sameValueAs(that);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return new HashCodeBuilder()
-//                .append(this.departureLocation)
-//                .append(this.departureTime)
-//                .append(this.arrivalLocation)
-//                .append(this.arrivalTime)
-//                .toHashCode();
-//    }
-
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof CarrierMovement that)) return false;
@@ -121,15 +100,5 @@ public class CarrierMovement implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(departureLocation, arrivalLocation, departureTime, arrivalTime);
-    }
-
-    private boolean sameValueAs(CarrierMovement other) {
-        return other != null
-                && new EqualsBuilder()
-                .append(this.departureLocation, other.departureLocation)
-                .append(this.departureTime, other.departureTime)
-                .append(this.arrivalLocation, other.arrivalLocation)
-                .append(this.arrivalTime, other.arrivalTime)
-                .isEquals();
     }
 }

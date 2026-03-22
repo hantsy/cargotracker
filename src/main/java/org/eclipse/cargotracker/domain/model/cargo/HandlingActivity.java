@@ -7,7 +7,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
@@ -72,15 +71,6 @@ public class HandlingActivity implements Serializable {
         return voyage;
     }
 
-    private boolean sameValueAs(HandlingActivity other) {
-        return other != null
-                && new EqualsBuilder()
-                .append(this.type, other.type)
-                .append(this.location, other.location)
-                .append(this.voyage, other.voyage)
-                .isEquals();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof HandlingActivity that)) return false;
@@ -93,32 +83,6 @@ public class HandlingActivity implements Serializable {
     public int hashCode() {
         return Objects.hash(type, location, voyage);
     }
-
-    //    @Override
-//    public int hashCode() {
-//        return new HashCodeBuilder()
-//                .append(this.type)
-//                .append(this.location)
-//                .append(this.voyage)
-//                .toHashCode();
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == this) {
-//            return true;
-//        }
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (obj.getClass() != this.getClass()) {
-//            return false;
-//        }
-//
-//        HandlingActivity other = (HandlingActivity) obj;
-//
-//        return sameValueAs(other);
-//    }
 
     public boolean isEmpty() {
         if (type != null) {

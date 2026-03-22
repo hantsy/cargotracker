@@ -182,34 +182,6 @@ public class Cargo implements Serializable {
         // LOGGER.log(Level.INFO, "deriveDeliveryProgress: {0}", this.delivery);
     }
 
-//    /**
-//     * @param object to compare
-//     * @return True if they have the same identity
-//     * @see #sameIdentityAs(Cargo)
-//     */
-//    @Override
-//    public boolean equals(Object object) {
-//        if (this == object) {
-//            return true;
-//        }
-//        if (object == null || getClass() != object.getClass()) {
-//            return false;
-//        }
-//
-//        Cargo other = (Cargo) object;
-//        return sameIdentityAs(other);
-//    }
-//
-
-//    /**
-//     * @return Hash code of tracking id.
-//     */
-//    @Override
-//    public int hashCode() {
-//        return trackingId.hashCode();
-//    }
-
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Cargo cargo)) return false;
@@ -219,10 +191,6 @@ public class Cargo implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(trackingId);
-    }
-
-    private boolean sameIdentityAs(Cargo other) {
-        return other != null && trackingId.sameValueAs(other.trackingId);
     }
 
     @Override

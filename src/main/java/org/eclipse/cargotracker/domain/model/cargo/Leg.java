@@ -102,41 +102,6 @@ public class Leg implements Serializable {
         return this.unloadTime;
     }
 
-    private boolean sameValueAs(Leg other) {
-        return other != null
-                && Objects.equals(this.voyage, other.voyage)
-                && Objects.equals(this.loadLocation, other.loadLocation)
-                && Objects.equals(this.unloadLocation, other.unloadLocation)
-                && Objects.equals(this.loadTime, other.loadTime)
-                && Objects.equals(this.unloadTime, other.unloadTime);
-    }
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        }
-//        if (o == null || !(o instanceof Leg)) {
-//            return false;
-//        }
-//
-//        Leg leg = (Leg) o;
-//
-//        return sameValueAs(leg);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return new HashCodeBuilder()
-//                .append(this.voyage)
-//                .append(this.loadLocation)
-//                .append(this.unloadLocation)
-//                .append(this.loadTime)
-//                .append(this.unloadTime)
-//                .toHashCode();
-//    }
-
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Leg leg)) return false;

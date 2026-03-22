@@ -81,7 +81,7 @@ public class Itinerary implements Serializable {
         // location
         return switch (event.getType()) {
             case RECEIVE -> {
-                Leg leg = legs.get(0);
+                Leg leg = legs.getFirst();
                 yield leg.getLoadLocation().equals(event.getLocation());
             }
             case LOAD -> legs.stream()
@@ -110,7 +110,7 @@ public class Itinerary implements Serializable {
         if (legs.isEmpty()) {
             return Location.UNKNOWN;
         } else {
-            return legs.get(0).getLoadLocation();
+            return legs.getFirst().getLoadLocation();
         }
     }
 
@@ -139,20 +139,7 @@ public class Itinerary implements Serializable {
      * @return The last leg on the itinerary.
      */
     Leg getLastLeg() {
-        if (legs.isEmpty()) {
-            return null;
-        } else {
-            return legs.get(legs.size() - 1);
-        }
-    }
-
-    private boolean sameValueAs(Itinerary other) {
-        // return other != null && legs.equals(other.legs);
-        //
-        // Hibernate issue:
-        // When comparing a `List` type property of an entity, it is also a proxy class in runtime.
-        // Use a `copyOf` to compare using the contained items temporally.
-        return other != null && Objects.equals(List.copyOf(this.legs), List.copyOf(other.legs));
+        return legs.isEmpty() ? null : legs.getLast();
     }
 
     @Override
@@ -160,28 +147,18 @@ public class Itinerary implements Serializable {
         if (this == o) {
             return true;
         }
-
-        //        if (o == null || getClass() != o.getClass()) {
-        //            return false;
-        //        }
-        //
-        // https://stackoverflow.com/questions/27581/what-issues-should-be-considered-when-overriding-equals-and-hashcode-in-java
-        // Hibernate issue:
-        // `getClass() != o.getClass()` will fail if comparing the objects in different
-        // transactions/sessions.
-        // The generated dynamic proxies are always different classes.
-        if (o == null || !(o instanceof Itinerary)) {
+        if (!(o instanceof Itinerary itinerary)) {
             return false;
         }
 
-        Itinerary itinerary = (Itinerary) o;
-
-        return sameValueAs(itinerary);
+        // Hibernate issue:
+        // When comparing a `List` type property of an entity, it is also a proxy class in runtime.
+        // Use a `copyOf` to compare using the contained items temporally.
+        return Objects.equals(List.copyOf(this.legs), List.copyOf(itinerary.legs));
     }
 
     @Override
     public int hashCode() {
-        // return legs.hashCode();
         return Objects.hashCode(List.copyOf(legs));
     }
 

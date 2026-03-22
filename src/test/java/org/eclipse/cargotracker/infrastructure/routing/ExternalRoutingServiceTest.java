@@ -1,6 +1,10 @@
 package org.eclipse.cargotracker.infrastructure.routing;
 
-import org.eclipse.cargotracker.domain.model.cargo.*;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
+import org.eclipse.cargotracker.domain.model.cargo.Leg;
+import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
+import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.LocationRepository;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
@@ -22,7 +26,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class ExternalRoutingServiceTest {
 

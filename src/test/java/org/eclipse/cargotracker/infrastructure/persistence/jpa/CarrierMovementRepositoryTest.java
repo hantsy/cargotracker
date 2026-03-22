@@ -8,7 +8,12 @@ import jakarta.transaction.UserTransaction;
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
-import org.eclipse.cargotracker.domain.model.voyage.*;
+import org.eclipse.cargotracker.domain.model.voyage.CarrierMovement;
+import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
+import org.eclipse.cargotracker.domain.model.voyage.Schedule;
+import org.eclipse.cargotracker.domain.model.voyage.Voyage;
+import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
+import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -26,7 +31,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
+import static org.eclipse.cargotracker.Deployments.addApplicationBase;
+import static org.eclipse.cargotracker.Deployments.addDomainModels;
+import static org.eclipse.cargotracker.Deployments.addDomainRepositories;
+import static org.eclipse.cargotracker.Deployments.addExtraJars;
+import static org.eclipse.cargotracker.Deployments.addInfraBase;
+import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")

@@ -6,7 +6,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.UserTransaction;
 import org.eclipse.cargotracker.TxUtil;
 import org.eclipse.cargotracker.application.internal.DefaultBookingService;
-import org.eclipse.cargotracker.domain.model.cargo.*;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.Delivery;
+import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
+import org.eclipse.cargotracker.domain.model.cargo.RoutingStatus;
+import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
+import org.eclipse.cargotracker.domain.model.cargo.TransportStatus;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
@@ -24,7 +29,13 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
@@ -34,7 +45,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
+import static org.eclipse.cargotracker.Deployments.addApplicationBase;
+import static org.eclipse.cargotracker.Deployments.addDomainModels;
+import static org.eclipse.cargotracker.Deployments.addDomainRepositories;
+import static org.eclipse.cargotracker.Deployments.addDomainService;
+import static org.eclipse.cargotracker.Deployments.addExtraJars;
+import static org.eclipse.cargotracker.Deployments.addInfraBase;
+import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
 /**
  * Application layer integration test covering a number of otherwise fairly trivial components that

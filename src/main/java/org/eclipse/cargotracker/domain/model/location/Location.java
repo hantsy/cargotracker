@@ -1,6 +1,12 @@
 package org.eclipse.cargotracker.domain.model.location;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -70,7 +76,7 @@ public class Location implements Serializable {
     }
 
     public boolean sameIdentityAs(Location other) {
-        return this.unLocode.sameValueAs(other.unLocode);
+        return this.equals(other);
     }
 
     @Override
@@ -83,37 +89,6 @@ public class Location implements Serializable {
     public int hashCode() {
         return Objects.hashCode(unLocode);
     }
-
-//    /**
-//     * @param object to compare
-//     * @return Since this is an entiy this will be true iff UN locodes are equal.
-//     */
-//    @Override
-//    public boolean equals(Object object) {
-//        if (object == null) {
-//            return false;
-//        }
-//        if (this == object) {
-//            return true;
-//        }
-//        if (!(object instanceof Location)) {
-//            return false;
-//        }
-//        Location other = (Location) object;
-//        return sameIdentityAs(other);
-//    }
-//
-//
-//
-//    /**
-//     * @return Hash code of UN locode.
-//     */
-//    @Override
-//    public int hashCode() {
-//        return unLocode.hashCode();
-//    }
-
-
 
     @Override
     public String toString() {

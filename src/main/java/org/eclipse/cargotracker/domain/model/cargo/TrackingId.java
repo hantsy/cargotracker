@@ -33,26 +33,18 @@ public class TrackingId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !(o instanceof TrackingId)) {
+        if (!(o instanceof TrackingId other)) {
             return false;
         }
 
-        TrackingId other = (TrackingId) o;
-
-        return sameValueAs(other);
+        return Objects.equals(id, other.id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hashCode(id);
     }
 
-    boolean sameValueAs(TrackingId other) {
-        return other != null && this.id.equals(other.id);
-    }
 
     @Override
     public String toString() {

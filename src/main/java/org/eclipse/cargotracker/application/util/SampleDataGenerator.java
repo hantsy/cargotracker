@@ -6,8 +6,16 @@ import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.eclipse.cargotracker.domain.model.cargo.*;
-import org.eclipse.cargotracker.domain.model.handling.*;
+import org.eclipse.cargotracker.domain.model.cargo.Cargo;
+import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
+import org.eclipse.cargotracker.domain.model.cargo.Leg;
+import org.eclipse.cargotracker.domain.model.cargo.RouteSpecification;
+import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
+import org.eclipse.cargotracker.domain.model.handling.CannotCreateHandlingEventException;
+import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
+import org.eclipse.cargotracker.domain.model.handling.HandlingEventFactory;
+import org.eclipse.cargotracker.domain.model.handling.HandlingEventRepository;
+import org.eclipse.cargotracker.domain.model.handling.HandlingHistory;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 

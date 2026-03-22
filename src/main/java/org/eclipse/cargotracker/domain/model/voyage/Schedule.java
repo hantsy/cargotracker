@@ -1,7 +1,11 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -48,27 +52,16 @@ public class Schedule implements Serializable {
     }
 
     public List<CarrierMovement> getCarrierMovements() {
-        return Collections.unmodifiableList(carrierMovements);
-    }
-
-    private boolean sameValueAs(Schedule other) {
-        return other != null
-                && Objects.equals(
-                List.copyOf(carrierMovements), List.copyOf(other.carrierMovements));
+        return List.copyOf(carrierMovements);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Schedule that)) {
             return false;
         }
 
-        Schedule that = (Schedule) o;
-
-        return sameValueAs(that);
+        return Objects.equals(List.copyOf(carrierMovements), List.copyOf(that.carrierMovements));
     }
 
     @Override

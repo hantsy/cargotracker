@@ -1,6 +1,12 @@
 package org.eclipse.cargotracker.domain.model.voyage;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import org.eclipse.cargotracker.domain.model.location.Location;
 
@@ -55,29 +61,6 @@ public class Voyage implements Serializable {
         return schedule;
     }
 
-//    @Override
-//    public int hashCode() {
-//        return voyageNumber.hashCode();
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        }
-//        if (o == null) {
-//            return false;
-//        }
-//        if (!(o instanceof Voyage)) {
-//            return false;
-//        }
-//
-//        Voyage that = (Voyage) o;
-//
-//        return sameIdentityAs(that);
-//    }
-
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Voyage voyage)) return false;
@@ -87,10 +70,6 @@ public class Voyage implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(voyageNumber);
-    }
-
-    public boolean sameIdentityAs(Voyage other) {
-        return other != null && this.getVoyageNumber().sameValueAs(other.getVoyageNumber());
     }
 
     @Override

@@ -10,7 +10,11 @@ import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.List;
 
 @Dependent

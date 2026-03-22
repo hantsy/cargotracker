@@ -12,7 +12,11 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
@@ -20,7 +24,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.*;
+import static org.eclipse.cargotracker.Deployments.addApplicationBase;
+import static org.eclipse.cargotracker.Deployments.addDomainModels;
+import static org.eclipse.cargotracker.Deployments.addDomainRepositories;
+import static org.eclipse.cargotracker.Deployments.addExtraJars;
+import static org.eclipse.cargotracker.Deployments.addInfraBase;
+import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
 @ExtendWith(ArquillianExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
