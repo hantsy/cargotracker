@@ -904,21 +904,17 @@
                                 </goals>
                                 <configuration>
                                     <append>true</append>
-                                    <address>172.17.0.1</address>
+                                    <dumpOnExit>true</dumpOnExit>
                                     <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                                    <address>172.17.0.1</address>
                                     <output>tcpserver</output>
                                     <port>6300</port>
                                     <propertyName>jacocoArgLine</propertyName>
                                 </configuration>
                             </execution>
                             <execution>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>dump</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>default-report</id>
+                                <id>jacoco-report</id>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>report</goal>
                                     <goal>report-integration</goal>

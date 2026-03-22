@@ -40,7 +40,7 @@ jobs:
           sleep 5 
           docker ps -a    
       - name: Build with Maven
-        run: mvn clean  jacoco:prepare-agent-integration integration-test -Parq-glassfish-managed,coverage
+        run: mvn clean jacoco:prepare-agent-integration integration-test -Parq-glassfish-managed,coverage
       - uses: actions/upload-artifact@v7
         with:
           name: jacoco-it
@@ -72,6 +72,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn verify sonar:sonar -Pcoverage \
+          -Dskip.unit.tests=true \
+          -Dskip.integration.tests=true \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.token=$SONAR_TOKEN \
           -Dsonar.organization=hantsy \
