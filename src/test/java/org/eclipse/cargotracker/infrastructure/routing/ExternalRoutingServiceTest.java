@@ -103,7 +103,7 @@ public class ExternalRoutingServiceTest {
 
             // Cargo final destination and last leg stop should match
             Location lastLegStop = legs.get(legs.size() - 1).getUnloadLocation();
-            assertEquals(cargo.getRouteSpecification().getDestination(), lastLegStop);
+            assertEquals(cargo.getRouteSpecification().destination(), lastLegStop);
 
             // Assert that all legs are connected
             for (int i = 0; i < legs.size() - 1; i++) {

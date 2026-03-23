@@ -13,8 +13,8 @@ public class CargoRouteDtoAssembler {
                 new CargoRouteDto(
                         cargo.getTrackingId().id(),
                         locationDtoAssembler.toDto(cargo.getOrigin()),
-                        locationDtoAssembler.toDto(cargo.getRouteSpecification().getDestination()),
-                        cargo.getRouteSpecification().getArrivalDeadline(),
+                        locationDtoAssembler.toDto(cargo.getRouteSpecification().destination()),
+                        cargo.getRouteSpecification().arrivalDeadline(),
                         cargo.getDelivery().routingStatus().sameValueAs(RoutingStatus.MISROUTED),
                         cargo.getDelivery()
                                 .transportStatus()

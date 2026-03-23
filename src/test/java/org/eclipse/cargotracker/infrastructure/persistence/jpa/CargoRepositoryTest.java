@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -152,8 +151,8 @@ public class CargoRepositoryTest {
         tx.runInTx(() -> {
             final Cargo cargo = cargoRepository.find(trackingId);
             assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.HONGKONG);
-            assertThat(cargo.getRouteSpecification().getOrigin()).isEqualTo(SampleLocations.HONGKONG);
-            assertThat(cargo.getRouteSpecification().getDestination())
+            assertThat(cargo.getRouteSpecification().origin()).isEqualTo(SampleLocations.HONGKONG);
+            assertThat(cargo.getRouteSpecification().destination())
                     .isEqualTo(SampleLocations.HELSINKI);
 
             assertThat(cargo.getDelivery()).isNotNull();
@@ -266,8 +265,8 @@ public class CargoRepositoryTest {
                     .getSingleResult();
 
             assertThat(result.getTrackingId()).isEqualTo(trackingId);
-            assertThat(result.getRouteSpecification().getOrigin()).isEqualTo(dallas);
-            assertThat(result.getRouteSpecification().getDestination()).isEqualTo(helsinki);
+            assertThat(result.getRouteSpecification().origin()).isEqualTo(dallas);
+            assertThat(result.getRouteSpecification().destination()).isEqualTo(helsinki);
             assertThat(result.getItinerary().getLegs()).hasSize(1);
         });
     }
@@ -306,8 +305,8 @@ public class CargoRepositoryTest {
                     "query cargo by tracking id: {0}, \n result: {1}",
                     new Object[]{trackingId, result.toString(true)});
             assertThat(result.getTrackingId()).isEqualTo(trackingId);
-            assertThat(result.getRouteSpecification().getOrigin()).isEqualTo(SampleLocations.NEWYORK);
-            assertThat(result.getRouteSpecification().getDestination()).isEqualTo(SampleLocations.HELSINKI);
+            assertThat(result.getRouteSpecification().origin()).isEqualTo(SampleLocations.NEWYORK);
+            assertThat(result.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
             assertThat(result.getItinerary().getLegs()).hasSize(1);
         });
     }

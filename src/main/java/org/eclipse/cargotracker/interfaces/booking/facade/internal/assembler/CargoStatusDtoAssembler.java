@@ -23,7 +23,7 @@ public class CargoStatusDtoAssembler {
                         .map(handlingEvent -> assembler.toDto(cargo, handlingEvent))
                         .toList();
         return new CargoStatusDto(
-                cargo.getRouteSpecification().getDestination().getName(),
+                cargo.getRouteSpecification().destination().getName(),
                 getCargoStatusText(cargo),
                 cargo.getDelivery().misdirected(),
                 getEta(cargo),

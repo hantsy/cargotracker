@@ -163,7 +163,7 @@ public class DeliveryFactory {
         }
 
         if (lastEvent == null) {
-            return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.getOrigin());
+            return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.origin());
         }
 
         return switch (lastEvent.getType()) {
@@ -224,7 +224,7 @@ public class DeliveryFactory {
             HandlingEvent lastEvent, RouteSpecification routeSpecification) {
         return lastEvent != null
                 && HandlingEvent.Type.UNLOAD.equals(lastEvent.getType())
-                && routeSpecification.getDestination().equals(lastEvent.getLocation());
+                && routeSpecification.destination().equals(lastEvent.getLocation());
     }
 
     private static boolean onTrack(HandlingEvent lastEvent, Itinerary itinerary) {

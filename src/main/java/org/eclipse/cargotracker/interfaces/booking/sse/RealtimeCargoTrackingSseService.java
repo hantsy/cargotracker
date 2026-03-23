@@ -76,7 +76,7 @@ public class RealtimeCargoTrackingSseService {
             generator.writeStartObject()
                     .write("trackingId", cargo.getTrackingId().id())
                     .write("origin", cargo.getOrigin().getName())
-                    .write("destination", cargo.getRouteSpecification().getDestination().getName())
+                    .write("destination", cargo.getRouteSpecification().destination().getName())
                     .write("lastKnownLocation", cargo.getDelivery().lastKnownLocation().getName())
                     .write("transportStatus", cargo.getDelivery().transportStatus().name())
                     .writeEnd();

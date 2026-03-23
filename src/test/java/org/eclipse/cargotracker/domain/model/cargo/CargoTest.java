@@ -62,7 +62,7 @@ public class CargoTest {
         RouteSpecification acceptOnlyGood =
                 new RouteSpecification(
                         cargo.getOrigin(),
-                        cargo.getRouteSpecification().getDestination(),
+                        cargo.getRouteSpecification().destination(),
                         LocalDate.now()) {
 
                     @Override

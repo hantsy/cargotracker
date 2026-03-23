@@ -65,7 +65,6 @@ public class Itinerary implements Serializable {
     }
 
     public List<Leg> getLegs() {
-        // this.legs.sort(Comparator.comparing(Leg::getLoadTime));
         return List.copyOf(this.legs);
     }
 

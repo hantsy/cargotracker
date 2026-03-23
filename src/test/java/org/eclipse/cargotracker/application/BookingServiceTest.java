@@ -167,8 +167,8 @@ public class BookingServiceTest {
                     .getSingleResult();
 
             assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-            assertThat(cargo.getRouteSpecification().getDestination()).isEqualTo(SampleLocations.STOCKHOLM);
-            assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(deadline);
+            assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.STOCKHOLM);
+            assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(deadline);
             assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
             assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
             assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
@@ -234,8 +234,8 @@ public class BookingServiceTest {
                     .getSingleResult();
 
             assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-            assertThat(cargo.getRouteSpecification().getDestination()).isEqualTo(SampleLocations.HELSINKI);
-            assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(deadline);
+            assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
+            assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(deadline);
             assertThat(cargo.getItinerary()).isEqualTo(assigned);
             assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
             assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
@@ -263,8 +263,8 @@ public class BookingServiceTest {
                     .getSingleResult();
 
             assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.CHICAGO);
-            assertThat(cargo.getRouteSpecification().getDestination()).isEqualTo(SampleLocations.HELSINKI);
-            assertThat(cargo.getRouteSpecification().getArrivalDeadline()).isEqualTo(newDeadline);
+            assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
+            assertThat(cargo.getRouteSpecification().arrivalDeadline()).isEqualTo(newDeadline);
             assertThat(cargo.getItinerary()).isEqualTo(assigned);
             assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
             assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
