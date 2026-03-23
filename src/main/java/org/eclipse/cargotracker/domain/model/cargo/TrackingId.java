@@ -22,28 +22,4 @@ public record TrackingId(
     public TrackingId {
         Objects.requireNonNull(id, "Tracking id is required");
     }
-
-    public String getIdString() {
-        return id;
-    }
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (!(o instanceof TrackingId other)) {
-//            return false;
-//        }
-//
-//        return Objects.equals(id, other.id);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hashCode(id);
-//    }
-//
-//
-//    @Override
-//    public String toString() {
-//        return id;
-//    }
 }

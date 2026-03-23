@@ -24,7 +24,7 @@ public class ItineraryCandidateDtoAssembler {
     protected LegDto toLegDto(Leg leg) {
         VoyageNumber voyageNumber = leg.getVoyage().getVoyageNumber();
         return new LegDto(
-                voyageNumber.getIdString(),
+                voyageNumber.number(),
                 locationDtoAssembler.toDto(leg.getLoadLocation()),
                 locationDtoAssembler.toDto(leg.getUnloadLocation()),
                 leg.getLoadTime(),

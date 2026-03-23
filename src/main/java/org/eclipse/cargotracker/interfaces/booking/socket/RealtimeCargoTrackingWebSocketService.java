@@ -48,11 +48,11 @@ public class RealtimeCargoTrackingWebSocketService {
         try (JsonGenerator generator = Json.createGenerator(writer)) {
             generator
                     .writeStartObject()
-                    .write("trackingId", cargo.getTrackingId().getIdString())
+                    .write("trackingId", cargo.getTrackingId().id())
                     .write("origin", cargo.getOrigin().getName())
                     .write("destination", cargo.getRouteSpecification().getDestination().getName())
-                    .write("lastKnownLocation", cargo.getDelivery().getLastKnownLocation().getName())
-                    .write("transportStatus", cargo.getDelivery().getTransportStatus().toString())
+                    .write("lastKnownLocation", cargo.getDelivery().lastKnownLocation().getName())
+                    .write("transportStatus", cargo.getDelivery().transportStatus().toString())
                     .writeEnd();
         }
 

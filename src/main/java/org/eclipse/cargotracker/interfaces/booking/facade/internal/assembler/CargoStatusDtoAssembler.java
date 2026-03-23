@@ -25,7 +25,7 @@ public class CargoStatusDtoAssembler {
         return new CargoStatusDto(
                 cargo.getRouteSpecification().getDestination().getName(),
                 getCargoStatusText(cargo),
-                cargo.getDelivery().isMisdirected(),
+                cargo.getDelivery().misdirected(),
                 getEta(cargo),
                 getNextExpectedActivity(cargo),
                 trackingEvents);
@@ -34,9 +34,9 @@ public class CargoStatusDtoAssembler {
     private String getCargoStatusText(Cargo cargo) {
         Delivery delivery = cargo.getDelivery();
 
-        return switch (delivery.getTransportStatus()) {
-            case IN_PORT -> "In port " + delivery.getLastKnownLocation().getName();
-            case ONBOARD_CARRIER -> "Onboard voyage " + delivery.getCurrentVoyage().getVoyageNumber().getIdString();
+        return switch (delivery.transportStatus()) {
+            case IN_PORT -> "In port " + delivery.lastKnownLocation().getName();
+            case ONBOARD_CARRIER -> "Onboard voyage " + delivery.currentVoyage().getVoyageNumber().number();
             case CLAIMED -> "Claimed";
             case NOT_RECEIVED -> "Not received";
             case UNKNOWN -> "Unknown";
@@ -45,7 +45,7 @@ public class CargoStatusDtoAssembler {
     }
 
     private String getEta(Cargo cargo) {
-        LocalDateTime eta = cargo.getDelivery().getEstimatedTimeOfArrival();
+        LocalDateTime eta = cargo.getDelivery().estimatedTimeOfArrival();
 
         if (eta == null) {
             return "?";
@@ -55,7 +55,7 @@ public class CargoStatusDtoAssembler {
     }
 
     private String getNextExpectedActivity(Cargo cargo) {
-        HandlingActivity activity = cargo.getDelivery().getNextExpectedActivity();
+        HandlingActivity activity = cargo.getDelivery().nextExpectedActivity();
 
         if ((activity == null) || (activity.isEmpty())) {
             return "";

@@ -122,8 +122,8 @@ public class EventLogger implements Serializable {
         for (Cargo cargo : cargos) {
             // List only routed cargo that is not claimed yet.
             if (!cargo.getItinerary().getLegs().isEmpty()
-                    && !(cargo.getDelivery().getTransportStatus().sameValueAs(TransportStatus.CLAIMED))) {
-                String trackingId = cargo.getTrackingId().getIdString();
+                    && !(cargo.getDelivery().transportStatus().sameValueAs(TransportStatus.CLAIMED))) {
+                String trackingId = cargo.getTrackingId().id();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }
         }
@@ -132,7 +132,7 @@ public class EventLogger implements Serializable {
 
         this.locations = new ArrayList<>(locations.size());
         for (Location location : locations) {
-            String locationCode = location.getUnLocode().getIdString();
+            String locationCode = location.getUnLocode().unlocode();
             this.locations.add(
                     new SelectItem(locationCode, location.getName() + " (" + locationCode + ")"));
         }
@@ -143,8 +143,8 @@ public class EventLogger implements Serializable {
         for (Voyage voyage : voyages) {
             this.voyages.add(
                     new SelectItem(
-                            voyage.getVoyageNumber().getIdString(),
-                            voyage.getVoyageNumber().getIdString()
+                            voyage.getVoyageNumber().number(),
+                            voyage.getVoyageNumber().number()
                     )
             );
         }

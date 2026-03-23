@@ -51,6 +51,7 @@ public class HandlingEventRepositoryTest {
             Logger.getLogger(HandlingEventRepositoryTest.class.getName());
     @Inject
     UserTransaction utx;
+
     @Inject
     private LocationRepository locationRepository;
 

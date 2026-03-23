@@ -45,10 +45,13 @@ public class CarrierMovementRepositoryTest {
             Logger.getLogger(CarrierMovementRepositoryTest.class.getName());
     @Inject
     VoyageRepository voyageRepository;
+
     @PersistenceContext
     EntityManager entityManager;
+
     @Inject
     UserTransaction utx;
+
     String voyageNumberIdString = "007";
     Voyage voyage;
     Location from = SampleLocations.HONGKONG;
@@ -118,12 +121,12 @@ public class CarrierMovementRepositoryTest {
         startTransaction();
         Voyage result = voyageRepository.find(new VoyageNumber(voyageNumberIdString));
         assertThat(result).isNotNull();
-        assertThat(result.getVoyageNumber().getIdString()).isEqualTo(voyageNumberIdString);
+        assertThat(result.getVoyageNumber().number()).isEqualTo(voyageNumberIdString);
 
         var movements = result.getSchedule().getCarrierMovements();
         assertThat(movements).hasSize(1);
 
-        var m = movements.get(0);
+        var m = movements.getFirst();
         assertThat(m.getDepartureLocation()).isEqualTo(from);
         assertThat(m.getArrivalLocation()).isEqualTo(to);
         assertThat(m.getDepartureTime().truncatedTo(ChronoUnit.SECONDS))

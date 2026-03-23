@@ -20,7 +20,7 @@ import java.util.Objects;
 public class Itinerary implements Serializable {
 
     // Null object pattern.
-    public static final Itinerary EMPTY_ITINERARY = new Itinerary();
+    public static final Itinerary EMPTY = new Itinerary();
     private static final long serialVersionUID = 1L;
 
     // TODO [Clean Code] Look into why cascade delete doesn't work.

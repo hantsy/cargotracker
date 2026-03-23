@@ -72,20 +72,20 @@ public class ExternalRoutingServiceTest {
                                                         "CM002",
                                                         SampleLocations.HONGKONG
                                                                 .getUnLocode()
-                                                                .getIdString(),
+                                                                .unlocode(),
                                                         SampleLocations.CHICAGO
                                                                 .getUnLocode()
-                                                                .getIdString(),
+                                                                .unlocode(),
                                                         LocalDateTime.now().plusDays(1),
                                                         LocalDateTime.now().plusDays(10)),
                                                 new TransitEdge(
                                                         "CM002",
                                                         SampleLocations.CHICAGO
                                                                 .getUnLocode()
-                                                                .getIdString(),
+                                                                .unlocode(),
                                                         SampleLocations.HELSINKI
                                                                 .getUnLocode()
-                                                                .getIdString(),
+                                                                .unlocode(),
                                                         LocalDateTime.now().plusDays(11),
                                                         LocalDateTime.now().plusDays(30))))));
 

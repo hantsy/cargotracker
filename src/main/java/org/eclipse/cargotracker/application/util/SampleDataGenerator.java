@@ -67,12 +67,8 @@ public class SampleDataGenerator {
         // Dropping cargo first won't work since handling events have references
         // to it.
         // TODO [Clean Code] See if there is a better way to do this.
-        List<Cargo> cargos =
-                entityManager.createQuery("Select c from Cargo c", Cargo.class).getResultList();
-        for (Cargo cargo : cargos) {
-            cargo.getDelivery().setLastEvent(null);
-            entityManager.merge(cargo);
-        }
+        // Note: Delivery is now a record (immutable), so we use SQL to clear the last_event_id
+        entityManager.createNativeQuery("UPDATE cargos SET last_event_id = null").executeUpdate();
         entityManager.flush();
 
         // Delete all entities

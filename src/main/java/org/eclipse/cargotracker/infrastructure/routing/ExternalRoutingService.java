@@ -53,8 +53,8 @@ public class ExternalRoutingService implements RoutingService {
     @Override
     public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
         // The RouteSpecification is picked apart and adapted to the external API.
-        String origin = routeSpecification.getOrigin().getUnLocode().getIdString();
-        String destination = routeSpecification.getDestination().getUnLocode().getIdString();
+        String origin = routeSpecification.getOrigin().getUnLocode().unlocode();
+        String destination = routeSpecification.getDestination().getUnLocode().unlocode();
 
         List<TransitPath> transitPaths = this.graphTraversalResource.findShortestPath(origin, destination);
 

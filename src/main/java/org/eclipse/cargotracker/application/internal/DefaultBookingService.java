@@ -59,7 +59,7 @@ public class DefaultBookingService implements BookingService {
         LOGGER.log(
                 Level.INFO,
                 "Booked new cargo with tracking ID {0}",
-                cargo.getTrackingId().getIdString());
+                cargo.getTrackingId().id());
 
         return cargo.getTrackingId();
     }
