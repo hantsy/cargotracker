@@ -26,17 +26,15 @@ import org.eclipse.pathfinder.api.TransitEdge;
 import org.eclipse.pathfinder.api.TransitPath;
 import org.eclipse.pathfinder.internal.GraphDao;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -60,11 +58,10 @@ import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
  * <p>Ensure a Payara instance is running locally before this test is executed, with the default
  * user name and password.
  */
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("arqtest")
-public class BookingServiceTest {
-    private static final Logger LOGGER = Logger.getLogger(BookingServiceTest.class.getName());
+public class BookingServiceIT {
+    private static final Logger LOGGER = Logger.getLogger(BookingServiceIT.class.getName());
     private static TrackingId trackingId;
     private static List<Itinerary> candidates;
     private static LocalDate deadline;
@@ -212,9 +209,9 @@ public class BookingServiceTest {
             assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
             assertThat(cargo.getDelivery().misdirected()).isFalse();
             assertThat(cargo.getDelivery().estimatedTimeOfArrival().isBefore(deadline.atStartOfDay())).isTrue();
-            assertThat(cargo.getDelivery().nextExpectedActivity().getType()).isEqualTo(HandlingEvent.Type.RECEIVE);
-            assertThat(cargo.getDelivery().nextExpectedActivity().getLocation()).isEqualTo(SampleLocations.CHICAGO);
-            assertThat(cargo.getDelivery().nextExpectedActivity().getVoyage()).isNull();
+            assertThat(cargo.getDelivery().nextExpectedActivity().type()).isEqualTo(HandlingEvent.Type.RECEIVE);
+            assertThat(cargo.getDelivery().nextExpectedActivity().location()).isEqualTo(SampleLocations.CHICAGO);
+            assertThat(cargo.getDelivery().nextExpectedActivity().voyage()).isNull();
             assertThat(cargo.getDelivery().unloadedAtDestination()).isFalse();
             assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
         });

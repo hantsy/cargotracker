@@ -65,7 +65,7 @@ public class CargoTrackingViewAdapter {
     }
 
     public String getStatusCode() {
-        if (cargo.getItinerary().getLegs().isEmpty()) {
+        if (cargo.getItinerary().legs().isEmpty()) {
             return "NOT_ROUTED";
         }
 
@@ -118,10 +118,10 @@ public class CargoTrackingViewAdapter {
         }
 
         String text = "Next expected activity is to ";
-        HandlingEvent.Type type = activity.getType();
+        HandlingEvent.Type type = activity.type();
         final String typeName = type.name().toLowerCase();
-        final VoyageNumber voyageNumber = activity.getVoyage().getVoyageNumber();
-        final String locationName = activity.getLocation().getName();
+        final VoyageNumber voyageNumber = activity.voyage().getVoyageNumber();
+        final String locationName = activity.location().getName();
         return switch (type) {
             case LOAD -> "%s%s cargo onto voyage %s in %s".formatted(text, typeName, voyageNumber, locationName);
             case UNLOAD -> "%s%s cargo off of %s in %s".formatted(text, typeName, voyageNumber, locationName);

@@ -62,25 +62,25 @@ public class CargoStatusDtoAssembler {
         }
 
         String text = "Next expected activity is to ";
-        HandlingEvent.Type type = activity.getType();
+        HandlingEvent.Type type = activity.type();
 
         return switch (type) {
             case HandlingEvent.Type.LOAD -> text
                     + type.name().toLowerCase()
                     + " cargo onto voyage "
-                    + activity.getVoyage().getVoyageNumber()
+                    + activity.voyage().getVoyageNumber()
                     + " in "
-                    + activity.getLocation().getName();
+                    + activity.location().getName();
             case HandlingEvent.Type.UNLOAD -> text
                     + type.name().toLowerCase()
                     + " cargo off of "
-                    + activity.getVoyage().getVoyageNumber()
+                    + activity.voyage().getVoyageNumber()
                     + " in "
-                    + activity.getLocation().getName();
+                    + activity.location().getName();
             default -> text
                     + type.name().toLowerCase()
                     + " cargo in "
-                    + activity.getLocation().getName();
+                    + activity.location().getName();
         };
     }
 }

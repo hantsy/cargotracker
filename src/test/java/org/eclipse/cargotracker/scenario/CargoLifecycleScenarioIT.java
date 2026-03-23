@@ -37,7 +37,7 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.domain.service.RoutingService;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,10 +45,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,13 +65,12 @@ import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("arqtest")
-public class CargoLifecycleScenarioTest {
+public class CargoLifecycleScenarioIT {
 
     private static final Logger LOGGER =
-            Logger.getLogger(CargoLifecycleScenarioTest.class.getName());
+            Logger.getLogger(CargoLifecycleScenarioIT.class.getName());
     /*
      * Test setup: A cargo should be shipped from Hongkong to
      * SampleLocations.STOCKHOLM, and it should arrive in no more than two weeks.
@@ -283,7 +280,7 @@ public class CargoLifecycleScenarioTest {
             assertThat(result.getDelivery().routingStatus()).isEqualTo(RoutingStatus.ROUTED);
             assertThat(result.getDelivery().estimatedTimeOfArrival()).isNotNull();
             assertThat(result.getDelivery().nextExpectedActivity())
-                    .isEqualTo(new HandlingActivity(HandlingEvent.Type.RECEIVE, SampleLocations.HONGKONG));
+                    .isEqualTo(HandlingActivity.of(HandlingEvent.Type.RECEIVE, SampleLocations.HONGKONG));
         });
 
     }
@@ -321,7 +318,7 @@ public class CargoLifecycleScenarioTest {
             assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
             assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(SampleLocations.HONGKONG);
             assertThat(cargo.getDelivery().nextExpectedActivity())
-                    .isEqualTo(new HandlingActivity(HandlingEvent.Type.LOAD, SampleLocations.HONGKONG, SampleVoyages.v100));
+                    .isEqualTo(HandlingActivity.of(HandlingEvent.Type.LOAD, SampleLocations.HONGKONG, SampleVoyages.v100));
         });
 
     }
@@ -350,7 +347,7 @@ public class CargoLifecycleScenarioTest {
             assertThat(cargo.getDelivery().misdirected()).isFalse();
             assertThat(cargo.getDelivery().nextExpectedActivity())
                     .isEqualTo(
-                            new HandlingActivity(
+                            HandlingActivity.of(
                                     HandlingEvent.Type.UNLOAD,
                                     SampleLocations.NEWYORK,
                                     SampleVoyages.v100
@@ -546,7 +543,7 @@ public class CargoLifecycleScenarioTest {
             assertThat(cargo.getDelivery().misdirected()).isFalse();
             assertThat(cargo.getDelivery().nextExpectedActivity())
                     .isEqualTo(
-                            new HandlingActivity(
+                            HandlingActivity.of(
                                     HandlingEvent.Type.UNLOAD,
                                     SampleLocations.HAMBURG,
                                     SampleVoyages.v300));
@@ -579,10 +576,12 @@ public class CargoLifecycleScenarioTest {
             assertThat(cargo.getDelivery().misdirected()).isFalse();
             assertThat(cargo.getDelivery().nextExpectedActivity())
                     .isEqualTo(
-                            new HandlingActivity(
+                            HandlingActivity.of(
                                     HandlingEvent.Type.LOAD,
                                     SampleLocations.HAMBURG,
-                                    SampleVoyages.v400));
+                                    SampleVoyages.v400
+                            )
+                    );
         });
 
     }
@@ -614,7 +613,7 @@ public class CargoLifecycleScenarioTest {
             assertThat(cargo.getDelivery().misdirected()).isFalse();
             assertThat(cargo.getDelivery().nextExpectedActivity())
                     .isEqualTo(
-                            new HandlingActivity(
+                            HandlingActivity.of(
                                     HandlingEvent.Type.UNLOAD,
                                     SampleLocations.STOCKHOLM,
                                     SampleVoyages.v400));
@@ -646,7 +645,7 @@ public class CargoLifecycleScenarioTest {
             assertThat(cargo.getDelivery().transportStatus()).isEqualTo(TransportStatus.IN_PORT);
             assertThat(cargo.getDelivery().misdirected()).isFalse();
             assertThat(cargo.getDelivery().nextExpectedActivity())
-                    .isEqualTo(new HandlingActivity(HandlingEvent.Type.CLAIM, SampleLocations.STOCKHOLM));
+                    .isEqualTo(HandlingActivity.of(HandlingEvent.Type.CLAIM, SampleLocations.STOCKHOLM));
         });
     }
 

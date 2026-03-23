@@ -121,7 +121,7 @@ public class EventLogger implements Serializable {
         trackingIds = new ArrayList<>(cargos.size());
         for (Cargo cargo : cargos) {
             // List only routed cargo that is not claimed yet.
-            if (!cargo.getItinerary().getLegs().isEmpty()
+            if (!cargo.getItinerary().legs().isEmpty()
                     && !(cargo.getDelivery().transportStatus().sameValueAs(TransportStatus.CLAIMED))) {
                 String trackingId = cargo.getTrackingId().id();
                 trackingIds.add(new SelectItem(trackingId, trackingId));

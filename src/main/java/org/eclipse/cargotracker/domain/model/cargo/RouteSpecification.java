@@ -26,7 +26,6 @@ public record RouteSpecification(
         @JoinColumn(name = "spec_destination_id")
         Location destination,
 
-
         @Column(name = "spec_arrival_deadline")
         @NotNull
         LocalDate arrivalDeadline

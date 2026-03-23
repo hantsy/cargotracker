@@ -10,15 +10,13 @@ import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.net.URI;
 import java.net.URL;
@@ -33,18 +31,18 @@ import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
-@ExtendWith(ArquillianExtension.class)
-@Tag("arqtest")
-public class CargoMonitoringServiceTest {
-    private static final Logger LOGGER =
-            Logger.getLogger(CargoMonitoringServiceTest.class.getName());
+@ArquillianTest
+public class CargoMonitoringServiceIT {
+    private static final Logger LOGGER = Logger.getLogger(CargoMonitoringServiceIT.class.getName());
+
     @ArquillianResource
     private URL base;
+
     private Client client;
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CargoMonitoringServiceTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CargoMonitoringServiceIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
@@ -64,8 +62,7 @@ public class CargoMonitoringServiceTest {
                 .addAsWebInfResource("test-web.xml", "web.xml")
 
                 // add Wildfly specific deployment descriptor
-                .addAsWebInfResource(
-                        "test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
+                .addAsWebInfResource("test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
 
         LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
 
@@ -87,12 +84,13 @@ public class CargoMonitoringServiceTest {
     @Test
     public void testCargoStatus() throws Exception {
         LOGGER.log(Level.INFO, " Running test:: CargoMonitoringServiceTest#testCargoStatus ... ");
-        final WebTarget getCargoStatus =
-                client.target(URI.create(base + "rest/cargo").toURL().toExternalForm());
 
+        String uri = URI.create(base + "rest/cargo").toURL().toExternalForm();
+        LOGGER.log(Level.INFO, "request uri: {0}", new Object[]{uri});
+
+        final WebTarget getCargoStatus = client.target(uri);
         // Response is an autocloseable resource.
-        try (final Response getAllPostsResponse =
-                     getCargoStatus.request().accept(MediaType.APPLICATION_JSON).get()) {
+        try (final Response getAllPostsResponse = getCargoStatus.request().accept(MediaType.APPLICATION_JSON).get()) {
             assertThat(getAllPostsResponse.getStatus()).isEqualTo(200);
             // TODO: use POJO to assert the response body.
         }

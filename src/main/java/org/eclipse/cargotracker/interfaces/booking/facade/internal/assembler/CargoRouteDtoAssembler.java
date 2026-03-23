@@ -23,7 +23,7 @@ public class CargoRouteDtoAssembler {
                         cargo.getDelivery().transportStatus().name());
 
         cargo.getItinerary()
-                .getLegs()
+                .legs()
                 .forEach(
                         leg ->
                                 dto.addLeg(

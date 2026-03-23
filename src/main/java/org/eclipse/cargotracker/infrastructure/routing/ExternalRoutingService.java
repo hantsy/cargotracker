@@ -81,7 +81,7 @@ public class ExternalRoutingService implements RoutingService {
 
     private Itinerary toItinerary(TransitPath transitPath) {
         List<Leg> legs =
-                transitPath.getTransitEdges().stream()
+                transitPath.transitEdges().stream()
                         .map(this::toLeg)
                         .toList();
         return new Itinerary(legs);
@@ -89,10 +89,10 @@ public class ExternalRoutingService implements RoutingService {
 
     private Leg toLeg(TransitEdge edge) {
         return new Leg(
-                voyageRepository.find(new VoyageNumber(edge.getVoyageNumber())),
-                locationRepository.find(new UnLocode(edge.getFromUnLocode())),
-                locationRepository.find(new UnLocode(edge.getToUnLocode())),
-                edge.getFromDate(),
-                edge.getToDate());
+                voyageRepository.find(new VoyageNumber(edge.voyageNumber())),
+                locationRepository.find(new UnLocode(edge.fromUnLocode())),
+                locationRepository.find(new UnLocode(edge.toUnLocode())),
+                edge.fromDate(),
+                edge.toDate());
     }
 }

@@ -23,17 +23,15 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,11 +49,10 @@ import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 import static org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type.LOAD;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("arqtest")
-public class CargoRepositoryTest {
-    private static final Logger LOGGER = Logger.getLogger(CargoRepositoryTest.class.getName());
+public class CargoRepositoryIT {
+    private static final Logger LOGGER = Logger.getLogger(CargoRepositoryIT.class.getName());
     @Inject
     UserTransaction utx;
 
@@ -76,7 +73,7 @@ public class CargoRepositoryTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CargoRepositoryTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CargoRepositoryIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
@@ -184,7 +181,7 @@ public class CargoRepositoryTest {
 
             assertHandlingEvent(cargo, secondEvent, LOAD, SampleLocations.HONGKONG, 150, 110, hongkongTonNewYork);
 
-            List<Leg> legs = cargo.getItinerary().getLegs();
+            List<Leg> legs = cargo.getItinerary().legs();
             assertThat(legs).hasSize(3);
 
             Leg firstLeg = legs.get(0);
@@ -267,7 +264,7 @@ public class CargoRepositoryTest {
             assertThat(result.getTrackingId()).isEqualTo(trackingId);
             assertThat(result.getRouteSpecification().origin()).isEqualTo(dallas);
             assertThat(result.getRouteSpecification().destination()).isEqualTo(helsinki);
-            assertThat(result.getItinerary().getLegs()).hasSize(1);
+            assertThat(result.getItinerary().legs()).hasSize(1);
         });
     }
 
@@ -307,7 +304,7 @@ public class CargoRepositoryTest {
             assertThat(result.getTrackingId()).isEqualTo(trackingId);
             assertThat(result.getRouteSpecification().origin()).isEqualTo(SampleLocations.NEWYORK);
             assertThat(result.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
-            assertThat(result.getItinerary().getLegs()).hasSize(1);
+            assertThat(result.getItinerary().legs()).hasSize(1);
         });
     }
 
@@ -364,7 +361,7 @@ public class CargoRepositoryTest {
         // LOGGER.log(Level.INFO, "leg count: {0}", (Long) count);
         // assertThat(((Long) count).intValue()).isEqualTo(expected);
 
-        var count = cargoRepository.find(trackingId).getItinerary().getLegs().size();
+        var count = cargoRepository.find(trackingId).getItinerary().legs().size();
         LOGGER.log(Level.INFO, "leg count: {0}", count);
         assertThat(count).isEqualTo(expected);
     }

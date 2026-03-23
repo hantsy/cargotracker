@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
@@ -94,20 +93,20 @@ public class ExternalRoutingServiceTest {
         assertThat(candidates).isNotNull();
 
         for (Itinerary itinerary : candidates) {
-            List<Leg> legs = itinerary.getLegs();
+            List<Leg> legs = itinerary.legs();
             assertThat(legs).isNotNull();
             assertThat(legs).isNotEmpty();
 
             // Cargo origin and start of first leg should match
-            assertEquals(cargo.getOrigin(), legs.get(0).getLoadLocation());
+            assertThat(legs.get(0).getLoadLocation()).isEqualTo(cargo.getOrigin());
 
             // Cargo final destination and last leg stop should match
             Location lastLegStop = legs.get(legs.size() - 1).getUnloadLocation();
-            assertEquals(cargo.getRouteSpecification().destination(), lastLegStop);
+            assertThat(lastLegStop).isEqualTo(cargo.getRouteSpecification().destination());
 
             // Assert that all legs are connected
             for (int i = 0; i < legs.size() - 1; i++) {
-                assertEquals(legs.get(i).getUnloadLocation(), legs.get(i + 1).getLoadLocation());
+                assertThat(legs.get(i + 1).getLoadLocation()).isEqualTo(legs.get(i).getUnloadLocation());
             }
         }
 

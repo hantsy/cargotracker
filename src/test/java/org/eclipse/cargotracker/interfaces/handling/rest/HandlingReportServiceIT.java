@@ -15,15 +15,13 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -38,12 +36,11 @@ import static org.eclipse.cargotracker.Deployments.addDomainModels;
 import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 
-@ExtendWith(ArquillianExtension.class)
-@Tag("arqtest")
-public class HandlingReportServiceTest {
+@ArquillianTest
+public class HandlingReportServiceIT {
 
     private static final Logger LOGGER =
-            Logger.getLogger(HandlingReportServiceTest.class.getName());
+            Logger.getLogger(HandlingReportServiceIT.class.getName());
     @ArquillianResource
     URL base;
     @Inject
@@ -53,7 +50,7 @@ public class HandlingReportServiceTest {
     @Deployment()
     public static WebArchive createDeployment() {
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-HandlingReportServiceTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-HandlingReportServiceIT.war");
 
         addExtraJars(war);
         addDomainModels(war);

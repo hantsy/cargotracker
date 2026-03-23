@@ -154,7 +154,6 @@ public class Cargo implements Serializable {
 
         this.itinerary = itinerary;
 
-        // LOGGER.log(Level.INFO, "cargo.assignToRoute itinerary: {0}", this.itinerary);
         // Handling consistency within the Cargo aggregate synchronously
         this.delivery = DeliveryFactory.updateOnRouting(this.delivery, this.routeSpecification, this.itinerary);
     }
@@ -175,7 +174,6 @@ public class Cargo implements Serializable {
      */
     public void deriveDeliveryProgress(HandlingHistory handlingHistory) {
         this.delivery = DeliveryFactory.create(getRouteSpecification(), getItinerary(), handlingHistory);
-        // LOGGER.log(Level.INFO, "deriveDeliveryProgress: {0}", this.delivery);
     }
 
     @Override
