@@ -13,6 +13,7 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.interfaces.RestActivator;
+import org.eclipse.cargotracker.interfaces.handling.ApplicationEventsStub;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -84,6 +85,7 @@ public class HandlingReportServiceTest {
     @BeforeEach
     public void setup() {
         this.client = ClientBuilder.newClient();
+        applicationEventsStub.clear();
     }
 
     @AfterEach
@@ -106,21 +108,19 @@ public class HandlingReportServiceTest {
                 client.target(URI.create(base + "rest/handling/reports").toURL().toExternalForm());
 
         // Response is an autocloseable resource.
-        try (final Response postReportResponse =
-                     postReportTarget.request().post(Entity.json(report))) {
+        try (final Response postReportResponse = postReportTarget.request().post(Entity.json(report))) {
             assertThat(postReportResponse.getStatus()).isEqualTo(202);
             LOGGER.log(
                     Level.INFO,
                     "response of POST rest/handling/reports: {0}",
                     postReportResponse.getEntity().toString());
 
-            assertThat(applicationEventsStub.getAttempt()).isNotNull();
-            var attempt = applicationEventsStub.getAttempt();
+            assertThat(applicationEventsStub.getAttempts()).isNotEmpty();
+            var attempt = applicationEventsStub.getAttempts().getFirst();
 
             assertThat(attempt.trackingId()).isEqualTo(new TrackingId("A001"));
             assertThat(attempt.type()).isEqualTo(Type.LOAD);
-            assertThat(attempt.voyageNumber())
-                    .isEqualTo(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber());
+            assertThat(attempt.voyageNumber()).isEqualTo(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber());
         }
     }
 }
