@@ -44,9 +44,9 @@ public class LineParseExceptionListener implements SkipReadListener {
                         + ".csv");
 
         try {
-            Files.writeString(failedFile, parseException.getLine(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            Files.writeString(failedFile, parseException.getLine() + System.lineSeparator(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException exception) {
-            LOGGER.log(Level.SEVERE, "Failed to write file:{0}, root cause: {1}", new Object[]{failedFile.toString(), exception.getMessage()});
+            throw exception;
         }
     }
 }
