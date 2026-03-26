@@ -70,7 +70,7 @@ public class EventItemWriter extends AbstractItemWriter {
         try {
             Files.write(archiveFile, lines, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to write file:{0}, root cause: {1}", new Object[]{archiveFile.toString(), e.getMessage()});
+            LOGGER.log(Level.WARNING, "Failed to write file: " + archiveFile, e);
         }
     }
 }

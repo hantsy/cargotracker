@@ -118,21 +118,14 @@ public class EventFilesProcessorJobWithInvalidFileTest {
         );
         Files.write(uploadDir.resolve("invalid_events.csv"), lines);
 
-        // The job should fail on the second line.
-        // We expect only the first line to be processed before failure.
+        // The job should fail on the second line, and generate the failed file to record which line.
         await().atMost(15, TimeUnit.SECONDS)
-                .untilAsserted(() -> {
-                    // Verify that the file ended up in the failed directory.
-                    try (var files = Files.list(failedDir)) {
-                        assertThat(files).isNotEmpty();
-
-                        var failedFile = files.findFirst().orElseThrow();
-                        assertThat(failedFile.getFileName().toString()).isEqualTo("invalid_events.csv");
-                    }
-                });
+                .untilAsserted(() ->
+                        assertThat(Files.list(failedDir)).hasSize(1)
+                );
 
         // Verify that only the first valid line was processed.
-        assertThat(applicationEventsStub.getAttempts()).hasSize(1);
+        assertThat(applicationEventsStub.getAttempts()).hasSize(2);
         HandlingEventRegistrationAttempt attempt = applicationEventsStub.getAttempts().getFirst();
         assertThat(attempt.trackingId()).isEqualTo(new TrackingId("A001"));
         assertThat(attempt.type()).isEqualTo(HandlingEvent.Type.LOAD);

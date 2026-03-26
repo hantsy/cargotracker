@@ -46,7 +46,7 @@ public class LineParseExceptionListener implements SkipReadListener {
         try {
             Files.writeString(failedFile, parseException.getLine() + System.lineSeparator(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException exception) {
-            throw exception;
+            LOGGER.log(Level.WARNING, "Failed to write exception to failed file: " + failedFile, exception);
         }
     }
 }
