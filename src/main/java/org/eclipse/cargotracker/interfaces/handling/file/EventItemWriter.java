@@ -10,66 +10,67 @@ import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Dependent
 @Named("EventItemWriter")
 public class EventItemWriter extends AbstractItemWriter {
-
+    private static final Logger LOGGER = Logger.getLogger(EventItemWriter.class.getName());
     private static final String ARCHIVE_DIRECTORY = "archive_directory";
 
     @Inject
     private JobContext jobContext;
+
     @Inject
     private ApplicationEvents applicationEvents;
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
-        File archiveDirectory = new File(jobContext.getProperties().getProperty(ARCHIVE_DIRECTORY));
+        Path archiveDirectory = Paths.get(jobContext.getProperties().getProperty(ARCHIVE_DIRECTORY));
 
-        if (!archiveDirectory.exists()) {
-            archiveDirectory.mkdirs();
+        if (!Files.exists(archiveDirectory)) {
+            Files.createDirectories(archiveDirectory);
         }
     }
 
     @Override
     @Transactional
     public void writeItems(List<Object> items) throws Exception {
-        try (PrintWriter archive =
-                     new PrintWriter(
-                             new BufferedWriter(
-                                     new FileWriter(
-                                             new File(
-                                                     jobContext
-                                                             .getProperties()
-                                                             .getProperty(ARCHIVE_DIRECTORY)
-                                                             + "/archive_"
-                                                             + jobContext.getJobName()
-                                                             + "_"
-                                                             + jobContext.getInstanceId()
-                                                             + ".csv"),
-                                             true)))) {
-            for (Object item : items) {
-                HandlingEventRegistrationAttempt attempt = (HandlingEventRegistrationAttempt) item;
-                applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
-                archive.println(
-                        DateUtil.toString(attempt.registrationTime())
-                                + ","
-                                + DateUtil.toString(attempt.completionTime())
-                                + ","
-                                + attempt.trackingId()
-                                + ","
-                                + attempt.voyageNumber()
-                                + ","
-                                + attempt.unLocode()
-                                + ","
-                                + attempt.type());
-            }
+        Path archiveFile = Paths.get(
+                jobContext.getProperties().getProperty(ARCHIVE_DIRECTORY),
+                "archive_" + jobContext.getJobName() + "_" + jobContext.getInstanceId() + ".csv");
+
+        List<String> lines = new ArrayList<>();
+        items.stream().map(item -> (HandlingEventRegistrationAttempt) item)
+                .forEachOrdered(attempt -> {
+                    applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
+                    var line = DateUtil.toString(attempt.registrationTime())
+                            + ","
+                            + DateUtil.toString(attempt.completionTime())
+                            + ","
+                            + attempt.trackingId()
+                            + ","
+                            + attempt.voyageNumber()
+                            + ","
+                            + attempt.unLocode()
+                            + ","
+                            + attempt.type();
+                    lines.add(line);
+                });
+
+        try {
+            Files.write(archiveFile, lines, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to write file: " + archiveFile, e);
         }
     }
 }

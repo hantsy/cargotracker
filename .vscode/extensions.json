@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "vscjava.vscode-java-pack",
-    "io.spring.javaformat.spring-javaformat-vscode-extension",
     "shengchen.vscode-checkstyle"
   ]
 }

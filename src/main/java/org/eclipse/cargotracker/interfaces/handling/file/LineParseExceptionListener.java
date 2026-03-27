@@ -6,10 +6,11 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,29 +26,27 @@ public class LineParseExceptionListener implements SkipReadListener {
 
     @Override
     public void onSkipReadItem(Exception e) throws Exception {
-        File failedDirectory = new File(jobContext.getProperties().getProperty(FAILED_DIRECTORY));
+        Path failedDirectory = Paths.get(jobContext.getProperties().getProperty(FAILED_DIRECTORY));
 
-        if (!failedDirectory.exists()) {
-            failedDirectory.mkdirs();
+        if (!Files.exists(failedDirectory)) {
+            Files.createDirectories(failedDirectory);
         }
 
         EventLineParseException parseException = (EventLineParseException) e;
 
         LOGGER.log(Level.WARNING, "Problem parsing event file line", parseException);
 
-        try (PrintWriter failed =
-                     new PrintWriter(
-                             new BufferedWriter(
-                                     new FileWriter(
-                                             new File(
-                                                     failedDirectory,
-                                                     "failed_"
-                                                             + jobContext.getJobName()
-                                                             + "_"
-                                                             + jobContext.getInstanceId()
-                                                             + ".csv"),
-                                             true)))) {
-            failed.println(parseException.getLine());
+        Path failedFile = failedDirectory.resolve(
+                "failed_"
+                        + jobContext.getJobName()
+                        + "_"
+                        + jobContext.getInstanceId()
+                        + ".csv");
+
+        try {
+            Files.writeString(failedFile, parseException.getLine() + System.lineSeparator(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException exception) {
+            LOGGER.log(Level.WARNING, "Failed to write exception to failed file: " + failedFile, exception);
         }
     }
 }

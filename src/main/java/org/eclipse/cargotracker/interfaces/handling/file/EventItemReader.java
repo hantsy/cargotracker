@@ -12,14 +12,18 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import java.io.File;
-import java.io.RandomAccessFile;
+import java.io.BufferedReader;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Dependent
 @Named("EventItemReader")
@@ -31,63 +35,70 @@ public class EventItemReader extends AbstractItemReader {
     @Inject
     private JobContext jobContext;
     private EventFilesCheckpoint checkpoint;
-    private RandomAccessFile currentFile;
+    private BufferedReader currentReader;
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
-        File uploadDirectory = new File(jobContext.getProperties().getProperty(UPLOAD_DIRECTORY));
+        Path uploadDirectory = Paths.get(jobContext.getProperties().getProperty(UPLOAD_DIRECTORY));
 
         if (checkpoint == null) {
             this.checkpoint = new EventFilesCheckpoint();
             LOGGER.log(Level.INFO, "Scanning upload directory: {0}", uploadDirectory);
 
-            if (!uploadDirectory.exists()) {
+            if (!Files.exists(uploadDirectory)) {
                 LOGGER.log(Level.INFO, "Upload directory does not exist, creating it");
-                uploadDirectory.mkdirs();
+                Files.createDirectories(uploadDirectory);
             } else {
-                this.checkpoint.setFiles(Arrays.asList(uploadDirectory.listFiles()));
+                try (Stream<Path> stream = Files.list(uploadDirectory)) {
+                    List<Path> files = stream.filter(Files::isRegularFile).toList();
+                    LOGGER.log(Level.INFO, "Found files in Upload directory: {0}", new Object[]{files});
+                    this.checkpoint.setPaths(files);
+                }
             }
         } else {
             LOGGER.log(Level.INFO, "Starting from previous checkpoint");
             this.checkpoint = (EventFilesCheckpoint) checkpoint;
         }
 
-        File file = this.checkpoint.currentFile();
+        Path file = this.checkpoint.currentFile();
 
         if (file == null) {
             LOGGER.log(Level.INFO, "No files to process");
-            currentFile = null;
+            currentReader = null;
         } else {
-            currentFile = new RandomAccessFile(file, "r");
+            currentReader = Files.newBufferedReader(file);
             LOGGER.log(Level.INFO, "Processing file: {0}", file);
-            currentFile.seek(this.checkpoint.getFilePointer());
+            long linesToSkip = this.checkpoint.getLineIndex();
+            for (long i = 0; i < linesToSkip; i++) {
+                currentReader.readLine();
+            }
         }
     }
 
     @Override
     public Object readItem() throws Exception {
-        if (currentFile != null) {
-            String line = currentFile.readLine();
+        if (currentReader != null) {
+            String line = currentReader.readLine();
 
             if (line != null) {
-                this.checkpoint.setFilePointer(currentFile.getFilePointer());
+                this.checkpoint.setLineIndex(this.checkpoint.getLineIndex() + 1);
                 return parseLine(line);
             } else {
                 LOGGER.log(
                         Level.INFO,
                         "Finished processing file, deleting: {0}",
                         this.checkpoint.currentFile());
-                currentFile.close();
-                if (this.checkpoint.currentFile().delete()) {
-                    LOGGER.log(Level.INFO, "File was deleted");
-                }
-                File nextFile = this.checkpoint.nextFile();
+                currentReader.close();
+                Files.delete(this.checkpoint.currentFile());
+                LOGGER.log(Level.INFO, "File was deleted");
+
+                Path nextFile = this.checkpoint.nextFile();
 
                 if (nextFile == null) {
                     LOGGER.log(Level.INFO, "No more files to process");
                     return null;
                 } else {
-                    currentFile = new RandomAccessFile(nextFile, "r");
+                    currentReader = Files.newBufferedReader(nextFile);
                     LOGGER.log(Level.INFO, "Processing file: {0}", nextFile);
                     return readItem();
                 }
