@@ -20,8 +20,7 @@ import java.util.logging.Logger;
 @Transactional
 public class DefaultCargoInspectionService implements CargoInspectionService {
 
-    private static final Logger LOGGER =
-            Logger.getLogger(DefaultCargoInspectionService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DefaultCargoInspectionService.class.getName());
 
     private ApplicationEvents applicationEvents;
     private CargoRepository cargoRepository;
