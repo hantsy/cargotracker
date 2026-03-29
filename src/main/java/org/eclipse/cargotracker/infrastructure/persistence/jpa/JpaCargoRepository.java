@@ -36,11 +36,10 @@ public class JpaCargoRepository implements CargoRepository, Serializable {
         Cargo cargo;
 
         try {
-            cargo =
-                    entityManager
-                            .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
-                            .setParameter("trackingId", trackingId)
-                            .getSingleResult();
+            cargo = entityManager
+                    .createNamedQuery("Cargo.findByTrackingId", Cargo.class)
+                    .setParameter("trackingId", trackingId)
+                    .getSingleResult();
         } catch (NoResultException e) {
             LOGGER.log(Level.FINE, "Find called on non-existant tracking ID.", e);
             cargo = null;

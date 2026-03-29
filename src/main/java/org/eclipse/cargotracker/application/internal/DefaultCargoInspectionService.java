@@ -37,7 +37,8 @@ public class DefaultCargoInspectionService implements CargoInspectionService {
             ApplicationEvents applicationEvents,
             CargoRepository cargoRepository,
             HandlingEventRepository handlingEventRepository,
-            @CargoInspected Event<Cargo> cargoInspected) {
+            @CargoInspected Event<Cargo> cargoInspected
+    ) {
         this.applicationEvents = applicationEvents;
         this.cargoRepository = cargoRepository;
         this.handlingEventRepository = handlingEventRepository;
@@ -53,8 +54,7 @@ public class DefaultCargoInspectionService implements CargoInspectionService {
             return;
         }
 
-        HandlingHistory handlingHistory =
-                handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+        HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
 
         cargo.deriveDeliveryProgress(handlingHistory);
 
