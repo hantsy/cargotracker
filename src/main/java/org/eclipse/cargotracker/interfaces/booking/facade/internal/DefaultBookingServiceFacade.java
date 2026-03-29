@@ -62,7 +62,7 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
         TrackingId trackingId =
                 bookingService.bookNewCargo(
                         new UnLocode(origin), new UnLocode(destination), arrivalDeadline);
-        return trackingId.getIdString();
+        return trackingId.id();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
         List<String> trackingIds = new ArrayList<>();
         cargoRepository
                 .findAll()
-                .forEach(cargo -> trackingIds.add(cargo.getTrackingId().getIdString()));
+                .forEach(cargo -> trackingIds.add(cargo.getTrackingId().id()));
 
         return trackingIds;
     }

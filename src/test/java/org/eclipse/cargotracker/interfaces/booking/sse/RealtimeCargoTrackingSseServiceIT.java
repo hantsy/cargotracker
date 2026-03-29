@@ -9,15 +9,13 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.net.URI;
 import java.net.URL;
@@ -33,18 +31,17 @@ import static org.eclipse.cargotracker.Deployments.addDomainModels;
 import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 
-@ExtendWith(ArquillianExtension.class)
-@Tag("arqtest")
-public class RealtimeCargoTrackingSseServiceTest {
+@ArquillianTest
+public class RealtimeCargoTrackingSseServiceIT {
 
-    private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingSseServiceTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingSseServiceIT.class.getName());
     @ArquillianResource
     URL base;
     private Client client;
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-RealtimeCargoTrackingSseServiceIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
@@ -83,7 +80,7 @@ public class RealtimeCargoTrackingSseServiceTest {
     @Test
     @RunAsClient
     void testOnCargoInspected() throws Exception {
-        LOGGER.log(Level.INFO, " Running test:: RealtimeCargoTrackingServiceTest#testCargoStatus ... ");
+        LOGGER.log(Level.INFO, " Running test:: RealtimeCargoTrackingSseServiceIT#testCargoStatus ... ");
         final var trackingTarget = client.target(URI.create(base.toExternalForm() + "rest/tracking"));
 
         var latch = new CountDownLatch(1);

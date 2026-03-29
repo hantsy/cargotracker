@@ -35,8 +35,14 @@ public class CargoInspectedWebSocketEventStub {
     }
 
     private void raiseEvent() {
-        Cargo cargo = new Cargo(new TrackingId("AAA"), new RouteSpecification(SampleLocations.HONGKONG,
-                SampleLocations.NEWYORK, LocalDate.now().plusMonths(6)));
+        Cargo cargo = new Cargo(
+                new TrackingId("AAA"),
+                new RouteSpecification(
+                        SampleLocations.HONGKONG,
+                        SampleLocations.NEWYORK,
+                        LocalDate.now().plusMonths(6)
+                )
+        );
         LOGGER.log(Level.INFO, "raise event: {0}", cargo);
         this.cargoEvent.fire(cargo);
     }
