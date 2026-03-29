@@ -7,7 +7,6 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
 import java.time.LocalDateTime;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.MISROUTED;

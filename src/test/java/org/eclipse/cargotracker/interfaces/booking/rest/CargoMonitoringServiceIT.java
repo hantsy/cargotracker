@@ -1,5 +1,6 @@
 package org.eclipse.cargotracker.interfaces.booking.rest;
 
+import com.jayway.jsonpath.JsonPath;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,9 +92,13 @@ public class CargoMonitoringServiceIT {
 
         final WebTarget getCargoStatus = client.target(uri);
         // Response is an autocloseable resource.
-        try (final Response getAllPostsResponse = getCargoStatus.request().accept(MediaType.APPLICATION_JSON).get()) {
-            assertThat(getAllPostsResponse.getStatus()).isEqualTo(200);
-            // TODO: use POJO to assert the response body.
+        try (final Response response = getCargoStatus.request().accept(MediaType.APPLICATION_JSON).get()) {
+            assertThat(response.getStatus()).isEqualTo(200);
+
+            String jsonResponse = response.readEntity(String.class);
+            List<String> trackingIds = JsonPath.read(jsonResponse, "$[*].trackingId");
+
+            assertThat(trackingIds).containsExactlyInAnyOrder("ABC123", "JKL567", "DEF789", "MNO456");
         }
     }
 }

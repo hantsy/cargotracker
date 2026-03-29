@@ -48,7 +48,6 @@
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.10</postgresql.version>
-        <commons-lang3.version>3.20.0</commons-lang3.version>
         <omnifaces.version>4.7.2</omnifaces.version>
 
         <!-- Arquillian BOM -->
@@ -222,14 +221,6 @@
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <!-- Third-party dependencies -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Jsf utils -->
@@ -467,7 +458,7 @@
                             <!-- if a jboss-as.home or jboss.home property is not present, firstly
                             it will download
                                     a copy of wildfly distribution automatically -->
-                            <!-- <jossHome>${env.WILDFLY_HOME}</jbossHome>-->
+                            <!-- <jossHome>${env.WILDFLY_HOME}</jossHome>-->
                             <!--<jbossHome>D:\appsvr\wildfly-preview-22.0.0.Alpha1</jbossHome>-->
 
                             <!-- To deploy a running wildfly server -->

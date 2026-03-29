@@ -20,8 +20,7 @@ import java.util.logging.Logger;
 @Transactional
 public class DefaultCargoInspectionService implements CargoInspectionService {
 
-    private static final Logger LOGGER =
-            Logger.getLogger(DefaultCargoInspectionService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DefaultCargoInspectionService.class.getName());
 
     private ApplicationEvents applicationEvents;
     private CargoRepository cargoRepository;
@@ -37,7 +36,8 @@ public class DefaultCargoInspectionService implements CargoInspectionService {
             ApplicationEvents applicationEvents,
             CargoRepository cargoRepository,
             HandlingEventRepository handlingEventRepository,
-            @CargoInspected Event<Cargo> cargoInspected) {
+            @CargoInspected Event<Cargo> cargoInspected
+    ) {
         this.applicationEvents = applicationEvents;
         this.cargoRepository = cargoRepository;
         this.handlingEventRepository = handlingEventRepository;
@@ -53,8 +53,7 @@ public class DefaultCargoInspectionService implements CargoInspectionService {
             return;
         }
 
-        HandlingHistory handlingHistory =
-                handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+        HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
 
         cargo.deriveDeliveryProgress(handlingHistory);
 

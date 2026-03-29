@@ -52,6 +52,6 @@ public record Schedule(
             throw new IllegalArgumentException("Carrier movements must not contain null elements");
         }
 
-        return new Schedule(new ArrayList<>(carrierMovements));
+        return new Schedule(carrierMovements);
     }
 }

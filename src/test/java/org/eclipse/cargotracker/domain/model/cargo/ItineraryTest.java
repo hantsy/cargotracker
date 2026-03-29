@@ -150,14 +150,59 @@ public class ItineraryTest {
 
     @Test
     public void testNextExpectedEvent() {
-        // TODO [TDD] Complete this test.
+        TrackingId trackingId = new TrackingId("CARGO1");
+        RouteSpecification routeSpecification = new RouteSpecification(SampleLocations.SHANGHAI, SampleLocations.GOTHENBURG, LocalDate.now());
+        Cargo cargo = new Cargo(trackingId, routeSpecification);
+        Itinerary itinerary = new Itinerary(
+                Arrays.asList(
+                        new Leg(voyage, SampleLocations.SHANGHAI, SampleLocations.ROTTERDAM, LocalDateTime.now(), LocalDateTime.now()),
+                        new Leg(voyage, SampleLocations.ROTTERDAM, SampleLocations.GOTHENBURG, LocalDateTime.now(), LocalDateTime.now())
+                )
+        );
+
+        // No events
+        assertThat(DeliveryFactory.calculateNextExpectedActivity(routeSpecification, itinerary, null, RoutingStatus.ROUTED, false))
+                .isEqualTo(HandlingActivity.of(HandlingEvent.Type.RECEIVE, SampleLocations.SHANGHAI));
+
+        // Received
+        HandlingEvent event = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.RECEIVE, SampleLocations.SHANGHAI);
+        assertThat(DeliveryFactory.calculateNextExpectedActivity(routeSpecification, itinerary, event, RoutingStatus.ROUTED, false))
+                .isEqualTo(HandlingActivity.of(HandlingEvent.Type.LOAD, SampleLocations.SHANGHAI, voyage));
+
+        // Loaded
+        event = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.LOAD, SampleLocations.SHANGHAI, voyage);
+        assertThat(DeliveryFactory.calculateNextExpectedActivity(routeSpecification, itinerary, event, RoutingStatus.ROUTED, false))
+                .isEqualTo(HandlingActivity.of(HandlingEvent.Type.UNLOAD, SampleLocations.ROTTERDAM, voyage));
+
+        // Unloaded
+        event = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.UNLOAD, SampleLocations.ROTTERDAM, voyage);
+        assertThat(DeliveryFactory.calculateNextExpectedActivity(routeSpecification, itinerary, event, RoutingStatus.ROUTED, false))
+                .isEqualTo(HandlingActivity.of(HandlingEvent.Type.LOAD, SampleLocations.ROTTERDAM, voyage));
+
+        // Loaded again
+        event = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.LOAD, SampleLocations.ROTTERDAM, voyage);
+        assertThat(DeliveryFactory.calculateNextExpectedActivity(routeSpecification, itinerary, event, RoutingStatus.ROUTED, false))
+                .isEqualTo(HandlingActivity.of(HandlingEvent.Type.UNLOAD, SampleLocations.GOTHENBURG, voyage));
+
+        // Unloaded at destination
+        event = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.UNLOAD, SampleLocations.GOTHENBURG, voyage);
+        assertThat(DeliveryFactory.calculateNextExpectedActivity(routeSpecification, itinerary, event, RoutingStatus.ROUTED, false))
+                .isEqualTo(HandlingActivity.of(HandlingEvent.Type.CLAIM, SampleLocations.GOTHENBURG));
+
+        // Claimed
+        event = new HandlingEvent(cargo, LocalDateTime.now(), LocalDateTime.now(), HandlingEvent.Type.CLAIM, SampleLocations.GOTHENBURG);
+        assertThat(DeliveryFactory.calculateNextExpectedActivity(routeSpecification, itinerary, event, RoutingStatus.ROUTED, false))
+                .isEqualTo(HandlingActivity.EMPTY);
     }
 
     @Test
-    public void testCreateItinerary() {
+    public void testCreateItineraryWithEmptyLegs() {
         assertThatThrownBy(() -> Itinerary.of(new ArrayList<>()))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
 
+    @Test
+    public void testCreateItineraryWithNullLegs() {
         assertThatThrownBy(() -> Itinerary.of(null))
                 .isInstanceOf(NullPointerException.class);
     }

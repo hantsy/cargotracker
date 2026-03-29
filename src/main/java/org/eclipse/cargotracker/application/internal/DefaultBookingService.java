@@ -50,8 +50,7 @@ public class DefaultBookingService implements BookingService {
         TrackingId trackingId = cargoRepository.nextTrackingId();
         Location origin = locationRepository.find(originUnLocode);
         Location destination = locationRepository.find(destinationUnLocode);
-        RouteSpecification routeSpecification =
-                new RouteSpecification(origin, destination, arrivalDeadline);
+        RouteSpecification routeSpecification = new RouteSpecification(origin, destination, arrivalDeadline);
 
         Cargo cargo = new Cargo(trackingId, routeSpecification);
 
@@ -90,11 +89,12 @@ public class DefaultBookingService implements BookingService {
         Cargo cargo = cargoRepository.find(trackingId);
         Location newDestination = locationRepository.find(unLocode);
 
-        RouteSpecification routeSpecification =
-                new RouteSpecification(
-                        cargo.getOrigin(),
-                        newDestination,
-                        cargo.getRouteSpecification().arrivalDeadline());
+        RouteSpecification routeSpecification = new RouteSpecification(
+                cargo.getOrigin(),
+                newDestination,
+                cargo.getRouteSpecification().arrivalDeadline()
+        );
+
         cargo.specifyNewRoute(routeSpecification);
 
         cargoRepository.store(cargo);
@@ -109,11 +109,11 @@ public class DefaultBookingService implements BookingService {
     public void changeDeadline(TrackingId trackingId, LocalDate newDeadline) {
         Cargo cargo = cargoRepository.find(trackingId);
 
-        RouteSpecification routeSpecification =
-                new RouteSpecification(
-                        cargo.getOrigin(),
-                        cargo.getRouteSpecification().destination(),
-                        newDeadline);
+        RouteSpecification routeSpecification = new RouteSpecification(
+                cargo.getOrigin(),
+                cargo.getRouteSpecification().destination(),
+                newDeadline
+        );
         cargo.specifyNewRoute(routeSpecification);
 
         cargoRepository.store(cargo);
