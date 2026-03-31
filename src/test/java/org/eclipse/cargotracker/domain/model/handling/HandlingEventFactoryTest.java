@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -34,18 +35,16 @@ public class HandlingEventFactoryTest {
     private final VoyageRepository voyageRepository = mock(VoyageRepository.class);
     private final LocationRepository locationRepository = mock(LocationRepository.class);
 
-    private final Cargo cargo =
-            new Cargo(
-                    new TrackingId("ABC"),
-                    new RouteSpecification(
-                            SampleLocations.HELSINKI, SampleLocations.HONGKONG, LocalDate.now()));
+    private final Cargo cargo = new Cargo(
+            new TrackingId("ABC"),
+            new RouteSpecification(SampleLocations.HELSINKI, SampleLocations.HONGKONG, LocalDate.now())
+    );
     // declare HandlingEventFactory
     private HandlingEventFactory handlingEventFactory;
 
     @BeforeEach
     public void setUp() {
-        this.handlingEventFactory =
-                new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
+        this.handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     }
 
     @AfterEach
@@ -60,17 +59,14 @@ public class HandlingEventFactoryTest {
                 .thenReturn(SampleVoyages.HELSINKI_TO_HONGKONG);
         when(locationRepository.find(any(UnLocode.class))).thenReturn(SampleLocations.HELSINKI);
 
-        try {
-            this.handlingEventFactory.createHandlingEvent(
-                    LocalDateTime.now(),
-                    LocalDateTime.now(),
-                    cargo.getTrackingId(),
-                    SampleVoyages.HELSINKI_TO_HONGKONG.getVoyageNumber(),
-                    SampleLocations.HELSINKI.getUnLocode(),
-                    HandlingEvent.Type.LOAD);
-        } catch (CannotCreateHandlingEventException e) {
-            e.printStackTrace();
-        }
+        assertThatCode(() -> this.handlingEventFactory.createHandlingEvent(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                cargo.getTrackingId(),
+                SampleVoyages.HELSINKI_TO_HONGKONG.getVoyageNumber(),
+                SampleLocations.HELSINKI.getUnLocode(),
+                HandlingEvent.Type.LOAD)
+        ).doesNotThrowAnyException();
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
         verify(voyageRepository, times(1)).find(any(VoyageNumber.class));
@@ -84,17 +80,14 @@ public class HandlingEventFactoryTest {
         when(cargoRepository.find(any(TrackingId.class))).thenReturn(cargo);
         when(locationRepository.find(any(UnLocode.class))).thenReturn(SampleLocations.HONGKONG);
 
-        try {
-            this.handlingEventFactory.createHandlingEvent(
-                    LocalDateTime.now(),
-                    LocalDateTime.now(),
-                    new TrackingId("ABC"),
-                    null,
-                    SampleLocations.HONGKONG.getUnLocode(),
-                    HandlingEvent.Type.CLAIM);
-        } catch (CannotCreateHandlingEventException e) {
-            e.printStackTrace();
-        }
+        assertThatCode(() -> this.handlingEventFactory.createHandlingEvent(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                new TrackingId("ABC"),
+                null,
+                SampleLocations.HONGKONG.getUnLocode(),
+                HandlingEvent.Type.CLAIM)
+        ).doesNotThrowAnyException();
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
 
@@ -110,17 +103,14 @@ public class HandlingEventFactoryTest {
                 .thenReturn(SampleVoyages.HELSINKI_TO_HONGKONG);
         when(locationRepository.find(any(UnLocode.class))).thenReturn(SampleLocations.HELSINKI);
 
-        assertThatThrownBy(
-                () -> {
-                    this.handlingEventFactory.createHandlingEvent(
-                            LocalDateTime.now(),
-                            LocalDateTime.now(),
-                            new TrackingId("ABC"),
-                            SampleVoyages.HELSINKI_TO_HONGKONG.getVoyageNumber(),
-                            SampleLocations.HELSINKI.getUnLocode(),
-                            HandlingEvent.Type.LOAD);
-                })
-                .isInstanceOf(UnknownCargoException.class);
+        assertThatThrownBy(() -> this.handlingEventFactory.createHandlingEvent(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                new TrackingId("ABC"),
+                SampleVoyages.HELSINKI_TO_HONGKONG.getVoyageNumber(),
+                SampleLocations.HELSINKI.getUnLocode(),
+                HandlingEvent.Type.LOAD)
+        ).isInstanceOf(UnknownCargoException.class);
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
         verifyNoInteractions(voyageRepository);
@@ -134,17 +124,14 @@ public class HandlingEventFactoryTest {
         when(voyageRepository.find(any(VoyageNumber.class))).thenReturn(null);
         when(locationRepository.find(any(UnLocode.class))).thenReturn(SampleLocations.HELSINKI);
 
-        assertThatThrownBy(
-                () -> {
-                    this.handlingEventFactory.createHandlingEvent(
-                            LocalDateTime.now(),
-                            LocalDateTime.now(),
-                            new TrackingId("ABC"),
-                            SampleVoyages.HELSINKI_TO_HONGKONG.getVoyageNumber(),
-                            SampleLocations.HELSINKI.getUnLocode(),
-                            HandlingEvent.Type.LOAD);
-                })
-                .isInstanceOf(UnknownVoyageException.class);
+        assertThatThrownBy(() -> this.handlingEventFactory.createHandlingEvent(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                new TrackingId("ABC"),
+                SampleVoyages.HELSINKI_TO_HONGKONG.getVoyageNumber(),
+                SampleLocations.HELSINKI.getUnLocode(),
+                HandlingEvent.Type.LOAD)
+        ).isInstanceOf(UnknownVoyageException.class);
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
         verify(voyageRepository, times(1)).find(any(VoyageNumber.class));
@@ -157,17 +144,14 @@ public class HandlingEventFactoryTest {
         when(cargoRepository.find(any(TrackingId.class))).thenReturn(cargo);
         when(locationRepository.find(any(UnLocode.class))).thenReturn(SampleLocations.HELSINKI);
 
-        assertThatThrownBy(
-                () -> {
-                    this.handlingEventFactory.createHandlingEvent(
-                            LocalDateTime.now(),
-                            LocalDateTime.now(),
-                            new TrackingId("ABC"),
-                            null,
-                            SampleLocations.HELSINKI.getUnLocode(),
-                            HandlingEvent.Type.LOAD);
-                })
-                .isInstanceOf(CannotCreateHandlingEventException.class);
+        assertThatThrownBy(() -> this.handlingEventFactory.createHandlingEvent(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                new TrackingId("ABC"),
+                null,
+                SampleLocations.HELSINKI.getUnLocode(),
+                HandlingEvent.Type.LOAD)
+        ).isInstanceOf(CannotCreateHandlingEventException.class);
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
         verifyNoInteractions(voyageRepository);
@@ -182,17 +166,14 @@ public class HandlingEventFactoryTest {
                 .thenReturn(SampleVoyages.HELSINKI_TO_HONGKONG);
         when(locationRepository.find(any(UnLocode.class))).thenReturn(null);
 
-        assertThatThrownBy(
-                () -> {
-                    this.handlingEventFactory.createHandlingEvent(
-                            LocalDateTime.now(),
-                            LocalDateTime.now(),
-                            new TrackingId("ABC"),
-                            SampleVoyages.HELSINKI_TO_HONGKONG.getVoyageNumber(),
-                            SampleLocations.HELSINKI.getUnLocode(),
-                            HandlingEvent.Type.LOAD);
-                })
-                .isInstanceOf(UnknownLocationException.class);
+        assertThatThrownBy(() -> this.handlingEventFactory.createHandlingEvent(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                new TrackingId("ABC"),
+                SampleVoyages.HELSINKI_TO_HONGKONG.getVoyageNumber(),
+                SampleLocations.HELSINKI.getUnLocode(),
+                HandlingEvent.Type.LOAD)
+        ).isInstanceOf(UnknownLocationException.class);
 
         verify(cargoRepository, times(1)).find(any(TrackingId.class));
         verify(voyageRepository, times(1)).find(any(VoyageNumber.class));
