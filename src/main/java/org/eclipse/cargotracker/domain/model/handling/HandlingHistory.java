@@ -30,7 +30,7 @@ public record HandlingHistory(List<HandlingEvent> handlingEvents) {
         List<HandlingEvent> ordered = new ArrayList<>(new HashSet<>(handlingEvents));
         ordered.sort(BY_COMPLETION_TIME_COMPARATOR);
 
-        return Collections.unmodifiableList(ordered);
+        return List.copyOf(ordered);
     }
 
     /**
