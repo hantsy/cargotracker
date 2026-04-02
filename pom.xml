@@ -74,7 +74,7 @@
         <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0</glassfish.version>
+        <glassfish.version>8.0.1</glassfish.version>
         <jersey.version>4.0.2</jersey.version>
         <eclipselink.version>5.0.0-B13</eclipselink.version>
         <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
