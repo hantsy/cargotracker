@@ -48,7 +48,7 @@
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.10</postgresql.version>
-        <omnifaces.version>4.7.2</omnifaces.version>
+        <omnifaces.version>4.7.3</omnifaces.version>
 
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.10.1.Final</arquillian-bom.version>
@@ -73,9 +73,9 @@
         <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0</glassfish.version>
+        <glassfish.version>8.0.1</glassfish.version>
         <jersey.version>4.0.2</jersey.version>
-        <eclipselink.version>5.0.0-B13</eclipselink.version>
+        <eclipselink.version>5.0.0</eclipselink.version>
         <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.2</tyrus.version>
