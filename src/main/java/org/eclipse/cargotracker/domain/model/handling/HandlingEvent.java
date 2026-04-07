@@ -281,7 +281,7 @@ public class HandlingEvent implements Serializable {
         }
 
         public boolean sameValueAs(Type other) {
-            return other != null && this.equals(other);
+            return this.equals(other);
         }
     }
 }
