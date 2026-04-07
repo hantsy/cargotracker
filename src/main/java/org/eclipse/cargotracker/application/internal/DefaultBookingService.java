@@ -58,7 +58,7 @@ public class DefaultBookingService implements BookingService {
         LOGGER.log(
                 Level.INFO,
                 "Booked new cargo with tracking ID {0}",
-                cargo.getTrackingId().getIdString());
+                cargo.getTrackingId().id());
 
         return cargo.getTrackingId();
     }
@@ -92,8 +92,9 @@ public class DefaultBookingService implements BookingService {
         RouteSpecification routeSpecification = new RouteSpecification(
                 cargo.getOrigin(),
                 newDestination,
-                cargo.getRouteSpecification().getArrivalDeadline()
+                cargo.getRouteSpecification().arrivalDeadline()
         );
+
         cargo.specifyNewRoute(routeSpecification);
 
         cargoRepository.store(cargo);
@@ -101,7 +102,7 @@ public class DefaultBookingService implements BookingService {
         LOGGER.log(
                 Level.INFO,
                 "Changed destination for cargo {0} to {1}",
-                new Object[]{trackingId, routeSpecification.getDestination()});
+                new Object[]{trackingId, routeSpecification.destination()});
     }
 
     @Override
@@ -110,7 +111,7 @@ public class DefaultBookingService implements BookingService {
 
         RouteSpecification routeSpecification = new RouteSpecification(
                 cargo.getOrigin(),
-                cargo.getRouteSpecification().getDestination(),
+                cargo.getRouteSpecification().destination(),
                 newDeadline
         );
         cargo.specifyNewRoute(routeSpecification);

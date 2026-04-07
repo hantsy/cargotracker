@@ -48,7 +48,6 @@
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.10</postgresql.version>
-        <commons-lang3.version>3.20.0</commons-lang3.version>
         <omnifaces.version>4.7.3</omnifaces.version>
 
         <!-- Arquillian BOM -->
@@ -224,14 +223,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Third-party dependencies -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- Jsf utils -->
         <dependency>
             <groupId>org.omnifaces</groupId>
@@ -368,7 +359,9 @@
                             <includes>
                                 <include>**/*Test.java</include>
                             </includes>
-                            <excludedGroups>arqtest</excludedGroups>
+                            <excludes>
+                                <exclude>**/*IT.java</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
@@ -389,10 +382,8 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>**/*Test.java</include>
+                                <include>**/*IT.java</include>
                             </includes>
-                            <groups>arqtest</groups>
-                            <excludedGroups>!arqtest</excludedGroups>
                         </configuration>
                     </execution>
                 </executions>
@@ -467,7 +458,7 @@
                             <!-- if a jboss-as.home or jboss.home property is not present, firstly
                             it will download
                                     a copy of wildfly distribution automatically -->
-                            <!-- <jossHome>${env.WILDFLY_HOME}</jbossHome>-->
+                            <!-- <jossHome>${env.WILDFLY_HOME}</jossHome>-->
                             <!--<jbossHome>D:\appsvr\wildfly-preview-22.0.0.Alpha1</jbossHome>-->
 
                             <!-- To deploy a running wildfly server -->
@@ -492,12 +483,6 @@
                     </plugin>
                 </plugins>
             </build>
-            <repositories>
-                <repository>
-                    <id>opensaml</id>
-                    <url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
-                </repository>
-            </repositories>
         </profile>
         <profile>
             <id>glassfish</id>
@@ -659,80 +644,6 @@
                             </environmentVariables>
                             <systemPropertyVariables>
                                 <arquillian.launch>glassfish-managed</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>arq-glassfish-remote</id>
-            <properties>
-                <skip.unit.tests>true</skip.unit.tests>
-                <skip.integration.tests>false</skip.integration.tests>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.tyrus.bundles</groupId>
-                    <artifactId>tyrus-standalone-client</artifactId>
-                    <version>${tyrus.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <!-- Jersey -->
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-multipart</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-json-binding</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-sse</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.inject</groupId>
-                    <artifactId>jersey-hk2</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.core</groupId>
-                    <artifactId>jersey-client</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>io.github.hantsy.arquillian</groupId>
-                    <artifactId>arquillian-glassfish-remote</artifactId>
-                    <version>${arquillian-glassfish.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <testResources>
-                    <testResource>
-                        <directory>src/test/resources</directory>
-                    </testResource>
-                    <testResource>
-                        <directory>src/test/arq-glassfish-remote</directory>
-                    </testResource>
-                </testResources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>${maven-failsafe-plugin.version}</version>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <arquillian.launch>glassfish-remote</arquillian.launch>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

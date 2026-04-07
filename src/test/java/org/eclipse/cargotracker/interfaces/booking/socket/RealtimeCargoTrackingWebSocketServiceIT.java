@@ -7,13 +7,11 @@ import jakarta.websocket.Session;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,20 +28,18 @@ import static org.eclipse.cargotracker.Deployments.addDomainModels;
 import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 
-@ExtendWith(ArquillianExtension.class)
-@Tag("arqtest")
-public class RealtimeCargoTrackingWebSocketServiceTest {
+@ArquillianTest
+public class RealtimeCargoTrackingWebSocketServiceIT {
 
-    private static final Logger LOGGER =
-            Logger.getLogger(RealtimeCargoTrackingWebSocketServiceTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RealtimeCargoTrackingWebSocketServiceIT.class.getName());
+
     @ArquillianResource
     URL base;
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
 
-        WebArchive war =
-                ShrinkWrap.create(WebArchive.class, "test-RealtimeCargoTrackingServiceTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-RealtimeCargoTrackingWebSocketServiceIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
@@ -59,8 +55,7 @@ public class RealtimeCargoTrackingWebSocketServiceTest {
                 // add web xml
                 .addAsWebInfResource("test-web.xml", "web.xml")
                 // add Wildfly specific deployment descriptor
-                .addAsWebInfResource(
-                        "test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
+                .addAsWebInfResource("test-jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
 
         LOGGER.log(Level.INFO, "War deployment: {0}", war.toString(true));
 
@@ -69,7 +64,7 @@ public class RealtimeCargoTrackingWebSocketServiceTest {
 
     @Test
     public void testOnCargoInspected() throws Exception {
-        LOGGER.log(Level.INFO, "run test RealtimeCargoTrackingServiceTest# testOnCargoInspected");
+        LOGGER.log(Level.INFO, "run test RealtimeCargoTrackingWebSocketServiceIT# testOnCargoInspected");
         TestClient.latch = new CountDownLatch(1);
         var session = connectToServer();
         assertThat(session).isNotNull();
@@ -82,14 +77,7 @@ public class RealtimeCargoTrackingWebSocketServiceTest {
 
     public Session connectToServer() throws DeploymentException, IOException, URISyntaxException {
         var container = ContainerProvider.getWebSocketContainer();
-        URI uri =
-                new URI(
-                        "ws://"
-                                + base.getHost()
-                                + ":"
-                                + base.getPort()
-                                + base.getPath()
-                                + "tracking");
+        URI uri = new URI("ws://%s:%d%stracking".formatted(base.getHost(), base.getPort(), base.getPath()));
 
         LOGGER.log(Level.INFO, "connected to url: {0}", uri);
         return container.connectToServer(TestClient.class, uri);
