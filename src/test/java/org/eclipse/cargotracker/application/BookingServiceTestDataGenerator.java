@@ -43,7 +43,8 @@ public class BookingServiceTestDataGenerator {
         // Dropping cargo first won't work since handling events have references
         // to it.
         // TODO [Clean Code] See if there is a better way to do this.
-        // Note: Delivery is now a record (immutable), so we use JPQL to clear the last_event_id
+        // Note: Delivery is now a record (immutable), so we use native SQL to clear the last_event_id
+        // on cargos because Delivery is immutable
         entityManager.createNativeQuery("UPDATE cargos SET last_event_id = null").executeUpdate();
         entityManager.flush();
 

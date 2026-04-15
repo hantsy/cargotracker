@@ -45,7 +45,7 @@ public class EventFilesProcessorJobIT {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-EventFilesProcessorJobTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-EventFilesProcessorJobIT.war");
 
         addExtraJars(war);
         addDomainModels(war);

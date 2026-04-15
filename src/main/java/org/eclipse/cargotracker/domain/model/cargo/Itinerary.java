@@ -39,7 +39,6 @@ public record Itinerary(
         // The `OrderBy` only ensures the order of list elements in memory. Only `@OrderBy("loadTime")`
         // is added some tests are still failed under WildFly/Hibernate.
         // @OrderBy("loadTime")
-        @Size(min = 1)
         @NotNull
         List<Leg> legs
 ) implements Serializable {

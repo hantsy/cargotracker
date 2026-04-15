@@ -13,6 +13,11 @@ public record TransitPath(List<TransitEdge> transitEdges) implements Serializabl
     public TransitPath {
         if (transitEdges == null) {
             transitEdges = new ArrayList<>();
+        } else {
+            transitEdges = new ArrayList<>(transitEdges);
+            for (TransitEdge edge : transitEdges) {
+                Objects.requireNonNull(edge, "Transit edge cannot be null");
+            }
         }
     }
 

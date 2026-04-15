@@ -17,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class HandlingHistoryTest {
 
+    LocalDateTime baseTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+
     Cargo cargo = new Cargo(
             new TrackingId("ABC"),
             new RouteSpecification(
@@ -24,39 +26,33 @@ public class HandlingHistoryTest {
                     SampleLocations.DALLAS,
                     LocalDate.now().minusYears(1).plusMonths(4).plusDays(1)));
     Voyage voyage = new Voyage.Builder(new VoyageNumber("X25"), SampleLocations.HONGKONG)
-            .addMovement(SampleLocations.SHANGHAI, LocalDateTime.now(), LocalDateTime.now())
-            .addMovement(SampleLocations.DALLAS, LocalDateTime.now(), LocalDateTime.now())
+            .addMovement(SampleLocations.SHANGHAI, baseTime, baseTime)
+            .addMovement(SampleLocations.DALLAS, baseTime, baseTime)
             .build();
     HandlingEvent event1 = new HandlingEvent(
             cargo,
-            LocalDateTime.now()
-                    .minusYears(1)
+            baseTime.minusYears(1)
                     .plusMonths(3)
-                    .plusDays(5)
-                    .truncatedTo(ChronoUnit.SECONDS),
-            LocalDateTime.now().plusDays(100),
+                    .plusDays(5),
+            baseTime.plusDays(100),
             HandlingEvent.Type.LOAD,
             SampleLocations.SHANGHAI,
             voyage);
     HandlingEvent event1duplicate = new HandlingEvent(
             cargo,
-            LocalDateTime.now()
-                    .minusYears(1)
+            baseTime.minusYears(1)
                     .plusMonths(3)
-                    .plusDays(5)
-                    .truncatedTo(ChronoUnit.SECONDS),
-            LocalDateTime.now().plusDays(200),
+                    .plusDays(5),
+            baseTime.plusDays(200),
             HandlingEvent.Type.LOAD,
             SampleLocations.SHANGHAI,
             voyage);
     HandlingEvent event2 = new HandlingEvent(
             cargo,
-            LocalDateTime.now()
-                    .minusYears(1)
+            baseTime.minusYears(1)
                     .plusMonths(3)
-                    .plusDays(10)
-                    .truncatedTo(ChronoUnit.SECONDS),
-            LocalDateTime.now().plusDays(150),
+                    .plusDays(10),
+            baseTime.plusDays(150),
             HandlingEvent.Type.UNLOAD,
             SampleLocations.DALLAS,
             voyage);

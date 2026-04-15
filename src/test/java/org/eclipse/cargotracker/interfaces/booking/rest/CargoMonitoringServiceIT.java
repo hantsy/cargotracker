@@ -85,7 +85,7 @@ public class CargoMonitoringServiceIT {
 
     @Test
     public void testCargoStatus() throws Exception {
-        LOGGER.log(Level.INFO, " Running test:: CargoMonitoringServiceTest#testCargoStatus ... ");
+        LOGGER.log(Level.INFO, " Running test:: CargoMonitoringServiceIT#testCargoStatus ... ");
 
         String uri = URI.create(base + "rest/cargo").toURL().toExternalForm();
         LOGGER.log(Level.INFO, "request uri: {0}", new Object[]{uri});

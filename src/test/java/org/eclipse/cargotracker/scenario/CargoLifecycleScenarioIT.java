@@ -689,6 +689,9 @@ public class CargoLifecycleScenarioIT {
 
     private Cargo findCargo() {
         var cargo = cargoRepository.find(trackingId);
+        if (cargo == null) {
+            throw new IllegalStateException("Cargo not found for tracking ID: " + trackingId);
+        }
         LOGGER.log(Level.INFO, "cargo itinerary: {0}", cargo.getItinerary());
         LOGGER.log(Level.INFO, "cargo delivery: {0}", cargo.getDelivery());
         // this.entityManager.refresh(cargo);

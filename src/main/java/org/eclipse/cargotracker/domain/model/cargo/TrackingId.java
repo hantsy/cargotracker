@@ -21,5 +21,8 @@ public record TrackingId(
 
     public TrackingId {
         Objects.requireNonNull(id, "Tracking id is required");
+        if (id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tracking id must not be empty");
+        }
     }
 }
