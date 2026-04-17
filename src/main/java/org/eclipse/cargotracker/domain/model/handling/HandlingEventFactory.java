@@ -2,6 +2,7 @@ package org.eclipse.cargotracker.domain.model.handling;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
 import org.eclipse.cargotracker.domain.model.cargo.TrackingId;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 @ApplicationScoped
+@Transactional
 public class HandlingEventFactory implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -72,8 +74,7 @@ public class HandlingEventFactory implements Serializable {
             if (voyage == null) {
                 return new HandlingEvent(cargo, completionTime, registrationTime, type, location);
             } else {
-                return new HandlingEvent(
-                        cargo, completionTime, registrationTime, type, location, voyage);
+                return new HandlingEvent(cargo, completionTime, registrationTime, type, location, voyage);
             }
         } catch (Exception e) {
             throw new CannotCreateHandlingEventException(e);

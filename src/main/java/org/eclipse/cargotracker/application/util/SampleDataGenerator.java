@@ -56,11 +56,8 @@ public class SampleDataGenerator {
     public void loadSampleData(@Observes Startup startup) {
         LOGGER.info("Loading sample data.");
 
-        // Fail-safe in case of application restart that does not trigger a JPA schema drop.
-        unLoadAll2();
-
         entityManagerFactory.runInTransaction(entityManager -> {
-            // unLoadAll(entityManager);
+            unLoadAll(entityManager);
             loadSampleLocations(entityManager);
             loadSampleVoyages(entityManager);
             loadSampleCargos(entityManager);
@@ -74,12 +71,12 @@ public class SampleDataGenerator {
         // Dropping cargo first won't work since handling events have references
         // to it.
 
-        // Why connection is null???
+        // Why connection is null on GlassFish???
         entityManager.runWithConnection((Connection conn) ->
                 conn.prepareStatement("UPDATE cargos SET last_event_id=NULL").executeUpdate()
         );
 
-        //entityManager.createNativeQuery("UPDATE cargos SET last_event_id=NULL").executeUpdate();
+        // entityManager.createNativeQuery("UPDATE cargos SET last_event_id=NULL").executeUpdate();
         // Delete all entities
         // TODO [Clean Code] See why cascade delete is not working.
         entityManager.createQuery("Delete from HandlingEvent").executeUpdate();
