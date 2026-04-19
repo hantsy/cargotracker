@@ -35,7 +35,7 @@ public class TrackingEventsDtoAssembler {
 
     private String voyageNumberFrom(HandlingEvent handlingEvent) {
         Voyage voyage = handlingEvent.getVoyage();
-        return voyage.getVoyageNumber().getIdString();
+        return voyage.getVoyageNumber().number();
     }
 
     private String locationFrom(HandlingEvent handlingEvent) {
