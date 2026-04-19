@@ -48,7 +48,7 @@
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.10</postgresql.version>
-        <omnifaces.version>4.7.3</omnifaces.version>
+        <omnifaces.version>4.7.5</omnifaces.version>
 
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.10.1.Final</arquillian-bom.version>
