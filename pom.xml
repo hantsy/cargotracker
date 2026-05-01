@@ -82,7 +82,7 @@
         <tyrus.version>2.2.2</tyrus.version>
 
         <!-- Wildfly server -->
-        <wildfly.version>39.0.1.Final</wildfly.version>
+        <wildfly.version>40.0.0.Beta1</wildfly.version>
         <wildfly-maven-plugin.version>5.1.5.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
 
