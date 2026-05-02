@@ -12,6 +12,7 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 /**
@@ -62,8 +63,8 @@ public class CarrierMovement implements Serializable {
         Objects.requireNonNull(departureTime, "Departure time is required");
         Objects.requireNonNull(arrivalTime, "Arrival time is required");
 
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
+        this.departureTime = departureTime.truncatedTo(ChronoUnit.SECONDS);
+        this.arrivalTime = arrivalTime.truncatedTo(ChronoUnit.SECONDS);
         this.departureLocation = departureLocation;
         this.arrivalLocation = arrivalLocation;
     }

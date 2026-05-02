@@ -51,7 +51,7 @@ public record Delivery(
         @Column(name = "misdirected")
         boolean misdirected,
 
-        @Column(name = "eta")
+        @Column(name = "eta", secondPrecision = 0)
         LocalDateTime eta,
 
         @Embedded
@@ -71,7 +71,7 @@ public record Delivery(
         RoutingStatus routingStatus,
 
         @NotNull
-        @Column(name = "calculated_at")
+        @Column(name = "calculated_at", secondPrecision = 0)
         LocalDateTime calculatedAt,
 
         @ManyToOne

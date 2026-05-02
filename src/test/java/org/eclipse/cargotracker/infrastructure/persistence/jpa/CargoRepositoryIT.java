@@ -21,7 +21,6 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
-import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -82,7 +81,7 @@ public class CargoRepositoryIT {
         addInfraPersistence(war);
         addApplicationBase(war);
 
-        war.addClass(RestActivator.class);
+//        war.addClass(RestActivator.class);
         war.addClass(SampleDataGenerator.class)
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)
@@ -119,7 +118,7 @@ public class CargoRepositoryIT {
     @Order(1)
     public void testFindAll() {
         List<Cargo> all = cargoRepository.findAll();
-        assertThat(all).isNotNull();
+        assertThat(all).isNotEmpty();
         assertThat(all).hasSize(4);
     }
 
@@ -135,13 +134,13 @@ public class CargoRepositoryIT {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void testFindByCargoIdUnknownId() {
         assertThat(cargoRepository.find(new TrackingId("UNKNOWN"))).isNull();
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     public void testFindByCargoId() {
         final TrackingId trackingId = new TrackingId("ABC123");
 
@@ -149,15 +148,13 @@ public class CargoRepositoryIT {
             final Cargo cargo = cargoRepository.find(trackingId);
             assertThat(cargo.getOrigin()).isEqualTo(SampleLocations.HONGKONG);
             assertThat(cargo.getRouteSpecification().origin()).isEqualTo(SampleLocations.HONGKONG);
-            assertThat(cargo.getRouteSpecification().destination())
-                    .isEqualTo(SampleLocations.HELSINKI);
+            assertThat(cargo.getRouteSpecification().destination()).isEqualTo(SampleLocations.HELSINKI);
 
             assertThat(cargo.getDelivery()).isNotNull();
 
-            final List<HandlingEvent> events =
-                    handlingEventRepository
-                            .lookupHandlingHistoryOfCargo(trackingId)
-                            .getDistinctEventsByCompletionTime();
+            final List<HandlingEvent> events = handlingEventRepository
+                    .lookupHandlingHistoryOfCargo(trackingId)
+                    .getDistinctEventsByCompletionTime();
             assertThat(events).hasSize(3);
 
             HandlingEvent firstEvent = events.get(0);
@@ -226,7 +223,7 @@ public class CargoRepositoryIT {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     public void testSave() throws Exception {
         TrackingId trackingId = new TrackingId("AAA");
         VoyageNumber voyageNumber = new VoyageNumber("0300A");
@@ -269,7 +266,7 @@ public class CargoRepositoryIT {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     public void testSpecifyNewRoute() throws Exception {
         LOGGER.log(Level.INFO, "run test :: testSpecifyNewRoute");
         var trackingId = new TrackingId("AAA");
@@ -309,7 +306,7 @@ public class CargoRepositoryIT {
     }
 
     @Test
-    @Order(8)
+    @Order(7)
     public void testReplaceItinerary() throws Exception {
         var trackingId = new TrackingId("AAA");
 
@@ -317,25 +314,24 @@ public class CargoRepositoryIT {
             Cargo cargo = cargoRepository.find(trackingId);
             assertLegCount(trackingId, 1);
 
-            Itinerary newItinerary =
-                    new Itinerary(
-                            Arrays.asList(
-                                    new Leg(
-                                            SampleVoyages.NEW_YORK_TO_DALLAS,
-                                            locationRepository.find(
-                                                    SampleLocations.NEWYORK.getUnLocode()),
-                                            locationRepository.find(
-                                                    SampleLocations.DALLAS.getUnLocode()),
-                                            LocalDateTime.now(),
-                                            LocalDateTime.now()),
-                                    new Leg(
-                                            SampleVoyages.DALLAS_TO_HELSINKI,
-                                            locationRepository.find(
-                                                    SampleLocations.DALLAS.getUnLocode()),
-                                            locationRepository.find(
-                                                    SampleLocations.HELSINKI.getUnLocode()),
-                                            LocalDateTime.now(),
-                                            LocalDateTime.now())));
+            Itinerary newItinerary = new Itinerary(
+                    Arrays.asList(
+                            new Leg(
+                                    SampleVoyages.NEW_YORK_TO_DALLAS,
+                                    locationRepository.find(SampleLocations.NEWYORK.getUnLocode()),
+                                    locationRepository.find(SampleLocations.DALLAS.getUnLocode()),
+                                    LocalDateTime.now(),
+                                    LocalDateTime.now()
+                            ),
+                            new Leg(
+                                    SampleVoyages.DALLAS_TO_HELSINKI,
+                                    locationRepository.find(SampleLocations.DALLAS.getUnLocode()),
+                                    locationRepository.find(SampleLocations.HELSINKI.getUnLocode()),
+                                    LocalDateTime.now(),
+                                    LocalDateTime.now()
+                            )
+                    )
+            );
 
             cargo.assignToRoute(newItinerary);
 
@@ -365,26 +361,4 @@ public class CargoRepositoryIT {
         LOGGER.log(Level.INFO, "leg count: {0}", count);
         assertThat(count).isEqualTo(expected);
     }
-
-    // Payara/EclipseLinks issue:
-    // it returns 0 , incorrect count
-    //    private void assertLegCount(Long cargo_id, int expected) {
-    //        LOGGER.log(Level.INFO, "count legs by cargo id: {0}", cargo_id);
-    //        var count = this.entityManager.createNativeQuery("select count(*) from Leg where
-    // cargo_id = ?1")
-    //                .setParameter(1, cargo_id)
-    //                .getSingleResult();
-    //        LOGGER.log(Level.INFO, "leg count: {0}", count);
-    //        assertThat((count.toString())).isEqualTo(String.valueOf(expected));
-    //    }
-
-//    private Long getLongId(Object o) {
-//        try {
-//            Field id = o.getClass().getDeclaredField("id");
-//            id.setAccessible(true);
-//            return (Long) id.get(o);
-//        } catch (Exception e) {
-//            throw new RuntimeException();
-//        }
-//    }
 }

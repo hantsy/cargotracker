@@ -22,7 +22,6 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -59,6 +58,9 @@ public class SampleDataGenerator {
         loadSampleLocations();
         loadSampleVoyages();
         loadSampleCargos();
+
+        // print all cargos
+        // printCargos();
     }
 
     private void unLoadAll() {
@@ -373,5 +375,10 @@ public class SampleDataGenerator {
         } catch (CannotCreateHandlingEventException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void printCargos() {
+        entityManager.createQuery("select c from Cargo c", Cargo.class).getResultList()
+                .forEach(System.out::println);
     }
 }

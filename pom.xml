@@ -40,23 +40,23 @@
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
         <maven-surefire-report-plugin.version>3.5.5</maven-surefire-report-plugin.version>
-        <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.10.26</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.10.27</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
-        <postgresql.version>42.7.10</postgresql.version>
-        <omnifaces.version>4.7.5</omnifaces.version>
+        <postgresql.version>42.7.11</postgresql.version>
+        <omnifaces.version>4.7.9</omnifaces.version>
 
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.10.1.Final</arquillian-bom.version>
         <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
-        <shrinkwrap-resolver-bom.version>3.3.5</shrinkwrap-resolver-bom.version>
+        <shrinkwrap-resolver-bom.version>3.3.6</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
-        <junit.version>5.14.3</junit.version>
+        <junit.version>5.14.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>5.23.0</mockito.version>
         <assertj.version>3.27.7</assertj.version>
@@ -86,7 +86,7 @@
         <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
 
         <!-- aligned to Wildfly version. -->
-        <resteasy.version>7.0.1.Final</resteasy.version>
+        <resteasy.version>7.0.2.Final</resteasy.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>

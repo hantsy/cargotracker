@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +55,7 @@ public class CarrierMovementRepositoryIT {
     Location from = SampleLocations.HONGKONG;
     Location to = SampleLocations.CHICAGO;
     LocalDateTime fromDate = LocalDateTime.now();
-    LocalDateTime toDate = LocalDateTime.now();
+    LocalDateTime toDate = LocalDateTime.now().plusDays(1);
 
     @Deployment
     public static WebArchive createDeployment() {
