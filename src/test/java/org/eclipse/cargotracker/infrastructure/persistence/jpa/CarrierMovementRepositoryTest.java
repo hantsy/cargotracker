@@ -45,16 +45,19 @@ public class CarrierMovementRepositoryTest {
             Logger.getLogger(CarrierMovementRepositoryTest.class.getName());
     @Inject
     VoyageRepository voyageRepository;
+
     @PersistenceContext
     EntityManager entityManager;
+
     @Inject
     UserTransaction utx;
+
     String voyageNumberIdString = "007";
     Voyage voyage;
     Location from = SampleLocations.HONGKONG;
     Location to = SampleLocations.CHICAGO;
     LocalDateTime fromDate = LocalDateTime.now();
-    LocalDateTime toDate = LocalDateTime.now();
+    LocalDateTime toDate = LocalDateTime.now().plusDays(1);
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -102,12 +105,14 @@ public class CarrierMovementRepositoryTest {
     @BeforeEach
     public void setup() throws Exception {
         startTransaction();
-        voyage =
-                new Voyage(
-                        new VoyageNumber(voyageNumberIdString),
-                        new Schedule(
-                                Collections.singletonList(
-                                        new CarrierMovement(from, to, fromDate, toDate))));
+        voyage = new Voyage(
+                new VoyageNumber(voyageNumberIdString),
+                new Schedule(
+                        Collections.singletonList(
+                                new CarrierMovement(from, to, fromDate, toDate)
+                        )
+                )
+        );
         this.entityManager.persist(voyage);
         this.entityManager.flush();
         commitTransaction();
@@ -123,7 +128,7 @@ public class CarrierMovementRepositoryTest {
         var movements = result.getSchedule().getCarrierMovements();
         assertThat(movements).hasSize(1);
 
-        var m = movements.get(0);
+        var m = movements.getFirst();
         assertThat(m.getDepartureLocation()).isEqualTo(from);
         assertThat(m.getArrivalLocation()).isEqualTo(to);
         assertThat(m.getDepartureTime().truncatedTo(ChronoUnit.SECONDS))
