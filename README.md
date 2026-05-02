@@ -51,7 +51,7 @@ ported that sample to the Jakarta EE ecosystem using the following stacks:
 * Docker (for PostgreSQL)
 * Application server:
     * [GlassFish v8](https://github.com/eclipse-ee4j/glassfish) **or**
-    * [WildFly](https://www.wildfly.org/) (wait for a Jakarta EE 11‑compatible release)
+    * [WildFly 40.0.0.Beta1+](https://www.wildfly.org/) 
 
 ### Starting the database
 
