@@ -87,7 +87,7 @@
         <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
 
         <!-- aligned to Wildfly version. -->
-        <resteasy.version>7.0.1.Final</resteasy.version>
+        <resteasy.version>7.0.2.Final</resteasy.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>
