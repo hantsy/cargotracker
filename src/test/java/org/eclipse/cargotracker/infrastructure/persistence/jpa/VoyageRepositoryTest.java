@@ -40,9 +40,8 @@ import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
-public class CarrierMovementRepositoryTest {
-    private static final Logger LOGGER =
-            Logger.getLogger(CarrierMovementRepositoryTest.class.getName());
+public class VoyageRepositoryTest {
+    private static final Logger LOGGER = Logger.getLogger(VoyageRepositoryTest.class.getName());
     @Inject
     VoyageRepository voyageRepository;
 
@@ -61,8 +60,7 @@ public class CarrierMovementRepositoryTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war =
-                ShrinkWrap.create(WebArchive.class, "test-CarrierMovementRepositoryTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "VoyageRepositoryTest.war");
 
         addExtraJars(war);
         addDomainModels(war);
