@@ -83,7 +83,7 @@
 
         <!-- Wildfly server -->
         <wildfly.version>40.0.0.Beta1</wildfly.version>
-        <wildfly-maven-plugin.version>5.1.5.Final</wildfly-maven-plugin.version>
+        <wildfly-maven-plugin.version>6.0.0.Beta3</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
 
         <!-- aligned to Wildfly version. -->
@@ -416,7 +416,7 @@
             <id>wildfly</id>
             <properties>
                 <!-- Wildfly server -->
-                <wildfly.artifactId>wildfly-preview-dist</wildfly.artifactId>
+                <wildfly.artifactId>wildfly-dist</wildfly.artifactId>
                 <wildfly.serverConfig>standalone-full.xml</wildfly.serverConfig>
                 <jboss-as.home>${project.build.directory}/wildfly-${wildfly.version}</jboss-as.home>
             </properties>
@@ -750,7 +750,7 @@
             <properties>
                 <skip.unit.tests>true</skip.unit.tests>
                 <skip.integration.tests>false</skip.integration.tests>
-                <wildfly.artifactId>wildfly-preview-dist</wildfly.artifactId>
+                <wildfly.artifactId>wildfly-dist</wildfly.artifactId>
                 <serverProfile>standalone-full.xml</serverProfile>
                 <serverRoot>${project.build.directory}/wildfly-${wildfly.version}</serverRoot>
             </properties>
@@ -827,7 +827,7 @@
                         <configuration>
                             <environmentVariables>
                                 <JBOSS_HOME>
-                                    ${project.build.directory}/wildfly-preview-${wildfly.version}
+                                    ${project.build.directory}/wildfly-${wildfly.version}
                                 </JBOSS_HOME>
                             </environmentVariables>
                             <systemPropertyVariables>
