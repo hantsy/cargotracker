@@ -12,12 +12,14 @@ public class EventFilesCheckpoint implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Path> files = new LinkedList<>();
+    // Path does not implement Serializable interface, using String fixes the failure on Wildfly
+    // private List<Path> files = new LinkedList<>();
+    private List<String> files = new LinkedList<>();
     private int fileIndex = 0;
     private long lineIndex = 0;
 
     public void setPaths(List<Path> files) {
-        this.files = files;
+        this.files = files.stream().map(Path::toString).toList();
     }
 
     public long getLineIndex() {
@@ -30,7 +32,7 @@ public class EventFilesCheckpoint implements Serializable {
 
     public Path currentFile() {
         if (files.size() > fileIndex) {
-            return files.get(fileIndex);
+            return Paths.get(files.get(fileIndex));
         } else {
             return null;
         }
@@ -40,7 +42,7 @@ public class EventFilesCheckpoint implements Serializable {
         lineIndex = 0;
 
         if (files.size() > ++fileIndex) {
-            return files.get(fileIndex);
+            return Paths.get(files.get(fileIndex));
         } else {
             return null;
         }
