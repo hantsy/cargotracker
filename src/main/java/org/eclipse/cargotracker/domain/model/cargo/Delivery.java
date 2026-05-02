@@ -58,7 +58,7 @@ public class Delivery implements Serializable {
     @Column(name = "misdirected")
     private boolean misdirected;
 
-    @Column(name = "eta")
+    @Column(name = "eta", secondPrecision = 0)
     private LocalDateTime eta;
 
     @Embedded
