@@ -1,10 +1,13 @@
 package org.eclipse.cargotracker.domain.model.location;
 
+import jakarta.annotation.Nullable;
+
 import java.util.List;
 
 public interface LocationRepository {
 
-    Location find(UnLocode unLocode);
+   @Nullable
+   Location find(UnLocode unLocode);
 
     List<Location> findAll();
 }
