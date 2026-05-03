@@ -37,17 +37,10 @@ import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
-<<<<<<<< HEAD:src/test/java/org/eclipse/cargotracker/infrastructure/persistence/jpa/CarrierMovementRepositoryIT.java
 @ArquillianTest
-public class CarrierMovementRepositoryIT {
-    private static final Logger LOGGER =
-            Logger.getLogger(CarrierMovementRepositoryIT.class.getName());
-========
-@ExtendWith(ArquillianExtension.class)
-@Tag("arqtest")
-public class VoyageRepositoryTest {
-    private static final Logger LOGGER = Logger.getLogger(VoyageRepositoryTest.class.getName());
->>>>>>>> master:src/test/java/org/eclipse/cargotracker/infrastructure/persistence/jpa/VoyageRepositoryTest.java
+public class VoyageRepositoryIT {
+    private static final Logger LOGGER = Logger.getLogger(VoyageRepositoryIT.class.getName());
+
     @Inject
     VoyageRepository voyageRepository;
 
@@ -66,11 +59,7 @@ public class VoyageRepositoryTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-<<<<<<<< HEAD:src/test/java/org/eclipse/cargotracker/infrastructure/persistence/jpa/CarrierMovementRepositoryIT.java
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CarrierMovementRepositoryIT.war");
-========
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "VoyageRepositoryTest.war");
->>>>>>>> master:src/test/java/org/eclipse/cargotracker/infrastructure/persistence/jpa/VoyageRepositoryTest.java
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-VoyageRepositoryIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
