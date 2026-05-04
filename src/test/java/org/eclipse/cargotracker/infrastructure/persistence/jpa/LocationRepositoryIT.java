@@ -9,15 +9,13 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -31,17 +29,16 @@ import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("arqtest")
-public class LocationRepositoryTest {
-    private static final Logger LOGGER = Logger.getLogger(LocationRepositoryTest.class.getName());
+public class LocationRepositoryIT {
+    private static final Logger LOGGER = Logger.getLogger(LocationRepositoryIT.class.getName());
     @Inject
     private LocationRepository locationRepository;
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-LocationRepositoryTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-LocationRepositoryIT.war");
 
         addExtraJars(war);
         addDomainModels(war);

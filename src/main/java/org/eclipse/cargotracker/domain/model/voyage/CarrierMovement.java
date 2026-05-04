@@ -23,9 +23,7 @@ import java.util.Objects;
 public class CarrierMovement implements Serializable {
 
     // Null object pattern
-    public static final CarrierMovement NONE =
-            new CarrierMovement(
-                    Location.UNKNOWN, Location.UNKNOWN, LocalDateTime.MIN, LocalDateTime.MIN);
+    public static final CarrierMovement NONE = new CarrierMovement(Location.UNKNOWN, Location.UNKNOWN, LocalDateTime.MIN, LocalDateTime.MIN);
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -43,12 +41,10 @@ public class CarrierMovement implements Serializable {
     @NotNull
     private Location arrivalLocation;
 
-    
     @Column(name = "departure_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime departureTime;
 
-    
     @Column(name = "arrival_time", secondPrecision = 0)
     @NotNull
     private LocalDateTime arrivalTime;

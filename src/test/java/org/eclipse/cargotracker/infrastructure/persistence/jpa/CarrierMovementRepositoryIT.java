@@ -3,8 +3,8 @@ package org.eclipse.cargotracker.infrastructure.persistence.jpa;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
+import org.eclipse.cargotracker.TxUtil;
 import org.eclipse.cargotracker.application.util.SampleDataGenerator;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.location.SampleLocations;
@@ -16,17 +16,16 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,10 +37,17 @@ import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
+<<<<<<<< HEAD:src/test/java/org/eclipse/cargotracker/infrastructure/persistence/jpa/CarrierMovementRepositoryIT.java
+@ArquillianTest
+public class CarrierMovementRepositoryIT {
+    private static final Logger LOGGER =
+            Logger.getLogger(CarrierMovementRepositoryIT.class.getName());
+========
 @ExtendWith(ArquillianExtension.class)
 @Tag("arqtest")
 public class VoyageRepositoryTest {
     private static final Logger LOGGER = Logger.getLogger(VoyageRepositoryTest.class.getName());
+>>>>>>>> master:src/test/java/org/eclipse/cargotracker/infrastructure/persistence/jpa/VoyageRepositoryTest.java
     @Inject
     VoyageRepository voyageRepository;
 
@@ -60,7 +66,11 @@ public class VoyageRepositoryTest {
 
     @Deployment
     public static WebArchive createDeployment() {
+<<<<<<<< HEAD:src/test/java/org/eclipse/cargotracker/infrastructure/persistence/jpa/CarrierMovementRepositoryIT.java
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CarrierMovementRepositoryIT.war");
+========
         WebArchive war = ShrinkWrap.create(WebArchive.class, "VoyageRepositoryTest.war");
+>>>>>>>> master:src/test/java/org/eclipse/cargotracker/infrastructure/persistence/jpa/VoyageRepositoryTest.java
 
         addExtraJars(war);
         addDomainModels(war);
@@ -73,6 +83,8 @@ public class VoyageRepositoryTest {
         war.addClass(SampleDataGenerator.class)
                 .addClass(SampleLocations.class)
                 .addClass(SampleVoyages.class)
+                // add TxUtil
+                .addClass(TxUtil.class)
                 // add persistence unit descriptor
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
 
@@ -88,51 +100,43 @@ public class VoyageRepositoryTest {
         return war;
     }
 
-    public void startTransaction() throws Exception {
-        utx.begin();
-        entityManager.joinTransaction();
-    }
-
-    public void commitTransaction() throws Exception {
-        LOGGER.log(Level.INFO, "UserTransaction status is: {0}", utx.getStatus());
-        if (utx.getStatus() == Status.STATUS_ACTIVE) {
-            utx.commit();
-        }
-    }
+    TxUtil tx = null;
 
     @BeforeEach
-    public void setup() throws Exception {
-        startTransaction();
-        voyage = new Voyage(
-                new VoyageNumber(voyageNumberIdString),
-                new Schedule(
-                        Collections.singletonList(
-                                new CarrierMovement(from, to, fromDate, toDate)
-                        )
-                )
-        );
-        this.entityManager.persist(voyage);
-        this.entityManager.flush();
-        commitTransaction();
+    public void setup() {
+        tx = new TxUtil(utx, entityManager);
+        tx.runInTx(() -> {
+            voyage = new Voyage(
+                    new VoyageNumber(voyageNumberIdString),
+                    Schedule.of(List.of(new CarrierMovement(from, to, fromDate, toDate)))
+            );
+            this.entityManager.persist(voyage);
+            this.entityManager.flush();
+        });
+    }
+
+    @AfterEach
+    public void teardown() {
+        tx = null;
     }
 
     @Test
-    public void testFind() throws Exception {
-        startTransaction();
-        Voyage result = voyageRepository.find(new VoyageNumber(voyageNumberIdString));
-        assertThat(result).isNotNull();
-        assertThat(result.getVoyageNumber().getIdString()).isEqualTo(voyageNumberIdString);
+    public void testFind() {
+        tx.runInTx(() -> {
+            Voyage result = voyageRepository.find(new VoyageNumber(voyageNumberIdString));
+            assertThat(result).isNotNull();
+            assertThat(result.getVoyageNumber().number()).isEqualTo(voyageNumberIdString);
 
-        var movements = result.getSchedule().getCarrierMovements();
-        assertThat(movements).hasSize(1);
+            var movements = result.getSchedule().carrierMovements();
+            assertThat(movements).hasSize(1);
 
-        var m = movements.getFirst();
-        assertThat(m.getDepartureLocation()).isEqualTo(from);
-        assertThat(m.getArrivalLocation()).isEqualTo(to);
-        assertThat(m.getDepartureTime().truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(fromDate.truncatedTo(ChronoUnit.SECONDS));
-        assertThat(m.getArrivalTime().truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(toDate.truncatedTo(ChronoUnit.SECONDS));
-        commitTransaction();
+            var m = movements.getFirst();
+            assertThat(m.getDepartureLocation()).isEqualTo(from);
+            assertThat(m.getArrivalLocation()).isEqualTo(to);
+            assertThat(m.getDepartureTime().truncatedTo(ChronoUnit.SECONDS))
+                    .isEqualTo(fromDate.truncatedTo(ChronoUnit.SECONDS));
+            assertThat(m.getArrivalTime().truncatedTo(ChronoUnit.SECONDS))
+                    .isEqualTo(toDate.truncatedTo(ChronoUnit.SECONDS));
+        });
     }
 }

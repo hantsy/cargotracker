@@ -12,8 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class HandlingEventTest {
 
@@ -25,24 +24,22 @@ public class HandlingEventTest {
 
     @Test
     public void testNewWithCarrierMovement() {
-        HandlingEvent event1 =
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        HandlingEvent.Type.LOAD,
-                        SampleLocations.HONGKONG,
-                        SampleVoyages.CM003);
-        assertEquals(SampleLocations.HONGKONG, event1.getLocation());
+        HandlingEvent event1 = new HandlingEvent(
+                cargo,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                HandlingEvent.Type.LOAD,
+                SampleLocations.HONGKONG,
+                SampleVoyages.CM003);
+        assertThat(event1.getLocation()).isEqualTo(SampleLocations.HONGKONG);
 
-        HandlingEvent event2 =
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        HandlingEvent.Type.UNLOAD,
-                        SampleLocations.NEWYORK,
-                        SampleVoyages.CM003);
+        HandlingEvent event2 = new HandlingEvent(
+                cargo,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                HandlingEvent.Type.UNLOAD,
+                SampleLocations.NEWYORK,
+                SampleVoyages.CM003);
         assertThat(event2.getLocation()).isEqualTo(SampleLocations.NEWYORK);
 
         // These event types prohibit a carrier movement association
@@ -51,98 +48,93 @@ public class HandlingEventTest {
                         HandlingEvent.Type.CLAIM,
                         HandlingEvent.Type.RECEIVE,
                         HandlingEvent.Type.CUSTOMS)) {
-            try {
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        type,
-                        SampleLocations.HONGKONG,
-                        SampleVoyages.CM003);
-                fail("Handling event type " + type + " prohibits carrier movement");
-            } catch (IllegalArgumentException expected) {
-            }
+            assertThatThrownBy(() -> new HandlingEvent(
+                    cargo,
+                    LocalDateTime.now(),
+                    LocalDateTime.now(),
+                    type,
+                    SampleLocations.HONGKONG,
+                    SampleVoyages.CM003)
+            ).as("Handling event type " + type + " prohibits carrier movement")
+                    .isInstanceOf(IllegalArgumentException.class);
         }
 
         // These event types requires a carrier movement association
-        for (HandlingEvent.Type type :
-                Arrays.asList(HandlingEvent.Type.LOAD, HandlingEvent.Type.UNLOAD)) {
-            try {
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        type,
-                        SampleLocations.HONGKONG,
-                        null);
-                fail("Handling event type " + type + " requires carrier movement");
-            } catch (NullPointerException expected) {
-            }
+        for (HandlingEvent.Type type : Arrays.asList(HandlingEvent.Type.LOAD, HandlingEvent.Type.UNLOAD)) {
+            assertThatThrownBy(() -> new HandlingEvent(
+                    cargo,
+                    LocalDateTime.now(),
+                    LocalDateTime.now(),
+                    type,
+                    SampleLocations.HONGKONG,
+                    null)
+            ).as("Handling event type " + type + " requires carrier movement")
+                    .isInstanceOf(NullPointerException.class);
         }
     }
 
     @Test
     public void testNewWithLocation() {
-        HandlingEvent event1 =
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        HandlingEvent.Type.CLAIM,
-                        SampleLocations.HELSINKI);
+        HandlingEvent event1 = new HandlingEvent(
+                cargo,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                HandlingEvent.Type.CLAIM,
+                SampleLocations.HELSINKI
+        );
         assertThat(event1.getLocation()).isEqualTo(SampleLocations.HELSINKI);
     }
 
     @Test
     public void testCurrentLocationLoadEvent() throws Exception {
-        HandlingEvent event =
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        HandlingEvent.Type.LOAD,
-                        SampleLocations.CHICAGO,
-                        SampleVoyages.CM004);
+        HandlingEvent event = new HandlingEvent(
+                cargo,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                HandlingEvent.Type.LOAD,
+                SampleLocations.CHICAGO,
+                SampleVoyages.CM004
+        );
 
         assertThat(event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }
 
     @Test
     public void testCurrentLocationUnloadEvent() throws Exception {
-        HandlingEvent ev =
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        HandlingEvent.Type.UNLOAD,
-                        SampleLocations.HAMBURG,
-                        SampleVoyages.CM004);
+        HandlingEvent ev = new HandlingEvent(
+                cargo,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                HandlingEvent.Type.UNLOAD,
+                SampleLocations.HAMBURG,
+                SampleVoyages.CM004
+        );
 
         assertThat(ev.getLocation()).isEqualTo(SampleLocations.HAMBURG);
     }
 
     @Test
     public void testCurrentLocationReceivedEvent() throws Exception {
-        HandlingEvent event =
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        HandlingEvent.Type.RECEIVE,
-                        SampleLocations.CHICAGO);
+        HandlingEvent event = new HandlingEvent(
+                cargo,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                HandlingEvent.Type.RECEIVE,
+                SampleLocations.CHICAGO
+        );
 
         assertThat(event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }
 
     @Test
     public void testCurrentLocationClaimedEvent() throws Exception {
-        HandlingEvent event =
-                new HandlingEvent(
-                        cargo,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        HandlingEvent.Type.CLAIM,
-                        SampleLocations.CHICAGO);
+        HandlingEvent event = new HandlingEvent(
+                cargo,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                HandlingEvent.Type.CLAIM,
+                SampleLocations.CHICAGO
+        );
 
         assertThat(event.getLocation()).isEqualTo(SampleLocations.CHICAGO);
     }

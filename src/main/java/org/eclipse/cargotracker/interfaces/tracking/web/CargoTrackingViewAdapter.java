@@ -31,53 +31,53 @@ public class CargoTrackingViewAdapter {
     }
 
     public String getTrackingId() {
-        return cargo.getTrackingId().getIdString();
+        return cargo.getTrackingId().id();
     }
 
     public String getOriginName() {
-        return cargo.getRouteSpecification().getOrigin().getName();
+        return cargo.getRouteSpecification().origin().getName();
     }
 
     public String getOriginCode() {
-        return cargo.getRouteSpecification().getOrigin().getUnLocode().getIdString();
+        return cargo.getRouteSpecification().origin().getUnLocode().unlocode();
     }
 
     public String getDestinationName() {
-        return cargo.getRouteSpecification().getDestination().getName();
+        return cargo.getRouteSpecification().destination().getName();
     }
 
     public String getDestinationCode() {
-        return cargo.getRouteSpecification().getDestination().getUnLocode().getIdString();
+        return cargo.getRouteSpecification().destination().getUnLocode().unlocode();
     }
 
     public String getLastKnownLocationName() {
         return cargo.getDelivery()
-                .getLastKnownLocation()
+                .lastKnownLocation()
                 .getUnLocode()
-                .getIdString()
+                .unlocode()
                 .equals("XXXXX")
                 ? "Unknown"
-                : cargo.getDelivery().getLastKnownLocation().getName();
+                : cargo.getDelivery().lastKnownLocation().getName();
     }
 
     public String getLastKnownLocationCode() {
-        return cargo.getDelivery().getLastKnownLocation().getUnLocode().getIdString();
+        return cargo.getDelivery().lastKnownLocation().getUnLocode().unlocode();
     }
 
     public String getStatusCode() {
-        if (cargo.getItinerary().getLegs().isEmpty()) {
+        if (cargo.getItinerary().legs().isEmpty()) {
             return "NOT_ROUTED";
         }
 
-        if (cargo.getDelivery().isUnloadedAtDestination()) {
+        if (cargo.getDelivery().unloadedAtDestination()) {
             return "AT_DESTINATION";
         }
 
-        if (cargo.getDelivery().isMisdirected()) {
+        if (cargo.getDelivery().misdirected()) {
             return "MISDIRECTED";
         }
 
-        return cargo.getDelivery().getTransportStatus().name();
+        return cargo.getDelivery().transportStatus().name();
     }
 
     /**
@@ -86,9 +86,9 @@ public class CargoTrackingViewAdapter {
     public String getStatusText() {
         Delivery delivery = cargo.getDelivery();
 
-        return switch (delivery.getTransportStatus()) {
-            case IN_PORT -> "In port " + cargo.getRouteSpecification().getDestination().getName();
-            case ONBOARD_CARRIER -> "Onboard voyage " + delivery.getCurrentVoyage().getVoyageNumber().getIdString();
+        return switch (delivery.transportStatus()) {
+            case IN_PORT -> "In port " + cargo.getRouteSpecification().destination().getName();
+            case ONBOARD_CARRIER -> "Onboard voyage " + delivery.currentVoyage().getVoyageNumber().number();
             case CLAIMED -> "Claimed";
             case NOT_RECEIVED -> "Not received";
             case UNKNOWN -> "Unknown";
@@ -97,11 +97,11 @@ public class CargoTrackingViewAdapter {
     }
 
     public boolean isMisdirected() {
-        return cargo.getDelivery().isMisdirected();
+        return cargo.getDelivery().misdirected();
     }
 
     public String getEta() {
-        LocalDateTime eta = cargo.getDelivery().getEstimatedTimeOfArrival();
+        LocalDateTime eta = cargo.getDelivery().estimatedTimeOfArrival();
 
         if (eta == null) {
             return "?";
@@ -111,17 +111,17 @@ public class CargoTrackingViewAdapter {
     }
 
     public String getNextExpectedActivityText() {
-        HandlingActivity activity = cargo.getDelivery().getNextExpectedActivity();
+        HandlingActivity activity = cargo.getDelivery().nextExpectedActivity();
 
         if ((activity == null) || (activity.isEmpty())) {
             return "";
         }
 
         String text = "Next expected activity is to ";
-        HandlingEvent.Type type = activity.getType();
+        HandlingEvent.Type type = activity.type();
         final String typeName = type.name().toLowerCase();
-        final VoyageNumber voyageNumber = activity.getVoyage().getVoyageNumber();
-        final String locationName = activity.getLocation().getName();
+        final VoyageNumber voyageNumber = activity.voyage().getVoyageNumber();
+        final String locationName = activity.location().getName();
         return switch (type) {
             case LOAD -> "%s%s cargo onto voyage %s in %s".formatted(text, typeName, voyageNumber, locationName);
             case UNLOAD -> "%s%s cargo off of %s in %s".formatted(text, typeName, voyageNumber, locationName);
@@ -168,7 +168,7 @@ public class CargoTrackingViewAdapter {
 
         public String getDescription() {
             final String locationName = handlingEvent.getLocation().getName();
-            final String voyageNumber = handlingEvent.getVoyage().getVoyageNumber().getIdString();
+            final String voyageNumber = handlingEvent.getVoyage().getVoyageNumber().number();
             return switch (handlingEvent.getType()) {
                 case LOAD -> "Loaded onto voyage %s in %s".formatted(voyageNumber, locationName);
                 case UNLOAD -> "Unloaded off voyage %s in %s".formatted(voyageNumber, locationName);

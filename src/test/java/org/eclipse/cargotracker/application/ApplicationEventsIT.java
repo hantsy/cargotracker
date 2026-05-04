@@ -23,12 +23,10 @@ import org.eclipse.cargotracker.infrastructure.messaging.jms.HandlingEventRegist
 import org.eclipse.cargotracker.infrastructure.messaging.jms.JmsApplicationEvents;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -44,10 +42,9 @@ import static org.eclipse.cargotracker.Deployments.addDomainModels;
 import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 
-@ExtendWith(ArquillianExtension.class)
-@Tag("arqtest")
-public class ApplicationEventsTest {
-    private static final Logger LOGGER = Logger.getLogger(ApplicationEventsTest.class.getName());
+@ArquillianTest
+public class ApplicationEventsIT {
+    private static final Logger LOGGER = Logger.getLogger(ApplicationEventsIT.class.getName());
     private static TrackingId trackingId;
     private static List<Itinerary> candidates;
 
@@ -97,7 +94,7 @@ public class ApplicationEventsTest {
     @Deployment
     public static WebArchive createDeployment() {
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-ApplicationEventsTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-ApplicationEventsIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
