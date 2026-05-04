@@ -63,8 +63,6 @@ public class Cargo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger.getLogger(Cargo.class.getName());
-
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -85,7 +83,8 @@ public class Cargo implements Serializable {
 
     @Embedded
     @NotNull
-    private Itinerary itinerary;
+    private Itinerary itinerary = Itinerary.EMPTY;
+
     @Embedded
     @NotNull
     private Delivery delivery;
@@ -99,12 +98,12 @@ public class Cargo implements Serializable {
         Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         this.trackingId = trackingId;
+        this.routeSpecification = routeSpecification;
+
         // Cargo origin never changes, even if the route specification changes.
         // However, at creation, cargo origin can be derived from the initial
         // route specification.
         this.origin = routeSpecification.origin();
-        this.routeSpecification = routeSpecification;
-        this.itinerary = Itinerary.EMPTY;
         this.delivery = DeliveryFactory.create(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
     }
 

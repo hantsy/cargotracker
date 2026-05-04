@@ -40,6 +40,7 @@ public record Itinerary(
         // is added some tests are still failed under WildFly/Hibernate.
         // @OrderBy("loadTime")
         @NotNull
+        @Size(min = 1)
         List<Leg> legs
 ) implements Serializable {
 
@@ -47,6 +48,12 @@ public record Itinerary(
 
     // Null object pattern.
     public static final Itinerary EMPTY = new Itinerary(Collections.emptyList());
+
+    public Itinerary {
+        if (legs == null) {
+            legs = Collections.emptyList();
+        }
+    }
 
     /**
      * Static factory method to create an Itinerary.

@@ -37,6 +37,12 @@ public record Schedule(
     // Null object pattern.
     public static final Schedule EMPTY = new Schedule(Collections.emptyList());
 
+    public Schedule{
+        if(carrierMovements == null){
+            carrierMovements = new ArrayList<>();
+        }
+    }
+
     /**
      * Static factory method to create a Schedule.
      *

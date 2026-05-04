@@ -39,8 +39,8 @@ import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
 @ArquillianTest
 public class VoyageRepositoryIT {
-    private static final Logger LOGGER = Logger.getLogger(VoyageRepositoryIT.class.getName());
-
+    private static final Logger LOGGER =
+            Logger.getLogger(VoyageRepositoryIT.class.getName());
     @Inject
     VoyageRepository voyageRepository;
 
