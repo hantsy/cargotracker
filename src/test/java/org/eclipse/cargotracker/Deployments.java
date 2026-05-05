@@ -38,10 +38,6 @@ import org.eclipse.cargotracker.infrastructure.events.cdi.CargoInspected;
 import org.eclipse.cargotracker.infrastructure.logging.LoggerProducer;
 import org.eclipse.cargotracker.infrastructure.messaging.JMSResourcesSetup;
 import org.eclipse.cargotracker.infrastructure.persistence.DatabaseSetup;
-import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaCargoRepository;
-import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaHandlingEventRepository;
-import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaLocationRepository;
-import org.eclipse.cargotracker.infrastructure.persistence.jpa.JpaVoyageRepository;
 import org.eclipse.cargotracker.infrastructure.routing.ExternalRoutingService;
 import org.eclipse.pathfinder.api.GraphTraversalService;
 import org.eclipse.pathfinder.api.TransitEdge;
@@ -81,11 +77,11 @@ public class Deployments {
     // Infrastructure layer components.
     // Add persistence/JPA components.
     public static void addInfraPersistence(WebArchive war) {
-        war.addClass(DatabaseSetup.class)
-                .addClass(JpaCargoRepository.class)
-                .addClass(JpaVoyageRepository.class)
-                .addClass(JpaHandlingEventRepository.class)
-                .addClass(JpaLocationRepository.class);
+        war.addClass(DatabaseSetup.class);
+//                .addClass(JpaCargoRepository.class)
+//                .addClass(JpaVoyageRepository.class)
+//                .addClass(JpaHandlingEventRepository.class)
+//                .addClass(JpaLocationRepository.class);
     }
 
     public static void addApplicationBase(WebArchive war) {
@@ -108,49 +104,23 @@ public class Deployments {
     public static void addDomainModels(WebArchive war) {
         war
                 // locations
-                .addClass(Location.class)
-                .addClass(UnLocode.class)
+                .addPackage(Location.class.getPackage())
 
                 // voyage
-                .addClass(Voyage.class)
-                .addClass(VoyageNumber.class)
-                .addClass(Schedule.class)
-                .addClass(CarrierMovement.class)
+                .addPackage(Voyage.class.getPackage())
 
                 // cargo models
-                .addClass(Cargo.class)
-                .addClass(Delivery.class)
-                .addClass(HandlingActivity.class)
-                .addClass(Itinerary.class)
-                .addClass(Leg.class)
-                .addClass(RouteSpecification.class)
-                .addClass(RoutingStatus.class)
-                .addClass(TrackingId.class)
-                .addClass(TransportStatus.class)
+                .addPackage(Cargo.class.getPackage())
 
-                // handling models
-                .addClass(HandlingEvent.class)
-                // .addClass(HandlingEventFactory.class)
-                .addClass(HandlingHistory.class)
-                .addClass(CannotCreateHandlingEventException.class)
-                .addClass(UnknownCargoException.class)
-                .addClass(UnknownVoyageException.class)
-                .addClass(UnknownLocationException.class)
+                // handling events
+                .addPackage(HandlingEvent.class.getPackage())
 
                 // shared classes
-                .addClass(Specification.class)
-                .addClass(AndSpecification.class)
-                .addClass(OrSpecification.class)
-                .addClass(NotSpecification.class);
+                .addPackage(Specification.class.getPackage());
     }
 
     public static void addDomainRepositories(WebArchive war) {
-        war.addClass(HandlingEventFactory.class); // depends on repos
-        // add repos
-        war.addClass(CargoRepository.class)
-                .addClass(LocationRepository.class)
-                .addClass(VoyageRepository.class)
-                .addClass(HandlingEventRepository.class);
+        // the repository interfaces are included in the domain models, do noting here
     }
 
     public static void addDomainService(WebArchive war) {

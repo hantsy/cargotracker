@@ -150,6 +150,7 @@ public class SampleDataGenerator {
         abc123.assignToRoute(itinerary1);
 
         entityManager.persist(abc123);
+        entityManager.flush();
 
         try {
             HandlingEvent event1 =
@@ -184,12 +185,14 @@ public class SampleDataGenerator {
         } catch (CannotCreateHandlingEventException e) {
             throw new RuntimeException(e);
         }
+        entityManager.flush();
 
         HandlingHistory handlingHistory1 =
                 handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId1);
         abc123.deriveDeliveryProgress(handlingHistory1);
 
         entityManager.persist(abc123);
+        entityManager.flush();
 
         // Cargo JKL567. This one was loaded on the wrong voyage.
         TrackingId trackingId2 = new TrackingId("JKL567");
@@ -225,6 +228,7 @@ public class SampleDataGenerator {
         jkl567.assignToRoute(itinerary2);
 
         entityManager.persist(jkl567);
+        entityManager.flush();
 
         try {
             HandlingEvent event1 =
@@ -271,11 +275,14 @@ public class SampleDataGenerator {
             throw new RuntimeException(e);
         }
 
+        entityManager.flush();
+
         HandlingHistory handlingHistory2 =
                 handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId2);
         jkl567.deriveDeliveryProgress(handlingHistory2);
 
         entityManager.persist(jkl567);
+        entityManager.flush();
 
         // Cargo definition DEF789. This one will remain un-routed.
         TrackingId trackingId3 = new TrackingId("DEF789");
@@ -288,6 +295,7 @@ public class SampleDataGenerator {
 
         Cargo def789 = new Cargo(trackingId3, routeSpecification3);
         entityManager.persist(def789);
+        entityManager.flush();
 
         // Cargo definition MNO456. This one will be claimed properly.
         TrackingId trackingId4 = new TrackingId("MNO456");
@@ -311,6 +319,7 @@ public class SampleDataGenerator {
 
         mno456.assignToRoute(itinerary4);
         entityManager.persist(mno456);
+        entityManager.flush();
 
         try {
             HandlingEvent event1 =
@@ -367,6 +376,7 @@ public class SampleDataGenerator {
                             HandlingEvent.Type.CLAIM);
 
             entityManager.persist(event5);
+            entityManager.flush();
 
             HandlingHistory handlingHistory3 =
                     handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId4);
@@ -374,6 +384,7 @@ public class SampleDataGenerator {
             mno456.deriveDeliveryProgress(handlingHistory3);
 
             entityManager.persist(mno456);
+            entityManager.flush();
         } catch (CannotCreateHandlingEventException e) {
             throw new RuntimeException(e);
         }
