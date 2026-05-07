@@ -105,7 +105,7 @@ public class Cargo implements Serializable {
         this.origin = routeSpecification.getOrigin();
         this.routeSpecification = routeSpecification;
 
-        this.delivery = Delivery.derivedFrom(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
+        this.delivery = DeliveryFactory.create(this.routeSpecification, Itinerary.EMPTY_ITINERARY, HandlingHistory.EMPTY);
         this.itinerary = Itinerary.EMPTY_ITINERARY;
     }
 
@@ -147,7 +147,7 @@ public class Cargo implements Serializable {
 
         this.routeSpecification = routeSpecification;
         // Handling consistency within the Cargo aggregate synchronously
-        this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
+        this.delivery = DeliveryFactory.updateOnRouting(this.delivery.getLastEvent(), this.routeSpecification, this.itinerary);
     }
 
     public void assignToRoute(Itinerary itinerary) {
@@ -157,7 +157,7 @@ public class Cargo implements Serializable {
 
         // LOGGER.log(Level.INFO, "cargo.assignToRoute itinerary: {0}", this.itinerary);
         // Handling consistency within the Cargo aggregate synchronously
-        this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
+        this.delivery = DeliveryFactory.updateOnRouting(this.delivery.getLastEvent(), this.routeSpecification, this.itinerary);
     }
 
     /**
@@ -175,7 +175,7 @@ public class Cargo implements Serializable {
      * @param handlingHistory handling history
      */
     public void deriveDeliveryProgress(HandlingHistory handlingHistory) {
-        this.delivery = Delivery.derivedFrom(getRouteSpecification(), getItinerary(), handlingHistory);
+        this.delivery = DeliveryFactory.create(getRouteSpecification(), getItinerary(), handlingHistory);
         // LOGGER.log(Level.INFO, "deriveDeliveryProgress: {0}", this.delivery);
     }
 

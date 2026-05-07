@@ -15,18 +15,7 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.Objects;
-import java.util.logging.Logger;
-
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.MISROUTED;
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.NOT_ROUTED;
-import static org.eclipse.cargotracker.domain.model.cargo.RoutingStatus.ROUTED;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.CLAIMED;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.IN_PORT;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.NOT_RECEIVED;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
-import static org.eclipse.cargotracker.domain.model.cargo.TransportStatus.UNKNOWN;
 
 /**
  * The actual transportation of the cargo, as opposed to the customer requirement
@@ -38,9 +27,8 @@ public class Delivery implements Serializable {
     public static final LocalDateTime ETA_UNKOWN = null;
     // Null object pattern
     public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
-    private static final Logger LOGGER = Logger.getLogger(Delivery.class.getName());
     private static final long serialVersionUID = 1L;
-    // public static final HandlingActivity NO_ACTIVITY = null;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_status")
     @NotNull
@@ -73,7 +61,6 @@ public class Delivery implements Serializable {
     @NotNull
     private RoutingStatus routingStatus;
 
-    
     @Column(name = "calculated_at")
     @NotNull
     private LocalDateTime calculatedAt;
@@ -86,51 +73,21 @@ public class Delivery implements Serializable {
         // Nothing to initialize
     }
 
-    public Delivery(HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
-        this.calculatedAt = LocalDateTime.now();
+    // New constructor for DeliveryFactory
+    public Delivery(TransportStatus transportStatus, Location lastKnownLocation, Voyage currentVoyage,
+                    boolean misdirected, LocalDateTime eta, HandlingActivity nextExpectedActivity,
+                    boolean isUnloadedAtDestination, RoutingStatus routingStatus,
+                    LocalDateTime calculatedAt, HandlingEvent lastEvent) {
+        this.transportStatus = transportStatus;
+        this.lastKnownLocation = lastKnownLocation;
+        this.currentVoyage = currentVoyage;
+        this.misdirected = misdirected;
+        this.eta = eta;
+        this.nextExpectedActivity = nextExpectedActivity;
+        this.isUnloadedAtDestination = isUnloadedAtDestination;
+        this.routingStatus = routingStatus;
+        this.calculatedAt = calculatedAt;
         this.lastEvent = lastEvent;
-
-        this.misdirected = calculateMisdirectionStatus(itinerary);
-        this.routingStatus = calculateRoutingStatus(itinerary, routeSpecification);
-        this.transportStatus = calculateTransportStatus();
-        this.lastKnownLocation = calculateLastKnownLocation();
-        this.currentVoyage = calculateCurrentVoyage();
-        this.eta = calculateEta(itinerary);
-        this.nextExpectedActivity = calculateNextExpectedActivity(routeSpecification, itinerary);
-        this.isUnloadedAtDestination = calculateUnloadedAtDestination(routeSpecification);
-        // LOGGER.log(Level.INFO, "on track: {0}",  this.onTrack());
-    }
-
-    /**
-     * Creates a new delivery snapshot based on the complete handling history of a cargo, as well as
-     * its route specification and itinerary.
-     *
-     * @param routeSpecification route specification
-     * @param itinerary          itinerary
-     * @param handlingHistory    delivery history
-     * @return An up to date delivery.
-     */
-    static Delivery derivedFrom(
-            RouteSpecification routeSpecification,
-            Itinerary itinerary,
-            HandlingHistory handlingHistory) {
-        Objects.requireNonNull(routeSpecification, "Route specification is required");
-        Objects.requireNonNull(handlingHistory, "Delivery history is required");
-
-        HandlingEvent lastEvent = handlingHistory.getMostRecentlyCompletedEvent();
-
-        return new Delivery(lastEvent, itinerary, routeSpecification);
-    }
-
-    /**
-     * Creates a new delivery snapshot to reflect changes in routing, i.e. when the route
-     * specification or the itinerary has changed but no additional handling of the cargo has been
-     * performed.
-     */
-    Delivery updateOnRouting(RouteSpecification routeSpecification, Itinerary itinerary) {
-        Objects.requireNonNull(routeSpecification, "Route specification is required");
-
-        return new Delivery(this.lastEvent, itinerary, routeSpecification);
     }
 
     public TransportStatus getTransportStatus() {
@@ -149,12 +106,12 @@ public class Delivery implements Serializable {
         this.lastKnownLocation = lastKnownLocation;
     }
 
-    public void setLastEvent(HandlingEvent lastEvent) {
-        this.lastEvent = lastEvent;
-    }
-
     public Voyage getCurrentVoyage() {
         return Objects.requireNonNullElse(currentVoyage, Voyage.NONE);
+    }
+
+    public void setCurrentVoyage(Voyage currentVoyage) {
+        this.currentVoyage = currentVoyage;
     }
 
     /**
@@ -182,12 +139,20 @@ public class Delivery implements Serializable {
         return eta;
     }
 
+    public void setEta(LocalDateTime eta) {
+        this.eta = eta;
+    }
+
     // Hibernate issue:
     // After an empty HandlingActivity is persisted, when retrieving it from database it is a
     // *NULL*.
     public HandlingActivity getNextExpectedActivity() {
         // return nextExpectedActivity;
         return Objects.requireNonNullElse(nextExpectedActivity, NO_ACTIVITY);
+    }
+
+    public void setNextExpectedActivity(HandlingActivity nextExpectedActivity) {
+        this.nextExpectedActivity = nextExpectedActivity;
     }
 
     /**
@@ -217,123 +182,12 @@ public class Delivery implements Serializable {
         this.calculatedAt = calculatedAt;
     }
 
-    private TransportStatus calculateTransportStatus() {
-        if (lastEvent == null) {
-            return NOT_RECEIVED;
-        }
-
-        return switch (lastEvent.getType()) {
-            case LOAD -> ONBOARD_CARRIER;
-            case UNLOAD, RECEIVE, CUSTOMS -> IN_PORT;
-            case CLAIM -> CLAIMED;
-            default -> UNKNOWN;
-        };
+    public HandlingEvent getLastEvent() {
+        return lastEvent;
     }
 
-    private Location calculateLastKnownLocation() {
-        if (lastEvent != null) {
-            return lastEvent.getLocation();
-        } else {
-            return null;
-        }
-    }
-
-    private Voyage calculateCurrentVoyage() {
-        if (getTransportStatus().equals(ONBOARD_CARRIER) && lastEvent != null) {
-            return lastEvent.getVoyage();
-        } else {
-            return null;
-        }
-    }
-
-    private boolean calculateMisdirectionStatus(Itinerary itinerary) {
-        if (lastEvent == null) {
-            return false;
-        } else {
-            return !itinerary.isExpected(lastEvent);
-        }
-    }
-
-    private LocalDateTime calculateEta(Itinerary itinerary) {
-        if (onTrack()) {
-            return itinerary.getFinalArrivalDate();
-        } else {
-            return ETA_UNKOWN;
-        }
-    }
-
-    private HandlingActivity calculateNextExpectedActivity(
-            RouteSpecification routeSpecification, Itinerary itinerary) {
-        if (!onTrack()) {
-            return NO_ACTIVITY;
-        }
-
-        if (lastEvent == null) {
-            return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.getOrigin());
-        }
-
-        return switch (lastEvent.getType()) {
-            case LOAD -> {
-                for (Leg leg : itinerary.getLegs()) {
-                    if (leg.getLoadLocation().equals(lastEvent.getLocation())) {
-                        yield new HandlingActivity(
-                                HandlingEvent.Type.UNLOAD,
-                                leg.getUnloadLocation(),
-                                leg.getVoyage());
-                    }
-                }
-                yield NO_ACTIVITY;
-            }
-            case UNLOAD -> {
-                for (Iterator<Leg> iterator = itinerary.getLegs().iterator();
-                     iterator.hasNext(); ) {
-                    Leg leg = iterator.next();
-
-                    if (leg.getUnloadLocation().equals(lastEvent.getLocation())) {
-                        if (iterator.hasNext()) {
-                            Leg nextLeg = iterator.next();
-                            yield new HandlingActivity(
-                                    HandlingEvent.Type.LOAD,
-                                    nextLeg.getLoadLocation(),
-                                    nextLeg.getVoyage());
-                        } else {
-                            yield new HandlingActivity(
-                                    HandlingEvent.Type.CLAIM, leg.getUnloadLocation());
-                        }
-                    }
-                }
-                yield NO_ACTIVITY;
-            }
-            case RECEIVE -> {
-                Leg firstLeg = itinerary.getLegs().iterator().next();
-                yield new HandlingActivity(
-                        HandlingEvent.Type.LOAD, firstLeg.getLoadLocation(), firstLeg.getVoyage());
-            }
-            default -> NO_ACTIVITY;
-        };
-    }
-
-    private RoutingStatus calculateRoutingStatus(
-            Itinerary itinerary, RouteSpecification routeSpecification) {
-        if (itinerary == null || itinerary == Itinerary.EMPTY_ITINERARY) {
-            return NOT_ROUTED;
-        } else {
-            if (routeSpecification.isSatisfiedBy(itinerary)) {
-                return ROUTED;
-            } else {
-                return MISROUTED;
-            }
-        }
-    }
-
-    private boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification) {
-        return lastEvent != null
-                && HandlingEvent.Type.UNLOAD.equals(lastEvent.getType())
-                && routeSpecification.getDestination().equals(lastEvent.getLocation());
-    }
-
-    private boolean onTrack() {
-        return routingStatus.equals(ROUTED) && !misdirected;
+    public void setLastEvent(HandlingEvent lastEvent) {
+        this.lastEvent = lastEvent;
     }
 
     @Override
