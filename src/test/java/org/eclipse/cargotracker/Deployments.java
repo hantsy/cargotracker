@@ -6,6 +6,7 @@ import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
 import org.eclipse.cargotracker.domain.model.cargo.CargoRepository;
 import org.eclipse.cargotracker.domain.model.cargo.Delivery;
+import org.eclipse.cargotracker.domain.model.cargo.DeliveryFactory;
 import org.eclipse.cargotracker.domain.model.cargo.HandlingActivity;
 import org.eclipse.cargotracker.domain.model.cargo.Itinerary;
 import org.eclipse.cargotracker.domain.model.cargo.Leg;
@@ -120,6 +121,7 @@ public class Deployments {
                 // cargo models
                 .addClass(Cargo.class)
                 .addClass(Delivery.class)
+                .addClass(DeliveryFactory.class)
                 .addClass(HandlingActivity.class)
                 .addClass(Itinerary.class)
                 .addClass(Leg.class)

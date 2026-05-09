@@ -43,7 +43,6 @@ public class HandlingHistory {
      */
     public HandlingEvent getMostRecentlyCompletedEvent() {
         List<HandlingEvent> distinctEvents = getDistinctEventsByCompletionTime();
-        // LOGGER.log(Level.INFO, "distinct events: {0}", distinctEvents);
         return distinctEvents.isEmpty() ? null : distinctEvents.getLast();
     }
 
