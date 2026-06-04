@@ -37,10 +37,10 @@
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
         <maven-dependency-plugin.version>3.10.0</maven-dependency-plugin.version>
-        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
         <maven-surefire-report-plugin.version>3.5.5</maven-surefire-report-plugin.version>
-        <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
 
         <!-- Cargo maven plugin -->
         <cargo-maven3-plugin.version>1.10.27</cargo-maven3-plugin.version>
@@ -49,13 +49,13 @@
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.11</postgresql.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <omnifaces.version>4.7.9</omnifaces.version>
+        <omnifaces.version>4.7.10</omnifaces.version>
 
         <!-- Arquillian BOM -->
-        <arquillian-bom.version>1.10.1.Final</arquillian-bom.version>
+        <arquillian-bom.version>1.10.2.Final</arquillian-bom.version>
         <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
-        <shrinkwrap-resolver-bom.version>3.3.6</shrinkwrap-resolver-bom.version>
+        <shrinkwrap-resolver-bom.version>3.3.7</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
         <junit.version>5.14.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
@@ -83,7 +83,7 @@
 
         <!-- Wildfly server -->
         <wildfly.version>40.0.0.Beta1</wildfly.version>
-        <wildfly-maven-plugin.version>6.0.0.Beta3</wildfly-maven-plugin.version>
+        <wildfly-maven-plugin.version>6.0.0.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>6.0.0.Alpha1</wildfly-arquillian.version>
 
         <!-- aligned to Wildfly version. -->
