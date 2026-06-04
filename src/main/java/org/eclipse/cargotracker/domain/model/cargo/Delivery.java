@@ -109,6 +109,7 @@ public record Delivery(
         return eta;
     }
 
+
     // Hibernate issue:
     // After an empty HandlingActivity is persisted, when retrieving it from database it is a
     // *NULL*.
@@ -116,6 +117,5 @@ public record Delivery(
     public HandlingActivity nextExpectedActivity() {
         return Objects.requireNonNullElse(nextExpectedActivity, NO_ACTIVITY);
     }
-
 
 }

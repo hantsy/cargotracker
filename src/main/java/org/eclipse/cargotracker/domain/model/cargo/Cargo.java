@@ -103,8 +103,11 @@ public class Cargo implements Serializable {
         // Cargo origin never changes, even if the route specification changes.
         // However, at creation, cargo origin can be derived from the initial
         // route specification.
-        this.origin = routeSpecification.origin();
-        this.delivery = DeliveryFactory.create(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
+        this.origin = routeSpecification.getOrigin();
+        this.routeSpecification = routeSpecification;
+
+        this.delivery = Delivery.derivedFrom(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
+        this.itinerary = Itinerary.EMPTY_ITINERARY;
     }
 
     public TrackingId getTrackingId() {
@@ -145,7 +148,7 @@ public class Cargo implements Serializable {
 
         this.routeSpecification = routeSpecification;
         // Handling consistency within the Cargo aggregate synchronously
-        this.delivery = DeliveryFactory.updateOnRouting(this.delivery, this.routeSpecification, this.itinerary);
+        this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
     }
 
     public void assignToRoute(Itinerary itinerary) {
@@ -154,7 +157,7 @@ public class Cargo implements Serializable {
         this.itinerary = itinerary;
 
         // Handling consistency within the Cargo aggregate synchronously
-        this.delivery = DeliveryFactory.updateOnRouting(this.delivery, this.routeSpecification, this.itinerary);
+        this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
     }
 
     /**
@@ -172,7 +175,8 @@ public class Cargo implements Serializable {
      * @param handlingHistory handling history
      */
     public void deriveDeliveryProgress(HandlingHistory handlingHistory) {
-        this.delivery = DeliveryFactory.create(getRouteSpecification(), getItinerary(), handlingHistory);
+        this.delivery = Delivery.derivedFrom(getRouteSpecification(), getItinerary(), handlingHistory);
+        // LOGGER.log(Level.INFO, "deriveDeliveryProgress: {0}", this.delivery);
     }
 
     @Override

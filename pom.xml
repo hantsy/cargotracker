@@ -36,11 +36,11 @@
         <maven-war-plugin.version>3.5.1</maven-war-plugin.version>
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
-        <maven-dependency-plugin.version>3.10.0</maven-dependency-plugin.version>
-        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
-        <maven-surefire-report-plugin.version>3.5.5</maven-surefire-report-plugin.version>
-        <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
+        <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
+        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.5.6</maven-surefire-report-plugin.version>
+        <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
 
         <!-- Cargo maven plugin -->
         <cargo-maven3-plugin.version>1.10.27</cargo-maven3-plugin.version>
@@ -48,13 +48,13 @@
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <postgresql.version>42.7.11</postgresql.version>
-        <omnifaces.version>4.7.9</omnifaces.version>
+        <omnifaces.version>4.7.10</omnifaces.version>
 
         <!-- Arquillian BOM -->
-        <arquillian-bom.version>1.10.1.Final</arquillian-bom.version>
+        <arquillian-bom.version>1.10.2.Final</arquillian-bom.version>
         <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
-        <shrinkwrap-resolver-bom.version>3.3.6</shrinkwrap-resolver-bom.version>
+        <shrinkwrap-resolver-bom.version>3.3.7</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
         <junit.version>5.14.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
@@ -63,7 +63,7 @@
         <json-path.version>2.10.0</json-path.version>
         <jacoco.version>0.8.14</jacoco.version>
         <arquillian-jacoco.version>1.1.0</arquillian-jacoco.version>
-        <asm.version>9.9.1</asm.version>
+        <asm.version>9.10.1</asm.version>
         <awaitility.version>4.3.0</awaitility.version>
 
         <!-- spring format and Checkstyle -->
@@ -73,7 +73,7 @@
         <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.1</glassfish.version>
+        <glassfish.version>8.0.2</glassfish.version>
         <jersey.version>4.0.2</jersey.version>
         <eclipselink.version>5.0.0</eclipselink.version>
         <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
@@ -82,7 +82,7 @@
 
         <!-- Wildfly server -->
         <wildfly.version>40.0.0.Beta1</wildfly.version>
-        <wildfly-maven-plugin.version>6.0.0.Beta3</wildfly-maven-plugin.version>
+        <wildfly-maven-plugin.version>6.0.0.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>6.0.0.Alpha1</wildfly-arquillian.version>
 
         <!-- aligned to Wildfly version. -->

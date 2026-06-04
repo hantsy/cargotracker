@@ -24,6 +24,7 @@ public final class DeliveryFactory {
         // prevent it to instantiate
     }
 
+
     public static Delivery create(RouteSpecification routeSpecification, Itinerary itinerary, HandlingEvent lastEvent) {
         var calculatedAt = LocalDateTime.now();
 
@@ -41,6 +42,15 @@ public final class DeliveryFactory {
                 isUnloadedAtDestination, routingStatus, calculatedAt, lastEvent);
     }
 
+    /**
+     * Creates a new delivery snapshot based on the complete handling history of a cargo, as well as
+     * its route specification and itinerary.
+     *
+     * @param routeSpecification route specification
+     * @param itinerary          itinerary
+     * @param handlingHistory    delivery history
+     * @return An up to date delivery.
+     */
     public static Delivery create(RouteSpecification routeSpecification, Itinerary itinerary, HandlingHistory handlingHistory) {
         Objects.requireNonNull(routeSpecification, "Route specification is required");
         Objects.requireNonNull(handlingHistory, "Delivery history is required");
@@ -158,12 +168,11 @@ public final class DeliveryFactory {
 
     static boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification, HandlingEvent lastEvent) {
         return lastEvent != null
-                && HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.getType())
+                && HandlingEvent.Type.UNLOAD == lastEvent.getType()
                 && routeSpecification.destination().sameIdentityAs(lastEvent.getLocation());
     }
 
     static boolean onTrack(RoutingStatus routingStatus, boolean misdirected) {
-        return routingStatus.equals(ROUTED) && !misdirected;
+        return routingStatus == ROUTED && !misdirected;
     }
 }
-
