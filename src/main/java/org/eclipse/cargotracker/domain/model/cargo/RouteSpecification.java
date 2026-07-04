@@ -39,11 +39,9 @@ public record RouteSpecification(
      * @param arrivalDeadline arrival deadline
      */
     public RouteSpecification {
-        Objects.requireNonNull(origin, "Origin is required");
-        Objects.requireNonNull(destination, "Destination is required");
-        Objects.requireNonNull(arrivalDeadline, "Arrival deadline is required");
-        if (origin.equals(destination)) {
-            throw new IllegalArgumentException("Origin and destination can't be the same: " + origin);
+        if (origin != null && destination != null && origin.equals(destination)) {
+            throw new IllegalArgumentException(
+                    "Origin and destination can't be the same: " + origin);
         }
     }
 
