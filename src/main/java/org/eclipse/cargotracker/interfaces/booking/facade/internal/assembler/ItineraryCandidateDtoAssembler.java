@@ -17,14 +17,14 @@ public class ItineraryCandidateDtoAssembler {
     LocationDtoAssembler locationDtoAssembler = new LocationDtoAssembler();
 
     public RouteCandidateDto toDto(Itinerary itinerary) {
-        List<LegDto> legDTOs = itinerary.getLegs().stream().map(this::toLegDto).toList();
+        List<LegDto> legDTOs = itinerary.legs().stream().map(this::toLegDto).toList();
         return new RouteCandidateDto(legDTOs);
     }
 
     protected LegDto toLegDto(Leg leg) {
         VoyageNumber voyageNumber = leg.getVoyage().getVoyageNumber();
         return new LegDto(
-                voyageNumber.getIdString(),
+                voyageNumber.number(),
                 locationDtoAssembler.toDto(leg.getLoadLocation()),
                 locationDtoAssembler.toDto(leg.getUnloadLocation()),
                 leg.getLoadTime(),

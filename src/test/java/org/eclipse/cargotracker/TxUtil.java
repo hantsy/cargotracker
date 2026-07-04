@@ -26,8 +26,8 @@ public class TxUtil {
             if (this.em != null) {
                 this.em.joinTransaction();
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Throwable cause) {
+            throw new RuntimeException(cause);
         }
     }
 
@@ -37,16 +37,16 @@ public class TxUtil {
                 this.ux.commit();
             }
             LOGGER.log(Level.INFO, "commited tx status:{0}", new Object[]{this.ux.getStatus()});
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Throwable cause) {
+            throw new RuntimeException(cause);
         }
     }
 
     private void rollback() {
         try {
             this.ux.rollback();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (Throwable cause) {
+            throw new RuntimeException(cause);
         }
     }
 
@@ -55,21 +55,21 @@ public class TxUtil {
             begin();
             runnable.run();
             commit();
-        } catch (Exception e) {
+        } catch (Throwable t) {
             rollback();
-            throw new RuntimeException(e);
+            throw (t instanceof RuntimeException re) ? re : new RuntimeException(t);
         }
     }
 
-    public <T> T runInTx(Callable<T> callable) {
+    public <T> T callInTx(Callable<T> callable) {
         try {
             begin();
             T result = callable.call();
             commit();
             return result;
-        } catch (Exception e) {
+        } catch (Throwable t) {
             rollback();
-            throw new RuntimeException(e);
+            throw (t instanceof RuntimeException re) ? re : new RuntimeException(t);
         }
     }
 

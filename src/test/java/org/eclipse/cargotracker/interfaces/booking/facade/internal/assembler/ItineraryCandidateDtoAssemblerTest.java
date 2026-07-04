@@ -94,15 +94,15 @@ public class ItineraryCandidateDtoAssemblerTest {
                         new RouteCandidateDto(legs), voyageRepository, locationRepository);
 
         assertThat(itinerary).isNotNull();
-        assertThat(itinerary.getLegs()).isNotNull();
-        assertThat(itinerary.getLegs()).hasSize(2);
+        assertThat(itinerary.legs()).isNotNull();
+        assertThat(itinerary.legs()).hasSize(2);
 
-        final Leg leg1 = itinerary.getLegs().get(0);
+        final Leg leg1 = itinerary.legs().get(0);
         assertThat(leg1).isNotNull();
         assertThat(leg1.getLoadLocation()).isEqualTo(SampleLocations.HONGKONG);
         assertThat(leg1.getUnloadLocation()).isEqualTo(SampleLocations.TOKYO);
 
-        final Leg leg2 = itinerary.getLegs().get(1);
+        final Leg leg2 = itinerary.legs().get(1);
         assertThat(leg2).isNotNull();
         assertThat(leg2.getLoadLocation()).isEqualTo(SampleLocations.TOKYO);
         assertThat(leg2.getUnloadLocation()).isEqualTo(SampleLocations.CHICAGO);

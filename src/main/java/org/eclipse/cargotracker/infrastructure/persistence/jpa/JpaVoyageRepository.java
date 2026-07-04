@@ -34,6 +34,7 @@ public class JpaVoyageRepository implements VoyageRepository, Serializable {
 
     @Override
     public Voyage find(VoyageNumber voyageNumber) {
+        LOGGER.log(Level.INFO, "Voyage.findByVoyageNumber: {0}", new Object[]{ voyageNumber});
         Voyage voyage = null;
         try {
             voyage =

@@ -20,8 +20,6 @@ public class RouteSpecification implements Specification<Itinerary>, Serializabl
 
     private static final long serialVersionUID = 1L;
 
-    // private static final Logger LOGGER = Logger.getLogger(RouteSpecification.class.getName());
-
     @ManyToOne
     @JoinColumn(name = "spec_origin_id")
     private Location origin;
@@ -68,12 +66,17 @@ public class RouteSpecification implements Specification<Itinerary>, Serializabl
         return arrivalDeadline;
     }
 
+    // Record-style accessor aliases for compatibility
+    public Location origin() { return origin; }
+    public Location destination() { return destination; }
+    public LocalDate arrivalDeadline() { return arrivalDeadline; }
+
     @Override
     public boolean isSatisfiedBy(Itinerary itinerary) {
         return itinerary != null
-                && getOrigin().equals(itinerary.getInitialDepartureLocation())
-                && getDestination().equals(itinerary.getFinalArrivalLocation())
-                && getArrivalDeadline().isAfter(itinerary.getFinalArrivalDate().toLocalDate());
+                && origin().equals(itinerary.getInitialDepartureLocation())
+                && destination().equals(itinerary.getFinalArrivalLocation())
+                && arrivalDeadline().isAfter(itinerary.getFinalArrivalDate().toLocalDate());
     }
 
     @Override

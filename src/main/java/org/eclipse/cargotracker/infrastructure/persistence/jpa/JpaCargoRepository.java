@@ -53,7 +53,7 @@ public class JpaCargoRepository implements CargoRepository, Serializable {
     @Override
     public void store(Cargo cargo) {
         // TODO [Clean Code] See why cascade is not working correctly for legs.
-        cargo.getItinerary().getLegs().forEach(leg -> entityManager.persist(leg));
+        cargo.getItinerary().legs().forEach(leg -> entityManager.persist(leg));
 
         entityManager.persist(cargo);
 

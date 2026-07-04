@@ -39,7 +39,7 @@ public class Voyage implements Serializable {
 
     @Embedded
     @NotNull(message = "Schedule is required")
-    private Schedule schedule;
+    private Schedule schedule = Schedule.EMPTY;
 
     public Voyage() {
         // Nothing to initialize
@@ -74,7 +74,7 @@ public class Voyage implements Serializable {
 
     @Override
     public String toString() {
-        return "Voyage " + voyageNumber;
+        return "Voyage " + voyageNumber.number();
     }
 
     /**
@@ -83,8 +83,8 @@ public class Voyage implements Serializable {
      */
     public static class Builder {
 
-        private List<CarrierMovement> carrierMovements = new ArrayList<>();
-        private VoyageNumber voyageNumber;
+        private final List<CarrierMovement> carrierMovements = new ArrayList<>();
+        private final VoyageNumber voyageNumber;
         private Location departureLocation;
 
         public Builder(VoyageNumber voyageNumber, Location departureLocation) {
@@ -95,11 +95,8 @@ public class Voyage implements Serializable {
             this.departureLocation = departureLocation;
         }
 
-        public Builder addMovement(
-                Location arrivalLocation, LocalDateTime departureTime, LocalDateTime arrivalTime) {
-            carrierMovements.add(
-                    new CarrierMovement(
-                            departureLocation, arrivalLocation, departureTime, arrivalTime));
+        public Builder addMovement(Location arrivalLocation, LocalDateTime departureTime, LocalDateTime arrivalTime) {
+            carrierMovements.add(new CarrierMovement(this.departureLocation, arrivalLocation, departureTime, arrivalTime));
 
             // Next departure location is the same as this arrival location
             this.departureLocation = arrivalLocation;

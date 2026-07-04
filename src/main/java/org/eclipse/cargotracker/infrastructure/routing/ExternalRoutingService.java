@@ -53,8 +53,8 @@ public class ExternalRoutingService implements RoutingService {
     @Override
     public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
         // The RouteSpecification is picked apart and adapted to the external API.
-        String origin = routeSpecification.getOrigin().getUnLocode().getIdString();
-        String destination = routeSpecification.getDestination().getUnLocode().getIdString();
+        String origin = routeSpecification.origin().getUnLocode().unlocode();
+        String destination = routeSpecification.destination().getUnLocode().unlocode();
 
         List<TransitPath> transitPaths = this.graphTraversalResource.findShortestPath(origin, destination);
 
@@ -81,7 +81,7 @@ public class ExternalRoutingService implements RoutingService {
 
     private Itinerary toItinerary(TransitPath transitPath) {
         List<Leg> legs =
-                transitPath.getTransitEdges().stream()
+                transitPath.transitEdges().stream()
                         .map(this::toLeg)
                         .toList();
         return new Itinerary(legs);
@@ -89,10 +89,10 @@ public class ExternalRoutingService implements RoutingService {
 
     private Leg toLeg(TransitEdge edge) {
         return new Leg(
-                voyageRepository.find(new VoyageNumber(edge.getVoyageNumber())),
-                locationRepository.find(new UnLocode(edge.getFromUnLocode())),
-                locationRepository.find(new UnLocode(edge.getToUnLocode())),
-                edge.getFromDate(),
-                edge.getToDate());
+                voyageRepository.find(new VoyageNumber(edge.voyageNumber())),
+                locationRepository.find(new UnLocode(edge.fromUnLocode())),
+                locationRepository.find(new UnLocode(edge.toUnLocode())),
+                edge.fromDate(),
+                edge.toDate());
     }
 }

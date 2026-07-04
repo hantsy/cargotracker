@@ -16,7 +16,6 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 /**
  * A Cargo. This is the central class in the domain model, and it is the root of the
@@ -63,8 +62,6 @@ public class Cargo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger.getLogger(Cargo.class.getName());
-
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -85,7 +82,8 @@ public class Cargo implements Serializable {
 
     @Embedded
     @NotNull
-    private Itinerary itinerary;
+    private Itinerary itinerary = Itinerary.EMPTY;
+
     @Embedded
     @NotNull
     private Delivery delivery;
@@ -99,14 +97,15 @@ public class Cargo implements Serializable {
         Objects.requireNonNull(routeSpecification, "Route specification is required");
 
         this.trackingId = trackingId;
+        this.routeSpecification = routeSpecification;
+
         // Cargo origin never changes, even if the route specification changes.
         // However, at creation, cargo origin can be derived from the initial
         // route specification.
-        this.origin = routeSpecification.getOrigin();
-        this.routeSpecification = routeSpecification;
+        this.origin = routeSpecification.origin();
 
-        this.delivery = DeliveryFactory.create(this.routeSpecification, Itinerary.EMPTY_ITINERARY, HandlingHistory.EMPTY);
-        this.itinerary = Itinerary.EMPTY_ITINERARY;
+        this.delivery = DeliveryFactory.create(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
+        this.itinerary = Itinerary.EMPTY;
     }
 
     public TrackingId getTrackingId() {
@@ -136,7 +135,7 @@ public class Cargo implements Serializable {
      * @return The itinerary. Never null.
      */
     public Itinerary getItinerary() {
-        return Objects.requireNonNullElse(this.itinerary, Itinerary.EMPTY_ITINERARY);
+        return Objects.requireNonNullElse(this.itinerary, Itinerary.EMPTY);
     }
 
     /**
@@ -147,7 +146,7 @@ public class Cargo implements Serializable {
 
         this.routeSpecification = routeSpecification;
         // Handling consistency within the Cargo aggregate synchronously
-        this.delivery = DeliveryFactory.updateOnRouting(this.delivery.getLastEvent(), this.routeSpecification, this.itinerary);
+        this.delivery = DeliveryFactory.updateOnRouting(this.delivery, this.routeSpecification, this.itinerary);
     }
 
     public void assignToRoute(Itinerary itinerary) {
@@ -155,9 +154,8 @@ public class Cargo implements Serializable {
 
         this.itinerary = itinerary;
 
-        // LOGGER.log(Level.INFO, "cargo.assignToRoute itinerary: {0}", this.itinerary);
         // Handling consistency within the Cargo aggregate synchronously
-        this.delivery = DeliveryFactory.updateOnRouting(this.delivery.getLastEvent(), this.routeSpecification, this.itinerary);
+        this.delivery = DeliveryFactory.updateOnRouting(this.delivery, this.routeSpecification, this.itinerary);
     }
 
     /**
@@ -192,7 +190,7 @@ public class Cargo implements Serializable {
 
     @Override
     public String toString() {
-        return trackingId.toString();
+        return trackingId.id();
     }
 
     public String toString(boolean verbose) {
@@ -205,7 +203,7 @@ public class Cargo implements Serializable {
                 ", itinerary=" + itinerary +
                 ", delivery=" + delivery +
                 '}'
-                : trackingId.toString();
+                : trackingId.id();
     }
 
     public boolean isNew() {
