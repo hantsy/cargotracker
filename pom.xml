@@ -368,7 +368,9 @@
                             <includes>
                                 <include>**/*Test.java</include>
                             </includes>
-                            <excludedGroups>arqtest</excludedGroups>
+                            <excludes>
+                                <exclude>**/*IT.java</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
@@ -389,10 +391,8 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>**/*Test.java</include>
+                                <include>**/*IT.java</include>
                             </includes>
-                            <groups>arqtest</groups>
-                            <excludedGroups>!arqtest</excludedGroups>
                         </configuration>
                     </execution>
                 </executions>

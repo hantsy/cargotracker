@@ -37,7 +37,7 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.domain.service.RoutingService;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -67,13 +67,13 @@ import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
-public class CargoLifecycleScenarioTest {
+public class CargoLifecycleScenarioIT {
 
     private static final Logger LOGGER =
-            Logger.getLogger(CargoLifecycleScenarioTest.class.getName());
+            Logger.getLogger(CargoLifecycleScenarioIT.class.getName());
     /*
      * Test setup: A cargo should be shipped from Hongkong to
      * SampleLocations.STOCKHOLM, and it should arrive in no more than two weeks.

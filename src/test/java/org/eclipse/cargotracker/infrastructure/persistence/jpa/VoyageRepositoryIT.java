@@ -16,7 +16,7 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,10 +38,10 @@ import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @Tag("arqtest")
-public class VoyageRepositoryTest {
-    private static final Logger LOGGER = Logger.getLogger(VoyageRepositoryTest.class.getName());
+public class VoyageRepositoryIT {
+    private static final Logger LOGGER = Logger.getLogger(VoyageRepositoryIT.class.getName());
     @Inject
     VoyageRepository voyageRepository;
 
@@ -60,7 +60,7 @@ public class VoyageRepositoryTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "VoyageRepositoryTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "VoyageRepositoryIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
