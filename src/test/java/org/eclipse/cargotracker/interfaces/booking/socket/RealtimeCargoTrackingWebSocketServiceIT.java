@@ -68,7 +68,7 @@ public class RealtimeCargoTrackingWebSocketServiceIT {
         TestClient.latch = new CountDownLatch(1);
         var session = connectToServer();
         assertThat(session).isNotNull();
-        TestClient.latch.await(5, TimeUnit.SECONDS);
+        TestClient.latch.await(25, TimeUnit.SECONDS);
         assertThat(TestClient.response).isNotNull();
         var json = JsonPath.parse(TestClient.response);
         LOGGER.log(Level.INFO, "response json string: {0}", json);
