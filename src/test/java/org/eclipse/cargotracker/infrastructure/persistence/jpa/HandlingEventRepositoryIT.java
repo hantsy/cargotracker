@@ -18,7 +18,7 @@ import org.eclipse.cargotracker.domain.model.location.UnLocode;
 import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,12 +43,12 @@ import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
-public class HandlingEventRepositoryTest {
+public class HandlingEventRepositoryIT {
     private static final Logger LOGGER =
-            Logger.getLogger(HandlingEventRepositoryTest.class.getName());
+            Logger.getLogger(HandlingEventRepositoryIT.class.getName());
     @Inject
     UserTransaction utx;
     @Inject
@@ -66,7 +66,7 @@ public class HandlingEventRepositoryTest {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive war =
-                ShrinkWrap.create(WebArchive.class, "test-HandlingEventRepositoryTest.war");
+                ShrinkWrap.create(WebArchive.class, "test-HandlingEventRepositoryIT.war");
 
         addExtraJars(war);
         addDomainModels(war);

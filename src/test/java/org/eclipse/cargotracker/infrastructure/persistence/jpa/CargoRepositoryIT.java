@@ -23,7 +23,7 @@ import org.eclipse.cargotracker.domain.model.voyage.VoyageNumber;
 import org.eclipse.cargotracker.domain.model.voyage.VoyageRepository;
 import org.eclipse.cargotracker.interfaces.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,11 +51,11 @@ import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 import static org.eclipse.cargotracker.domain.model.handling.HandlingEvent.Type.LOAD;
 
-@ExtendWith(ArquillianExtension.class)
+@ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("arqtest")
-public class CargoRepositoryTest {
-    private static final Logger LOGGER = Logger.getLogger(CargoRepositoryTest.class.getName());
+public class CargoRepositoryIT {
+    private static final Logger LOGGER = Logger.getLogger(CargoRepositoryIT.class.getName());
     @Inject
     UserTransaction utx;
     @Inject
@@ -75,7 +75,7 @@ public class CargoRepositoryTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CargoRepositoryTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-CargoRepositoryIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
