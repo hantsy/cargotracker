@@ -35,7 +35,7 @@ public class CargoInspectedStub {
     @PostConstruct
     public void initialize() {
         LOGGER.log(Level.INFO, "starting timer service...");
-        timerService.createTimer(TimeUnit.SECONDS.toMillis(5), "delayed 5 seconds to execute");
+        timerService.createTimer(TimeUnit.SECONDS.toMillis(20), "delayed 20 seconds to execute");
     }
 
     @Timeout
