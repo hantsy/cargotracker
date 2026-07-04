@@ -79,7 +79,7 @@ public class Cargo implements Serializable {
 
     @Embedded
     @NotNull(message = "Route specification is required")
-    private RouteSpecification routeSpecification;
+    private RouteSpecification routeSpecification = RouteSpecification.EMPTY;
 
     @Embedded
     @NotNull

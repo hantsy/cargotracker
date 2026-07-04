@@ -33,6 +33,8 @@ public record RouteSpecification(
 
     private static final long serialVersionUID = 1L;
 
+    public static final RouteSpecification EMPTY = new RouteSpecification(null, null, null);
+
     /**
      * @param origin          origin location - can't be the same as the destination
      * @param destination     destination location - can't be the same as the origin
