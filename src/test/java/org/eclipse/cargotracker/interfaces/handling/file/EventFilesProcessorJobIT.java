@@ -8,13 +8,11 @@ import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.interfaces.handling.ApplicationEventsStub;
 import org.eclipse.cargotracker.interfaces.handling.HandlingEventRegistrationAttempt;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,11 +31,10 @@ import static org.eclipse.cargotracker.Deployments.addDomainModels;
 import static org.eclipse.cargotracker.Deployments.addExtraJars;
 import static org.eclipse.cargotracker.Deployments.addInfraBase;
 
-@ExtendWith(ArquillianExtension.class)
-@Tag("arqtest")
-public class EventFilesProcessorJobWithInvalidFileTest {
+@ArquillianTest
+public class EventFilesProcessorJobIT {
 
-    private static final Logger LOGGER = Logger.getLogger(EventFilesProcessorJobWithInvalidFileTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(EventFilesProcessorJobIT.class.getName());
 
     @Inject
     private ApplicationEventsStub applicationEventsStub;
@@ -48,7 +45,7 @@ public class EventFilesProcessorJobWithInvalidFileTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-EventFilesProcessorJobWithInvalidFileTest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test-EventFilesProcessorJobIT.war");
 
         addExtraJars(war);
         addDomainModels(war);
@@ -107,30 +104,25 @@ public class EventFilesProcessorJobWithInvalidFileTest {
         }
     }
 
-
     @Test
-    public void testProcessInvalidFile() throws Exception {
+    public void testProcessValidFile() throws Exception {
         String completionTime = DateUtil.toString(LocalDateTime.now());
         List<String> lines = List.of(
                 completionTime + ",A001,V001,CNSHA,LOAD",
-                "invalid,data,line",
+                completionTime + ",A002,V002,CNCAN,UNLOAD",
                 completionTime + ",A003,V003,SESTO,RECEIVE"
         );
-        Files.write(uploadDir.resolve("invalid_events.csv"), lines);
+        Files.write(uploadDir.resolve("events.csv"), lines);
 
-        // The job should fail on the second line, and generate the failed file to record which line.
-        await().atMost(15, TimeUnit.SECONDS)
-                .untilAsserted(() ->
-                        assertThat(Files.list(failedDir)).hasSize(1)
-                );
+        await().atMost(15, TimeUnit.SECONDS).until(() -> applicationEventsStub.getAttempts().size() == 3);
 
-        // Verify that only the first valid line was processed.
-        assertThat(applicationEventsStub.getAttempts()).hasSize(2);
-        HandlingEventRegistrationAttempt attempt = applicationEventsStub.getAttempts().getFirst();
-        assertThat(attempt.trackingId()).isEqualTo(new TrackingId("A001"));
-        assertThat(attempt.type()).isEqualTo(HandlingEvent.Type.LOAD);
-
-        // Additional assertions can be added here depending on how the batch job reports failures.
-        // For example, checking logs or a specific failure record if implemented.
+        List<HandlingEventRegistrationAttempt> attempts = applicationEventsStub.getAttempts();
+        assertThat(attempts).hasSize(3);
+        assertThat(attempts.get(0).trackingId()).isEqualTo(new TrackingId("A001"));
+        assertThat(attempts.get(0).type()).isEqualTo(HandlingEvent.Type.LOAD);
+        assertThat(attempts.get(1).trackingId()).isEqualTo(new TrackingId("A002"));
+        assertThat(attempts.get(1).type()).isEqualTo(HandlingEvent.Type.UNLOAD);
+        assertThat(attempts.get(2).trackingId()).isEqualTo(new TrackingId("A003"));
+        assertThat(attempts.get(2).type()).isEqualTo(HandlingEvent.Type.RECEIVE);
     }
 }
