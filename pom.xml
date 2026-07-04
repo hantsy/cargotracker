@@ -47,7 +47,8 @@
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
-        <postgresql.version>42.7.11</postgresql.version>
+        <postgresql.version>42.7.12</postgresql.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
         <omnifaces.version>4.7.10</omnifaces.version>
 
         <!-- Arquillian BOM -->
@@ -61,7 +62,7 @@
         <mockito.version>5.23.0</mockito.version>
         <assertj.version>3.27.7</assertj.version>
         <json-path.version>2.10.0</json-path.version>
-        <jacoco.version>0.8.14</jacoco.version>
+        <jacoco.version>0.8.15</jacoco.version>
         <arquillian-jacoco.version>1.1.0</arquillian-jacoco.version>
         <asm.version>9.10.1</asm.version>
         <awaitility.version>4.3.0</awaitility.version>
@@ -73,7 +74,7 @@
         <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.2</glassfish.version>
+        <glassfish.version>8.0.3</glassfish.version>
         <jersey.version>4.0.2</jersey.version>
         <eclipselink.version>5.0.0</eclipselink.version>
         <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
@@ -81,7 +82,7 @@
         <tyrus.version>2.2.2</tyrus.version>
 
         <!-- Wildfly server -->
-        <wildfly.version>40.0.0.Beta1</wildfly.version>
+        <wildfly.version>40.0.1.Final</wildfly.version>
         <wildfly-maven-plugin.version>6.0.0.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>6.0.0.Alpha1</wildfly-arquillian.version>
 
