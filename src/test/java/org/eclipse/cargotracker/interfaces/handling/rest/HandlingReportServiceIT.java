@@ -94,13 +94,12 @@ public class HandlingReportServiceIT {
 
     @Test
     public void submitReport() throws MalformedURLException {
-        HandlingReport report = new HandlingReport(
-                DateUtil.toString(LocalDateTime.now()),
-                "A001",
-                "LOAD",
-                SampleLocations.HONGKONG.getUnLocode().unlocode(),
-                SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber().number()
-        );
+        HandlingReport report = new HandlingReport();
+        report.setCompletionTime(DateUtil.toString(LocalDateTime.now()));
+        report.setTrackingId("A001");
+        report.setEventType("LOAD");
+        report.setUnLocode(SampleLocations.HONGKONG.getUnLocode().getIdString());
+        report.setVoyageNumber(SampleVoyages.HONGKONG_TO_NEW_YORK.getVoyageNumber().getIdString());
 
         final WebTarget postReportTarget =
                 client.target(URI.create(base + "rest/handling/reports").toURL().toExternalForm());
