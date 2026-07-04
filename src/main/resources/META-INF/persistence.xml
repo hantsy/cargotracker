@@ -28,6 +28,8 @@
             <property name="jakarta.persistence.schema-generation.scripts.drop-target" value="/tmp/drop.ddl" />-->
 
             <!-- for  Glassfish/Payara/EclipseLink -->
+            <!-- Disable weaving for Java record compatibility -->
+            <property name="eclipselink.weaving" value="false"/>
             <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.level" value="FINE"/>
             <property name="eclipselink.logging.parameters" value="true"/>
