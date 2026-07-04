@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -173,7 +174,7 @@ public class DeliveryFactoryTest {
                 )
         );
 
-        assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.ROUTED, false)).isEqualTo(arrivalDate);
+        assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.ROUTED, false)).isEqualTo(arrivalDate.truncatedTo(ChronoUnit.SECONDS));
         assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.MISROUTED, false)).isEqualTo(Delivery.ETA_UNKOWN);
         assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.ROUTED, true)).isEqualTo(Delivery.ETA_UNKOWN);
     }
