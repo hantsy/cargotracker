@@ -79,7 +79,7 @@ public class Cargo implements Serializable {
 
     @Embedded
     @NotNull(message = "Route specification is required")
-    private RouteSpecification routeSpecification = RouteSpecification.EMPTY;
+    private RouteSpecification routeSpecification;
 
     @Embedded
     @NotNull
@@ -103,7 +103,7 @@ public class Cargo implements Serializable {
         // Cargo origin never changes, even if the route specification changes.
         // However, at creation, cargo origin can be derived from the initial
         // route specification.
-        this.origin = routeSpecification.origin();
+        this.origin = routeSpecification.getOrigin();
 
         this.delivery = DeliveryFactory.create(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
         this.itinerary = Itinerary.EMPTY;
