@@ -16,7 +16,6 @@ import org.eclipse.cargotracker.domain.model.location.Location;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 /**
  * A Cargo. This is the central class in the domain model, and it is the root of the
@@ -103,7 +102,7 @@ public class Cargo implements Serializable {
         // Cargo origin never changes, even if the route specification changes.
         // However, at creation, cargo origin can be derived from the initial
         // route specification.
-        this.origin = routeSpecification.getOrigin();
+        this.origin = routeSpecification.origin();
 
         this.delivery = DeliveryFactory.create(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
         this.itinerary = Itinerary.EMPTY;

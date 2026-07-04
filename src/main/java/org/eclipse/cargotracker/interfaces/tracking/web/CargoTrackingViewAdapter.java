@@ -35,19 +35,19 @@ public class CargoTrackingViewAdapter {
     }
 
     public String getOriginName() {
-        return cargo.getRouteSpecification().getOrigin().getName();
+        return cargo.getRouteSpecification().origin().getName();
     }
 
     public String getOriginCode() {
-        return cargo.getRouteSpecification().getOrigin().getUnLocode().unlocode();
+        return cargo.getRouteSpecification().origin().getUnLocode().unlocode();
     }
 
     public String getDestinationName() {
-        return cargo.getRouteSpecification().getDestination().getName();
+        return cargo.getRouteSpecification().destination().getName();
     }
 
     public String getDestinationCode() {
-        return cargo.getRouteSpecification().getDestination().getUnLocode().unlocode();
+        return cargo.getRouteSpecification().destination().getUnLocode().unlocode();
     }
 
     public String getLastKnownLocationName() {
@@ -87,7 +87,7 @@ public class CargoTrackingViewAdapter {
         Delivery delivery = cargo.getDelivery();
 
         return switch (delivery.transportStatus()) {
-            case IN_PORT -> "In port " + cargo.getRouteSpecification().getDestination().getName();
+            case IN_PORT -> "In port " + cargo.getRouteSpecification().destination().getName();
             case ONBOARD_CARRIER -> "Onboard voyage " + delivery.currentVoyage().getVoyageNumber().number();
             case CLAIMED -> "Claimed";
             case NOT_RECEIVED -> "Not received";

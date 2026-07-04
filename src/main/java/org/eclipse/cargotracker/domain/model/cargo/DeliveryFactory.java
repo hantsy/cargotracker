@@ -123,7 +123,7 @@ public final class DeliveryFactory {
         }
 
         if (lastEvent == null) {
-            return HandlingActivity.of(HandlingEvent.Type.RECEIVE, routeSpecification.getOrigin());
+            return HandlingActivity.of(HandlingEvent.Type.RECEIVE, routeSpecification.origin());
         }
 
         return switch (lastEvent.getType()) {
@@ -169,7 +169,7 @@ public final class DeliveryFactory {
     static boolean calculateUnloadedAtDestination(RouteSpecification routeSpecification, HandlingEvent lastEvent) {
         return lastEvent != null
                 && HandlingEvent.Type.UNLOAD == lastEvent.getType()
-                && routeSpecification.getDestination().sameIdentityAs(lastEvent.getLocation());
+                && routeSpecification.destination().sameIdentityAs(lastEvent.getLocation());
     }
 
     static boolean onTrack(RoutingStatus routingStatus, boolean misdirected) {
