@@ -21,11 +21,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -35,12 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.cargotracker.Deployments.addApplicationBase;
-import static org.eclipse.cargotracker.Deployments.addDomainModels;
-import static org.eclipse.cargotracker.Deployments.addDomainRepositories;
-import static org.eclipse.cargotracker.Deployments.addExtraJars;
-import static org.eclipse.cargotracker.Deployments.addInfraBase;
-import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
+import static org.eclipse.cargotracker.Deployments.*;
 
 @ArquillianTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -184,17 +175,15 @@ public class HandlingEventRepositoryIT {
     @Test
     public void testFindEventsForCargo() {
         TrackingId trackingId = new TrackingId("XYZ"); // non-existing cargo
-        List<HandlingEvent> handlingEvents =
-                handlingEventRepository
-                        .lookupHandlingHistoryOfCargo(trackingId)
-                        .getDistinctEventsByCompletionTime();
+        List<HandlingEvent> handlingEvents = handlingEventRepository
+                .lookupHandlingHistoryOfCargo(trackingId)
+                .getDistinctEventsByCompletionTime();
         assertThat(handlingEvents).hasSize(0);
 
         TrackingId existingTrackingId = new TrackingId("MNO456"); // existing cargo
-        List<HandlingEvent> existingHandlingEvents =
-                handlingEventRepository
-                        .lookupHandlingHistoryOfCargo(existingTrackingId)
-                        .getDistinctEventsByCompletionTime();
-        assertThat(existingHandlingEvents).hasSize(0);
+        List<HandlingEvent> existingHandlingEvents = handlingEventRepository
+                .lookupHandlingHistoryOfCargo(existingTrackingId)
+                .getDistinctEventsByCompletionTime();
+        assertThat(existingHandlingEvents).hasSize(5);
     }
 }
