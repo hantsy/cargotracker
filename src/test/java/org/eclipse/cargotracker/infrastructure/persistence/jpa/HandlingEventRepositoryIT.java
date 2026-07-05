@@ -21,7 +21,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -34,7 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.cargotracker.Deployments.*;
 
 @ArquillianTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class HandlingEventRepositoryIT {
     private static final Logger LOGGER =
             Logger.getLogger(HandlingEventRepositoryIT.class.getName());
@@ -173,13 +174,16 @@ public class HandlingEventRepositoryIT {
     //    }
 
     @Test
-    public void testFindEventsForCargo() {
+    public void testFindEventsForNonExistingCargo() {
         TrackingId trackingId = new TrackingId("XYZ"); // non-existing cargo
         List<HandlingEvent> handlingEvents = handlingEventRepository
                 .lookupHandlingHistoryOfCargo(trackingId)
                 .getDistinctEventsByCompletionTime();
         assertThat(handlingEvents).hasSize(0);
+    }
 
+    @Test
+    public void testFindEventsForExistingCargo() {
         TrackingId existingTrackingId = new TrackingId("MNO456"); // existing cargo
         List<HandlingEvent> existingHandlingEvents = handlingEventRepository
                 .lookupHandlingHistoryOfCargo(existingTrackingId)

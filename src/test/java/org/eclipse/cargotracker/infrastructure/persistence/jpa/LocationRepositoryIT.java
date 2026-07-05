@@ -13,9 +13,7 @@ import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -30,7 +28,6 @@ import static org.eclipse.cargotracker.Deployments.addInfraBase;
 import static org.eclipse.cargotracker.Deployments.addInfraPersistence;
 
 @ArquillianTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LocationRepositoryIT {
     private static final Logger LOGGER = Logger.getLogger(LocationRepositoryIT.class.getName());
     @Inject
