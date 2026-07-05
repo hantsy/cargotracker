@@ -93,6 +93,9 @@ public record Delivery(
         Objects.requireNonNull(transportStatus, "Transport status is required");
         Objects.requireNonNull(routingStatus, "Routing status is required");
         Objects.requireNonNull(calculatedAt, "Calculated at is required");
+
+        // try to initialize nextExpectedActivity
+        nextExpectedActivity= Objects.requireNonNullElse(nextExpectedActivity, NO_ACTIVITY);
     }
 
     @Override
