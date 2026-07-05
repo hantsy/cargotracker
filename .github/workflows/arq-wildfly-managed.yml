@@ -16,6 +16,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      MAVEN_OPTS: >-
+        -Dorg.slf4j.simpleLogger.defaultLogLevel=debug
+        -Dorg.slf4j.simpleLogger.log.org.hibernate=debug
+        -Dorg.jboss.logging.provider=slf4j
+        -Dhibernate.show_sql=true
+        -Dhibernate.format_sql=true
 
     steps:
       - uses: actions/checkout@v7
@@ -27,8 +34,10 @@ jobs:
           cache: "maven"
       - name: Set up Database
         run: |
-          docker compose up -d postgres 
-          sleep 5 
+          docker compose down -v || true
+          docker volume prune -f || true
+          docker compose up -d postgres
+          sleep 10
           docker ps -a
       - name: Build with Maven
-        run: mvn clean verify -Parq-wildfly-managed
+        run: mvn -X clean verify -Parq-wildfly-managed
