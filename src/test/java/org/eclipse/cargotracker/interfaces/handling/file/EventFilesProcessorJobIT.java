@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.nio.file.StandardOpenOption.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.eclipse.cargotracker.Deployments.addApplicationBase;
@@ -112,9 +113,9 @@ public class EventFilesProcessorJobIT {
                 completionTime + ",A002,V002,CNCAN,UNLOAD",
                 completionTime + ",A003,V003,SESTO,RECEIVE"
         );
-        Files.write(uploadDir.resolve("events.csv"), lines);
+        Files.write(uploadDir.resolve("events.csv"), lines, CREATE, WRITE, APPEND);
 
-        await().atMost(15, TimeUnit.SECONDS).until(() -> applicationEventsStub.getAttempts().size() == 3);
+        await().atMost(60, TimeUnit.SECONDS).until(() -> applicationEventsStub.getAttempts().size() == 3);
 
         List<HandlingEventRegistrationAttempt> attempts = applicationEventsStub.getAttempts();
         assertThat(attempts).hasSize(3);

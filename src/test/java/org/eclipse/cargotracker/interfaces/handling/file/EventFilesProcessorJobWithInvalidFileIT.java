@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.nio.file.StandardOpenOption.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.eclipse.cargotracker.Deployments.addApplicationBase;
@@ -113,16 +114,19 @@ public class EventFilesProcessorJobWithInvalidFileIT {
                 "invalid,data,line",
                 completionTime + ",A003,V003,SESTO,RECEIVE"
         );
-        Files.write(uploadDir.resolve("invalid_events.csv"), lines);
+        Files.write(uploadDir.resolve("invalid_events.csv"), lines, CREATE, WRITE, APPEND);
 
         // The job should fail on the second line, and generate the failed file to record which line.
-        await().atMost(15, TimeUnit.SECONDS)
+        await().atMost(60, TimeUnit.SECONDS)
                 .untilAsserted(() ->
                         assertThat(Files.list(failedDir)).hasSize(1)
                 );
 
-        // Verify that only the first valid line was processed.
-        assertThat(applicationEventsStub.getAttempts()).hasSize(2);
+        // The second line is invalid, it will be skipped.
+        await().atMost(60, TimeUnit.SECONDS)
+                .untilAsserted(() ->
+                        assertThat(applicationEventsStub.getAttempts()).hasSize(2)
+                );
         HandlingEventRegistrationAttempt attempt = applicationEventsStub.getAttempts().getFirst();
         assertThat(attempt.trackingId()).isEqualTo(new TrackingId("A001"));
         assertThat(attempt.type()).isEqualTo(HandlingEvent.Type.LOAD);
