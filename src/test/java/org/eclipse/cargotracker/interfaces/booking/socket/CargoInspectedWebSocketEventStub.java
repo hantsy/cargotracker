@@ -37,7 +37,7 @@ public class CargoInspectedWebSocketEventStub {
     private void raiseEvent() {
         Cargo cargo = new Cargo(
                 new TrackingId("AAA"),
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HONGKONG,
                         SampleLocations.NEWYORK,
                         LocalDate.now().plusMonths(6)

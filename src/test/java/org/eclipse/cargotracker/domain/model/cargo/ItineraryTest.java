@@ -28,7 +28,7 @@ public class ItineraryTest {
     @Test
     public void testCargoOnTrack() {
         TrackingId trackingId = new TrackingId("CARGO1");
-        RouteSpecification routeSpecification = new RouteSpecification(SampleLocations.SHANGHAI, SampleLocations.GOTHENBURG, LocalDate.now());
+        RouteSpecification routeSpecification = RouteSpecification.of(SampleLocations.SHANGHAI, SampleLocations.GOTHENBURG, LocalDate.now());
         Cargo cargo = new Cargo(trackingId, routeSpecification);
         Itinerary itinerary = new Itinerary(
                 Arrays.asList(

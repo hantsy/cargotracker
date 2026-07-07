@@ -44,7 +44,7 @@ public class CargoInspectedStub {
         cargoEvent.fire(
                 new Cargo(
                         new TrackingId("AAA"),
-                        new RouteSpecification(
+                        RouteSpecification.of(
                                 SampleLocations.HONGKONG,
                                 SampleLocations.NEWYORK,
                                 LocalDate.now().plusMonths(6))));

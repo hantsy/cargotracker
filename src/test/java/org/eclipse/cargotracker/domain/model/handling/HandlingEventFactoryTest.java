@@ -37,7 +37,7 @@ public class HandlingEventFactoryTest {
 
     private final Cargo cargo = new Cargo(
             new TrackingId("ABC"),
-            new RouteSpecification(SampleLocations.HELSINKI, SampleLocations.HONGKONG, LocalDate.now())
+            RouteSpecification.of(SampleLocations.HELSINKI, SampleLocations.HONGKONG, LocalDate.now())
     );
     // declare HandlingEventFactory
     private HandlingEventFactory handlingEventFactory;

@@ -51,7 +51,7 @@ public class ExternalRoutingServiceTest {
     public void testCalculatePossibleRoutes() {
         TrackingId trackingId = new TrackingId("ABC");
         RouteSpecification routeSpecification =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HONGKONG, SampleLocations.HELSINKI, LocalDate.now());
         Cargo cargo = new Cargo(trackingId, routeSpecification);
 

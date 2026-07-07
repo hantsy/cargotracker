@@ -20,10 +20,12 @@ public record RouteSpecification(
 
         @ManyToOne
         @JoinColumn(name = "spec_origin_id")
+        @NotNull
         Location origin,
 
         @ManyToOne
         @JoinColumn(name = "spec_destination_id")
+        @NotNull
         Location destination,
 
         @Column(name = "spec_arrival_deadline")
@@ -34,17 +36,22 @@ public record RouteSpecification(
     private static final long serialVersionUID = 1L;
 
     /**
+     * Creates a new RouteSpecification with validation.
+     *
      * @param origin          origin location - can't be the same as the destination
      * @param destination     destination location - can't be the same as the origin
      * @param arrivalDeadline arrival deadline
+     * @return a new RouteSpecification instance
      */
-    public RouteSpecification {
+    public static RouteSpecification of(Location origin, Location destination, LocalDate arrivalDeadline) {
         Objects.requireNonNull(origin, "Origin is required");
         Objects.requireNonNull(destination, "Destination is required");
         Objects.requireNonNull(arrivalDeadline, "Arrival deadline is required");
         if (origin.equals(destination)) {
             throw new IllegalArgumentException("Origin and destination can't be the same: " + origin);
         }
+
+        return new RouteSpecification(origin, destination, arrivalDeadline);
     }
 
     @Override
