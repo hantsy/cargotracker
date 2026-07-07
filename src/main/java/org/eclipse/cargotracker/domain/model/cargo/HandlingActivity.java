@@ -6,6 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import org.eclipse.cargotracker.domain.model.handling.HandlingEvent;
 import org.eclipse.cargotracker.domain.model.location.Location;
 import org.eclipse.cargotracker.domain.model.voyage.Voyage;
@@ -21,12 +22,12 @@ import java.util.Objects;
 public record HandlingActivity(
         @Enumerated(EnumType.STRING)
         @Column(name = "next_expected_handling_event_type")
-        //@NotNull(message = "Handling event type is required.")
+        @NotNull(message = "Handling event type is required.")
         HandlingEvent.Type type,
 
         @ManyToOne
         @JoinColumn(name = "next_expected_location_id")
-        //@NotNull(message = "Location is required.")
+        @NotNull(message = "Location is required.")
         Location location,
 
         @ManyToOne
