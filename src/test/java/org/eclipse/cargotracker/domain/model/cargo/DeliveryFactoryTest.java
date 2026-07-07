@@ -175,8 +175,8 @@ public class DeliveryFactoryTest {
         );
 
         assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.ROUTED, false)).isEqualTo(arrivalDate.truncatedTo(ChronoUnit.SECONDS));
-        assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.MISROUTED, false)).isEqualTo(Delivery.ETA_UNKOWN);
-        assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.ROUTED, true)).isEqualTo(Delivery.ETA_UNKOWN);
+        assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.MISROUTED, false)).isEqualTo(Delivery.ETA_UNKNOWN);
+        assertThat(DeliveryFactory.calculateEta(itinerary, RoutingStatus.ROUTED, true)).isEqualTo(Delivery.ETA_UNKNOWN);
     }
 
     @Test
