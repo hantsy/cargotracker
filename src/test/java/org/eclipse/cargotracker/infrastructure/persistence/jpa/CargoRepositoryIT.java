@@ -234,7 +234,7 @@ public class CargoRepositoryIT {
             Location origin = locationRepository.find(dallas.getUnLocode());
             Location destination = locationRepository.find(helsinki.getUnLocode());
 
-            Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, LocalDate.now()));
+            Cargo cargo = new Cargo(trackingId, RouteSpecification.of(origin, destination, LocalDate.now()));
             cargoRepository.store(cargo);
             cargo.assignToRoute(
                     new Itinerary(
@@ -279,7 +279,7 @@ public class CargoRepositoryIT {
             Location origin = locationRepository.find(SampleLocations.NEWYORK.getUnLocode());
             Location destination = locationRepository.find(SampleLocations.HELSINKI.getUnLocode());
 
-            cargo.specifyNewRoute(new RouteSpecification(origin, destination, LocalDate.now()));
+            cargo.specifyNewRoute(RouteSpecification.of(origin, destination, LocalDate.now()));
 
             cargoRepository.store(cargo);
             LOGGER.log(Level.INFO, "saved cargo: {0}", cargo.toString(true));

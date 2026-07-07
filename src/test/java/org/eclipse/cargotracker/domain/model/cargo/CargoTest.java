@@ -31,7 +31,7 @@ public class CargoTest {
     public void testConstruction() {
         TrackingId trackingId = new TrackingId("XYZ");
         LocalDate arrivalDeadline = LocalDate.now().minusYears(1).plusMonths(3).plusDays(3);
-        RouteSpecification routeSpecification = new RouteSpecification(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, arrivalDeadline);
+        RouteSpecification routeSpecification = RouteSpecification.of(SampleLocations.STOCKHOLM, SampleLocations.MELBOURNE, arrivalDeadline);
 
         Cargo cargo = new Cargo(trackingId, routeSpecification);
 
@@ -46,7 +46,7 @@ public class CargoTest {
         LocalDate arrivalDeadline = LocalDate.now().plusDays(10);
         Cargo cargo = new Cargo(
                 new TrackingId("XYZ"),
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.STOCKHOLM,
                         SampleLocations.MELBOURNE,
                         arrivalDeadline
@@ -105,7 +105,7 @@ public class CargoTest {
     public void testLastKnownLocationUnknownWhenNoEvents() {
         Cargo cargo = new Cargo(
                 new TrackingId("XYZ"),
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.STOCKHOLM,
                         SampleLocations.MELBOURNE,
                         LocalDate.now()
@@ -215,7 +215,7 @@ public class CargoTest {
     private Cargo populateCargoReceivedStockholm() throws Exception {
         Cargo cargo = new Cargo(
                 new TrackingId("XYZ"),
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.STOCKHOLM,
                         SampleLocations.MELBOURNE,
                         LocalDate.now()
@@ -255,7 +255,7 @@ public class CargoTest {
     private Cargo populateCargoOffHongKong() throws Exception {
         Cargo cargo = new Cargo(
                 new TrackingId("XYZ"),
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.STOCKHOLM,
                         SampleLocations.MELBOURNE,
                         LocalDate.now()
@@ -308,7 +308,7 @@ public class CargoTest {
     private Cargo populateCargoOnHamburg() throws Exception {
         Cargo cargo = new Cargo(
                 new TrackingId("XYZ"),
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.STOCKHOLM,
                         SampleLocations.MELBOURNE,
                         LocalDate.now())
@@ -350,7 +350,7 @@ public class CargoTest {
     private Cargo populateCargoOffMelbourne() throws Exception {
         Cargo cargo = new Cargo(
                 new TrackingId("XYZ"),
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.STOCKHOLM,
                         SampleLocations.MELBOURNE,
                         LocalDate.now())
@@ -423,7 +423,7 @@ public class CargoTest {
         // A cargo with no itinerary is not misdirected
         Cargo cargo = new Cargo(
                 new TrackingId("TRKID"),
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.SHANGHAI,
                         SampleLocations.GOTHENBURG,
                         LocalDate.now()
@@ -611,7 +611,7 @@ public class CargoTest {
     private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
         Cargo cargo = new Cargo(
                 new TrackingId("CARGO1"),
-                new RouteSpecification(origin, destination, LocalDate.now())
+                RouteSpecification.of(origin, destination, LocalDate.now())
         );
 
         Itinerary itinerary = new Itinerary(

@@ -23,7 +23,7 @@ public class CargoTrackingViewAdapterTest {
         Cargo cargo =
                 new Cargo(
                         new TrackingId("XYZ"),
-                        new RouteSpecification(
+                        RouteSpecification.of(
                                 SampleLocations.HANGZOU,
                                 SampleLocations.HELSINKI,
                                 LocalDate.now()));

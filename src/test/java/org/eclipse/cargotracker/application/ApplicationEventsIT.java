@@ -149,7 +149,7 @@ public class ApplicationEventsIT {
         var cargo =
                 new Cargo(
                         trackingId,
-                        new RouteSpecification(
+                        RouteSpecification.of(
                                 SampleLocations.HONGKONG,
                                 SampleLocations.NEWYORK,
                                 LocalDate.now()));
@@ -202,7 +202,7 @@ public class ApplicationEventsIT {
         var cargo =
                 new Cargo(
                         trackingId,
-                        new RouteSpecification(
+                        RouteSpecification.of(
                                 SampleLocations.HONGKONG,
                                 SampleLocations.NEWYORK,
                                 LocalDate.now()));
@@ -221,7 +221,7 @@ public class ApplicationEventsIT {
         var cargo =
                 new Cargo(
                         trackingId,
-                        new RouteSpecification(
+                        RouteSpecification.of(
                                 SampleLocations.HONGKONG,
                                 SampleLocations.NEWYORK,
                                 LocalDate.now()));

@@ -18,7 +18,7 @@ public class HandlingEventTest {
 
     private final TrackingId trackingId = new TrackingId("XYZ");
     private final RouteSpecification routeSpecification =
-            new RouteSpecification(
+            RouteSpecification.of(
                     SampleLocations.HONGKONG, SampleLocations.NEWYORK, LocalDate.now());
     private final Cargo cargo = new Cargo(trackingId, routeSpecification);
 

@@ -405,7 +405,7 @@ public class CargoLifecycleScenarioIT {
         tx.runInTx(() -> {
             Cargo cargo = findCargo();
             RouteSpecification fromTokyo =
-                    new RouteSpecification(
+                    RouteSpecification.of(
                             locationRepository.find(SampleLocations.TOKYO.getUnLocode()),
                             locationRepository.find(SampleLocations.STOCKHOLM.getUnLocode()),
                             arrivalDeadline);

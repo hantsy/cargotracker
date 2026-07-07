@@ -118,7 +118,7 @@ public class SampleDataGenerator {
         TrackingId trackingId1 = new TrackingId("ABC123");
 
         RouteSpecification routeSpecification1 =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HONGKONG,
                         SampleLocations.HELSINKI,
                         LocalDate.now().plusDays(15));
@@ -193,7 +193,7 @@ public class SampleDataGenerator {
         TrackingId trackingId2 = new TrackingId("JKL567");
 
         RouteSpecification routeSpecification2 =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HANGZOU,
                         SampleLocations.STOCKHOLM,
                         LocalDate.now().plusDays(18));
@@ -279,7 +279,7 @@ public class SampleDataGenerator {
         TrackingId trackingId3 = new TrackingId("DEF789");
 
         RouteSpecification routeSpecification3 =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HONGKONG,
                         SampleLocations.MELBOURNE,
                         LocalDate.now().plusMonths(2));
@@ -290,7 +290,7 @@ public class SampleDataGenerator {
         // Cargo definition MNO456. This one will be claimed properly.
         TrackingId trackingId4 = new TrackingId("MNO456");
         RouteSpecification routeSpecification4 =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.NEWYORK,
                         SampleLocations.DALLAS,
                         LocalDate.now().minusDays(24));

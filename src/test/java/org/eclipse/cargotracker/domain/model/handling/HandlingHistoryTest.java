@@ -21,7 +21,7 @@ public class HandlingHistoryTest {
 
     Cargo cargo = new Cargo(
             new TrackingId("ABC"),
-            new RouteSpecification(
+            RouteSpecification.of(
                     SampleLocations.SHANGHAI,
                     SampleLocations.DALLAS,
                     LocalDate.now().minusYears(1).plusMonths(4).plusDays(1)));

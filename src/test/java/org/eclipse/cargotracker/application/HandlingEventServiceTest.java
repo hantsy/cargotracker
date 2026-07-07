@@ -34,7 +34,7 @@ public class HandlingEventServiceTest {
     private final Cargo cargo =
             new Cargo(
                     new TrackingId("ABC"),
-                    new RouteSpecification(
+                    RouteSpecification.of(
                             SampleLocations.HAMBURG, SampleLocations.TOKYO, LocalDate.now()));
     private DefaultHandlingEventService service;
 
