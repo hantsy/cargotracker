@@ -1,66 +1,76 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Cargo Tracker — Handling History Timeline
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 ul.timeline {
     list-style-type: none;
     position: relative;
+    padding-left: 0;
 }
+
+/* vertical line — clipped to the span of circles only */
 ul.timeline:before {
-    content: ' ';
-    background: #d4d9df;
+    content: '';
+    background: #dee2e6;
     display: inline-block;
     position: absolute;
-    left: 29px;
+    left: 14px;
+    top: 14px;
+    bottom: 14px;
     width: 2px;
-    height: 100%;
     z-index: 400;
+    border-radius: 1px;
 }
+
 ul.timeline > li {
-    margin: 20px 0;
-    padding-left: 20px;
+    margin: 0 0 28px;
+    padding-left: 42px;
+    position: relative;
+    line-height: 1.5;
 }
+
+ul.timeline > li:last-child {
+    margin-bottom: 0;
+}
+
+/* circles */
 ul.timeline > li:before {
-    content: ' ';
-    background: white;
+    content: '';
+    background: #fff;
     display: inline-block;
     position: absolute;
     border-radius: 50%;
-    border: 3px solid #22c0e8;
-    left: 20px;
-    width: 20px;
-    height: 20px;
-    z-index: 400;
+    border: 3px solid #0dcaf0;
+    left: 2px;
+    top: 2px;
+    width: 24px;
+    height: 24px;
+    z-index: 401;
+    transition: all 0.25s ease;
 }
 
-.timeline > li > .timeline-badge {
-    color: #fff;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.4em;
-    text-align: center;
-    position: absolute;
-    top: 16px;
-    left: 50%;
-    margin-left: -25px;
-    background-color: #999999;
-    z-index: 100;
-    border-radius: 50%;
+ul.timeline > li:hover:before {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 6px rgba(13, 110, 253, 0.1);
 }
 
-.timeline-badge.primary {
-    background-color: #2e6da4 !important;
+/* current status — highlighted with pulse */
+ul.timeline > li:first-child:before {
+    border-color: #198754;
+    border-width: 4px;
+    width: 26px;
+    height: 26px;
+    left: 1px;
+    top: 1px;
+    animation: timeline-pulse 2.5s ease-in-out infinite;
 }
 
-.timeline-badge.success {
-    background-color: #3f903f !important;
+@keyframes timeline-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.18); }
+    50%      { box-shadow: 0 0 0 12px rgba(25, 135, 84, 0.04); }
 }
 
-.timeline-badge.warning {
-    background-color: #f0ad4e !important;
-}
-
-.timeline-badge.danger {
-    background-color: #d9534f !important;
-}
-
-.timeline-badge.info {
-    background-color: #5bc0de !important;
+/* last (oldest) entry — muted */
+ul.timeline > li:last-child:before {
+    border-color: #adb5bd;
 }

@@ -11,82 +11,133 @@
     </ui:define>
     <ui:define name="body">
 
-        <h:form prependId="false" id="trackingForm"
-                styleClass="row row-cols-lg-auto g-3 justify-content-center align-items-center">
-            <div class="col-12">
-                <label class="visually-hidden" for="trackingIdInput">Enter your tracking ID:</label>
-                <input type="text" jsf:id="trackingIdInput"
-                       class="form-control"
-                       jsf:value="#{track.trackingId}"
-                       jsf:required="true"
-                       placeholder="Enter Tracking ID, eg.XYZ789"/>
-            </div>
-            <div class="col-12">
-                <button class="btn btn-primary"
-                        jsf:action="#{track.onTrackById()}">
-                    Track!
-                </button>
-            </div>
-        </h:form>
+        <div class="page-header text-center">
+            <h1 class="display-5">Track Your Cargo</h1>
+            <p class="subtitle">Enter a tracking ID to see the current status and full handling history</p>
+        </div>
 
-        <ui:fragment rendered="#{not empty track.cargo}">
-            <div class="row g-3 my-5 me-3">
-                <div class="col-12 col-md-6 d-flex flex-column">
-                    <div>
-                        <p>
-                            Cargo <strong>#{track.cargo.trackingId}</strong> is
-                            currently <strong>#{track.cargo.statusText}</strong>
-                        </p>
-
-                        <p>
-                            Estimated time of arrival in <strong>#{track.cargo.destinationName}</strong>:
-                            #{track.cargo.eta}
-                        </p>
-                        <ui:fragment
-                                rendered="#{not empty track.cargo.nextExpectedActivity}">
-                            <p>#{track.cargo.nextExpectedActivity}</p>
-                        </ui:fragment>
-
-                        <ui:fragment rendered="#{track.cargo.misdirected}">
-                            <p class="text-danger">
-                                <i class="bi bi-x-circle text-danger"></i>
-                                Cargo is misdirected.
-                            </p>
-                        </ui:fragment>
+        <!-- Tracking form card -->
+        <div class="card form-card">
+            <div class="card-body p-4">
+                <h:form prependId="false" id="trackingForm"
+                        styleClass="row g-3 justify-content-center align-items-end">
+                    <div class="col-12 col-md-7">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                            <input type="text" jsf:id="trackingIdInput"
+                                   class="form-control"
+                                   jsf:value="#{track.trackingId}"
+                                   jsf:required="true"
+                                   placeholder="Input Tracking ID, eg. ABC123"/>
+                        </div>
                     </div>
-                    <div class="mt-5">
-                        <h2 class="fs-2">Handling History </h2>
+                    <div class="col-12 col-md-auto">
+                        <button class="btn btn-primary btn-lg px-4"
+                                jsf:action="#{track.onTrackById()}">
+                            <i class="bi bi-search me-1"></i> Track
+                        </button>
+                    </div>
+                </h:form>
+            </div>
+        </div>
 
+        <!-- Results -->
+        <ui:fragment rendered="#{not empty track.cargo}">
+            <div class="tracking-result">
+                <div class="row g-4">
+                    <!-- Cargo status card -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="fw-bold mb-0">
+                                    <i class="bi bi-box-seam me-2 text-primary"></i>
+                                    Cargo <span class="text-secondary">#{track.cargo.trackingId}</span>
+                                </h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-3">
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">Status</div>
+                                    <span class="status-badge status-in-port">
+                                        #{track.cargo.statusText}
+                                    </span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">Destination</div>
+                                    <div class="fw-bold">
+                                        <i class="bi bi-geo-alt me-1 text-muted"></i>
+                                        #{track.cargo.destinationName}
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">ETA</div>
+                                    <div class="fw-bold">
+                                        <i class="bi bi-clock me-1 text-muted"></i>
+                                        #{track.cargo.eta}
+                                    </div>
+                                </div>
+
+                                <ui:fragment rendered="#{not empty track.cargo.nextExpectedActivity}">
+                                    <div class="alert alert-info mt-3 mb-0">
+                                        <i class="bi bi-arrow-right-circle me-1"></i>
+                                        #{track.cargo.nextExpectedActivity}
+                                    </div>
+                                </ui:fragment>
+
+                                <ui:fragment rendered="#{track.cargo.misdirected}">
+                                    <div class="alert alert-danger mt-3 mb-0">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        Cargo is misdirected
+                                    </div>
+                                </ui:fragment>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map card -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card h-100 overflow-hidden">
+                            <iframe class="mapFrame w-100 h-100 border-0"
+                                    src="#{request.contextPath}/public/mapFrame.xhtml?statusCode=#{track.cargo.statusCode}&amp;lastKnownLocationCode=#{track.cargo.lastKnownLocationCode}&amp;lastKnownLocationName=#{track.cargo.lastKnownLocationName}&amp;originCode=#{track.cargo.originCode}&amp;originName=#{track.cargo.originName}&amp;destinationCode=#{track.cargo.destinationCode}&amp;destinationName=#{track.cargo.destinationName}"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Handling History card -->
+                <div class="card timeline-card mt-4">
+                    <div class="card-header">
+                        <i class="bi bi-list-ul me-2"></i> Handling History
+                    </div>
+                    <div class="card-body p-4">
                         <ui:fragment rendered="#{empty track.cargo.events}">
-                            <p class="py-5">
-                                There are no events recorded for the tracking ID #{track.cargo.trackingId}."
+                            <p class="text-muted text-center py-4 mb-0">
+                                <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                                No events recorded for tracking ID #{track.cargo.trackingId}
                             </p>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{not empty track.cargo.events}">
-                            <ul class="py-5 timeline">
+                            <ul class="timeline mb-0">
                                 <ui:repeat value="#{track.cargo.events}" var="leg">
                                     <ui:fragment rendered="#{leg.expected}">
-                                        <li>
-                                            <i class="bi bi-check-circle text-success me-1"></i>
-                                            #{leg.description}, at #{leg.time}
+                                        <li class="pb-3">
+                                            <i class="bi bi-check-circle text-success me-1 fs-5"></i>
+                                            <span>#{leg.description}</span>
+                                            <small class="text-muted d-block ms-4">#{leg.time}</small>
                                         </li>
-
                                     </ui:fragment>
                                     <ui:fragment rendered="#{!leg.expected}">
-                                        <li>
-                                            <i class="bi bi-x-circle text-danger me-1"></i>
-                                            #{leg.description}, at #{leg.time}
+                                        <li class="pb-3">
+                                            <i class="bi bi-x-circle text-danger me-1 fs-5"></i>
+                                            <span>#{leg.description}</span>
+                                            <small class="text-muted d-block ms-4">#{leg.time}</small>
                                         </li>
                                     </ui:fragment>
                                 </ui:repeat>
                             </ul>
                         </ui:fragment>
                     </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <iframe class="mapFrame" width="100%" height="960" frameBorder="0"
-                            src="#{request.contextPath}/public/mapFrame.xhtml?statusCode=#{track.cargo.statusCode}&amp;lastKnownLocationCode=#{track.cargo.lastKnownLocationCode}&amp;lastKnownLocationName=#{track.cargo.lastKnownLocationName}&amp;originCode=#{track.cargo.originCode}&amp;originName=#{track.cargo.originName}&amp;destinationCode=#{track.cargo.destinationCode}&amp;destinationName=#{track.cargo.destinationName}"/>
                 </div>
             </div>
         </ui:fragment>

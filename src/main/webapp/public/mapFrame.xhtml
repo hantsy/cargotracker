@@ -5,11 +5,18 @@
     <title>Cargo Live Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <link rel="stylesheet" href="#{resource['/css/dd.css']}"/>
-
+    <!-- Bootstrap 5.3.8 CSS -->
     <link rel="stylesheet"
-          href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"/>
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous"/>
 
+    <!-- Bootstrap Icons 1.13.1 -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+          crossorigin="anonymous"/>
+
+    <!-- Leaflet -->
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -18,122 +25,113 @@
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""/>
 
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #f5f6f8;
+            font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .map-wrapper {
+            padding: 8px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        #map {
+            height: 100%;
+            min-height: 500px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+        }
+
+        .legend span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+    </style>
+
     <script type="text/javascript">
         //<![CDATA[
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
             var results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(
-                /\+/g, ' '));
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         };
-        //]]>
-    </script>
-    <script type="text/javascript">
-        // TODO See if there is a service to get the latitude/longitude
-        // data from.
+
+        // Location data
         const latitude = {
-            "XXXXX": 38.4667,
-            "CNHKG": 22,
-            "AUMEL": -38,
-            "SESTO": 59,
-            "FIHEL": 60,
-            "USCHI": 42,
-            "JNTKO": 36,
-            "DEHAM": 54,
-            "CNSHA": 31,
-            "NLRTM": 52,
-            "SEGOT": 58,
-            "CNHGH": 30,
-            "USNYC": 41,
-            "USDAL": 33
+            "XXXXX": 38.4667, "CNHKG": 22, "AUMEL": -38, "SESTO": 59,
+            "FIHEL": 60, "USCHI": 42, "JNTKO": 36, "DEHAM": 54,
+            "CNSHA": 31, "NLRTM": 52, "SEGOT": 58, "CNHGH": 30,
+            "USNYC": 41, "USDAL": 33
         };
 
         const longitude = {
-            "XXXXX": -28.4,
-            "CNHKG": 114,
-            "AUMEL": 145,
-            "SESTO": 18,
-            "FIHEL": 25,
-            "USCHI": -88,
-            "JNTKO": 140,
-            "DEHAM": 10,
-            "CNSHA": 121,
-            "NLRTM": 5,
-            "SEGOT": 12,
-            "CNHGH": 120,
-            "USNYC": -74,
-            "USDAL": -97
+            "XXXXX": -28.4, "CNHKG": 114, "AUMEL": 145, "SESTO": 18,
+            "FIHEL": 25, "USCHI": -88, "JNTKO": 140, "DEHAM": 10,
+            "CNSHA": 121, "NLRTM": 5, "SEGOT": 12, "CNHGH": 120,
+            "USNYC": -74, "USDAL": -97
         };
 
-        //  load the icons for the map
-        const greenIcon = new L.Icon(
-            {
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-        const greyIcon = new L.Icon(
-            {
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-        const redIcon = new L.Icon(
-            {
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-        const blackIcon = new L.Icon(
-            {
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-        const goldIcon = new L.Icon(
-            {
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
+        // Marker icons
+        const greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+        const greyIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+        const redIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+        const blackIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+        const goldIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
 
         const colorCodes = {
-            "NOT_ROUTED": greyIcon,
-            "NOT_RECEIVED": goldIcon,
-            "IN_PORT": greenIcon,
-            "ONBOARD_CARRIER": greenIcon,
-            "MISDIRECTED": redIcon,
-            "AT_DESTINATION": blackIcon,
-            "CLAIMED": blackIcon,
-            "UNKNOWN": redIcon
+            "NOT_ROUTED": greyIcon, "NOT_RECEIVED": goldIcon,
+            "IN_PORT": greenIcon, "ONBOARD_CARRIER": greenIcon,
+            "MISDIRECTED": redIcon, "AT_DESTINATION": blackIcon,
+            "CLAIMED": blackIcon, "UNKNOWN": redIcon
         };
+        //]]>
     </script>
 </head>
-<body style="background-color: white">
-<div>
-    <div id="map"
-         style="height: 600px; border: #FFF; border-style: solid; border-width: 8px;">
-    </div>
+<body>
+<div class="map-wrapper">
+    <div id="map"></div>
 </div>
 
 <script type="text/javascript">
@@ -148,63 +146,48 @@
 
         const originCoordinate = {
             position: {
-                lon: longitude[originCode]
-                    + (Math.floor((Math.random() * 3) - 3)),
-                lat: latitude[originCode]
-                    + (Math.floor((Math.random() * 3) - 3))
+                lon: longitude[originCode] + (Math.floor((Math.random() * 3) - 3)),
+                lat: latitude[originCode] + (Math.floor((Math.random() * 3) - 3))
             },
             style: blackIcon
         };
 
         const destinationCoordinate = {
             position: {
-                lon: longitude[destinationCode]
-                    + (Math.floor((Math.random() * 3) - 3)),
-                lat: latitude[destinationCode]
-                    + (Math.floor((Math.random() * 3) - 3))
+                lon: longitude[destinationCode] + (Math.floor((Math.random() * 3) - 3)),
+                lat: latitude[destinationCode] + (Math.floor((Math.random() * 3) - 3))
             },
             style: blackIcon
         };
 
         const lastKnownCoordinate = {
             position: {
-                lon: longitude[lastKnownLocationCode]
-                    + (Math.floor((Math.random() * 3) - 3)),
-                lat: latitude[lastKnownLocationCode]
-                    + (Math.floor((Math.random() * 3) - 3))
+                lon: longitude[lastKnownLocationCode] + (Math.floor((Math.random() * 3) - 3)),
+                lat: latitude[lastKnownLocationCode] + (Math.floor((Math.random() * 3) - 3))
             },
             style: colorCodes[statusCode]
         };
 
-        const map = L.map('map').setView({
-            lon: 0,
-            lat: 0
-        }, 2);
+        const map = L.map('map').setView({lon: 0, lat: 0}, 2);
 
-        // add the OpenStreetMap tiles
-        L
-            .tileLayer(
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                {
-                    maxZoom: 19,
-                    attribution: '&#xA9;; &lt;a href="https://openstreetmap.org/copyright">OpenStreetMap contributors&lt;/a>'
-                }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&#xA9;; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+        }).addTo(map);
 
-        // show the scale bar on the lower left corner
         L.control.scale().addTo(map);
 
-        L.marker(originCoordinate['position'], {
-            icon: originCoordinate.style
-        }).bindTooltip('Origin: ' + originName).addTo(map);
+        L.marker(originCoordinate['position'], {icon: originCoordinate.style})
+            .bindTooltip('Origin: ' + originName).addTo(map);
 
-        L.marker(destinationCoordinate['position'], {
-            icon: destinationCoordinate.style
-        }).bindTooltip('Destination: ' + destinationName).addTo(map);
+        L.marker(destinationCoordinate['position'], {icon: destinationCoordinate.style})
+            .bindTooltip('Destination: ' + destinationName).addTo(map);
 
-        L.marker(lastKnownCoordinate['position'], {
-            icon: lastKnownCoordinate.style
-        }).bindTooltip('Last known location: ' + lastKnownLocationName)
-            .addTo(map);
+        L.marker(lastKnownCoordinate['position'], {icon: lastKnownCoordinate.style})
+            .bindTooltip('Last known location: ' + lastKnownLocationName).addTo(map);
+
+        // Invalidate map size after parent layout settles
+        setTimeout(function() { map.invalidateSize(); }, 200);
     }
 </script>
 </body>

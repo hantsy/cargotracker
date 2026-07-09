@@ -110,7 +110,7 @@ public class CargoTrackingViewAdapter {
         }
     }
 
-    public String getNextExpectedActivityText() {
+    public String getNextExpectedActivity() {
         HandlingActivity activity = cargo.getDelivery().nextExpectedActivity();
 
         if ((activity == null) || (activity.isEmpty())) {

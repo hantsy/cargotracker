@@ -1,30 +1,282 @@
-/* Variables */
+/* ═══════════════════════════════════════════════════════════════════════════
+   Cargo Tracker — Application Styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
-    --secondary-text-color: #f5f5f5;
+    --ct-primary: #0d6efd;
+    --ct-accent: #0dcaf0;
+    --ct-success: #198754;
+    --ct-warning: #ffc107;
+    --ct-danger: #dc3545;
+    --ct-dark: #212529;
+    --ct-light: #f8f9fa;
+    --ct-muted: #6c757d;
 
+    --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --card-radius: 12px;
 
-    --primary-color: #FFA500;
-    --primary-color-darker: #d48900;
-    --primary-color-lighten: #f5ecda;
-
-    --secondary-color: #262626;
-
-    --background-panel-main-color: #262626;
+    --transition-base: 0.2s ease;
 }
 
-logo {
-    display: inline;
-    width: 40px;
-    height: 40px;
-    padding: 2px;
-    border-radius: 20px;
-}
-
+/* ── Base ──────────────────────────────────────────────────── */
 body {
-    height: 100vh;
-    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5f6f8;
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ct-dark);
 }
 
-.full-page {
-    height: 100vh;
+/* ── Navbar ────────────────────────────────────────────────── */
+.navbar {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+.navbar-brand img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.navbar .about-link {
+    font-size: 1.25rem;
+    color: var(--ct-muted);
+    transition: color var(--transition-base);
+    padding: 0.25rem 0.5rem;
+    text-decoration: none;
+}
+
+.navbar .about-link:hover {
+    color: var(--ct-accent);
+}
+
+/* ── Main content area ─────────────────────────────────────── */
+main.container {
+    flex: 1;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+/* ── Page header ───────────────────────────────────────────── */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ct-dark);
+}
+
+.page-header .subtitle {
+    color: var(--ct-muted);
+    font-weight: 400;
+    font-size: 1.05rem;
+}
+
+/* ── Cards ─────────────────────────────────────────────────── */
+.card {
+    border: none;
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    transition: box-shadow var(--transition-base);
+}
+
+.card:hover {
+    box-shadow: var(--card-shadow-hover);
+}
+
+.card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    font-weight: 700;
+    padding: 1rem 1.25rem;
+}
+
+/* ── Table cards ───────────────────────────────────────────── */
+.table-card {
+    margin-bottom: 2rem;
+}
+
+.table-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-card .table {
+    margin-bottom: 0;
+}
+
+.table-card .table > :not(caption) > * > * {
+    padding: 0.75rem 1.25rem;
+}
+
+/* ── Tracking result ───────────────────────────────────────── */
+.tracking-result {
+    margin-top: 2rem;
+}
+
+.tracking-result .status-badge {
+    display: inline-block;
+    padding: 0.35em 0.85em;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.status-in-port { background: #d1fae5; color: #065f46; }
+.status-onboard { background: #dbeafe; color: #1e40af; }
+.status-not-received { background: #fef3c7; color: #92400e; }
+.status-claimed { background: #e0e7ff; color: #3730a3; }
+.status-unknown { background: #f3f4f6; color: #374151; }
+
+/* ── Timeline ──────────────────────────────────────────────── */
+.timeline-card {
+    margin-top: 1.5rem;
+}
+
+/* ── Form cards ────────────────────────────────────────────── */
+.form-card {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.form-card .form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ct-dark);
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all var(--transition-base);
+}
+
+.btn-primary {
+    background: var(--ct-primary);
+    border-color: var(--ct-primary);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+#footer {
+    background: var(--ct-dark);
+    color: rgba(255, 255, 255, 0.65);
+    padding: 1rem 0;
+    margin-top: auto;
+}
+
+#footer a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color var(--transition-base);
+}
+
+#footer a:hover {
+    color: var(--ct-accent);
+}
+
+/* ── Map iframe ────────────────────────────────────────────── */
+.mapFrame {
+    display: block;
+    border: none;
+    min-height: 400px;
+}
+
+/* ── Event logger form ─────────────────────────────────────── */
+.event-logger-form .form-select,
+.event-logger-form .form-control {
+    border-radius: 8px;
+}
+
+/* ── Dashboard stats row ───────────────────────────────────── */
+.stats-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 160px;
+    background: #fff;
+    border-radius: var(--card-radius);
+    padding: 1.25rem;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+}
+
+.stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--ct-primary);
+}
+
+.stat-card .stat-label {
+    font-size: 0.85rem;
+    color: var(--ct-muted);
+    margin-top: 0.25rem;
+}
+
+/* ── About page ────────────────────────────────────────────── */
+.about-section {
+    max-width: 800px;
+}
+
+.about-section .feature-list {
+    list-style: none;
+    padding: 0;
+}
+
+.about-section .feature-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.about-section .feature-list li:last-child {
+    border-bottom: none;
+}
+
+.about-section .feature-list li .bi {
+    color: var(--ct-accent);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* ── Public header ─────────────────────────────────────────── */
+.public-header {
+    background: #fff;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    padding: 0.5rem 0;
+}
+
+.public-header .brand-text {
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--ct-dark);
+    letter-spacing: -0.02em;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    main.container {
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.5rem;
+    }
 }
