@@ -14,57 +14,71 @@
     <ui:define name="title">Cargo Registration</ui:define>
     <ui:define name="subtitle">Book a new Cargo</ui:define>
     <ui:define name="content">
-        <h:form id="registrationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
 
-            <div class="col-12 col-md-6">
-                <label for="origin" class="form-label">Choose the origin of the new cargo</label>
-                <h:selectOneMenu id="origin"
-                                 styleClass="form-select #{not empty facesContext.getMessageList('origin')?'is-invalid':''}"
-                                 value="#{booking.originUnlocode}"
-                                 required="true"
-                                 requiredMessage="Origin is required.">
-                    <f:selectItems value="#{booking.locations}" var="location"
-                                   itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
-                </h:selectOneMenu>
-                <small class="invalid-feedback">
-                    <h:message for="origin" showDetail="false" showSummary="true"/>
-                </small>
-            </div>
+        <div class="card form-card">
+            <div class="card-body p-4">
+                <h:form id="registrationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
 
-            <div class="col-12 col-md-6">
-                <label for="destination" class="form-label">Choose the destination of the new cargo</label>
-                <h:selectOneMenu id="destination"
-                                 styleClass="form-select #{not empty facesContext.getMessageList('destination')?'is-invalid':''}"
-                                 value="#{booking.destinationUnlocode}"
-                                 required="true"
-                                 requiredMessage="Destination is required.">
-                    <f:selectItems value="#{booking.locations}" var="location"
-                                   itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
-                </h:selectOneMenu>
-                <small class="invalid-feedback">
-                    <h:message for="destination" showDetail="false" showSummary="true"/>
-                </small>
-            </div>
+                    <div class="col-12 col-md-6">
+                        <label for="origin" class="form-label fw-semibold">
+                            <i class="bi bi-geo-alt me-1"></i> Origin
+                        </label>
+                        <h:selectOneMenu id="origin"
+                                         styleClass="form-select #{not empty facesContext.getMessageList('origin')?'is-invalid':''}"
+                                         value="#{booking.originUnlocode}"
+                                         required="true"
+                                         requiredMessage="Origin is required.">
+                            <f:selectItems value="#{booking.locations}" var="location"
+                                           itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
+                        </h:selectOneMenu>
+                        <small class="invalid-feedback">
+                            <h:message for="origin" showDetail="false" showSummary="true"/>
+                        </small>
+                    </div>
 
-            <div class="col-12 col-md-6">
-                <label for="deadline" class="form-label">Set the arrival deadline for this new cargo </label>
-                <h:inputText id="deadline"
-                             p:type="date"
-                             p:min="#{booking.today}"
-                             styleClass="form-control #{not empty facesContext.getMessageList('deadline')?'is-invalid':''}"
-                             value="#{booking.arrivalDeadline}"
-                             required="true"
-                             requiredMessage="ArrivalDeadline is required.">
-                    <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
-                </h:inputText>
-                <small class="invalid-feedback">
-                    <h:message for="deadline" showDetail="false" showSummary="true"/>
-                </small>
+                    <div class="col-12 col-md-6">
+                        <label for="destination" class="form-label fw-semibold">
+                            <i class="bi bi-geo-alt-fill me-1"></i> Destination
+                        </label>
+                        <h:selectOneMenu id="destination"
+                                         styleClass="form-select #{not empty facesContext.getMessageList('destination')?'is-invalid':''}"
+                                         value="#{booking.destinationUnlocode}"
+                                         required="true"
+                                         requiredMessage="Destination is required.">
+                            <f:selectItems value="#{booking.locations}" var="location"
+                                           itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
+                        </h:selectOneMenu>
+                        <small class="invalid-feedback">
+                            <h:message for="destination" showDetail="false" showSummary="true"/>
+                        </small>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="deadline" class="form-label fw-semibold">
+                            <i class="bi bi-calendar me-1"></i> Arrival Deadline
+                        </label>
+                        <input type="date"
+                               jsf:id="deadline"
+                               min="#{booking.today}"
+                               class="form-control #{not empty facesContext.getMessageList('deadline')?'is-invalid':''}"
+                               jsf:value="#{booking.arrivalDeadline}"
+                               jsf:required="true"
+                               jsf:requiredMessage="ArrivalDeadline is required.">
+                            <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
+                        </input>
+                        <small class="invalid-feedback">
+                            <h:message for="deadline" showDetail="false" showSummary="true"/>
+                        </small>
+                    </div>
+                    <div class="d-flex gap-3 col-12 mt-3">
+                        <h:link styleClass="btn btn-outline-secondary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
+                        <button class="btn btn-primary px-4" jsf:action="#{booking.submit()}">
+                            <i class="bi bi-arrow-right me-1"></i> Submit
+                        </button>
+                    </div>
+                </h:form>
             </div>
-            <div class="d-grid gap-3 col-12 d-md-flex justfiy-content-md-start">
-                <h:link styleClass="btn btn-outline-primary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
-                <button class="btn btn-primary" jsf:action="#{booking.submit()}">Submit</button>
-            </div>
-        </h:form>
+        </div>
+
     </ui:define>
 </ui:composition>

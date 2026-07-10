@@ -15,31 +15,47 @@
     <ui:define name="title">Change Destination</ui:define>
     <ui:define name="subtitle">Change Destination for Cargo #{changeDestination.cargo.trackingId}</ui:define>
     <ui:define name="content">
-        <h:form id="changeDestinationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
-            <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
-            <div class="col-12 col-md-6">#{changeDestination.cargo.originName}
+
+        <div class="card form-card">
+            <div class="card-body p-4">
+                <h:form id="changeDestinationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
+                    <div class="col-12">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="text-muted small text-uppercase fw-semibold mb-1">Origin</div>
+                                <div class="fw-bold">#{changeDestination.cargo.origin.name}</div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="text-muted small text-uppercase fw-semibold mb-1">Current Destination</div>
+                                <div class="fw-bold">#{changeDestination.cargo.finalDestination.name}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="destination" class="form-label fw-semibold">New Destination</label>
+                        <h:selectOneMenu id="destination"
+                                         styleClass="form-select form-select-lg #{not empty facesContext.getMessageList('destination')?'is-invalid':''}"
+                                         value="#{changeDestination.destinationUnlocode}"
+                                         required="true"
+                                         requiredMessage="Destination is required.">
+                            <f:selectItems value="#{changeDestination.potentialDestinations}"
+                                           var="location" itemLabel="#{location.nameAndCode}"
+                                           itemValue="#{location.code}"/>
+                        </h:selectOneMenu>
+                        <small class="invalid-feedback">
+                            <h:message for="destination" showDetail="false" showSummary="true"/>
+                        </small>
+                    </div>
+                    <div class="d-flex gap-3 col-12 mt-3">
+                        <h:link styleClass="btn btn-outline-secondary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
+                        <button class="btn btn-primary px-4" jsf:action="#{changeDestination.changeDestination()}">
+                            <i class="bi bi-check-lg me-1"></i> Update
+                        </button>
+                    </div>
+                </h:form>
             </div>
-            <div class="col-12 col-md-4 fw-bolder float-right">Current Destination</div>
-            <div class="col-12 col-md-6">#{changeDestination.cargo.finalDestinationName}</div>
-            <div class="col-12 col-md-4 fw-bolder float-right">New Destination</div>
-            <div class="col-12 col-md-6">
-                <h:selectOneMenu id="destination"
-                                 styleClass="form-select #{not empty facesContext.getMessageList('destination')?'is-invalid':''}"
-                                 value="#{changeDestination.destinationUnlocode}"
-                                 required="true"
-                                 requiredMessage="Destination is required.">
-                    <f:selectItems value="#{changeDestination.potentialDestinations}"
-                                   var="location" itemLabel="#{location.nameAndCode}"
-                                   itemValue="#{location.code}"/>
-                </h:selectOneMenu>
-                <small class="invalid-feedback">
-                    <h:message for="destination" showDetail="false" showSummary="true"/>
-                </small>
-            </div>
-            <div class="d-grid gap-3 col-12 d-md-flex justfiy-content-md-start">
-                <h:link styleClass="btn btn-outline-primary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
-                <button class="btn btn-primary" jsf:action="#{changeDestination.changeDestination()}">Update</button>
-            </div>
-        </h:form>
+        </div>
+
     </ui:define>
 </ui:composition>

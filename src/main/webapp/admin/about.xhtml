@@ -3,24 +3,51 @@
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="title">About</ui:define>
+    <ui:define name="subtitle">Administration Interface Features</ui:define>
     <ui:define name="content">
 
-        <div class="my-4">
-            <h3>This interface includes several features for Cargo Administrators:</h3>
-            <ul>
-                <li>View the current status of all registered cargo.</li>
-                <li>View details for cargo such as origin, destination, deadline and itinerary.</li>
-                <li>Change cargo destination/deadline.</li>
-                <li>Book new cargo.</li>
-                <li>Assign route to cargo.</li>
-                <li>Track cargo via the internal tracking interface.</li>
-                <li>View a live map that continuously monitors all cargo in real time.</li>
-            </ul>
-            <p>
-                Visit <a
-                    href="https://eclipse-ee4j.github.io/cargotracker/">https://eclipse-ee4j.github.io/cargotracker/</a>
-                for more information about Cargo Tracker.
-            </p>
+        <div class="card about-section mx-auto">
+            <div class="card-body p-5">
+
+                <ul class="feature-list mb-4">
+                    <li>
+                        <i class="bi bi-speedometer2"></i>
+                        <span><strong>Dashboard</strong> — View the current status of all registered cargo at a glance.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-info-circle"></i>
+                        <span><strong>Cargo Details</strong> — See origin, destination, deadline, and full itinerary for any cargo.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-pencil"></i>
+                        <span><strong>Modify Cargo</strong> — Change destination or arrival deadline when plans shift.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-plus-circle"></i>
+                        <span><strong>Book Cargo</strong> — Register new cargo with origin, destination, and deadline.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-signpost"></i>
+                        <span><strong>Route Assignment</strong> — Assign optimal itineraries to unrouted cargo.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-search"></i>
+                        <span><strong>Internal Tracking</strong> — Track cargo via the administration tracking interface.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-map"></i>
+                        <span><strong>Live Map</strong> — Monitor all cargo in real time with continuous updates.</span>
+                    </li>
+                </ul>
+
+                <p class="mb-0">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>
+                    Visit
+                    <a href="https://eclipse-ee4j.github.io/cargotracker/"
+                       target="_blank" rel="noopener">eclipse-ee4j.github.io/cargotracker</a>
+                    for more information about Cargo Tracker.
+                </p>
+            </div>
         </div>
 
     </ui:define>

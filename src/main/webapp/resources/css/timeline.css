@@ -1,66 +1,140 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Cargo Tracker — Handling History Timeline
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 ul.timeline {
     list-style-type: none;
     position: relative;
+    padding-left: 0;
 }
+
+/* vertical line — clipped to the span of circles only */
 ul.timeline:before {
-    content: ' ';
-    background: #d4d9df;
+    content: '';
+    background: #dee2e6;
     display: inline-block;
     position: absolute;
-    left: 29px;
+    left: 14px;
+    top: 14px;
+    bottom: 14px;
     width: 2px;
-    height: 100%;
     z-index: 400;
+    border-radius: 1px;
 }
+
 ul.timeline > li {
-    margin: 20px 0;
-    padding-left: 20px;
+    margin: 0 0 28px;
+    padding-left: 42px;
+    position: relative;
+    line-height: 1.5;
 }
+
+ul.timeline > li:last-child {
+    margin-bottom: 0;
+}
+
+/* circles */
 ul.timeline > li:before {
-    content: ' ';
-    background: white;
+    content: '';
+    background: #fff;
     display: inline-block;
     position: absolute;
     border-radius: 50%;
-    border: 3px solid #22c0e8;
-    left: 20px;
-    width: 20px;
-    height: 20px;
-    z-index: 400;
-}
-
-.timeline > li > .timeline-badge {
-    color: #fff;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.4em;
+    border: 3px solid #0dcaf0;
+    left: 2px;
+    top: 2px;
+    width: 24px;
+    height: 24px;
+    z-index: 401;
+    transition: all 0.25s ease;
+    font-family: sans-serif;
+    font-weight: bold;
     text-align: center;
+    line-height: 18px;
+    color: #fff;
+}
+
+ul.timeline > li:hover:before {
+    box-shadow: 0 0 0 6px rgba(13, 110, 253, 0.1);
+}
+
+/* ── expected (correct handling) — white circle, green border + green checkmark ── */
+ul.timeline > li.expected:before {
+    content: '\2713';
+    background: #fff;
+    border-color: #198754;
+    color: #198754;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+ul.timeline > li.expected:hover:before {
+    border-color: #157347;
+    color: #157347;
+    box-shadow: 0 0 0 6px rgba(25, 135, 84, 0.12);
+}
+
+/* ── unexpected (misdirected) — white circle, red border + red cross ── */
+ul.timeline > li.unexpected:before {
+    content: '\2715';
+    background: #fff;
+    border-color: #dc3545;
+    color: #dc3545;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+ul.timeline > li.unexpected:hover:before {
+    border-color: #bb2d3b;
+    color: #bb2d3b;
+    box-shadow: 0 0 0 6px rgba(220, 53, 69, 0.12);
+}
+
+/* ── misdirected event text — red warning to match the circle ── */
+ul.timeline > li.unexpected span {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+/* current status (first event) — highlighted with pulse, color from the class */
+ul.timeline > li:first-child:before {
+    border-width: 4px;
+    width: 26px;
+    height: 26px;
+    left: 1px;
+    top: 1px;
+    line-height: 18px;
+    animation: timeline-pulse 2.5s ease-in-out infinite;
+}
+
+ul.timeline > li.expected:first-child:before {
+    border-color: #198754;
+}
+
+ul.timeline > li.unexpected:first-child:before {
+    border-color: #dc3545;
+    animation-name: timeline-pulse-red;
+}
+
+@keyframes timeline-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.18); }
+    50%      { box-shadow: 0 0 0 12px rgba(25, 135, 84, 0.04); }
+}
+
+@keyframes timeline-pulse-red {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.18); }
+    50%      { box-shadow: 0 0 0 12px rgba(220, 53, 69, 0.04); }
+}
+
+/* remove the vertical line below the last circle */
+ul.timeline > li:last-child:after {
+    content: '';
+    background: #fff;
+    display: block;
     position: absolute;
-    top: 16px;
-    left: 50%;
-    margin-left: -25px;
-    background-color: #999999;
-    z-index: 100;
-    border-radius: 50%;
-}
-
-.timeline-badge.primary {
-    background-color: #2e6da4 !important;
-}
-
-.timeline-badge.success {
-    background-color: #3f903f !important;
-}
-
-.timeline-badge.warning {
-    background-color: #f0ad4e !important;
-}
-
-.timeline-badge.danger {
-    background-color: #d9534f !important;
-}
-
-.timeline-badge.info {
-    background-color: #5bc0de !important;
+    left: 13px;
+    top: 28px;
+    width: 4px;
+    height: 42px;
+    z-index: 410;
 }

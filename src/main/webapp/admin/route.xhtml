@@ -1,4 +1,5 @@
 <ui:composition
+        xmlns:jsf="jakarta.faces"
         xmlns:h="jakarta.faces.html"
         xmlns:f="jakarta.faces.core"
         xmlns:ui="jakarta.faces.facelets"
@@ -15,82 +16,90 @@
     <ui:define name="title">Route Cargo</ui:define>
     <ui:define name="subtitle">Set Route for Cargo #{cargoDetails.cargo.trackingId}</ui:define>
     <ui:define name="content">
-        <div class="row mb-5 g-3">
-            <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
-            <div class="col-12 col-md-6">#{cargoDetails.cargo.origin.name} <span
-                    class="text-secondary">#{cargoDetails.cargo.origin.code}</span></div>
-            <div class="col-12 col-md-4 fw-bolder float-right">Destination</div>
-            <div class="col-12 col-md-6">#{cargoDetails.cargo.finalDestination.name} <span
-                    class="text-secondary">#{cargoDetails.cargo.finalDestination.code}</span></div>
-            <div class="col-12 col-md-4 fw-bolder float-right">Arrival deadline</div>
-            <div class="col-12 col-md-6">#{cargoDetails.cargo.arrivalDeadline}</div>
-            <div class="col-12 col-md-4 fw-bolder float-right">Potential routes</div>
-            <div class="col-12 col-md-6">#{itinerarySelection.routeCandidates.size()}</div>
+
+        <!-- Cargo summary card -->
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="text-muted small text-uppercase fw-semibold mb-1">Origin</div>
+                        <div class="fw-bold">#{cargoDetails.cargo.origin.name}</div>
+                        <span class="text-muted small">#{cargoDetails.cargo.origin.code}</span>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-muted small text-uppercase fw-semibold mb-1">Destination</div>
+                        <div class="fw-bold">#{cargoDetails.cargo.finalDestination.name}</div>
+                        <span class="text-muted small">#{cargoDetails.cargo.finalDestination.code}</span>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-muted small text-uppercase fw-semibold mb-1">Deadline</div>
+                        <div class="fw-bold">#{cargoDetails.cargo.arrivalDeadline}</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-muted small text-uppercase fw-semibold mb-1">Routes Found</div>
+                        <div class="fw-bold fs-4 text-primary">#{itinerarySelection.routeCandidates.size()}</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <ui:fragment rendered="#{empty itinerarySelection.routeCandidates}">
-            <p>
-                <i class="bi bi-exclamation-triangle" style="color: #9b2332"/> No
-                routes found that satisfy the route specification. Try setting an
-                arrival deadline further into the future.
-            </p>
+            <div class="alert alert-warning d-flex align-items-center gap-2">
+                <i class="bi bi-exclamation-triangle fs-5"></i>
+                <span>No routes found that satisfy the route specification. Try setting an arrival deadline further into the future.</span>
+            </div>
         </ui:fragment>
-
 
         <ui:fragment rendered="#{not empty itinerarySelection.routeCandidates}">
             <h:form>
                 <ui:repeat value="#{itinerarySelection.routeCandidates}"
                            var="itinerary" varStatus="itineraryStatus">
 
-                    <div class="row row-cols-lg-auto mb-2 g-3 justify-content-start align-items-center">
-                        <div class="col-12 col-md-4 fs-3 fw-bolder">
-                            Route option ##{itineraryStatus.index + 1}
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="fw-bold fs-5">Route Option ##{itineraryStatus.index + 1}</span>
+                            <button class="btn btn-primary btn-sm px-4"
+                                    jsf:action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}">
+                                <i class="bi bi-check-lg me-1"></i> Select
+                            </button>
                         </div>
-                        <div class="col-12 col-md-6 mx-auto">
-                            <h:commandLink
-                                    action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}"
-                                    styleClass="btn btn-primary float-right">
-                                Select
-                            </h:commandLink>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Voyage</th>
+                                    <th>Load Port</th>
+                                    <th>Time</th>
+                                    <th>Unload Port</th>
+                                    <th>Time</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <ui:repeat var="leg" value="#{itinerary.legs}">
+                                    <tr>
+                                        <td><span class="fw-semibold">#{leg.voyageNumber}</span></td>
+                                        <td>
+                                            #{leg.from.name}
+                                            <small class="text-muted d-block">#{leg.from.code}</small>
+                                            <ui:fragment rendered="#{cargoDetails.cargo.origin.name.startsWith(leg.from.name)}">
+                                                <i class="bi bi-arrow-right-square text-primary"></i>
+                                            </ui:fragment>
+                                        </td>
+                                        <td>#{leg.loadTime}</td>
+                                        <td>
+                                            <ui:fragment rendered="#{cargoDetails.cargo.finalDestination.name.startsWith(leg.to.name)}">
+                                                <i class="bi bi-arrow-right-square text-success"></i>
+                                            </ui:fragment>
+                                            #{leg.to.name}
+                                            <small class="text-muted d-block">#{leg.to.code}</small>
+                                        </td>
+                                        <td>#{leg.unloadTime}</td>
+                                    </tr>
+                                </ui:repeat>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <table class="mb-5 table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Voyage</th>
-                            <th>Load</th>
-                            <th>Time</th>
-                            <th>UnLoad</th>
-                            <th>Time</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <ui:repeat var="leg" value="#{itinerary.legs}">
-                            <tr>
-                                <td>#{leg.voyageNumber}</td>
-                                <td>#{leg.from.name}
-                                    <br/>
-                                    <span class="text-secondary">#{leg.from.code}</span>
-                                    <ui:fragment
-                                            rendered="#{cargoDetails.cargo.origin.name.startsWith(leg.from.name)}">
-                                        <i class="bi bi-arrow-right-square"/>
-                                    </ui:fragment>
-                                </td>
-                                <td>#{leg.loadTime}</td>
-                                <td>
-                                    <ui:fragment
-                                            rendered="#{cargoDetails.cargo.finalDestination.name.startsWith(leg.to.name)}">
-                                        <i class="bi bi-arrow-right-square"/>
-                                    </ui:fragment>
-                                    #{leg.toName}
-                                    <br/>
-                                    <span class="text-secondary">#{leg.to.code}</span>
-                                </td>
-                                <td>#{leg.unloadTime}</td>
-                            </tr>
-                        </ui:repeat>
-                        </tbody>
-                    </table>
                 </ui:repeat>
             </h:form>
         </ui:fragment>

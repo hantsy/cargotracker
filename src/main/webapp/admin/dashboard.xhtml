@@ -6,16 +6,10 @@
     <ui:define name="title">Cargo Dashboard</ui:define>
 
     <ui:define name="content">
-        <div class="my-5">
-            <h:form class="row col-12 g-3" id="mainDash">
-                <ui:include src="/admin/tables/list_routed.xhtml"/>
-                <br/>
-                <br/>
-                <ui:include src="/admin/tables/list_not_routed.xhtml"/>
-                <br/>
-                <br/>
-                <ui:include src="/admin/tables/list_claimed.xhtml"/>
-            </h:form>
-        </div>
+        <h:form id="mainDash">
+            <ui:include src="/admin/tables/list_routed.xhtml"/>
+            <ui:include src="/admin/tables/list_not_routed.xhtml"/>
+            <ui:include src="/admin/tables/list_claimed.xhtml"/>
+        </h:form>
     </ui:define>
 </ui:composition>

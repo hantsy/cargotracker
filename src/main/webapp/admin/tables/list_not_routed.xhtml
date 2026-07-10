@@ -2,59 +2,65 @@
                 xmlns:f="jakarta.faces.core"
                 xmlns:h="jakarta.faces.html"
                 xmlns="http://www.w3.org/1999/xhtml">
-    <h2 class="fs-2 fw-bold">Not Routed Cargo</h2>
-    <ui:fragment rendered="#{empty listCargo.notRoutedCargos}">
-        <p> No NotRouted Cargos.</p>
-    </ui:fragment>
+    <div class="table-card card">
+        <div class="card-header">
+            <h2 class="fs-5 fw-bold mb-0">
+                <i class="bi bi-exclamation-circle text-warning me-2"></i>Not Routed Cargo
+            </h2>
+        </div>
+        <ui:fragment rendered="#{empty listCargo.notRoutedCargos}">
+            <div class="card-body">
+                <p class="text-muted mb-0">No unrouted cargos.</p>
+            </div>
+        </ui:fragment>
 
-    <ui:fragment rendered="#{not empty listCargo.notRoutedCargos}">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">Tracking ID</th>
-                <th scope="col">Origin</th>
-                <th scope="col">Destination</th>
-                <th scope="col">Deadline</th>
-            </tr>
-            </thead>
-            <tbody>
-            <ui:repeat var="cargo" value="#{listCargo.notRoutedCargos}">
-                <tr>
-                    <td>
-                        <h:link value="#{cargo.trackingId}"
-                                outcome="route.xhtml?faces-redirect=true"
-                                styleClass="text-decoration-none">
-                            <f:param name="trackingId" value="#{cargo.trackingId}"/>
-                            <i class="bi bi-info-circle" style="color:#999999;"></i>
-                        </h:link>
-                    </td>
-                    <td>
-                        <h:outputText value="#{cargo.origin.name}  "/>
-                        <br/>
-                        <h:outputText value="#{cargo.origin.code}"
-                                      style="color: #999999;font-size:.8em;"/>
-                    </td>
-                    <td>
-                        <h:outputText value="#{cargo.finalDestination.name}"/>
-                        <br/>
-                        <h:outputText value="#{cargo.finalDestination.code}"
-                                      style="color: #999999;font-size:.8em;"/>
-                        <h:link outcome="/admin/changeDestination.xhtml?faces-redirect=true"
-                                styleClass="text-decoration-none">
-                            <f:param name="trackingId" value="#{cargo.trackingId}"/>
-                            <i class="bi bi-pencil-square" style="color:#999999;"></i>
-                        </h:link>
-                    </td>
-                    <td>#{cargo.arrivalDeadline}
-                        <h:link outcome="/admin/changeArrivalDeadline.xhtml?faces-redirect=true"
-                                styleClass="text-decoration-none">
-                            <f:param name="trackingId" value="#{cargo.trackingId}"/>
-                            <i class="bi bi-pencil-square" style="color:#999999;"></i>
-                        </h:link>
-                    </td>
-                </tr>
-            </ui:repeat>
-            </tbody>
-        </table>
-    </ui:fragment>
+        <ui:fragment rendered="#{not empty listCargo.notRoutedCargos}">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col">Tracking ID</th>
+                        <th scope="col">Origin</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Deadline</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <ui:repeat var="cargo" value="#{listCargo.notRoutedCargos}">
+                        <tr>
+                            <td>
+                                <h:link value="#{cargo.trackingId}"
+                                        outcome="route.xhtml?faces-redirect=true"
+                                        styleClass="fw-semibold text-decoration-none">
+                                    <f:param name="trackingId" value="#{cargo.trackingId}"/>
+                                </h:link>
+                            </td>
+                            <td>
+                                <div class="fw-semibold">#{cargo.origin.name}</div>
+                                <small class="text-muted">#{cargo.origin.code}</small>
+                            </td>
+                            <td>
+                                <div class="fw-semibold">#{cargo.finalDestination.name}</div>
+                                <small class="text-muted">#{cargo.finalDestination.code}</small>
+                                <h:link outcome="/admin/changeDestination.xhtml?faces-redirect=true"
+                                        styleClass="text-decoration-none ms-1" title="Edit destination">
+                                    <f:param name="trackingId" value="#{cargo.trackingId}"/>
+                                    <i class="bi bi-pencil-square text-muted"></i>
+                                </h:link>
+                            </td>
+                            <td>
+                                #{cargo.arrivalDeadline}
+                                <h:link outcome="/admin/changeArrivalDeadline.xhtml?faces-redirect=true"
+                                        styleClass="text-decoration-none ms-1" title="Edit deadline">
+                                    <f:param name="trackingId" value="#{cargo.trackingId}"/>
+                                    <i class="bi bi-pencil-square text-muted"></i>
+                                </h:link>
+                            </td>
+                        </tr>
+                    </ui:repeat>
+                    </tbody>
+                </table>
+            </div>
+        </ui:fragment>
+    </div>
 </ui:composition>

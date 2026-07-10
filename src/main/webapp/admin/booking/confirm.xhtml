@@ -8,25 +8,50 @@
     <ui:define name="title">Cargo Registration</ui:define>
     <ui:define name="subtitle">Confirm new Cargo Registration Information</ui:define>
     <ui:define name="content">
-        <h:form id="confirmForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
-            <div class="col-12 col-md-4 fw-bolder float-right">Origin</div>
-            <div class="col-12 col-md-6">#{booking.originName} <span
-                    class="text-secondary">#{booking.originUnlocode}</span>
+
+        <div class="card form-card">
+            <div class="card-body p-4">
+                <h:form id="confirmForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
+                    <div class="col-12">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="text-muted small text-uppercase fw-semibold mb-1">Origin</div>
+                                <div class="fw-bold">#{booking.originName}</div>
+                                <span class="text-muted small">#{booking.originUnlocode}</span>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="text-muted small text-uppercase fw-semibold mb-1">Destination</div>
+                                <div class="fw-bold">#{booking.destinationName}</div>
+                                <span class="text-muted small">#{booking.destinationUnlocode}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="text-muted small text-uppercase fw-semibold mb-1">Arrival Deadline</div>
+                                <div class="fw-bold">#{booking.arrivalDeadline}</div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="text-muted small text-uppercase fw-semibold mb-1">Journey Duration</div>
+                                <div class="fw-bold text-primary fs-5">#{booking.duration} days</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 col-12 mt-3">
+                        <h:link styleClass="btn btn-outline-secondary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
+                        <button class="btn btn-outline-primary" jsf:action="#{booking.back()}" jsf:immediate="true">
+                            <i class="bi bi-arrow-left me-1"></i> Back
+                        </button>
+                        <button class="btn btn-primary px-4" jsf:action="#{booking.register()}">
+                            <i class="bi bi-check-lg me-1"></i> Confirm
+                        </button>
+                    </div>
+                </h:form>
             </div>
-            <div class="col-12 col-md-4 fw-bolder float-right">Destination</div>
-            <div class="col-12 col-md-6">#{booking.destinationName} <span
-                    class="text-secondary">#{booking.originUnlocode}</span>
-            </div>
-            <div class="col-12 col-md-4 fw-bolder float-right">Arrival deadline</div>
-            <div class="col-12 col-md-6">#{booking.arrivalDeadline}
-                <span class="text-secondary">Journey duration is #{booking.duration} days.</span>
-            </div>
-            <div class="d-grid gap-3 col-12 d-md-flex justfiy-content-md-start">
-                <h:link styleClass="btn btn-outline-primary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
-                <button class="btn btn-outline-primary" jsf:action="#{booking.back()}" jsf:immediate="true"> Back
-                </button>
-                <button class="btn btn-primary" jsf:action="#{booking.register()}">Confirm</button>
-            </div>
-        </h:form>
+        </div>
+
     </ui:define>
 </ui:composition>

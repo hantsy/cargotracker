@@ -1,64 +1,797 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Cargo Tracker</title>
+    <title>Cargo Tracker — Applied Domain-Driven Design Blueprints for Jakarta EE</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <!-- Bootstrap 5.3.8 CSS -->
     <link crossorigin="anonymous"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
-          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
           rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
+    <!-- Bootstrap Icons 1.13.1 -->
+    <link crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
           rel="stylesheet">
-    <link
-            href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic"
-            rel="stylesheet" type="text/css"/>
+
     <style>
+        :root {
+            --dot-inactive: rgba(255, 255, 255, 0.35);
+            --dot-active: #0dcaf0;
+            --dot-border: rgba(255, 255, 255, 0.55);
+            --section-overlay: rgba(0, 0, 0, 0.75);
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --card-hover-bg: rgba(255, 255, 255, 0.11);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y proximity;
+        }
+
         body {
-            background-image: url("./resources/images/cargoTug.jpg");
-            background-size: cover;
-            text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+            font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a1a;
+            color: #fff;
+            overflow-x: hidden;
         }
 
-        .cover-container {
-            max-width: 100%;
+        /* ── Dot Navigation ─────────────────────────────────── */
+        .dot-nav {
+            position: fixed;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1050;
         }
 
-        @media (width: 768px) {
-            .cover-container {
-                max-width: 70%;
+        .dot-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 28px;
+        }
+
+        /* vertical line behind the dots */
+        .dot-nav ul::before {
+            content: '';
+            position: absolute;
+            right: 7px;
+            top: 4px;
+            bottom: 4px;
+            width: 1.5px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 1px;
+        }
+
+        .dot-nav .dot {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: 32px;
+            height: 16px;
+            position: relative;
+            text-decoration: none;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .dot-nav .dot::before {
+            content: '';
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            border: 2px solid var(--dot-border);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute;
+            right: 2px;
+        }
+
+        .dot-nav .dot.active::before {
+            background: var(--dot-active);
+            border-color: var(--dot-active);
+            box-shadow: 0 0 12px rgba(13, 202, 240, 0.55);
+            width: 14px;
+            height: 14px;
+            right: 0.5px;
+        }
+
+        .dot-nav .dot:hover::before {
+            background: var(--dot-active);
+            border-color: var(--dot-active);
+            box-shadow: 0 0 10px rgba(13, 202, 240, 0.35);
+        }
+
+        .dot-nav .dot span {
+            opacity: 0;
+            transform: translateX(16px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            margin-right: 24px;
+            white-space: nowrap;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 5px 14px;
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        .dot-nav .dot:hover span,
+        .dot-nav .dot.active span {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* ── Scroll Sections ──────────────────────────────── */
+        .scroll-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            scroll-snap-align: start;
+            padding: 80px 24px;
+        }
+
+        .section-content {
+            max-width: 960px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Section 1: Introduction ──────────────────────── */
+        #intro {
+            background: linear-gradient(var(--section-overlay), rgba(0, 0, 0, 0.82)),
+            url('./resources/images/cargoTug.jpg') center/cover no-repeat fixed;
+        }
+
+        #intro .logo-img {
+            width: 128px;
+            height: auto;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+            transition: transform 0.4s ease;
+        }
+
+        #intro .logo-img:hover {
+            transform: scale(1.08);
+        }
+
+        #intro .display-1 {
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        #intro .lead {
+            font-weight: 300;
+            font-size: 1.35rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        #intro .feature-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 2rem;
+        }
+
+        #intro .badge-pill {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 8px 18px;
+            border-radius: 24px;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        #intro .badge-pill:hover {
+            background: rgba(13, 202, 240, 0.15);
+            border-color: var(--dot-active);
+            color: #fff;
+        }
+
+        /* scroll-down indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            animation: float 2.5s ease-in-out infinite;
+        }
+
+        .scroll-indicator .bi {
+            font-size: 1.4rem;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+
+        /* ── Section 2: Actions ───────────────────────────── */
+        #actions {
+            background: linear-gradient(170deg, #111128 0%, #16213e 50%, #0f3460 100%);
+        }
+
+        #actions .section-title,
+        #clients .section-title {
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.75rem;
+        }
+
+        #actions .section-subtitle,
+        #clients .section-subtitle {
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.65);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-top: 1rem;
+        }
+
+        .action-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 40px 28px 32px;
+            text-align: center;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-card:hover {
+            background: var(--card-hover-bg);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .action-card .card-icon {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            font-size: 1.8rem;
+            background: rgba(13, 202, 240, 0.12);
+            color: var(--dot-active);
+            transition: all 0.35s ease;
+        }
+
+        .action-card:hover .card-icon {
+            background: rgba(13, 202, 240, 0.22);
+            box-shadow: 0 0 24px rgba(13, 202, 240, 0.2);
+        }
+
+        .action-card h3 {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .action-card p {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            flex: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-card .btn {
+            border-radius: 24px;
+            padding: 10px 28px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+        }
+
+        /* ── Section 3: Client Apps ───────────────────────── */
+        #clients {
+            background: linear-gradient(170deg, #0a2a2a 0%, #0d2137 50%, #111128 100%);
+        }
+
+        .client-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-top: 1rem;
+        }
+
+        .client-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 36px 24px 28px;
+            text-align: center;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(6px);
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .client-card:hover {
+            background: var(--card-hover-bg);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+            color: #fff;
+        }
+
+        .client-card .client-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            font-size: 1.7rem;
+            background: rgba(32, 201, 151, 0.12);
+            color: #20c997;
+            transition: all 0.35s ease;
+        }
+
+        .client-card:hover .client-icon {
+            background: rgba(32, 201, 151, 0.22);
+            box-shadow: 0 0 24px rgba(32, 201, 151, 0.2);
+        }
+
+        .client-card h3 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .client-card .tech-stack {
+            color: #20c997;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .client-card p {
+            color: rgba(255, 255, 255, 0.55);
+            font-weight: 300;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            flex: 1;
+            margin-bottom: 1.25rem;
+        }
+
+        .client-card .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .client-card:hover .github-link {
+            color: #20c997;
+        }
+
+        /* ── Footer ────────────────────────────────────────── */
+        .site-footer {
+            background: #060612;
+            padding: 20px 24px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .site-footer p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        .site-footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .site-footer a:hover {
+            color: var(--dot-active);
+        }
+
+        /* ── Responsive ────────────────────────────────────── */
+        @media (max-width: 991.98px) {
+            .action-cards,
+            .client-cards {
+                grid-template-columns: 1fr;
+                max-width: 480px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .dot-nav {
+                right: 16px;
+            }
+
+            .dot-nav .dot span {
+                display: none;
+            }
+
+            #intro .display-1 {
+                font-size: 2.6rem;
+            }
+
+            #intro .lead {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .dot-nav {
+                right: 10px;
+            }
+
+            .dot-nav .dot {
+                width: 24px;
+                height: 12px;
+            }
+
+            .dot-nav .dot::before {
+                width: 9px;
+                height: 9px;
+            }
+
+            .dot-nav .dot.active::before {
+                width: 12px;
+                height: 12px;
+            }
+
+            .dot-nav ul {
+                gap: 22px;
+            }
+
+            .dot-nav ul::before {
+                right: 5px;
+            }
+
+            .scroll-section {
+                padding: 60px 16px;
+            }
+
+            #intro .display-1 {
+                font-size: 2rem;
+            }
+
+            #intro .lead {
+                font-size: 1rem;
+            }
+
+            .action-card,
+            .client-card {
+                padding: 28px 20px 24px;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .section-content {
+                max-width: 1100px;
             }
         }
     </style>
 </head>
 
-<body class="d-flex flex-column vh-100 text-white bg-image shadow-2-strong">
-<main class=" mask flex-fill cover-container d-flex flex-column justify-content-center align-items-center"
-      style="background-color: rgba(0, 0, 0, 0.8);">
-    <h1 class="my-5 display-1 fw-bolder">Cargo Tracker</h1>
-    <a class="mb-2" href="https://github.com/eclipse-ee4j/cargotracker/">
-        <img class="img-fluid mx-auto d-block" src="resources/images/CTlogobadge128.png"/>
-    </a>
-    <h2 class="mb-5 fs-2">Applied Domain Driven Design blueprints for Jakarta EE</h2>
-    <div class="d-grid gap-3 d-md-flex justify-content-center align-items-center">
-        <a class="btn btn-outline-light btn-lg" href="public/track.xhtml">Public Tracking Interface</a>
-        <a class="btn btn-outline-light btn-lg" href="admin/dashboard.xhtml">Administration Interface</a>
-        <a class="btn btn-outline-light btn-lg"
-           href="javascript:void(0)"
-           onClick="window.open('event-logger/index.xhtml', 'EventLogger', 'width=360,height=720')">Mobile
-            Event Logger</a>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  Dot Navigation                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<nav class="dot-nav" aria-label="Section navigation">
+    <ul>
+        <li><a href="#intro" class="dot active" data-target="intro"><span>Introduction</span></a></li>
+        <li><a href="#actions" class="dot" data-target="actions"><span>Get Started</span></a></li>
+        <li><a href="#clients" class="dot" data-target="clients"><span>Client Apps</span></a></li>
+    </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  Section 1 — Introduction                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="intro" class="scroll-section">
+    <div class="section-content">
+        <a href="https://github.com/eclipse-ee4j/cargotracker/" target="_blank" rel="noopener">
+            <img class="logo-img" src="resources/images/CTlogobadge128.png"
+                 alt="Cargo Tracker logo"/>
+        </a>
+        <h1 class="display-1 mb-3">Cargo Tracker</h1>
+        <p class="lead mb-4">
+            Applied Domain-Driven Design Blueprints for Jakarta&nbsp;EE
+        </p>
+        <p class="lead mb-3" style="font-size:1.05rem;">
+            Based on the sample application from Eric Evans'
+            <em>Domain-Driven Design</em> book, Cargo Tracker demonstrates
+            how to apply DDD principles — entities, value objects, aggregates,
+            repositories, domain services, and domain events — in a modern
+            Jakarta EE context.
+        </p>
+        <div class="feature-badges">
+            <span class="badge-pill">Jakarta EE 11</span>
+            <span class="badge-pill">Domain-Driven Design</span>
+            <span class="badge-pill">Clean Architecture</span>
+            <span class="badge-pill">PostgreSQL</span>
+            <span class="badge-pill">WildFly</span>
+            <span class="badge-pill">GlassFish</span>
+            <span class="badge-pill">Arquillian</span>
+        </div>
     </div>
-</main>
-<footer class="py-2 text-center bg-secondary text-white-50">
-    <p>A fork of <a class="text-white" href="https://github.com/eclipse-ee4j/cargotracker/">Eclipse CargoTracker</a>, by
-        <a
-                class="text-white" href="https://twitter.com/hantsy">@hantsy</a>.</p>
+
+    <div class="scroll-indicator">
+        <span>Scroll</span>
+        <i class="bi bi-chevron-down"></i>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  Section 2 — Get Started                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="actions" class="scroll-section">
+    <div class="section-content">
+        <h2 class="section-title display-5">Explore the Application</h2>
+        <p class="section-subtitle">
+            Three interfaces to interact with the cargo tracking system
+        </p>
+
+        <div class="action-cards">
+            <!-- Public Tracking -->
+            <div class="action-card">
+                <div class="card-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h3>Public Tracking</h3>
+                <p>
+                    Track any cargo in real time using its tracking ID.
+                    View the full itinerary, handling history, and current
+                    transport status — no login required.
+                </p>
+                <a class="btn btn-outline-info" href="public/track.xhtml">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Track Cargo
+                </a>
+            </div>
+
+            <!-- Administration -->
+            <div class="action-card">
+                <div class="card-icon">
+                    <i class="bi bi-speedometer2"></i>
+                </div>
+                <h3>Administration</h3>
+                <p>
+                    Manage the entire cargo lifecycle. Register new cargo,
+                    book routes and voyages, assign handling events, and
+                    view the full cargo manifest.
+                </p>
+                <a class="btn btn-outline-info" href="admin/dashboard.xhtml">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Open Dashboard
+                </a>
+            </div>
+
+            <!-- Mobile Event Logger -->
+            <div class="action-card">
+                <div class="card-icon">
+                    <i class="bi bi-phone"></i>
+                </div>
+                <h3>Mobile Event Logger</h3>
+                <p>
+                    Log handling events on the go. Designed for port
+                    workers and customs agents to record loading, unloading,
+                    and customs clearance events from any device.
+                </p>
+                <a class="btn btn-outline-info"
+                   href="javascript:void(0)"
+                   onClick="window.open('event-logger/index.xhtml','EventLogger','width=360,height=720')">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Open Logger
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  Section 3 — Client Applications                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="clients" class="scroll-section">
+    <div class="section-content">
+        <h2 class="section-title display-5">Client Applications</h2>
+        <p class="section-subtitle">
+            Companion apps that connect to the Cargo Tracker REST API,
+            ported from the original DDDSample regapp to modern stacks
+        </p>
+
+        <div class="client-cards">
+            <!-- JavaFX -->
+            <a class="client-card"
+               href="https://github.com/hantsy/cargotracker-regapp-javafx"
+               target="_blank" rel="noopener">
+                <div class="client-icon">
+                    <i class="bi bi-window-desktop"></i>
+                </div>
+                <h3>JavaFX Client</h3>
+                <div class="tech-stack">CDI / Weld + JavaFX</div>
+                <p>
+                    A rich desktop client built with JavaFX and CDI/Weld.
+                    Provides a full-featured registration interface for
+                    managing cargo bookings and tracking operations.
+                </p>
+                <span class="github-link">
+                    <i class="bi bi-github"></i> View on GitHub
+                </span>
+            </a>
+
+            <!-- Quarkus JavaFX -->
+            <a class="client-card"
+               href="https://github.com/hantsy/cargotracker-regapp-quarkus-javafx"
+               target="_blank" rel="noopener">
+                <div class="client-icon">
+                    <i class="bi bi-cpu"></i>
+                </div>
+                <h3>Quarkus JavaFX Client</h3>
+                <div class="tech-stack">Quarkus + JavaFX</div>
+                <p>
+                    The same registration app rebuilt on Quarkus with the
+                    Quarkus-FX extension. Enjoy fast startup times and
+                    native-image compilation for desktop deployments.
+                </p>
+                <span class="github-link">
+                    <i class="bi bi-github"></i> View on GitHub
+                </span>
+            </a>
+
+            <!-- Kotlin Multiplatform -->
+            <a class="client-card"
+               href="https://github.com/hantsy/cargotracker-regapp-kotlin-multiplatform"
+               target="_blank" rel="noopener">
+                <div class="client-icon">
+                    <i class="bi bi-phone-flip"></i>
+                </div>
+                <h3>Kotlin Multiplatform Client</h3>
+                <div class="tech-stack">Kotlin Multiplatform (KMP)</div>
+                <p>
+                    A cross-platform client targeting Android, iOS, desktop
+                    (Swing), and the web — all from a single Kotlin
+                    codebase with shared business logic.
+                </p>
+                <span class="github-link">
+                    <i class="bi bi-github"></i> View on GitHub
+                </span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  Footer                                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+    <p>
+        A
+        <a href="https://github.com/hantsy/cargo-tracker" target="_blank" rel="noopener">fork</a>
+        of
+        <a href="https://github.com/eclipse-ee4j/cargotracker/" target="_blank" rel="noopener">Eclipse CargoTracker</a>
+        <span class="border-top border-secondary d-inline-block align-middle opacity-50 mx-2" style="width:1em;"></span>
+        maintained by
+        <a href="https://twitter.com/hantsy" target="_blank" rel="noopener">@hantsy</a>
+        <a href="https://github.com/hantsy" target="_blank" rel="noopener" title="GitHub" class="ms-3">
+            <i class="bi bi-github"></i>
+        </a>
+        <a href="https://medium.com/@hantsy" target="_blank" rel="noopener" title="Medium" class="ms-3">
+            <i class="bi bi-medium"></i>
+        </a>
+        <a href="https://linkedin.com/in/hantsy" target="_blank" rel="noopener" title="LinkedIn" class="ms-3">
+            <i class="bi bi-linkedin"></i>
+        </a>
+    </p>
 </footer>
+
+<!-- Bootstrap 5.3.8 JS Bundle (includes Popper) -->
 <script crossorigin="anonymous"
-        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  Dot Navigation Scroll Spy                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<script>
+    (function () {
+        const sections = document.querySelectorAll('.scroll-section');
+        const dots = document.querySelectorAll('.dot-nav .dot');
+
+        // ── IntersectionObserver: update active dot ──────────
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    dots.forEach(function (dot) {
+                        dot.classList.remove('active');
+                    });
+                    var active = document.querySelector(
+                        '.dot-nav .dot[data-target="' + entry.target.id + '"]'
+                    );
+                    if (active) {
+                        active.classList.add('active');
+                    }
+                }
+            });
+        }, { threshold: 0.45 });
+
+        sections.forEach(function (section) {
+            observer.observe(section);
+        });
+
+        // ── Click dot → smooth-scroll to section ────────────
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function (e) {
+                e.preventDefault();
+                var targetId = dot.getAttribute('data-target');
+                var target = document.getElementById(targetId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    })();
+</script>
 
 </body>
 </html>
