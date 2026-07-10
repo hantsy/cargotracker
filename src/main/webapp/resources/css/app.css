@@ -73,7 +73,7 @@ main.container {
 .page-header .subtitle {
     color: var(--ct-muted);
     font-weight: 400;
-    font-size: 1.05rem;
+    font-size: 1.25rem;
 }
 
 /* ── Cards ─────────────────────────────────────────────────── */

@@ -47,22 +47,73 @@ ul.timeline > li:before {
     height: 24px;
     z-index: 401;
     transition: all 0.25s ease;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-align: center;
+    line-height: 18px;
+    color: #fff;
 }
 
 ul.timeline > li:hover:before {
-    border-color: #0d6efd;
     box-shadow: 0 0 0 6px rgba(13, 110, 253, 0.1);
 }
 
-/* current status — highlighted with pulse */
-ul.timeline > li:first-child:before {
+/* ── expected (correct handling) — white circle, green border + green checkmark ── */
+ul.timeline > li.expected:before {
+    content: '\2713';
+    background: #fff;
     border-color: #198754;
+    color: #198754;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+ul.timeline > li.expected:hover:before {
+    border-color: #157347;
+    color: #157347;
+    box-shadow: 0 0 0 6px rgba(25, 135, 84, 0.12);
+}
+
+/* ── unexpected (misdirected) — white circle, red border + red cross ── */
+ul.timeline > li.unexpected:before {
+    content: '\2715';
+    background: #fff;
+    border-color: #dc3545;
+    color: #dc3545;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+ul.timeline > li.unexpected:hover:before {
+    border-color: #bb2d3b;
+    color: #bb2d3b;
+    box-shadow: 0 0 0 6px rgba(220, 53, 69, 0.12);
+}
+
+/* ── misdirected event text — red warning to match the circle ── */
+ul.timeline > li.unexpected span {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+/* current status (first event) — highlighted with pulse, color from the class */
+ul.timeline > li:first-child:before {
     border-width: 4px;
     width: 26px;
     height: 26px;
     left: 1px;
     top: 1px;
+    line-height: 18px;
     animation: timeline-pulse 2.5s ease-in-out infinite;
+}
+
+ul.timeline > li.expected:first-child:before {
+    border-color: #198754;
+}
+
+ul.timeline > li.unexpected:first-child:before {
+    border-color: #dc3545;
+    animation-name: timeline-pulse-red;
 }
 
 @keyframes timeline-pulse {
@@ -70,7 +121,20 @@ ul.timeline > li:first-child:before {
     50%      { box-shadow: 0 0 0 12px rgba(25, 135, 84, 0.04); }
 }
 
-/* last (oldest) entry — muted */
-ul.timeline > li:last-child:before {
-    border-color: #adb5bd;
+@keyframes timeline-pulse-red {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.18); }
+    50%      { box-shadow: 0 0 0 12px rgba(220, 53, 69, 0.04); }
+}
+
+/* remove the vertical line below the last circle */
+ul.timeline > li:last-child:after {
+    content: '';
+    background: #fff;
+    display: block;
+    position: absolute;
+    left: 13px;
+    top: 28px;
+    width: 4px;
+    height: 42px;
+    z-index: 410;
 }

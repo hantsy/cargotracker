@@ -4,17 +4,13 @@
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/public.xhtml">
-    <ui:define name="title">Public Tracking</ui:define>
+    <ui:define name="title">Track Your Cargo</ui:define>
+    <ui:define name="subtitle">Enter a tracking ID to see the current status and full handling history</ui:define>
     <ui:define name="headIncludes">
         <link rel="stylesheet"
               href="#{request.contextPath}/resources/css/timeline.css"/>
     </ui:define>
-    <ui:define name="body">
-
-        <div class="page-header text-center">
-            <h1 class="display-5">Track Your Cargo</h1>
-            <p class="subtitle">Enter a tracking ID to see the current status and full handling history</p>
-        </div>
+    <ui:define name="content">
 
         <!-- Tracking form card -->
         <div class="card form-card">
@@ -28,7 +24,7 @@
                                    class="form-control"
                                    jsf:value="#{track.trackingId}"
                                    jsf:required="true"
-                                   placeholder="Input Tracking ID, eg. ABC123"/>
+                                   placeholder="eg. ABC123"/>
                         </div>
                     </div>
                     <div class="col-12 col-md-auto">
@@ -120,20 +116,10 @@
                         <ui:fragment rendered="#{not empty track.cargo.events}">
                             <ul class="timeline mb-0">
                                 <ui:repeat value="#{track.cargo.events}" var="leg">
-                                    <ui:fragment rendered="#{leg.expected}">
-                                        <li class="pb-3">
-                                            <i class="bi bi-check-circle text-success me-1 fs-5"></i>
-                                            <span>#{leg.description}</span>
-                                            <small class="text-muted d-block ms-4">#{leg.time}</small>
-                                        </li>
-                                    </ui:fragment>
-                                    <ui:fragment rendered="#{!leg.expected}">
-                                        <li class="pb-3">
-                                            <i class="bi bi-x-circle text-danger me-1 fs-5"></i>
-                                            <span>#{leg.description}</span>
-                                            <small class="text-muted d-block ms-4">#{leg.time}</small>
-                                        </li>
-                                    </ui:fragment>
+                                    <li class="#{leg.expected ? 'expected' : 'unexpected'} pb-3">
+                                        <span>#{leg.description}</span>
+                                        <small class="text-muted d-block"><i class="bi bi-clock me-1"></i>#{leg.time}</small>
+                                    </li>
                                 </ui:repeat>
                             </ul>
                         </ui:fragment>

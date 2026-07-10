@@ -6,20 +6,14 @@
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/public.xhtml">
-    <ui:define name="title">Mobile Event Logger</ui:define>
+    <ui:define name="title"><i class="bi bi-phone me-2"></i>Mobile Event Logger</ui:define>
     <ui:define name="metadata">
         <f:metadata>
             <f:viewAction action="#{eventLogger.init()}"/>
         </f:metadata>
     </ui:define>
-    <ui:define name="body">
-
-        <div class="page-header text-center">
-            <h1 class="display-5">
-                <i class="bi bi-phone me-2"></i>Mobile Event Logger
-            </h1>
-            <p class="subtitle">Log cargo handling events on the go</p>
-        </div>
+    <ui:define name="subtitle">Log cargo handling events on the go</ui:define>
+    <ui:define name="content">
 
         <div class="card form-card event-logger-form">
             <div class="card-body p-4">

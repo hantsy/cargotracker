@@ -6,6 +6,7 @@
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="title">Tracking</ui:define>
+    <ui:define name="subtitle">Search for cargo by tracking ID to view status and handling history</ui:define>
     <ui:define name="headIncludes">
         <link rel="stylesheet"
               href="#{request.contextPath}/resources/css/timeline.css"/>
@@ -24,7 +25,7 @@
                                    class="form-control"
                                    jsf:value="#{adminTrack.trackingId}"
                                    jsf:required="true"
-                                   placeholder="Input Tracking ID, eg. ABC123"/>
+                                   placeholder="eg. ABC123"/>
                         </div>
                     </div>
                     <div class="col-12 col-md-auto">
@@ -112,20 +113,10 @@
                             <ui:fragment rendered="#{not empty adminTrack.cargo.events}">
                                 <ul class="timeline mb-0">
                                     <ui:repeat value="#{adminTrack.cargo.events}" var="leg">
-                                        <ui:fragment rendered="#{leg.expected}">
-                                            <li class="pb-3">
-                                                <i class="bi bi-check-circle text-success me-1 fs-5"></i>
-                                                <span>#{leg.description}</span>
-                                                <small class="text-muted d-block ms-4">#{leg.time}</small>
-                                            </li>
-                                        </ui:fragment>
-                                        <ui:fragment rendered="#{!leg.expected}">
-                                            <li class="pb-3">
-                                                <i class="bi bi-x-circle text-danger me-1 fs-5"></i>
-                                                <span>#{leg.description}</span>
-                                                <small class="text-muted d-block ms-4">#{leg.time}</small>
-                                            </li>
-                                        </ui:fragment>
+                                        <li class="#{leg.expected ? 'expected' : 'unexpected'} pb-3">
+                                            <span>#{leg.description}</span>
+                                            <small class="text-muted d-block"><i class="bi bi-clock me-1"></i>#{leg.time}</small>
+                                        </li>
                                     </ui:repeat>
                                 </ul>
                             </ui:fragment>
