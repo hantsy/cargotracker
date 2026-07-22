@@ -40,9 +40,9 @@
 
                     <div class="d-flex gap-3 col-12 mt-3">
                         <a faces:outcome="/admin/dashboard.xhtml" class="btn btn-outline-secondary">Cancel</a>
-                        <a faces:outcome="/admin/booking/booking.xhtml" class="btn btn-outline-primary">
+                        <button class="btn btn-outline-primary" faces:action="#{booking.back()}">
                             <i class="bi bi-arrow-left me-1"></i> Back
-                        </a>
+                        </button>
                         <button class="btn btn-primary px-4" faces:action="#{booking.register()}">
                             <i class="bi bi-check-lg me-1"></i> Confirm
                         </button>
