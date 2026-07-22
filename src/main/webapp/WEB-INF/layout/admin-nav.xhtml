@@ -1,14 +1,13 @@
 <ui:composition xmlns:ui="jakarta.faces.facelets"
-                xmlns:h="jakarta.faces.html"
+                xmlns:faces="jakarta.faces"
                 xmlns="http://www.w3.org/1999/xhtml">
     <nav class="navbar navbar-expand-lg bg-white shadow-sm">
         <div class="container">
-            <h:link styleClass="navbar-brand d-flex align-items-center gap-2"
-                    outcome="/admin/dashboard.xhtml">
-                <img src="#{request.contextPath}/resources/images/logo48.png"
+            <a faces:outcome="/admin/dashboard.xhtml" class="navbar-brand d-flex align-items-center gap-2">
+                <img src="#{resource['images/logo48.png']}"
                      alt="Cargo Tracker logo" width="36" height="36"/>
                 <span class="fw-bold d-none d-md-inline">Cargo Tracker</span>
-            </h:link>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -16,29 +15,23 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <h:link styleClass="nav-link #{request.requestURI.startsWith(request.contextPath.concat('/admin/dashboard.xhtml'))?'active fw-semibold':''}"
-                                outcome="/admin/dashboard.xhtml" value="Dashboard"/>
+                        <a faces:outcome="/admin/dashboard.xhtml" class="nav-link #{request.requestURI.startsWith(request.contextPath.concat('/admin/dashboard.xhtml'))?'active fw-semibold':''}">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <h:link styleClass="nav-link #{request.requestURI.startsWith(request.contextPath.concat('/admin/booking/'))?'active fw-semibold':''}"
-                                outcome="/admin/booking/booking.xhtml" value="Book"/>
+                        <a faces:outcome="/admin/booking/booking.xhtml" class="nav-link #{request.requestURI.startsWith(request.contextPath.concat('/admin/booking/'))?'active fw-semibold':''}">Book</a>
                     </li>
                     <li class="nav-item">
-                        <h:link styleClass="nav-link #{request.requestURI.startsWith(request.contextPath.concat('/admin/tracking/track.xhtml'))?'active fw-semibold':''}"
-                                outcome="/admin/tracking/track.xhtml" value="Track"/>
+                        <a faces:outcome="/admin/tracking/track.xhtml" class="nav-link #{request.requestURI.startsWith(request.contextPath.concat('/admin/tracking/track.xhtml'))?'active fw-semibold':''}">Track</a>
                     </li>
                     <li class="nav-item">
-                        <h:link styleClass="nav-link #{request.requestURI.startsWith(request.contextPath.concat('/admin/tracking/map.xhtml'))?'active fw-semibold':''}"
-                                outcome="/admin/tracking/map.xhtml" value="Live"/>
+                        <a faces:outcome="/admin/tracking/map.xhtml" class="nav-link #{request.requestURI.startsWith(request.contextPath.concat('/admin/tracking/map.xhtml'))?'active fw-semibold':''}">Live</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <h:link styleClass="nav-link about-link"
-                                outcome="/admin/about.xhtml"
-                                title="About the administration interface">
+                        <a faces:outcome="/admin/about.xhtml" class="nav-link about-link" title="About the administration interface">
                             <i class="bi bi-question-circle"></i>
-                        </h:link>
+                        </a>
                     </li>
                 </ul>
             </div>
