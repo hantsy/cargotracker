@@ -1,6 +1,6 @@
 <ui:composition xmlns:ui="jakarta.faces.facelets"
                 xmlns:f="jakarta.faces.core"
-                xmlns:h="jakarta.faces.html"
+                xmlns:faces="jakarta.faces"
                 xmlns="http://www.w3.org/1999/xhtml">
     <div class="table-card card">
         <div class="card-header">
@@ -29,11 +29,10 @@
                     <ui:repeat var="cargo" value="#{listCargo.notRoutedCargos}">
                         <tr>
                             <td>
-                                <h:link value="#{cargo.trackingId}"
-                                        outcome="route.xhtml?faces-redirect=true"
-                                        styleClass="fw-semibold text-decoration-none">
+                                <a faces:outcome="route.xhtml?faces-redirect=true" class="fw-semibold text-decoration-none">
+                                    #{cargo.trackingId}
                                     <f:param name="trackingId" value="#{cargo.trackingId}"/>
-                                </h:link>
+                                </a>
                             </td>
                             <td>
                                 <div class="fw-semibold">#{cargo.origin.name}</div>
@@ -42,19 +41,17 @@
                             <td>
                                 <div class="fw-semibold">#{cargo.finalDestination.name}</div>
                                 <small class="text-muted">#{cargo.finalDestination.code}</small>
-                                <h:link outcome="/admin/changeDestination.xhtml?faces-redirect=true"
-                                        styleClass="text-decoration-none ms-1" title="Edit destination">
+                                <a faces:outcome="/admin/changeDestination.xhtml?faces-redirect=true" class="text-decoration-none ms-1" title="Edit destination">
                                     <f:param name="trackingId" value="#{cargo.trackingId}"/>
                                     <i class="bi bi-pencil-square text-muted"></i>
-                                </h:link>
+                                </a>
                             </td>
                             <td>
                                 #{cargo.arrivalDeadline}
-                                <h:link outcome="/admin/changeArrivalDeadline.xhtml?faces-redirect=true"
-                                        styleClass="text-decoration-none ms-1" title="Edit deadline">
+                                <a faces:outcome="/admin/changeArrivalDeadline.xhtml?faces-redirect=true" class="text-decoration-none ms-1" title="Edit deadline">
                                     <f:param name="trackingId" value="#{cargo.trackingId}"/>
                                     <i class="bi bi-pencil-square text-muted"></i>
-                                </h:link>
+                                </a>
                             </td>
                         </tr>
                     </ui:repeat>

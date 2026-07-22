@@ -2,11 +2,11 @@
 <html xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core"
       xmlns:h="jakarta.faces.html"
-      lang="en"
-      xmlns="http://www.w3.org/1999/xhtml">
+      xmlns:faces="jakarta.faces"
+      lang="en">
 <f:view>
     <ui:insert name="metadata"></ui:insert>
-    <h:head>
+    <head>
         <!-- Required meta tags -->
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -19,12 +19,12 @@
               href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"/>
 
         <!-- Application styles -->
-        <link rel="stylesheet" href="#{request.contextPath}/resources/css/app.css"/>
+        <link rel="stylesheet" href="#{resource['css/app.css']}"/>
 
         <ui:insert name="headIncludes"></ui:insert>
         <title>CargoTracker — A Jakarta EE blueprint application</title>
-    </h:head>
-    <h:body>
+    </head>
+    <body>
         <ui:insert name="nav"></ui:insert>
         <main class="container">
             <ui:include src="/WEB-INF/layout/alert.xhtml"></ui:include>
@@ -40,6 +40,6 @@
             <!-- stop closing -->
         </script>
         <ui:insert name="bodyIncludes"></ui:insert>
-    </h:body>
+    </body>
 </f:view>
 </html>

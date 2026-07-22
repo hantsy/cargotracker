@@ -1,7 +1,6 @@
 <ui:composition
-        xmlns:jsf="jakarta.faces"
+        xmlns:faces="jakarta.faces"
         xmlns:f="jakarta.faces.core"
-        xmlns:h="jakarta.faces.html"
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
@@ -22,7 +21,7 @@
         </ui:fragment>
 
         <ui:fragment rendered="#{not empty itinerarySelection.routeCandidates}">
-            <h:form>
+            <form faces:id="itinerarySelectionForm">
                 <ui:repeat value="#{itinerarySelection.routeCandidates}"
                            var="itinerary" varStatus="itineraryStatus">
 
@@ -30,7 +29,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span class="fw-bold fs-5">Route Option ##{itineraryStatus.index + 1}</span>
                             <button class="btn btn-primary btn-sm px-4"
-                                    jsf:action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}">
+                                    faces:action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}">
                                 <i class="bi bi-check-lg me-1"></i> Select
                             </button>
                         </div>
@@ -66,7 +65,7 @@
                         </div>
                     </div>
                 </ui:repeat>
-            </h:form>
+            </form>
         </ui:fragment>
     </ui:define>
 </ui:composition>

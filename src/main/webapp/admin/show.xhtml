@@ -1,6 +1,5 @@
 <ui:composition
-        xmlns:jsf="jakarta.faces"
-        xmlns:h="jakarta.faces.html"
+        xmlns:faces="jakarta.faces"
         xmlns:f="jakarta.faces.core"
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
@@ -9,7 +8,7 @@
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="trackingId" value="#{cargoDetails.trackingId}"/>
-            <f:event type="preRenderView" listener="#{cargoDetails.load()}"/>
+            <f:viewAction action="#{cargoDetails.load()}"/>
         </f:metadata>
     </ui:define>
     <ui:define name="subtitle">Routing Details for Cargo #{cargoDetails.cargo.trackingId}</ui:define>
@@ -43,10 +42,10 @@
                 <div class="alert alert-warning d-flex align-items-center gap-2">
                     <i class="bi bi-exclamation-triangle fs-5"></i>
                     <span><strong>Misrouted Cargo!</strong></span>
-                    <h:link value="Reroute" styleClass="btn btn-sm btn-outline-warning ms-auto"
-                            outcome="selectItinerary.xhtml?faces-redirect=true">
+                    <a faces:outcome="selectItinerary.xhtml?faces-redirect=true" class="btn btn-sm btn-outline-warning ms-auto">
+                        Reroute
                         <f:param name="trackingId" value="#{cargoDetails.cargo.trackingId}"/>
-                    </h:link>
+                    </a>
                 </div>
             </ui:fragment>
 
@@ -96,10 +95,10 @@
                     <span class="border-top border-secondary d-inline-block opacity-50" style="width:14px;"></span>
                     <span>this cargo needs a route assigned.</span>
                 </span>
-                <h:link value="Route this cargo" styleClass="btn btn-sm btn-primary ms-auto"
-                        outcome="route.xhtml?faces-redirect=true">
+                <a faces:outcome="route.xhtml?faces-redirect=true" class="btn btn-sm btn-primary ms-auto">
+                    Route this cargo
                     <f:param name="trackingId" value="#{cargoDetails.cargo.trackingId}"/>
-                </h:link>
+                </a>
             </div>
         </ui:fragment>
 

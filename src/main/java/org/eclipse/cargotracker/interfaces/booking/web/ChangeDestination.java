@@ -52,13 +52,10 @@ public class ChangeDestination implements Serializable {
 
     public List<LocationDto> getPotentialDestinations() {
         // Potential destination = All Locations - Origin - Current Destination
-        List<LocationDto> destinationsToRemove = locations.stream()
-                .filter(loc -> loc.code().equalsIgnoreCase(cargo.origin().code())
-                        || loc.code().equalsIgnoreCase(cargo.finalDestination().code())
-                )
+        return locations.stream()
+                .filter(loc -> !loc.code().equalsIgnoreCase(cargo.origin().code())
+                        && !loc.code().equalsIgnoreCase(cargo.finalDestination().code()))
                 .toList();
-        locations.removeAll(destinationsToRemove);
-        return locations;
     }
 
     public String getDestinationUnlocode() {
@@ -76,6 +73,6 @@ public class ChangeDestination implements Serializable {
 
     public String changeDestination() {
         bookingServiceFacade.changeDestination(trackingId, destinationUnlocode);
-        return "/admin/show.html?faces-redirect=true&trackingId=" + trackingId;
+        return "/admin/show.xhtml?faces-redirect=true&trackingId=" + trackingId;
     }
 }

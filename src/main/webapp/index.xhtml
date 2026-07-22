@@ -1,20 +1,25 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns:faces="jakarta.faces"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      lang="en">
+<f:view>
 <head>
     <title>Cargo Tracker — Applied Domain-Driven Design Blueprints for Jakarta EE</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
 
     <!-- Bootstrap 5.3.8 CSS -->
     <link crossorigin="anonymous"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-          rel="stylesheet">
+          rel="stylesheet"/>
 
     <!-- Bootstrap Icons 1.13.1 -->
     <link crossorigin="anonymous"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-          rel="stylesheet">
+          rel="stylesheet"/>
 
     <style>
         :root {
@@ -158,11 +163,6 @@
         }
 
         /* ── Section 1: Introduction ──────────────────────── */
-        #intro {
-            background: linear-gradient(var(--section-overlay), rgba(0, 0, 0, 0.82)),
-            url('./resources/images/cargoTug.jpg') center/cover no-repeat fixed;
-        }
-
         #intro .logo-img {
             width: 128px;
             height: auto;
@@ -550,15 +550,16 @@
 <!-- ═══════════════════════════════════════════════════════════ -->
 <!--  Section 1 — Introduction                                   -->
 <!-- ═══════════════════════════════════════════════════════════ -->
-<section id="intro" class="scroll-section">
+<section id="intro" class="scroll-section"
+         style="background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.82)), url('#{resource['images/cargoTug.jpg']}') center/cover no-repeat fixed;">
     <div class="section-content">
         <a href="https://github.com/eclipse-ee4j/cargotracker/" target="_blank" rel="noopener">
-            <img class="logo-img" src="resources/images/CTlogobadge128.png"
+            <img class="logo-img" src="#{resource['images/CTlogobadge128.png']}"
                  alt="Cargo Tracker logo"/>
         </a>
         <h1 class="display-1 mb-3">Cargo Tracker</h1>
         <p class="lead mb-4">
-            Applied Domain-Driven Design Blueprints for Jakarta&nbsp;EE
+            Applied Domain-Driven Design Blueprints for Jakarta EE
         </p>
         <p class="lead mb-3" style="font-size:1.05rem;">
             Based on the sample application from Eric Evans'
@@ -794,4 +795,5 @@
 </script>
 
 </body>
+</f:view>
 </html>
