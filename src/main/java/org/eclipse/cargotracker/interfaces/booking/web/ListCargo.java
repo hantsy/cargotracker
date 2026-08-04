@@ -47,12 +47,12 @@ public class ListCargo {
         List<CargoRouteDto> cargos = bookingServiceFacade.listAllCargos();
         routedUnclaimedCargos = cargos.stream()
                 .filter(route -> route.routed() && !route.claimed())
-                .collect(Collectors.toCollection(ArrayList::new));
+                .toList();
         notRoutedCargos = cargos.stream()
                 .filter(route -> !route.routed())
-                .collect(Collectors.toCollection(ArrayList::new));
+                .toList();
         claimedCargos = cargos.stream()
                 .filter(CargoRouteDto::claimed)
-                .collect(Collectors.toCollection(ArrayList::new));
+                .toList();
     }
 }
