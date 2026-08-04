@@ -162,6 +162,7 @@ public class EventLogger implements Serializable {
         return true;
     }
 
+    @Transactional
     public void submit() {
         VoyageNumber voyage;
 

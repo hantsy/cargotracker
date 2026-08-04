@@ -1,8 +1,7 @@
 <ui:composition
-        xmlns:jsf="jakarta.faces"
         xmlns:h="jakarta.faces.html"
         xmlns:f="jakarta.faces.core"
-        xmlns:p="jakarta.faces.passthrough"
+        xmlns:faces="jakarta.faces"
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/public.xhtml">
@@ -17,11 +16,11 @@
 
         <div class="card form-card event-logger-form">
             <div class="card-body p-4">
-                <h:form id="eventLoggerForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
+                <form faces:id="eventLoggerForm" class="row g-3 needs-validation" novalidate="true">
                     <div class="col-12 col-md-6">
                         <label for="trackingId" class="form-label">Tracking ID</label>
                         <h:selectOneMenu id="trackingId"
-                                         styleClass="form-select #{not empty facesContext.getMessageList('trackingId')?'is-invalid':''}"
+                                         styleClass="form-select #{not empty facesContext.getMessageList('eventLoggerForm:trackingId')?'is-invalid':''}"
                                          value="#{eventLogger.trackingId}"
                                          required="true"
                                          requiredMessage="Tracking ID missing">
@@ -30,13 +29,13 @@
                             <f:selectItems value="#{eventLogger.trackingIds}"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="trackingId" showDetail="false" showSummary="true"/>
+                            <h:message for="eventLoggerForm:trackingId" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
                     <div class="col-12 col-md-6">
                         <label for="locationId" class="form-label">Location</label>
                         <h:selectOneMenu id="locationId"
-                                         styleClass="form-select #{not empty facesContext.getMessageList('locationId')?'is-invalid':''}"
+                                         styleClass="form-select #{not empty facesContext.getMessageList('eventLoggerForm:locationId')?'is-invalid':''}"
                                          value="#{eventLogger.location}"
                                          required="true"
                                          requiredMessage="Location missing">
@@ -45,14 +44,14 @@
                             <f:selectItems value="#{eventLogger.locations}"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="locationId" showDetail="false" showSummary="true"/>
+                            <h:message for="eventLoggerForm:locationId" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
 
                     <div class="col-12 col-md-6">
                         <label for="eventType" class="form-label">Event Type</label>
                         <h:selectOneMenu id="eventType"
-                                         styleClass="form-select #{not empty facesContext.getMessageList('eventType')?'is-invalid':''}"
+                                         styleClass="form-select #{not empty facesContext.getMessageList('eventLoggerForm:eventType')?'is-invalid':''}"
                                          value="#{eventLogger.eventType}"
                                          requiredMessage="Event type missing"
                                          required="true">
@@ -66,14 +65,14 @@
                             <f:selectItem itemLabel="CLAIM" itemValue="CLAIM"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="eventType" showDetail="false" showSummary="true"/>
+                            <h:message for="eventLoggerForm:eventType" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
 
                     <div class="col-12 col-md-6">
                         <label for="voyage" class="form-label">Voyage <span class="text-muted fw-normal">(optional)</span></label>
                         <h:selectOneMenu id="voyage"
-                                         styleClass="form-select #{not empty facesContext.getMessageList('voyage')?'is-invalid':''}"
+                                         styleClass="form-select #{not empty facesContext.getMessageList('eventLoggerForm:voyage')?'is-invalid':''}"
                                          value="#{eventLogger.voyageNumber}"
                                          required="false">
                             <f:selectItem itemLabel="Select Voyage" itemValue=""
@@ -81,29 +80,29 @@
                             <f:selectItems value="#{eventLogger.voyages}"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="voyage" showDetail="false" showSummary="true"/>
+                            <h:message for="eventLoggerForm:voyage" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
 
                     <div class="col-12 col-md-6">
                         <label for="completionDate" class="form-label">Completion Date</label>
                         <input type="datetime-local"
-                               jsf:id="completionDate"
-                               class="form-control #{not empty facesContext.getMessageList('completionDate')?'is-invalid':''}"
-                               jsf:value="#{eventLogger.completionTime}">
+                               faces:id="completionDate"
+                               class="form-control #{not empty facesContext.getMessageList('eventLoggerForm:completionDate')?'is-invalid':''}"
+                               faces:value="#{eventLogger.completionTime}">
                             <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd'T'HH:mm"/>
                         </input>
                         <small class="invalid-feedback">
-                            <h:message for="completionDate" showDetail="false" showSummary="true"/>
+                            <h:message for="eventLoggerForm:completionDate" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
                     <div class="col-12 mt-3">
                         <button class="btn btn-primary btn-lg px-5"
-                                jsf:action="#{eventLogger.submit()}">
+                                faces:action="#{eventLogger.submit()}">
                             <i class="bi bi-send me-1"></i> Submit Event
                         </button>
                     </div>
-                </h:form>
+                </form>
             </div>
         </div>
 

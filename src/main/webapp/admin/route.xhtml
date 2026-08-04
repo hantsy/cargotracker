@@ -1,6 +1,5 @@
 <ui:composition
-        xmlns:jsf="jakarta.faces"
-        xmlns:h="jakarta.faces.html"
+        xmlns:faces="jakarta.faces"
         xmlns:f="jakarta.faces.core"
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
@@ -9,8 +8,8 @@
         <f:metadata>
             <f:viewParam name="trackingId" value="#{cargoDetails.trackingId}"/>
             <f:viewParam name="trackingId" value="#{itinerarySelection.trackingId}"/>
-            <f:event type="preRenderView" listener="#{cargoDetails.load}"/>
-            <f:event type="preRenderView" listener="#{itinerarySelection.load}"/>
+            <f:viewAction action="#{cargoDetails.load}"/>
+            <f:viewAction action="#{itinerarySelection.load}"/>
         </f:metadata>
     </ui:define>
     <ui:define name="title">Route Cargo</ui:define>
@@ -51,7 +50,7 @@
         </ui:fragment>
 
         <ui:fragment rendered="#{not empty itinerarySelection.routeCandidates}">
-            <h:form>
+            <form faces:id="itinerarySelectionForm">
                 <ui:repeat value="#{itinerarySelection.routeCandidates}"
                            var="itinerary" varStatus="itineraryStatus">
 
@@ -59,7 +58,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span class="fw-bold fs-5">Route Option ##{itineraryStatus.index + 1}</span>
                             <button class="btn btn-primary btn-sm px-4"
-                                    jsf:action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}">
+                                    faces:action="#{itinerarySelection.assignItinerary(itineraryStatus.index)}">
                                 <i class="bi bi-check-lg me-1"></i> Select
                             </button>
                         </div>
@@ -101,7 +100,7 @@
                         </div>
                     </div>
                 </ui:repeat>
-            </h:form>
+            </form>
         </ui:fragment>
     </ui:define>
 </ui:composition>

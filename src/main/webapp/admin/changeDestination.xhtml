@@ -1,9 +1,8 @@
 <ui:composition
         xmlns:h="jakarta.faces.html"
         xmlns:f="jakarta.faces.core"
-        xmlns:jsf="jakarta.faces"
+        xmlns:faces="jakarta.faces"
         xmlns:ui="jakarta.faces.facelets"
-        xmlns:p="jakarta.faces.passthrough"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="metadata">
@@ -18,7 +17,7 @@
 
         <div class="card form-card">
             <div class="card-body p-4">
-                <h:form id="changeDestinationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
+                <form faces:id="changeDestinationForm" class="row g-3 needs-validation" novalidate="true">
                     <div class="col-12">
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
@@ -35,7 +34,7 @@
                     <div class="col-12">
                         <label for="destination" class="form-label fw-semibold">New Destination</label>
                         <h:selectOneMenu id="destination"
-                                         styleClass="form-select form-select-lg #{not empty facesContext.getMessageList('destination')?'is-invalid':''}"
+                                         styleClass="form-select form-select-lg #{not empty facesContext.getMessageList('changeDestinationForm:destination')?'is-invalid':''}"
                                          value="#{changeDestination.destinationUnlocode}"
                                          required="true"
                                          requiredMessage="Destination is required.">
@@ -44,16 +43,16 @@
                                            itemValue="#{location.code}"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="destination" showDetail="false" showSummary="true"/>
+                            <h:message for="changeDestinationForm:destination" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
                     <div class="d-flex gap-3 col-12 mt-3">
-                        <h:link styleClass="btn btn-outline-secondary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
-                        <button class="btn btn-primary px-4" jsf:action="#{changeDestination.changeDestination()}">
+                        <a faces:outcome="/admin/dashboard.xhtml" class="btn btn-outline-secondary">Cancel</a>
+                        <button class="btn btn-primary px-4" faces:action="#{changeDestination.changeDestination()}">
                             <i class="bi bi-check-lg me-1"></i> Update
                         </button>
                     </div>
-                </h:form>
+                </form>
             </div>
         </div>
 

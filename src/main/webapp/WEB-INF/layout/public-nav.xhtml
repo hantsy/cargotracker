@@ -1,22 +1,19 @@
 <ui:composition xmlns:ui="jakarta.faces.facelets"
-                xmlns:h="jakarta.faces.html"
+                xmlns:faces="jakarta.faces"
                 xmlns="http://www.w3.org/1999/xhtml">
     <nav class="navbar navbar-expand bg-white shadow-sm public-header">
         <div class="container">
-            <h:link styleClass="navbar-brand d-flex align-items-center gap-2 text-decoration-none"
-                    outcome="/public/track.xhtml">
-                <img src="#{request.contextPath}/resources/images/logo48.png"
+            <a faces:outcome="/public/track.xhtml" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
+                <img src="#{resource['images/logo48.png']}"
                      alt="Cargo Tracker logo" width="36" height="36"/>
                 <span class="brand-text d-none d-md-inline">Cargo Tracker</span>
-            </h:link>
+            </a>
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <h:link styleClass="nav-link about-link"
-                            outcome="/public/about.xhtml"
-                            title="About public tracking">
+                    <a faces:outcome="/public/about.xhtml" class="nav-link about-link" title="About public tracking">
                         <i class="bi bi-question-circle"></i>
-                    </h:link>
+                    </a>
                 </li>
             </ul>
         </div>

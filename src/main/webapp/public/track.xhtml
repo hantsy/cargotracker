@@ -1,39 +1,42 @@
 <ui:composition
-        xmlns:jsf="jakarta.faces"
         xmlns:h="jakarta.faces.html"
+        xmlns:faces="jakarta.faces"
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/public.xhtml">
     <ui:define name="title">Track Your Cargo</ui:define>
     <ui:define name="subtitle">Enter a tracking ID to see the current status and full handling history</ui:define>
     <ui:define name="headIncludes">
-        <link rel="stylesheet"
-              href="#{request.contextPath}/resources/css/timeline.css"/>
+        <link rel="stylesheet" href="#{resource['css/timeline.css']}"/>
     </ui:define>
     <ui:define name="content">
 
         <!-- Tracking form card -->
         <div class="card form-card">
             <div class="card-body p-4">
-                <h:form prependId="false" id="trackingForm"
-                        styleClass="row g-3 justify-content-center align-items-end">
+                <form faces:id="trackingForm"
+                        class="row g-3 justify-content-center align-items-end">
                     <div class="col-12 col-md-7">
                         <div class="input-group input-group-lg">
                             <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                            <input type="text" jsf:id="trackingIdInput"
-                                   class="form-control"
-                                   jsf:value="#{track.trackingId}"
-                                   jsf:required="true"
+                            <input type="text" faces:id="trackingIdInput"
+                                   class="form-control #{not empty facesContext.getMessageList('trackingForm:trackingIdInput')?'is-invalid':''}"
+                                   faces:value="#{track.trackingId}"
+                                   faces:required="true"
+                                   faces:requiredMessage="Tracking ID is required."
                                    placeholder="eg. ABC123"/>
+                            <small class="invalid-feedback">
+                                <h:message for="trackingForm:trackingIdInput" showDetail="false" showSummary="true"/>
+                            </small>
                         </div>
                     </div>
                     <div class="col-12 col-md-auto">
                         <button class="btn btn-primary btn-lg px-4"
-                                jsf:action="#{track.onTrackById()}">
+                                faces:action="#{track.onTrackById()}">
                             <i class="bi bi-search me-1"></i> Track
                         </button>
                     </div>
-                </h:form>
+                </form>
             </div>
         </div>
 

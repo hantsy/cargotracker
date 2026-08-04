@@ -1,6 +1,6 @@
 <ui:composition xmlns:ui="jakarta.faces.facelets"
                 xmlns:f="jakarta.faces.core"
-                xmlns:h="jakarta.faces.html"
+                xmlns:faces="jakarta.faces"
                 xmlns="http://www.w3.org/1999/xhtml">
     <div class="table-card card">
         <div class="card-header">
@@ -30,11 +30,10 @@
                     <ui:repeat var="cargo" value="#{listCargo.routedUnclaimedCargos}">
                         <tr>
                             <td>
-                                <h:link value="#{cargo.trackingId}"
-                                        outcome="show.xhtml?faces-redirect=true"
-                                        styleClass="fw-semibold text-decoration-none">
+                                <a faces:outcome="show.xhtml?faces-redirect=true" class="fw-semibold text-decoration-none">
+                                    #{cargo.trackingId}
                                     <f:param name="trackingId" value="#{cargo.trackingId}"/>
-                                </h:link>
+                                </a>
                             </td>
                             <td>
                                 <div class="fw-semibold">#{cargo.origin.name}</div>

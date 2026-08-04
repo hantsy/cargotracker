@@ -1,9 +1,8 @@
 <ui:composition
         xmlns:h="jakarta.faces.html"
         xmlns:f="jakarta.faces.core"
-        xmlns:jsf="jakarta.faces"
+        xmlns:faces="jakarta.faces"
         xmlns:ui="jakarta.faces.facelets"
-        xmlns:p="jakarta.faces.passthrough"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="metadata">
@@ -17,14 +16,14 @@
 
         <div class="card form-card">
             <div class="card-body p-4">
-                <h:form id="registrationForm" prependId="false" styleClass="row g-3 needs-validation" p:novalidate="true">
+                <form faces:id="registrationForm" class="row g-3 needs-validation" novalidate="true">
 
                     <div class="col-12 col-md-6">
                         <label for="origin" class="form-label fw-semibold">
                             <i class="bi bi-geo-alt me-1"></i> Origin
                         </label>
                         <h:selectOneMenu id="origin"
-                                         styleClass="form-select #{not empty facesContext.getMessageList('origin')?'is-invalid':''}"
+                                         styleClass="form-select #{not empty facesContext.getMessageList('registrationForm:origin')?'is-invalid':''}"
                                          value="#{booking.originUnlocode}"
                                          required="true"
                                          requiredMessage="Origin is required.">
@@ -32,7 +31,7 @@
                                            itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="origin" showDetail="false" showSummary="true"/>
+                            <h:message for="registrationForm:origin" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
 
@@ -41,7 +40,7 @@
                             <i class="bi bi-geo-alt-fill me-1"></i> Destination
                         </label>
                         <h:selectOneMenu id="destination"
-                                         styleClass="form-select #{not empty facesContext.getMessageList('destination')?'is-invalid':''}"
+                                         styleClass="form-select #{not empty facesContext.getMessageList('registrationForm:destination')?'is-invalid':''}"
                                          value="#{booking.destinationUnlocode}"
                                          required="true"
                                          requiredMessage="Destination is required.">
@@ -49,7 +48,7 @@
                                            itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="destination" showDetail="false" showSummary="true"/>
+                            <h:message for="registrationForm:destination" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
 
@@ -58,25 +57,25 @@
                             <i class="bi bi-calendar me-1"></i> Arrival Deadline
                         </label>
                         <input type="date"
-                               jsf:id="deadline"
+                               faces:id="deadline"
                                min="#{booking.today}"
-                               class="form-control #{not empty facesContext.getMessageList('deadline')?'is-invalid':''}"
-                               jsf:value="#{booking.arrivalDeadline}"
-                               jsf:required="true"
-                               jsf:requiredMessage="ArrivalDeadline is required.">
+                               class="form-control #{not empty facesContext.getMessageList('registrationForm:deadline')?'is-invalid':''}"
+                               faces:value="#{booking.arrivalDeadline}"
+                               faces:required="true"
+                               faces:requiredMessage="ArrivalDeadline is required.">
                             <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
                         </input>
                         <small class="invalid-feedback">
-                            <h:message for="deadline" showDetail="false" showSummary="true"/>
+                            <h:message for="registrationForm:deadline" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
                     <div class="d-flex gap-3 col-12 mt-3">
-                        <h:link styleClass="btn btn-outline-secondary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
-                        <button class="btn btn-primary px-4" jsf:action="#{booking.submit()}">
+                        <a faces:outcome="/admin/dashboard.xhtml" class="btn btn-outline-secondary">Cancel</a>
+                        <button class="btn btn-primary px-4" faces:action="#{booking.submit()}">
                             <i class="bi bi-arrow-right me-1"></i> Submit
                         </button>
                     </div>
-                </h:form>
+                </form>
             </div>
         </div>
 

@@ -1,9 +1,8 @@
 <ui:composition
         xmlns:h="jakarta.faces.html"
         xmlns:f="jakarta.faces.core"
-        xmlns:jsf="jakarta.faces"
+        xmlns:faces="jakarta.faces"
         xmlns:ui="jakarta.faces.facelets"
-        xmlns:p="jakarta.faces.passthrough"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="metadata">
@@ -18,8 +17,7 @@
 
         <div class="card form-card">
             <div class="card-body p-4">
-                <h:form id="changeArrivalDeadlineForm" prependId="false" styleClass="row g-3 needs-validation"
-                        p:novalidate="true">
+                <form faces:id="changeArrivalDeadlineForm" class="row g-3 needs-validation" novalidate="true">
                     <div class="col-12">
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
@@ -36,24 +34,24 @@
                     <div class="col-12">
                         <label for="deadline" class="form-label fw-semibold">New Arrival Deadline</label>
                         <input type="date"
-                               jsf:id="deadline"
-                               class="form-control form-control-lg #{not empty facesContext.getMessageList('deadline')?'is-invalid':''}"
-                               jsf:value="#{changeArrivalDeadline.arrivalDeadline}"
-                               jsf:required="true"
-                               jsf:requiredMessage="ArrivalDeadline is required.">
+                               faces:id="deadline"
+                               class="form-control form-control-lg #{not empty facesContext.getMessageList('changeArrivalDeadlineForm:deadline')?'is-invalid':''}"
+                               faces:value="#{changeArrivalDeadline.arrivalDeadline}"
+                               faces:required="true"
+                               faces:requiredMessage="ArrivalDeadline is required.">
                             <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
                         </input>
                         <small class="invalid-feedback">
-                            <h:message for="deadline" showDetail="false" showSummary="true"/>
+                            <h:message for="changeArrivalDeadlineForm:deadline" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
                     <div class="d-flex gap-3 col-12 mt-3">
-                        <h:link styleClass="btn btn-outline-secondary" outcome="/admin/dashboard.xhtml" value="Cancel"/>
-                        <button class="btn btn-primary px-4" jsf:action="#{changeArrivalDeadline.changeArrivalDeadline()}">
+                        <a faces:outcome="/admin/dashboard.xhtml" class="btn btn-outline-secondary">Cancel</a>
+                        <button class="btn btn-primary px-4" faces:action="#{changeArrivalDeadline.changeArrivalDeadline()}">
                             <i class="bi bi-check-lg me-1"></i> Update
                         </button>
                     </div>
-                </h:form>
+                </form>
             </div>
         </div>
 

@@ -1,15 +1,21 @@
 <ui:composition
-        xmlns:h="jakarta.faces.html"
+        xmlns:faces="jakarta.faces"
+        xmlns:f="jakarta.faces.core"
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/admin.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{listCargo.init()}"/>
+        </f:metadata>
+    </ui:define>
     <ui:define name="title">Cargo Dashboard</ui:define>
 
     <ui:define name="content">
-        <h:form id="mainDash">
+        <form faces:id="mainDash">
             <ui:include src="/admin/tables/list_routed.xhtml"/>
             <ui:include src="/admin/tables/list_not_routed.xhtml"/>
             <ui:include src="/admin/tables/list_claimed.xhtml"/>
-        </h:form>
+        </form>
     </ui:define>
 </ui:composition>
