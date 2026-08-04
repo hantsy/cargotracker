@@ -4,7 +4,6 @@ import jakarta.faces.model.SelectItem;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -114,7 +113,6 @@ public class EventLogger implements Serializable {
         return DateUtil.DATE_TIME_FORMAT;
     }
 
-    @Transactional
     public void init() {
         List<Cargo> cargos = cargoRepository.findAll();
 
@@ -162,7 +160,6 @@ public class EventLogger implements Serializable {
         return true;
     }
 
-    @Transactional
     public void submit() {
         VoyageNumber voyage;
 

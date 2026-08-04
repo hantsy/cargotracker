@@ -7,7 +7,7 @@
         template="/WEB-INF/layout/admin.xhtml">
     <ui:define name="metadata">
         <f:metadata>
-            <f:event listener="#{booking.startConversation()}" type="preRenderView"/>
+            <f:viewAction action="#{booking.startConversation()}" onPostback="true"/>
         </f:metadata>
     </ui:define>
     <ui:define name="title">Cargo Registration</ui:define>
@@ -31,7 +31,7 @@
                                            itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="registrationForm:origin" showDetail="false" showSummary="true"/>
+                            <h:message for="origin" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
 
@@ -48,7 +48,7 @@
                                            itemLabel="#{location.nameAndCode()}" itemValue="#{location.code}"/>
                         </h:selectOneMenu>
                         <small class="invalid-feedback">
-                            <h:message for="registrationForm:destination" showDetail="false" showSummary="true"/>
+                            <h:message for="destination" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
 
@@ -66,7 +66,7 @@
                             <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
                         </input>
                         <small class="invalid-feedback">
-                            <h:message for="registrationForm:deadline" showDetail="false" showSummary="true"/>
+                            <h:message for="deadline" showDetail="false" showSummary="true"/>
                         </small>
                     </div>
                     <div class="d-flex gap-3 col-12 mt-3">

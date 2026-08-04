@@ -46,16 +46,14 @@ public class ChangeDestination implements Serializable {
         return cargo;
     }
 
+    private List<LocationDto> potentialDestinations;
+
     public List<LocationDto> getLocations() {
         return locations;
     }
 
     public List<LocationDto> getPotentialDestinations() {
-        // Potential destination = All Locations - Origin - Current Destination
-        return locations.stream()
-                .filter(loc -> !loc.code().equalsIgnoreCase(cargo.origin().code())
-                        && !loc.code().equalsIgnoreCase(cargo.finalDestination().code()))
-                .toList();
+        return potentialDestinations;
     }
 
     public String getDestinationUnlocode() {
@@ -69,6 +67,11 @@ public class ChangeDestination implements Serializable {
     public void load() {
         locations = bookingServiceFacade.listShippingLocations();
         cargo = bookingServiceFacade.loadCargoForRouting(trackingId);
+        // Pre-compute potential destinations = All Locations - Origin - Current Destination
+        potentialDestinations = locations.stream()
+                .filter(loc -> !loc.code().equalsIgnoreCase(cargo.origin().code())
+                        && !loc.code().equalsIgnoreCase(cargo.finalDestination().code()))
+                .toList();
     }
 
     public String changeDestination() {

@@ -12,3 +12,18 @@ cargo-tracker-data/
 installs/
 .locks/
 .qodo
+
+# BookLib (derived/cached — rebuilt by `booklib index`)
+.booklib/index/
+.booklib/bm25.json
+.booklib/sources/
+.booklib/context-map.json
+.booklib/version-cache.json
+/.booklib
+/.claude
+/.codex
+/.gemini
+/skills
+/AGENTS.md
+/booklib.config.json
+/CLAUDE.md

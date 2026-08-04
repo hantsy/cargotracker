@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:faces="jakarta.faces"
-      xmlns:f="jakarta.faces.core"
-      xmlns:h="jakarta.faces.html"
-      xmlns:ui="jakarta.faces.facelets"
-      lang="en">
-<f:view>
+<html lang="en">
 <head>
     <title>Cargo Tracker — Applied Domain-Driven Design Blueprints for Jakarta EE</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -163,6 +158,10 @@
         }
 
         /* ── Section 1: Introduction ──────────────────────── */
+        #intro {
+            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.82)), url('resources/images/cargoTug.jpg') center/cover no-repeat fixed;
+        }
+
         #intro .logo-img {
             width: 128px;
             height: auto;
@@ -550,11 +549,10 @@
 <!-- ═══════════════════════════════════════════════════════════ -->
 <!--  Section 1 — Introduction                                   -->
 <!-- ═══════════════════════════════════════════════════════════ -->
-<section id="intro" class="scroll-section"
-         style="background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.82)), url('#{resource['images/cargoTug.jpg']}') center/cover no-repeat fixed;">
+<section id="intro" class="scroll-section">
     <div class="section-content">
         <a href="https://github.com/eclipse-ee4j/cargotracker/" target="_blank" rel="noopener">
-            <img class="logo-img" src="#{resource['images/CTlogobadge128.png']}"
+            <img class="logo-img" src="resources/images/CTlogobadge128.png"
                  alt="Cargo Tracker logo"/>
         </a>
         <h1 class="display-1 mb-3">Cargo Tracker</h1>
@@ -795,5 +793,4 @@
 </script>
 
 </body>
-</f:view>
 </html>

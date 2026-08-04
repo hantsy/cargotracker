@@ -8,8 +8,8 @@
         <f:metadata>
             <f:viewParam name="trackingId" value="#{cargoDetails.trackingId}"/>
             <f:viewParam name="trackingId" value="#{itinerarySelection.trackingId}"/>
-            <f:viewAction action="#{cargoDetails.load}"/>
-            <f:viewAction action="#{itinerarySelection.load}"/>
+            <f:viewAction action="#{cargoDetails.load}" onPostback="true"/>
+            <f:viewAction action="#{itinerarySelection.load}" onPostback="true"/>
         </f:metadata>
     </ui:define>
     <ui:define name="title">Route Cargo</ui:define>
