@@ -43,12 +43,12 @@
         <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.10.27</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.10.28</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
-        <postgresql.version>42.7.12</postgresql.version>
-        <omnifaces.version>4.7.10</omnifaces.version>
+        <postgresql.version>42.7.13</postgresql.version>
+        <omnifaces.version>4.7.12</omnifaces.version>
 
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.10.2.Final</arquillian-bom.version>
@@ -82,7 +82,7 @@
 
         <!-- Wildfly server -->
         <wildfly.version>40.0.1.Final</wildfly.version>
-        <wildfly-maven-plugin.version>6.0.0.Final</wildfly-maven-plugin.version>
+        <wildfly-maven-plugin.version>6.0.1.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>6.0.0.Alpha1</wildfly-arquillian.version>
 
         <!-- aligned to Wildfly version. -->
