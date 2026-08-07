@@ -108,7 +108,7 @@ public final class DeliveryFactory {
         if (onTrack(routingStatus, misdirected)) {
             return itinerary.getFinalArrivalDate();
         }
-        return Delivery.ETA_UNKOWN;
+        return Delivery.ETA_UNKNOWN;
     }
 
     static HandlingActivity calculateNextExpectedActivity(

@@ -170,7 +170,7 @@ public class BookingServiceIT {
             assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
             assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
             assertThat(cargo.getDelivery().misdirected()).isFalse();
-            assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+            assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKNOWN);
             assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
             assertThat(cargo.getDelivery().unloadedAtDestination()).isFalse();
             assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.NOT_ROUTED);
@@ -238,7 +238,7 @@ public class BookingServiceIT {
             assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
             assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
             assertThat(cargo.getDelivery().misdirected()).isFalse();
-            assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+            assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKNOWN);
             assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
             assertThat(cargo.getDelivery().unloadedAtDestination()).isFalse();
             assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);
@@ -267,7 +267,7 @@ public class BookingServiceIT {
             assertThat(cargo.getDelivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
             assertThat(cargo.getDelivery().currentVoyage()).isEqualTo(Voyage.NONE);
             assertThat(cargo.getDelivery().misdirected()).isFalse();
-            assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKOWN);
+            assertThat(cargo.getDelivery().estimatedTimeOfArrival()).isEqualTo(Delivery.ETA_UNKNOWN);
             assertThat(cargo.getDelivery().nextExpectedActivity()).isEqualTo(Delivery.NO_ACTIVITY);
             assertThat(cargo.getDelivery().unloadedAtDestination()).isFalse();
             assertThat(cargo.getDelivery().routingStatus()).isEqualTo(RoutingStatus.MISROUTED);

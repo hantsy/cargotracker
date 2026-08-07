@@ -82,7 +82,7 @@ public record Delivery(
     private static final long serialVersionUID = 1L;
 
     // Null object pattern.
-    public static final LocalDateTime ETA_UNKOWN = null;
+    public static final LocalDateTime ETA_UNKNOWN = null;
     // Null object pattern
     public static final HandlingActivity NO_ACTIVITY = HandlingActivity.EMPTY;
 
