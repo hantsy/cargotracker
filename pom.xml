@@ -73,8 +73,8 @@
         <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.3</glassfish.version>
-        <jersey.version>4.0.2</jersey.version>
+        <glassfish.version>8.0.5</glassfish.version>
+        <jersey.version>4.0.3</jersey.version>
         <eclipselink.version>5.0.2</eclipselink.version>
         <arquillian-glassfish.version>7.1.1</arquillian-glassfish.version>
         <!-- websocket client for test-->
