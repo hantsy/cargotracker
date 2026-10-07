@@ -1,21 +1,15 @@
 <ui:composition xmlns:ui="jakarta.faces.facelets"
-                xmlns="http://www.w3.org/1999/xhtml"
->
+                xmlns="http://www.w3.org/1999/xhtml">
     <ui:fragment rendered="#{not facesContext.validationFailed and not empty facesContext.messageList}">
 
         <ui:repeat var="message" value="#{facesContext.messageList}">
-            <div class="m-2 mb-5 alert #{message.severity.ordinal==0?'alert-success':(message.severity.ordinal==1?'alert-warning':'alert-danger')} alert-dismissible"
+            <div class="alert #{message.severity.ordinal==0?'alert-success':(message.severity.ordinal==1?'alert-warning':'alert-danger')} alert-dismissible fade show d-flex align-items-center gap-2"
                  role="alert">
-                <div>#{message.summary}</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <i class="bi #{message.severity.ordinal==0?'bi-check-circle':(message.severity.ordinal==1?'bi-exclamation-triangle':'bi-x-circle')} fs-5"></i>
+                <span>#{message.summary}</span>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </ui:repeat>
-
-        <!--        <h:messages id="messages" layout="vertical" globalOnly="true"
-                            styleClass="list-unstyled" showSummary="true" showDetail="false"
-                            errorClass="alert alert-danger" infoClass="alert alert-info"
-                            warnClass="alert alert-warning" >
-                </h:messages>-->
 
     </ui:fragment>
 </ui:composition>

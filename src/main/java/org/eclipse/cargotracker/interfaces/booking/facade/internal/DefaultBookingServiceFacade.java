@@ -26,7 +26,6 @@ import org.eclipse.cargotracker.interfaces.booking.facade.internal.assembler.Loc
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -59,9 +58,11 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
 
     @Override
     public String bookNewCargo(String origin, String destination, LocalDate arrivalDeadline) {
-        TrackingId trackingId =
-                bookingService.bookNewCargo(
-                        new UnLocode(origin), new UnLocode(destination), arrivalDeadline);
+        TrackingId trackingId = bookingService.bookNewCargo(
+                new UnLocode(origin),
+                new UnLocode(destination),
+                arrivalDeadline
+        );
         return trackingId.id();
     }
 
@@ -74,9 +75,8 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
 
     @Override
     public void assignCargoToRoute(String trackingIdStr, RouteCandidateDto routeCandidateDTO) {
-        Itinerary itinerary =
-                new ItineraryCandidateDtoAssembler()
-                        .fromDto(routeCandidateDTO, voyageRepository, locationRepository);
+        Itinerary itinerary = new ItineraryCandidateDtoAssembler()
+                .fromDto(routeCandidateDTO, voyageRepository, locationRepository);
         TrackingId trackingId = new TrackingId(trackingIdStr);
 
         bookingService.assignCargoToRoute(itinerary, trackingId);
@@ -96,23 +96,19 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
     @Override
     public List<CargoRouteDto> listAllCargos() {
         List<Cargo> cargos = cargoRepository.findAll();
-        List<CargoRouteDto> routes;
 
         CargoRouteDtoAssembler assembler = new CargoRouteDtoAssembler();
 
-        routes = cargos.stream().map(assembler::toDto).toList();
-
-        return routes;
+        return cargos.stream().map(assembler::toDto).toList();
     }
 
     @Override
     public List<String> listAllTrackingIds() {
-        List<String> trackingIds = new ArrayList<>();
-        cargoRepository
-                .findAll()
-                .forEach(cargo -> trackingIds.add(cargo.getTrackingId().id()));
 
-        return trackingIds;
+        return cargoRepository
+                .findAll().stream()
+                .map(cargo -> cargo.getTrackingId().id())
+                .toList();
     }
 
     @Override
@@ -136,8 +132,7 @@ public class DefaultBookingServiceFacade implements BookingServiceFacade, Serial
 
     @Override
     public List<RouteCandidateDto> requestPossibleRoutesForCargo(String trackingId) {
-        List<Itinerary> itineraries =
-                bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
+        List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
 
         ItineraryCandidateDtoAssembler dtoAssembler = new ItineraryCandidateDtoAssembler();
 

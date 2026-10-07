@@ -5,175 +5,162 @@
     <title>Cargo Live Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <link rel="stylesheet" href="#{resource['/css/dd.css']}"/>
-
+    <!-- Bootstrap 5.3.8 CSS -->
     <link rel="stylesheet"
-          href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"/>
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous"/>
 
+    <!-- Bootstrap Icons 1.13.1 -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+          crossorigin="anonymous"/>
+
+    <!-- Leaflet -->
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-            crossorigin=""/>
+            crossorigin="">
+        <!-- stop closing -->
+    </script>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #f5f6f8;
+            font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .map-wrapper {
+            padding: 8px;
+            height: calc(100% - 44px);
+            box-sizing: border-box;
+        }
+
+        #map {
+            height: 100%;
+            min-height: 500px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #212529;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .status-bar .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot.online { background: #198754; box-shadow: 0 0 6px rgba(25,135,84,0.5); }
+        .status-dot.offline { background: #dc3545; box-shadow: 0 0 6px rgba(220,53,69,0.5); }
+        .status-dot.message { background: #ffc107; box-shadow: 0 0 6px rgba(255,193,7,0.5); }
+    </style>
 
     <script type="text/javascript">
         const locationName = {
-            "CNHKG": "Hong Kong",
-            "AUMEL": "Melbourne",
-            "SESTO": "Stockholm",
-            "FIHEL": "Helsinki",
-            "USCHI": "Chicago",
-            "JNTKO": "Tokyo",
-            "DEHAM": "Hamburg",
-            "CNSHA": "Shanghai",
-            "NLRTM": "Rotterdam",
-            "SEGOT": "Gothenburg",
-            "CNHGH": "Hangzhou",
-            "USNYC": "New York",
+            "CNHKG": "Hong Kong", "AUMEL": "Melbourne", "SESTO": "Stockholm",
+            "FIHEL": "Helsinki", "USCHI": "Chicago", "JNTKO": "Tokyo",
+            "DEHAM": "Hamburg", "CNSHA": "Shanghai", "NLRTM": "Rotterdam",
+            "SEGOT": "Gothenburg", "CNHGH": "Hangzhou", "USNYC": "New York",
             "USDAL": "Dallas"
         };
 
         const routingStatusName = {
-            "NOT_ROUTED": "Not routed",
-            "ROUTED": "Routed",
-            "MISROUTED": "Misrouted"
+            "NOT_ROUTED": "Not routed", "ROUTED": "Routed", "MISROUTED": "Misrouted"
         };
 
         const transportStatusName = {
-            "NOT_RECEIVED": "Not received",
-            "IN_PORT": " In port",
-            "ONBOARD_CARRIER": "Onboard carrier",
-            "CLAIMED": "Claimed",
+            "NOT_RECEIVED": "Not received", "IN_PORT": "In port",
+            "ONBOARD_CARRIER": "Onboard carrier", "CLAIMED": "Claimed",
             "UNKNOWN": "Unknown"
         };
 
-        // TODO See if there is a service to get the latitude/longitude
-        // data from.
         const latitude = {
-            "CNHKG": 22,
-            "AUMEL": -38,
-            "SESTO": 59,
-            "FIHEL": 60,
-            "USCHI": 42,
-            "JNTKO": 36,
-            "DEHAM": 54,
-            "CNSHA": 31,
-            "NLRTM": 52,
-            "SEGOT": 58,
-            "CNHGH": 30,
-            "USNYC": 41,
+            "CNHKG": 22, "AUMEL": -38, "SESTO": 59, "FIHEL": 60,
+            "USCHI": 42, "JNTKO": 36, "DEHAM": 54, "CNSHA": 31,
+            "NLRTM": 52, "SEGOT": 58, "CNHGH": 30, "USNYC": 41,
             "USDAL": 33
         };
 
         const longitude = {
-            "CNHKG": 114,
-            "AUMEL": 145,
-            "SESTO": 18,
-            "FIHEL": 25,
-            "USCHI": -88,
-            "JNTKO": 140,
-            "DEHAM": 10,
-            "CNSHA": 121,
-            "NLRTM": 5,
-            "SEGOT": 12,
-            "CNHGH": 120,
-            "USNYC": -74,
+            "CNHKG": 114, "AUMEL": 145, "SESTO": 18, "FIHEL": 25,
+            "USCHI": -88, "JNTKO": 140, "DEHAM": 10, "CNSHA": 121,
+            "NLRTM": 5, "SEGOT": 12, "CNHGH": 120, "USNYC": -74,
             "USDAL": -97
         };
 
-        //  load the icons for the map
         const greenIcon = new L.Icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
         });
-
         const greyIcon = new L.Icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
         });
-
         const redIcon = new L.Icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
         });
-
         const blackIcon = new L.Icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
         });
-
         const goldIcon = new L.Icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
         });
 
         const colorCodes = {
-            "NOT_ROUTED": greyIcon,
-            "MISROUTED": redIcon,
-            "NOT_RECEIVED": goldIcon,
-            "IN_PORT": greenIcon,
-            "ONBOARD_CARRIER": greenIcon,
-            "MISDIRECTED": redIcon,
-            "AT_DESTINATION": blackIcon,
-            "CLAIMED": blackIcon,
-            "UNKNOWN": redIcon
+            "NOT_ROUTED": greyIcon, "MISROUTED": redIcon, "NOT_RECEIVED": goldIcon,
+            "IN_PORT": greenIcon, "ONBOARD_CARRIER": greenIcon, "MISDIRECTED": redIcon,
+            "AT_DESTINATION": blackIcon, "CLAIMED": blackIcon, "UNKNOWN": redIcon
         };
     </script>
 </head>
 
-<body style="background-color: white">
-<div>
-    <div id="map"
-         style="height: 600px; border: #FFF; border-style: solid; border-width: 8px;">
-    </div>
+<body>
+<!-- Status bar -->
+<div id="connected" class="status-bar" title="Click to reload" onclick="location.reload(true)">
+    <span id="status-dot" class="status-dot offline"></span>
+    <span id="status">Offline</span>
+</div>
 
-    <br/>
-    <br/>
-    <div id='connected' class='status'>
-        <p id='status' class='status_constent'>Offline</p>
-    </div>
+<div class="map-wrapper">
+    <div id="map"></div>
 </div>
 
 <script type="text/javascript">
-    const statusBox = document.getElementById('connected');
-    statusBox.style.cursor = 'pointer';
-    statusBox.onclick = function () {
-        location.reload(true);
-    };
-</script>
-<script type="text/javascript">
     function init() {
-        // TODO [DDD] This extra invocation really isn't necessary. We should get all the
-        // necessary data from the Cargo view adapter.
         fetch('/cargo-tracker/rest/cargo')
             .then(response => response.json())
             .then(cargos => {
                 const coordinates = [];
 
                 for (const cargo of cargos) {
-                    const locationCode = (cargo.transportStatus == 'NOT_RECEIVED') ? cargo.origin : cargo.lastKnownLocation;
+                    const locationCode = (cargo.transportStatus === 'NOT_RECEIVED') ? cargo.origin : cargo.lastKnownLocation;
 
                     let statusCode = 'NOT_RECEIVED';
                     if ((cargo.routingStatus === 'NOT_ROUTED') || (cargo.routingStatus === 'MISROUTED')) {
@@ -186,27 +173,23 @@
                         statusCode = cargo.transportStatus;
                     }
 
-                    coordinates.push(
-                        {
-                            position: {
-                                lon: longitude[locationCode] + (Math.floor((Math.random() * 3) - 3)),
-                                lat: latitude[locationCode] + (Math.floor((Math.random() * 3) - 3)),
-                            },
-                            trackingId: cargo.trackingId,
-                            style: colorCodes[statusCode]
-                        }
-                    );
+                    coordinates.push({
+                        position: {
+                            lon: longitude[locationCode] + (Math.floor((Math.random() * 3) - 3)),
+                            lat: latitude[locationCode] + (Math.floor((Math.random() * 3) - 3)),
+                        },
+                        trackingId: cargo.trackingId,
+                        style: colorCodes[statusCode]
+                    });
                 }
 
                 const map = L.map('map').setView({lon: 0, lat: 0}, 2);
 
-                // add the OpenStreetMap tiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
-                    attribution: '&#xA9;; &lt;a href="https://openstreetmap.org/copyright">OpenStreetMap contributors&lt;/a>'
+                    attribution: '&#xA9;; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
                 }).addTo(map);
 
-                // show the scale bar on the lower left corner
                 L.control.scale().addTo(map);
 
                 const applicationPath = window.location.pathname.split('/')[1];
@@ -216,13 +199,13 @@
                 const winDimensions = "height=" + winHeight + ",width=" + winWidth;
 
                 coordinates.forEach((coord, index) => {
-                    const popupContent = 'Tracking ID: ' + cargos[index].trackingId + '&lt;br/>' +
-                        'Routing Status: ' + routingStatusName[cargos[index].routingStatus] + '&lt;br/>' +
-                        'Misdirected: ' + (cargos[index].misdirected ? "Yes" : "No") + '&lt;br/>' +
-                        'Transport Status: ' + transportStatusName[cargos[index].transportStatus] + '&lt;br/>' +
-                        'At Destination: ' + (cargos[index].atDestination ? "Yes" : "No") + '&lt;br/>' +
-                        'Origin: ' + locationName[cargos[index].origin] + '&lt;br/>' +
-                        'Last known location: ' + locationName[cargos[index].lastKnownLocation];
+                    const popupContent = '<strong>Tracking ID:</strong> ' + cargos[index].trackingId + '<br/>' +
+                        '<strong>Routing Status:</strong> ' + routingStatusName[cargos[index].routingStatus] + '<br/>' +
+                        '<strong>Misdirected:</strong> ' + (cargos[index].misdirected ? "Yes" : "No") + '<br/>' +
+                        '<strong>Transport Status:</strong> ' + transportStatusName[cargos[index].transportStatus] + '<br/>' +
+                        '<strong>At Destination:</strong> ' + (cargos[index].atDestination ? "Yes" : "No") + '<br/>' +
+                        '<strong>Origin:</strong> ' + locationName[cargos[index].origin] + '<br/>' +
+                        '<strong>Last known location:</strong> ' + locationName[cargos[index].lastKnownLocation];
 
                     L.marker(coord['position'], {icon: coord.style})
                         .bindTooltip(popupContent)
@@ -232,30 +215,36 @@
                             window.open(trackingUri, "winMap", winDimensions);
                         });
                 });
-            })
-            .catch(e => console.error("cannot fetch cargos", e));
-    }
 
+                // Invalidate map size after parent layout settles
+                setTimeout(function() { map.invalidateSize(); }, 300);
+            })
+            .catch(e => console.error("Cannot fetch cargos", e));
+    }
 </script>
 <script type="text/javascript">
     window.onload = function () {
-        const applicationPath = window.location.pathname.split('/')[1];
-        const socketUri = "ws://" + document.location.host + "/" + applicationPath + "/tracking";
-        const socket = new WebSocket(socketUri);
+        var applicationPath = window.location.pathname.split('/')[1];
+        var socketUri = "ws://" + document.location.host + "/" + applicationPath + "/tracking";
+        var socket = new WebSocket(socketUri);
 
-        const status = document.getElementById("status");
+        var statusEl = document.getElementById("status");
+        var dotEl = document.getElementById("status-dot");
 
-        socket.onopen = function (event) {
-            status.innerHTML = "online";
-        }
+        socket.onopen = function () {
+            statusEl.innerHTML = "Online";
+            dotEl.className = "status-dot online";
+        };
 
-        socket.onmessage = function (event) {
-            status.innerHTML = "mesage";
+        socket.onmessage = function () {
+            statusEl.innerHTML = "Updating...";
+            dotEl.className = "status-dot message";
             location.reload(true);
         };
 
-        socket.onclose = function (event) {
-            status.innerHTML = "offline";
+        socket.onclose = function () {
+            statusEl.innerHTML = "Offline";
+            dotEl.className = "status-dot offline";
         };
 
         init();

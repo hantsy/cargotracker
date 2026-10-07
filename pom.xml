@@ -37,18 +37,18 @@
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
         <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
-        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
-        <maven-surefire-report-plugin.version>3.5.6</maven-surefire-report-plugin.version>
-        <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
+        <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.6.0</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.6.0</maven-surefire-report-plugin.version>
+        <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.10.27</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.10.29</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
-        <postgresql.version>42.7.12</postgresql.version>
-        <omnifaces.version>4.7.10</omnifaces.version>
+        <postgresql.version>42.7.13</postgresql.version>
+        <omnifaces.version>4.7.14</omnifaces.version>
 
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.10.2.Final</arquillian-bom.version>
@@ -58,7 +58,7 @@
         <!-- Test Utilities -->
         <junit.version>5.14.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <mockito.version>5.23.0</mockito.version>
+        <mockito.version>5.24.0</mockito.version>
         <assertj.version>3.27.7</assertj.version>
         <json-path.version>2.10.0</json-path.version>
         <jacoco.version>0.8.15</jacoco.version>
@@ -75,18 +75,18 @@
         <!-- Glassfish server -->
         <glassfish.version>8.0.3</glassfish.version>
         <jersey.version>4.0.2</jersey.version>
-        <eclipselink.version>5.0.0</eclipselink.version>
-        <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
+        <eclipselink.version>5.0.2</eclipselink.version>
+        <arquillian-glassfish.version>7.1.1</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.2</tyrus.version>
 
         <!-- Wildfly server -->
         <wildfly.version>40.0.1.Final</wildfly.version>
-        <wildfly-maven-plugin.version>6.0.0.Final</wildfly-maven-plugin.version>
+        <wildfly-maven-plugin.version>6.0.1.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>6.0.0.Alpha1</wildfly-arquillian.version>
 
         <!-- aligned to Wildfly version. -->
-        <resteasy.version>7.0.2.Final</resteasy.version>
+        <resteasy.version>7.0.5.Final</resteasy.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>

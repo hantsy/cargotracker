@@ -87,7 +87,7 @@ public class CargoTrackingViewAdapter {
         Delivery delivery = cargo.getDelivery();
 
         return switch (delivery.transportStatus()) {
-            case IN_PORT -> "In port " + cargo.getRouteSpecification().destination().getName();
+            case IN_PORT -> "In port " + delivery.lastKnownLocation().getName();
             case ONBOARD_CARRIER -> "Onboard voyage " + delivery.currentVoyage().getVoyageNumber().number();
             case CLAIMED -> "Claimed";
             case NOT_RECEIVED -> "Not received";
@@ -110,7 +110,7 @@ public class CargoTrackingViewAdapter {
         }
     }
 
-    public String getNextExpectedActivityText() {
+    public String getNextExpectedActivity() {
         HandlingActivity activity = cargo.getDelivery().nextExpectedActivity();
 
         if ((activity == null) || (activity.isEmpty())) {
@@ -120,7 +120,7 @@ public class CargoTrackingViewAdapter {
         String text = "Next expected activity is to ";
         HandlingEvent.Type type = activity.type();
         final String typeName = type.name().toLowerCase();
-        final VoyageNumber voyageNumber = activity.voyage().getVoyageNumber();
+        final String voyageNumber = activity.voyage().getVoyageNumber().number();
         final String locationName = activity.location().getName();
         return switch (type) {
             case LOAD -> "%s%s cargo onto voyage %s in %s".formatted(text, typeName, voyageNumber, locationName);

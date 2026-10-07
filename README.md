@@ -41,6 +41,19 @@ ported that sample to the Jakarta EE ecosystem using the following stacks:
 
 ---
 
+## Screenshots
+
+**Landing pages**
+
+![Home](docs/images/home1.png)
+![Home](docs/images/home2.png)
+
+**Cargo tracking**
+![Cargo tracking](docs/images/track.png)
+
+**Dashboard**
+![Dashboard](docs/images/dashboard.png)
+
 ## Getting started
 
 ### Requirements
@@ -50,8 +63,8 @@ ported that sample to the Jakarta EE ecosystem using the following stacks:
 * Git
 * Docker (for PostgreSQL)
 * Application server:
-    * [GlassFish v8](https://github.com/eclipse-ee4j/glassfish) **or**
-    * [WildFly 40.0.0.Beta1+](https://www.wildfly.org/) 
+  * [GlassFish v8](https://github.com/eclipse-ee4j/glassfish) **or**
+  * [WildFly 40.0.0.Beta1+](https://www.wildfly.org/)
 
 ### Starting the database
 

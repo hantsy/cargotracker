@@ -60,6 +60,6 @@ public class ItinerarySelection implements Serializable {
         RouteCandidateDto route = routeCandidates.get(routeIndex);
         bookingServiceFacade.assignCargoToRoute(trackingId, route);
 
-        return "show.html?faces-redirect=true&trackingId=" + trackingId;
+        return "show.xhtml?faces-redirect=true&trackingId=" + trackingId;
     }
 }
