@@ -17,7 +17,6 @@ import java.util.Objects;
  */
 @Embeddable
 public record RouteSpecification(
-
         @ManyToOne
         @JoinColumn(name = "spec_origin_id")
         @NotNull
@@ -34,6 +33,9 @@ public record RouteSpecification(
 ) implements Specification<Itinerary>, Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    // Null object pattern.
+    public static final RouteSpecification EMPTY = new RouteSpecification(null, null, null);
 
     /**
      * Creates a new RouteSpecification with validation.

@@ -121,7 +121,7 @@ public class Cargo implements Serializable {
     }
 
     public RouteSpecification getRouteSpecification() {
-        return routeSpecification;
+        return Objects.requireNonNullElse(this.routeSpecification, RouteSpecification.EMPTY);
     }
 
     /**
