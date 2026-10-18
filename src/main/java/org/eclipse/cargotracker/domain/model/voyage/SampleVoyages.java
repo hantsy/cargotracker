@@ -6,7 +6,6 @@ import org.eclipse.cargotracker.domain.model.location.SampleLocations;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -422,10 +421,8 @@ public class SampleVoyages {
     private static Voyage createVoyage(String id, Location from, Location to) {
         return new Voyage(
                 new VoyageNumber(id),
-                new Schedule(
-                        Collections.singletonList(
-                                new CarrierMovement(
-                                        from, to, LocalDateTime.now(), LocalDateTime.now()))));
+                Schedule.of(List.of(new CarrierMovement(from, to, LocalDateTime.now(), LocalDateTime.now())))
+        );
     }
 
     public static List<Voyage> getAll() {

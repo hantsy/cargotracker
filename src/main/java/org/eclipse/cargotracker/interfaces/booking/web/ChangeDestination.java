@@ -8,7 +8,6 @@ import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.LocationDto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,21 +46,14 @@ public class ChangeDestination implements Serializable {
         return cargo;
     }
 
+    private List<LocationDto> potentialDestinations;
+
     public List<LocationDto> getLocations() {
         return locations;
     }
 
     public List<LocationDto> getPotentialDestinations() {
-        // Potential destination = All Locations - Origin - Current Destination
-        List<LocationDto> destinationsToRemove = new ArrayList<>();
-        for (LocationDto loc : locations) {
-            if (loc.code().equalsIgnoreCase(cargo.origin().code())
-                    || loc.code().equalsIgnoreCase(cargo.finalDestination().code())) {
-                destinationsToRemove.add(loc);
-            }
-        }
-        locations.removeAll(destinationsToRemove);
-        return locations;
+        return potentialDestinations;
     }
 
     public String getDestinationUnlocode() {
@@ -75,10 +67,15 @@ public class ChangeDestination implements Serializable {
     public void load() {
         locations = bookingServiceFacade.listShippingLocations();
         cargo = bookingServiceFacade.loadCargoForRouting(trackingId);
+        // Pre-compute potential destinations = All Locations - Origin - Current Destination
+        potentialDestinations = locations.stream()
+                .filter(loc -> !loc.code().equalsIgnoreCase(cargo.origin().code())
+                        && !loc.code().equalsIgnoreCase(cargo.finalDestination().code()))
+                .toList();
     }
 
     public String changeDestination() {
         bookingServiceFacade.changeDestination(trackingId, destinationUnlocode);
-        return "show.html?faces-redirect=true&trackingId=" + trackingId;
+        return "/admin/show.xhtml?faces-redirect=true&trackingId=" + trackingId;
     }
 }

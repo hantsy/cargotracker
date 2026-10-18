@@ -4,7 +4,6 @@ import jakarta.faces.model.SelectItem;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
 import org.eclipse.cargotracker.application.ApplicationEvents;
 import org.eclipse.cargotracker.application.util.DateUtil;
 import org.eclipse.cargotracker.domain.model.cargo.Cargo;
@@ -114,16 +113,15 @@ public class EventLogger implements Serializable {
         return DateUtil.DATE_TIME_FORMAT;
     }
 
-    @Transactional
     public void init() {
         List<Cargo> cargos = cargoRepository.findAll();
 
         trackingIds = new ArrayList<>(cargos.size());
         for (Cargo cargo : cargos) {
             // List only routed cargo that is not claimed yet.
-            if (!cargo.getItinerary().getLegs().isEmpty()
-                    && !(cargo.getDelivery().getTransportStatus().sameValueAs(TransportStatus.CLAIMED))) {
-                String trackingId = cargo.getTrackingId().getIdString();
+            if (!cargo.getItinerary().legs().isEmpty()
+                    && !(cargo.getDelivery().transportStatus().sameValueAs(TransportStatus.CLAIMED))) {
+                String trackingId = cargo.getTrackingId().id();
                 trackingIds.add(new SelectItem(trackingId, trackingId));
             }
         }
@@ -132,7 +130,7 @@ public class EventLogger implements Serializable {
 
         this.locations = new ArrayList<>(locations.size());
         for (Location location : locations) {
-            String locationCode = location.getUnLocode().getIdString();
+            String locationCode = location.getUnLocode().unlocode();
             this.locations.add(
                     new SelectItem(locationCode, location.getName() + " (" + locationCode + ")"));
         }
@@ -143,8 +141,8 @@ public class EventLogger implements Serializable {
         for (Voyage voyage : voyages) {
             this.voyages.add(
                     new SelectItem(
-                            voyage.getVoyageNumber().getIdString(),
-                            voyage.getVoyageNumber().getIdString()
+                            voyage.getVoyageNumber().number(),
+                            voyage.getVoyageNumber().number()
                     )
             );
         }

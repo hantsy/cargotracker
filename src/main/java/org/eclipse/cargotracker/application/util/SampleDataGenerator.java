@@ -23,8 +23,7 @@ import org.eclipse.cargotracker.domain.model.voyage.SampleVoyages;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Level;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**

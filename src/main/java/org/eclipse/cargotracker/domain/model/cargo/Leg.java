@@ -13,6 +13,7 @@ import org.eclipse.cargotracker.domain.model.voyage.Voyage;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -69,8 +70,8 @@ public class Leg implements Serializable {
         this.voyage = voyage;
         this.loadLocation = loadLocation;
         this.unloadLocation = unloadLocation;
-        this.loadTime = loadTime;
-        this.unloadTime = unloadTime;
+        this.loadTime = loadTime.truncatedTo(ChronoUnit.SECONDS);
+        this.unloadTime = unloadTime.truncatedTo(ChronoUnit.SECONDS);
     }
 
     public Voyage getVoyage() {

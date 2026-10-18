@@ -29,7 +29,7 @@ public class CargoRouteDtoAssemblerTest {
         final Cargo cargo =
                 new Cargo(
                         new TrackingId("XYZ"),
-                        new RouteSpecification(origin, destination, LocalDate.now()));
+                        RouteSpecification.of(origin, destination, LocalDate.now()));
 
         final Itinerary itinerary =
                 new Itinerary(
@@ -72,7 +72,7 @@ public class CargoRouteDtoAssemblerTest {
         final Cargo cargo =
                 new Cargo(
                         new TrackingId("XYZ"),
-                        new RouteSpecification(
+                        RouteSpecification.of(
                                 SampleLocations.STOCKHOLM,
                                 SampleLocations.MELBOURNE,
                                 LocalDate.now()));

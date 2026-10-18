@@ -43,7 +43,7 @@ public class CargoHandledConsumer implements MessageListener {
 
             cargoInspectionService.inspectCargo(new TrackingId(trackingIdString));
         } catch (JMSException e) {
-            LOGGER.log(Level.SEVERE, "Error procesing JMS message", e);
+            LOGGER.log(Level.SEVERE, "Error processing JMS message", e);
         }
     }
 }

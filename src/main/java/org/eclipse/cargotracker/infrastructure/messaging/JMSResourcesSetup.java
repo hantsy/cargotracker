@@ -45,7 +45,6 @@ public class JMSResourcesSetup {
 
     @PostConstruct
     public void init() {
-        LOGGER.log(
-                Level.INFO, "JMS connectionFactory is available : {0} ", connectionFactory != null);
+        LOGGER.log(Level.INFO, "JMS connectionFactory is available : {0} ", connectionFactory != null);
     }
 }

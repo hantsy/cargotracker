@@ -71,7 +71,7 @@ public class CargoInspectionServiceTest {
     public void testCargoIsInspected() {
         Cargo cargo = new Cargo(
                 new TrackingId("ABC"),
-                new RouteSpecification(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
+                RouteSpecification.of(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
         );
         when(cargoRepository.find(any(TrackingId.class))).thenReturn(cargo);
         when(handlingEventRepository.lookupHandlingHistoryOfCargo(any(TrackingId.class)))
@@ -95,7 +95,7 @@ public class CargoInspectionServiceTest {
     public void testCargoWasArrivedAsExpected() {
         Cargo cargo = new Cargo(
                 new TrackingId("ABC"),
-                new RouteSpecification(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
+                RouteSpecification.of(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
         );
         cargo.assignToRoute(
                 new Itinerary(
@@ -177,7 +177,7 @@ public class CargoInspectionServiceTest {
     public void testCargoWasMisredirected() {
         Cargo cargo = new Cargo(
                 new TrackingId("ABC"),
-                new RouteSpecification(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
+                RouteSpecification.of(SampleLocations.DALLAS, SampleLocations.HONGKONG, LocalDate.now())
         );
         cargo.assignToRoute(
                 new Itinerary(

@@ -35,7 +35,7 @@ public class CargoInspectedStub {
     @PostConstruct
     public void initialize() {
         LOGGER.log(Level.INFO, "starting timer service...");
-        timerService.createTimer(TimeUnit.SECONDS.toMillis(5), "delayed 5 seconds to execute");
+        timerService.createTimer(TimeUnit.SECONDS.toMillis(20), "delayed 20 seconds to execute");
     }
 
     @Timeout
@@ -44,7 +44,7 @@ public class CargoInspectedStub {
         cargoEvent.fire(
                 new Cargo(
                         new TrackingId("AAA"),
-                        new RouteSpecification(
+                        RouteSpecification.of(
                                 SampleLocations.HONGKONG,
                                 SampleLocations.NEWYORK,
                                 LocalDate.now().plusMonths(6))));

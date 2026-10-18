@@ -44,23 +44,23 @@ public class CargoMonitoringService {
 
     private JsonObjectBuilder cargoToJson(Cargo cargo) {
         return Json.createObjectBuilder()
-                .add("trackingId", cargo.getTrackingId().getIdString())
-                .add("routingStatus", cargo.getDelivery().getRoutingStatus().toString())
-                .add("misdirected", cargo.getDelivery().isMisdirected())
-                .add("transportStatus", cargo.getDelivery().getTransportStatus().toString())
-                .add("atDestination", cargo.getDelivery().isUnloadedAtDestination())
-                .add("origin", cargo.getOrigin().getUnLocode().getIdString())
+                .add("trackingId", cargo.getTrackingId().id())
+                .add("routingStatus", cargo.getDelivery().routingStatus().toString())
+                .add("misdirected", cargo.getDelivery().misdirected())
+                .add("transportStatus", cargo.getDelivery().transportStatus().toString())
+                .add("atDestination", cargo.getDelivery().unloadedAtDestination())
+                .add("origin", cargo.getOrigin().getUnLocode().unlocode())
                 .add(
                         "lastKnownLocation",
                         cargo.getDelivery()
-                                .getLastKnownLocation()
+                                .lastKnownLocation()
                                 .getUnLocode()
-                                .getIdString()
+                                .unlocode()
                                 .equals("XXXXX")
                                 ? "Unknown"
                                 : cargo.getDelivery()
-                                .getLastKnownLocation()
+                                .lastKnownLocation()
                                 .getUnLocode()
-                                .getIdString());
+                                .unlocode());
     }
 }

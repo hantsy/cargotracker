@@ -36,35 +36,34 @@
         <maven-war-plugin.version>3.5.1</maven-war-plugin.version>
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
-        <maven-dependency-plugin.version>3.10.0</maven-dependency-plugin.version>
-        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
-        <maven-surefire-report-plugin.version>3.5.5</maven-surefire-report-plugin.version>
-        <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
+        <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
+        <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.6.0</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.6.0</maven-surefire-report-plugin.version>
+        <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
 
         <!-- Cargo maven plugin -->
-        <cargo-maven3-plugin.version>1.10.26</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.10.29</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API 11.x -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
-        <postgresql.version>42.7.10</postgresql.version>
-        <commons-lang3.version>3.20.0</commons-lang3.version>
-        <omnifaces.version>4.7.5</omnifaces.version>
+        <postgresql.version>42.7.13</postgresql.version>
+        <omnifaces.version>4.7.14</omnifaces.version>
 
         <!-- Arquillian BOM -->
-        <arquillian-bom.version>1.10.1.Final</arquillian-bom.version>
+        <arquillian-bom.version>1.10.2.Final</arquillian-bom.version>
         <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
-        <shrinkwrap-resolver-bom.version>3.3.5</shrinkwrap-resolver-bom.version>
+        <shrinkwrap-resolver-bom.version>3.3.7</shrinkwrap-resolver-bom.version>
         <!-- Test Utilities -->
-        <junit.version>5.14.3</junit.version>
+        <junit.version>5.14.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <mockito.version>5.23.0</mockito.version>
+        <mockito.version>5.24.0</mockito.version>
         <assertj.version>3.27.7</assertj.version>
         <json-path.version>2.10.0</json-path.version>
-        <jacoco.version>0.8.14</jacoco.version>
+        <jacoco.version>0.8.15</jacoco.version>
         <arquillian-jacoco.version>1.1.0</arquillian-jacoco.version>
-        <asm.version>9.9.1</asm.version>
+        <asm.version>9.10.1</asm.version>
         <awaitility.version>4.3.0</awaitility.version>
 
         <!-- spring format and Checkstyle -->
@@ -74,20 +73,20 @@
         <checkstyle.version>9.3</checkstyle.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.1</glassfish.version>
-        <jersey.version>4.0.2</jersey.version>
-        <eclipselink.version>5.0.0</eclipselink.version>
-        <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
+        <glassfish.version>8.0.5</glassfish.version>
+        <jersey.version>4.0.3</jersey.version>
+        <eclipselink.version>5.0.2</eclipselink.version>
+        <arquillian-glassfish.version>7.1.1</arquillian-glassfish.version>
         <!-- websocket client for test-->
         <tyrus.version>2.2.2</tyrus.version>
 
         <!-- Wildfly server -->
-        <wildfly.version>39.0.1.Final</wildfly.version>
-        <wildfly-maven-plugin.version>5.1.5.Final</wildfly-maven-plugin.version>
-        <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
+        <wildfly.version>40.0.1.Final</wildfly.version>
+        <wildfly-maven-plugin.version>6.0.1.Final</wildfly-maven-plugin.version>
+        <wildfly-arquillian.version>6.0.0.Alpha1</wildfly-arquillian.version>
 
         <!-- aligned to Wildfly version. -->
-        <resteasy.version>7.0.1.Final</resteasy.version>
+        <resteasy.version>7.0.5.Final</resteasy.version>
 
         <!-- Application properties -->
         <webapp.databaseTempDir>/tmp</webapp.databaseTempDir>
@@ -222,14 +221,6 @@
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <!-- Third-party dependencies -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Jsf utils -->
@@ -368,7 +359,9 @@
                             <includes>
                                 <include>**/*Test.java</include>
                             </includes>
-                            <excludedGroups>arqtest</excludedGroups>
+                            <excludes>
+                                <exclude>**/*IT.java</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
@@ -389,10 +382,8 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>**/*Test.java</include>
+                                <include>**/*IT.java</include>
                             </includes>
-                            <groups>arqtest</groups>
-                            <excludedGroups>!arqtest</excludedGroups>
                         </configuration>
                     </execution>
                 </executions>
@@ -416,7 +407,7 @@
             <id>wildfly</id>
             <properties>
                 <!-- Wildfly server -->
-                <wildfly.artifactId>wildfly-preview-dist</wildfly.artifactId>
+                <wildfly.artifactId>wildfly-dist</wildfly.artifactId>
                 <wildfly.serverConfig>standalone-full.xml</wildfly.serverConfig>
                 <jboss-as.home>${project.build.directory}/wildfly-${wildfly.version}</jboss-as.home>
             </properties>
@@ -467,7 +458,7 @@
                             <!-- if a jboss-as.home or jboss.home property is not present, firstly
                             it will download
                                     a copy of wildfly distribution automatically -->
-                            <!-- <jossHome>${env.WILDFLY_HOME}</jbossHome>-->
+                            <!-- <jbossHome>${env.WILDFLY_HOME}</jbossHome>-->
                             <!--<jbossHome>D:\appsvr\wildfly-preview-22.0.0.Alpha1</jbossHome>-->
 
                             <!-- To deploy a running wildfly server -->
@@ -492,12 +483,6 @@
                     </plugin>
                 </plugins>
             </build>
-            <repositories>
-                <repository>
-                    <id>opensaml</id>
-                    <url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
-                </repository>
-            </repositories>
         </profile>
         <profile>
             <id>glassfish</id>
@@ -666,80 +651,6 @@
             </build>
         </profile>
         <profile>
-            <id>arq-glassfish-remote</id>
-            <properties>
-                <skip.unit.tests>true</skip.unit.tests>
-                <skip.integration.tests>false</skip.integration.tests>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.tyrus.bundles</groupId>
-                    <artifactId>tyrus-standalone-client</artifactId>
-                    <version>${tyrus.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <!-- Jersey -->
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-multipart</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-json-binding</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-sse</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.inject</groupId>
-                    <artifactId>jersey-hk2</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.core</groupId>
-                    <artifactId>jersey-client</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>io.github.hantsy.arquillian</groupId>
-                    <artifactId>arquillian-glassfish-remote</artifactId>
-                    <version>${arquillian-glassfish.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <testResources>
-                    <testResource>
-                        <directory>src/test/resources</directory>
-                    </testResource>
-                    <testResource>
-                        <directory>src/test/arq-glassfish-remote</directory>
-                    </testResource>
-                </testResources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>${maven-failsafe-plugin.version}</version>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <arquillian.launch>glassfish-remote</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
 
             <!-- An optional Arquillian testing profile that executes tests in your
                 WildFly instance -->
@@ -750,7 +661,7 @@
             <properties>
                 <skip.unit.tests>true</skip.unit.tests>
                 <skip.integration.tests>false</skip.integration.tests>
-                <wildfly.artifactId>wildfly-preview-dist</wildfly.artifactId>
+                <wildfly.artifactId>wildfly-dist</wildfly.artifactId>
                 <serverProfile>standalone-full.xml</serverProfile>
                 <serverRoot>${project.build.directory}/wildfly-${wildfly.version}</serverRoot>
             </properties>
@@ -827,7 +738,7 @@
                         <configuration>
                             <environmentVariables>
                                 <JBOSS_HOME>
-                                    ${project.build.directory}/wildfly-preview-${wildfly.version}
+                                    ${project.build.directory}/wildfly-${wildfly.version}
                                 </JBOSS_HOME>
                             </environmentVariables>
                             <systemPropertyVariables>

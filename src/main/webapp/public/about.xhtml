@@ -2,24 +2,50 @@
         xmlns:ui="jakarta.faces.facelets"
         xmlns="http://www.w3.org/1999/xhtml"
         template="/WEB-INF/layout/public.xhtml">
-    <ui:define name="body">
+    <ui:define name="title">About Public Tracking</ui:define>
+    <ui:define name="subtitle">How to use the cargo tracking interface</ui:define>
+    <ui:define name="content">
 
-        <div class="p-5">
-            <h2 class="my-1 my-md-5">Tracking Your Cargo</h2>
-            <p class="py-2">The public tracking interface allows you to track your cargo
-                and receive information such as current status, estimated time of
-                arrival and detailed handling history.</p>
-            <p class="py-2">The interface does not require a login but you are expected
-                to know your registered tracking ID - please contact your booking
-                agent if you do not know your tracking ID. You should also contact
-                your booking agent to make any modifications to your cargo such as
-                a change in destination, a correction, etc or if your cargo is
-                misdirected, delayed or held at customs.</p>
-            <p class="py-2">
-                Visit <a
-                    href="https://eclipse-ee4j.github.io/cargotracker/">https://eclipse-ee4j.github.io/cargotracker/</a>
-                for more information about Cargo Tracker.
-            </p>
+        <div class="card about-section mx-auto">
+            <div class="card-body p-5">
+                <p class="lead mb-4">
+                    The public tracking interface allows you to track your cargo
+                    and receive information such as current status, estimated time of
+                    arrival, and detailed handling history.
+                </p>
+
+                <ul class="feature-list mb-4">
+                    <li>
+                        <i class="bi bi-search"></i>
+                        <span>Enter your <strong>tracking ID</strong> on the tracking page to see real-time cargo status.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-shield-lock"></i>
+                        <span>No login is required — only your tracking ID is needed.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-geo-alt"></i>
+                        <span>View your cargo's route on the interactive <strong>live map</strong>.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-list-ul"></i>
+                        <span>Browse the complete <strong>handling history</strong> from origin to destination.</span>
+                    </li>
+                </ul>
+
+                <div class="alert alert-info d-flex align-items-center gap-2">
+                    <i class="bi bi-info-circle fs-5"></i>
+                    <span>Contact your booking agent if you don't know your tracking ID or need to modify your cargo.</span>
+                </div>
+
+                <p class="mt-4 mb-0">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>
+                    Visit
+                    <a href="https://eclipse-ee4j.github.io/cargotracker/"
+                       target="_blank" rel="noopener">eclipse-ee4j.github.io/cargotracker</a>
+                    for more information about Cargo Tracker.
+                </p>
+            </div>
         </div>
 
     </ui:define>

@@ -32,7 +32,7 @@ public class SynchronousApplicationEventsStub implements ApplicationEvents {
 
     @Override
     public void cargoHasArrived(Cargo cargo) {
-        System.out.println("EVENT: cargo has arrived: " + cargo.getTrackingId().getIdString());
+        System.out.println("EVENT: cargo has arrived: " + cargo.getTrackingId().id());
     }
 
     @Override

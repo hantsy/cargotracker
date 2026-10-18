@@ -2,28 +2,54 @@ package org.eclipse.pathfinder.api;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-public class TransitPath implements Serializable {
+public record TransitPath(List<TransitEdge> transitEdges) implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<TransitEdge> transitEdges;
-
-    public TransitPath() {
-        this.transitEdges = new ArrayList<>();
+    public TransitPath {
+        if (transitEdges == null) {
+            transitEdges = new ArrayList<>();
+        } else {
+            transitEdges = new ArrayList<>(transitEdges);
+            for (TransitEdge edge : transitEdges) {
+                Objects.requireNonNull(edge, "Transit edge cannot be null");
+            }
+        }
     }
 
-    public TransitPath(List<TransitEdge> transitEdges) {
-        this.transitEdges = transitEdges;
+    /**
+     * Static factory method to create an empty TransitPath.
+     *
+     * @return an empty TransitPath
+     */
+    public static TransitPath empty() {
+        return new TransitPath(new ArrayList<>());
     }
 
-    public List<TransitEdge> getTransitEdges() {
-        return transitEdges;
+    /**
+     * Returns an unmodifiable view of the transit edges.
+     *
+     * @return unmodifiable list of transit edges
+     */
+    @Override
+    public List<TransitEdge> transitEdges() {
+        return List.copyOf(transitEdges);
     }
 
-    public void setTransitEdges(List<TransitEdge> transitEdges) {
-        this.transitEdges = transitEdges;
+    /**
+     * Adds a transit edge to this path.
+     *
+     * @param edge the edge to add
+     * @return this TransitPath for method chaining
+     */
+    public TransitPath addEdge(TransitEdge edge) {
+        Objects.requireNonNull(edge, "Transit edge cannot be null");
+        transitEdges.add(edge);
+        return this;
     }
 
     @Override

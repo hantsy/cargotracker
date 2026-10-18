@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class LocationDtoAssembler {
 
     public LocationDto toDto(Location location) {
-        return new LocationDto(location.getUnLocode().getIdString(), location.getName());
+        return new LocationDto(location.getUnLocode().unlocode(), location.getName());
     }
 
     public List<LocationDto> toDtoList(List<Location> allLocations) {

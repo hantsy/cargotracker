@@ -4,5 +4,17 @@
     <ui:define name="nav">
         <ui:include src="/WEB-INF/layout/public-nav.xhtml"/>
     </ui:define>
-
+    <ui:define name="body">
+        <div class="page-header text-center mt-4 mb-4">
+            <h1 class="display-5">
+                <ui:insert name="title"></ui:insert>
+            </h1>
+            <p class="subtitle">
+                <ui:insert name="subtitle"></ui:insert>
+            </p>
+        </div>
+        <div class="my-2">
+            <ui:insert name="content"></ui:insert>
+        </div>
+    </ui:define>
 </ui:composition>

@@ -58,7 +58,7 @@ public class RouteSpecificationTest {
     @Test
     public void testIsSatisfiedBySuccess() {
         RouteSpecification routeSpecification =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HONGKONG,
                         SampleLocations.CHICAGO,
                         LocalDate.now().minusYears(1).plusMonths(3).plusDays(1));
@@ -69,7 +69,7 @@ public class RouteSpecificationTest {
     @Test
     public void testIsNotSatisfiedByWrongOrigin() {
         RouteSpecification routeSpecification =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HANGZOU,
                         SampleLocations.CHICAGO,
                         LocalDate.now().minusYears(1).plusMonths(3).plusDays(1));
@@ -80,7 +80,7 @@ public class RouteSpecificationTest {
     @Test
     public void testIsNotSatisfiedByWrongDestination() {
         RouteSpecification routeSpecification =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HONGKONG,
                         SampleLocations.DALLAS,
                         LocalDate.now().minusYears(1).plusMonths(3).plusDays(1));
@@ -91,7 +91,7 @@ public class RouteSpecificationTest {
     @Test
     public void testIsNotSatisfiedByMissedDeadline() {
         RouteSpecification routeSpecification =
-                new RouteSpecification(
+                RouteSpecification.of(
                         SampleLocations.HONGKONG,
                         SampleLocations.CHICAGO,
                         LocalDate.now().minusYears(1).plusMonths(2).plusDays(15));

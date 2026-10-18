@@ -1,13 +1,11 @@
 package org.eclipse.cargotracker.interfaces.booking.web;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.eclipse.cargotracker.interfaces.booking.facade.BookingServiceFacade;
 import org.eclipse.cargotracker.interfaces.booking.facade.dto.CargoRouteDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,55 +22,35 @@ import java.util.List;
 @RequestScoped
 public class ListCargo {
 
-    private List<CargoRouteDto> cargos;
-    private List<CargoRouteDto> routedCargos;
+    private List<CargoRouteDto> routedUnclaimedCargos;
     private List<CargoRouteDto> notRoutedCargos;
     private List<CargoRouteDto> claimedCargos;
-    private List<CargoRouteDto> routedUnclaimedCargos;
 
     @Inject
     private BookingServiceFacade bookingServiceFacade;
 
-    public List<CargoRouteDto> getCargos() {
-        return cargos;
-    }
-
-    @PostConstruct
-    public void init() {
-        cargos = bookingServiceFacade.listAllCargos();
-    }
-
-    public List<CargoRouteDto> getRoutedCargos() {
-        routedCargos = new ArrayList<>();
-
-        cargos.stream().filter(CargoRouteDto::routed).forEach(route -> routedCargos.add(route));
-
-        return routedCargos;
-    }
-
     public List<CargoRouteDto> getRoutedUnclaimedCargos() {
-        routedUnclaimedCargos = new ArrayList<>();
-        cargos.stream()
-                .filter(route -> route.routed() && !route.claimed())
-                .forEach(route -> routedUnclaimedCargos.add(route));
-
         return routedUnclaimedCargos;
     }
 
     public List<CargoRouteDto> getClaimedCargos() {
-        claimedCargos = new ArrayList<>();
-
-        cargos.stream().filter(CargoRouteDto::claimed).forEach(route -> claimedCargos.add(route));
-
         return claimedCargos;
     }
 
     public List<CargoRouteDto> getNotRoutedCargos() {
-        notRoutedCargos = new ArrayList<>();
-        cargos.stream()
-                .filter(route -> !route.routed())
-                .forEach(route -> notRoutedCargos.add(route));
-
         return notRoutedCargos;
+    }
+
+    public void init() {
+        List<CargoRouteDto> cargos = bookingServiceFacade.listAllCargos();
+        routedUnclaimedCargos = cargos.stream()
+                .filter(route -> route.routed() && !route.claimed())
+                .toList();
+        notRoutedCargos = cargos.stream()
+                .filter(route -> !route.routed())
+                .toList();
+        claimedCargos = cargos.stream()
+                .filter(CargoRouteDto::claimed)
+                .toList();
     }
 }
